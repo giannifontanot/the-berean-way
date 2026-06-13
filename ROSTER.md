@@ -5,7 +5,7 @@ Mapa entre el código de carpeta (no adivinable) y el alumno real.
 
 | Código de carpeta | Alumno   | URL privada                                                                 |
 |-------------------|----------|------------------------------------------------------------------------------|
-| `s-7f3a9c2e`      | Samuel   | https://giannifontanot.github.io/the-berean-way/students/s-7f3a9c2e/         |
+| `s-7f3a9c2e`      | Samuel   | https://giannifontanot.github.io/the-berean-way/sites/s-7f3a9c2e/         |
 | _(pendiente)_     | Jennifer | _(crea la carpeta con un código nuevo y anótalo aquí)_                        |
 | _(pendiente)_     | Dalia    | _(crea la carpeta con un código nuevo y anótalo aquí)_                        |
 
