@@ -214,15 +214,15 @@ function readForm() {
 }
 
 function showResult(opts, mode) {
-  const url = "students/" + opts.code + "/";
+  const url = "sites/" + opts.code + "/";
   const out = document.getElementById("out");
   out.className = "out show";
   out.innerHTML =
     "<p><strong>¡Listo!</strong> Alumno: <strong>" + opts.name.replace(/[<>&]/g, "") + "</strong></p>" +
     "<p>Carpeta / código: <code>" + opts.code + "</code></p>" +
     (mode === "zip"
-      ? "<p>Se descargó <code>" + opts.code + ".zip</code>. Descomprímelo dentro de <code>students/</code> de tu repo (queda <code>students/" + opts.code + "/</code>), haz commit y push.</p>"
-      : "<p>Se escribió la carpeta directamente en <code>students/" + opts.code + "/</code>. Haz commit y push.</p>") +
+      ? "<p>Se descargó <code>" + opts.code + ".zip</code>. Descomprímelo dentro de <code>sites/</code> de tu repo (queda <code>sites/" + opts.code + "/</code>), haz commit y push.</p>"
+      : "<p>Se escribió la carpeta directamente en <code>sites/" + opts.code + "/</code>. Haz commit y push.</p>") +
     "<p>URL del alumno: <code>" + url + "</code></p>" +
     "<p>Agrega esta fila a <code>ROSTER.md</code>:</p>" +
     "<pre><code>| `" + opts.code + "` | " + opts.name.replace(/[<>&|]/g, "") + " | …/the-berean-way/" + url + " |</code></pre>";
@@ -256,8 +256,8 @@ document.getElementById("fsBtn").addEventListener("click", async () => {
   try {
     const opts = readForm();
     const files = await collectFiles(opts);
-    const studentsDir = await window.showDirectoryPicker(); // elige la carpeta students/
-    const dir = await studentsDir.getDirectoryHandle(opts.code, { create: true });
+    const sitesDir = await window.showDirectoryPicker(); // elige la carpeta sites/
+    const dir = await sitesDir.getDirectoryHandle(opts.code, { create: true });
     for (const f of files) {
       const segs = f.name.split("/");
       let cur = dir;
