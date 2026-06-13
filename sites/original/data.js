@@ -3,7 +3,7 @@
    ------------------------------------------------------------
    ESTE es el único archivo que editas para personalizar a un alumno.
    Para crear un alumno nuevo:
-     1. Copia toda la carpeta students/original  →  students/s-XXXXXXXX
+     1. Copia toda la carpeta sites/original  →  sites/s-XXXXXXXX
         (usa un código no adivinable, no el nombre real — ver ROSTER.md)
      2. Edita SOLO este data.js dentro de la carpeta nueva.
    No toques index.html ni la carpeta assets/.

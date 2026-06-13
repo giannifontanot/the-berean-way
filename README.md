@@ -1,7 +1,7 @@
 # The Berean Way — sitios de estudio por alumno
 
 Sitio estático (HTML + CSS + JS, sin build) para GitHub Pages. Un **diseño y
-lógica compartidos** (`assets/`) y **un sitio por alumno** (`students/<código>/`),
+lógica compartidos** (`assets/`) y **un sitio por alumno** (`sites/<código>/`),
 donde cada alumno solo personaliza su contenido.
 
 ## Estructura
@@ -13,7 +13,7 @@ donde cada alumno solo personaliza su contenido.
 │   ├── styles.css              # Diseño
 │   ├── app.js                  # Lógica: menú, acordeones, galería, búsqueda
 │   └── img/header-bg.svg       # Imagen de fondo del header (compartida)
-├── students/
+├── sites/
 │   ├── original/               # PLANTILLA: copia esta carpeta para un alumno nuevo
 │   │   ├── index.html          # Cáscara (idéntica para todos; no se edita)
 │   │   ├── data.js             # CONTENIDO — lo único que editas
@@ -40,9 +40,9 @@ Escribe el nombre, elige la imagen de **header** y la de **footer** (y un texto 
 si quieres), y pulsa un botón:
 
 - **Descargar carpeta (.zip)** — funciona en cualquier navegador, incluso sin internet.
-  Descomprime el `.zip` dentro de `students/` (queda `students/s-XXXXXXXX/`), commit y push.
+  Descomprime el `.zip` dentro de `sites/` (queda `sites/s-XXXXXXXX/`), commit y push.
 - **Guardar directo en el repo…** — en Chrome/Edge (servido en `localhost`): elige tu carpeta
-  `students/` y la herramienta escribe ahí la carpeta del alumno directamente.
+  `sites/` y la herramienta escribe ahí la carpeta del alumno directamente.
 
 La herramienta genera el código aleatorio, el `data.js`, el `index.html` y copia tus imágenes.
 Luego solo agregas la fila a `ROSTER.md` (la herramienta te la muestra lista para copiar).
@@ -52,12 +52,12 @@ Luego solo agregas la fila a `ROSTER.md` (la herramienta te la muestra lista par
 
 ## Agregar un alumno a mano
 
-1. **Copia** `students/original/` a `students/s-XXXXXXXX/`, usando un **código no
+1. **Copia** `sites/original/` a `sites/s-XXXXXXXX/`, usando un **código no
    adivinable** (no el nombre real). Genera uno, por ejemplo, así:
    ```bash
    echo "s-$(openssl rand -hex 4)"
    ```
-2. **Edita solo** `students/s-XXXXXXXX/data.js`:
+2. **Edita solo** `sites/s-XXXXXXXX/data.js`:
    - `student`: el nombre (para el saludo interno; **no** aparece en la URL).
    - `headerImage` (opcional): background del header **propio de ese alumno**,
      p. ej. `"img/header.svg"`. Si lo omites, se usa el header compartido.
@@ -69,7 +69,7 @@ Luego solo agregas la fila a `ROSTER.md` (la herramienta te la muestra lista par
    - El campo `body` de un acordeón admite HTML (`<p>`, `<strong>`, etc.).
 3. Pon las imágenes de ese alumno (incluidos su `header.svg`/`footer.svg`) en su carpeta `img/`.
 4. Apunta a `ROSTER.md` qué código corresponde a qué alumno.
-5. Comparte con el alumno **solo su URL**: `https://giannifontanot.github.io/the-berean-way/students/s-XXXXXXXX/`
+5. Comparte con el alumno **solo su URL**: `https://giannifontanot.github.io/the-berean-way/sites/s-XXXXXXXX/`
 
 No edites el `index.html` del alumno ni la carpeta `assets/`.
 
@@ -90,7 +90,7 @@ otro hosting (o GitHub Enterprise).
 
 ```bash
 python3 -m http.server 8000
-# Alumno de ejemplo: http://localhost:8000/students/s-7f3a9c2e/
+# Alumno de ejemplo: http://localhost:8000/sites/s-7f3a9c2e/
 ```
 
 ## Despliegue en GitHub Pages
