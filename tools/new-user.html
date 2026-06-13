@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuevo usuario · The Berean Way</title>
+<style>
+  :root { --accent:#2a6f97; --line:#dcdcdc; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+         max-width:680px; margin:0 auto; padding:28px 18px 80px; color:#222; line-height:1.55; }
+  h1 { font-family:Georgia,serif; font-weight:400; }
+  h2 { font-size:1rem; font-weight:700; margin:32px 0 4px; border-bottom:1px solid var(--line); padding-bottom:6px; color:#444; }
+  p.muted { color:#666; }
+  label { display:block; font-weight:600; margin:16px 0 5px; }
+  input[type=text], textarea {
+    width:100%; font-size:1rem; padding:10px 12px; border:1px solid var(--line); border-radius:9px; }
+  textarea { min-height:64px; resize:vertical; }
+  .row { display:flex; gap:14px; flex-wrap:wrap; }
+  .row > div { flex:1 1 220px; }
+
+  /* --- drop zones para imágenes --- */
+  .drop-zone {
+    border:2px dashed var(--line); border-radius:12px; padding:16px 14px 12px;
+    text-align:center; cursor:pointer; color:#888; font-size:.9rem;
+    background:#fafbfc; transition:border-color .2s, background .2s;
+    position:relative;
+  }
+  .drop-zone:hover, .drop-zone.drag-over { border-color:var(--accent); background:#eef6fb; }
+  .drop-zone input[type=file] {
+    position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+  .drop-zone .dz-thumb {
+    width:100%; height:80px; border-radius:8px; background:#f0f0f0 center/cover no-repeat;
+    margin-bottom:8px; border:1px solid var(--line);
+  }
+  .drop-zone .dz-label { pointer-events:none; }
+  .drop-zone.has-file { border-style:solid; border-color:#aaa; }
+  .drop-zone.has-file .dz-label { color:#444; }
+
+  .btns { margin-top:28px; display:flex; gap:12px; flex-wrap:wrap; }
+  button { font-size:1rem; padding:12px 18px; border-radius:10px; border:none; cursor:pointer; }
+  .primary { background:var(--accent); color:#fff; }
+  .ghost { background:#eef2f6; color:#23415a; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .out { margin-top:24px; padding:16px; border:1px solid var(--line); border-radius:12px;
+         background:#fafbfc; display:none; }
+  .out.show { display:block; }
+  code { background:#eef2f6; padding:2px 6px; border-radius:5px; }
+  .err { color:#b00020; font-weight:600; margin-top:10px; min-height:1.4em; }
+  small.hint { color:#777; font-weight:400; display:block; margin-top:3px; }
+</style>
+</head>
+<body>
+  <h1>Crear alumno nuevo</h1>
+  <p class="muted">Rellena el formulario y descarga la carpeta lista para el repo.
+  Todo ocurre en tu navegador — no se sube nada a internet.</p>
+
+  <!-- ── Datos básicos ── -->
+  <h2>Datos del alumno</h2>
+
+  <label>Nombre *</label>
+  <input type="text" id="name" placeholder="Jennifer" autocomplete="off">
+
+  <label>Título del sitio</label>
+  <input type="text" id="title" placeholder="Los estudios de Jennifer">
+
+  <!-- ── Header ── -->
+  <h2>Header (imagen de fondo superior)</h2>
+  <small class="hint" style="margin-top:-2px">Si la dejas vacía se usa el header compartido de todos los alumnos.</small>
+  <div class="drop-zone" id="dzHeader">
+    <input type="file" id="header" accept="image/*">
+    <div class="dz-thumb" id="thHeader"></div>
+    <span class="dz-label">Arrastra una imagen o haz clic para elegir</span>
+  </div>
+
+  <!-- ── Footer ── -->
+  <h2>Footer (imagen de fondo inferior)</h2>
+  <small class="hint" style="margin-top:-2px">Si la dejas vacía se usa el footer compartido.</small>
+  <div class="drop-zone" id="dzFooter">
+    <input type="file" id="footer" accept="image/*">
+    <div class="dz-thumb" id="thFooter"></div>
+    <span class="dz-label">Arrastra una imagen o haz clic para elegir</span>
+  </div>
+
+  <label style="margin-top:14px">Frase del footer (título)</label>
+  <input type="text" id="footerTitle" placeholder="Sigue adelante, Jennifer">
+
+  <label>Versículo o texto del footer</label>
+  <textarea id="footerText" placeholder="«El que comenzó en ti la buena obra, la perfeccionará.» (Filipenses 1:6)"></textarea>
+
+  <!-- ── Botones ── -->
+  <div class="btns">
+    <button class="primary" id="zipBtn">⬇ Descargar carpeta (.zip)</button>
+    <button class="ghost" id="fsBtn">Guardar directo en el repo…</button>
+  </div>
+  <p id="msg" class="err"></p>
+  <div class="out" id="out"></div>
+
+<script>
+"use strict";
+
+/* ================================================================
+   Util
+   ================================================================ */
+function randomCode() {
+  const a = new Uint8Array(4);
+  (self.crypto || window.crypto).getRandomValues(a);
+  return "s-" + [...a].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+function extOf(file) {
+  const m = (file.name || "").match(/\.([a-z0-9]+)$/i);
+  if (m) return m[1].toLowerCase();
+  const t = (file.type || "").split("/")[1];
+  return t ? t.replace("jpeg", "jpg").replace("svg+xml", "svg") : "png";
+}
+function jsstr(s) { return JSON.stringify(s == null ? "" : String(s)); }
+function esc(s) {
+  return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+/* ================================================================
+   Drop-zones de header / footer
+   ================================================================ */
+function bindDropZone(zoneId, inputId, thumbId) {
+  const zone  = document.getElementById(zoneId);
+  const input = document.getElementById(inputId);
+  const thumb = document.getElementById(thumbId);
+
+  function applyFile(file) {
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    thumb.style.backgroundImage = `url(${url})`;
+    zone.classList.add("has-file");
+    zone.querySelector(".dz-label").textContent = file.name;
+  }
+
+  input.addEventListener("change", () => applyFile(input.files[0]));
+
+  zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag-over"); });
+  zone.addEventListener("dragleave", ()  => zone.classList.remove("drag-over"));
+  zone.addEventListener("drop", e => {
+    e.preventDefault();
+    zone.classList.remove("drag-over");
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      applyFile(file);
+    }
+  });
+}
+
+bindDropZone("dzHeader", "header", "thHeader");
+bindDropZone("dzFooter", "footer", "thFooter");
+
+/* ================================================================
+   Plantillas: index.html y data.js
+   ================================================================ */
+function indexHtml(title) {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>${title.replace(/[<>&]/g, "")}<\/title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+<\/head>
+<body>
+  <script src="data.js"><\/script>
+  <script src="../../assets/app.js"><\/script>
+<\/body>
+<\/html>
+`;
+}
+
+function dataJs(opts) {
+  const lines = [];
+  lines.push("/* Alumno: " + (opts.name || "") + "  (carpeta: " + opts.code + ") */");
+  lines.push("window.STUDENT_SITE = {");
+  lines.push("  title: " + jsstr(opts.title) + ",");
+  lines.push("  student: " + jsstr(opts.name) + ",");
+  if (opts.headerFile)
+    lines.push("  headerImage: " + jsstr("img/header." + extOf(opts.headerFile)) + ",");
+  const hasFooter = opts.footerFile || opts.footerTitle || opts.footerText;
+  if (hasFooter) {
+    lines.push("  footer: {");
+    if (opts.footerFile) lines.push("    image: " + jsstr("img/footer." + extOf(opts.footerFile)) + ",");
+    if (opts.footerTitle) lines.push("    title: " + jsstr(opts.footerTitle) + ",");
+    if (opts.footerText)  lines.push("    text: "  + jsstr(opts.footerText)  + ",");
+    lines.push("  },");
+  }
+  lines.push("  pages: [");
+  lines.push("    {");
+  lines.push("      slug: \"estudio-1\",");
+  lines.push("      title: \"Estudio 1\",");
+  lines.push("      type: \"accordion\",");
+  lines.push("      purpose: \"Edita este archivo para poner el contenido de " + (opts.name || "este alumno") + ".\",");
+  lines.push("      items: [");
+  lines.push("        { heading: \"Primer tema\", body: \"<p>Escribe aquí el contenido.<\/p>\" }");
+  lines.push("      ]");
+  lines.push("    }");
+  lines.push("  ]");
+  lines.push("};");
+  return lines.join("\n") + "\n";
+}
+
+/* ================================================================
+   ZIP (método STORE, sin dependencias)
+   ================================================================ */
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+function crc32(bytes) {
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function buildZip(files) {
+  const enc = new TextEncoder();
+  const parts = [], central = [];
+  let offset = 0, centralSize = 0;
+  for (const f of files) {
+    const nameBytes = enc.encode(f.name);
+    const data = f.data;
+    const crc = crc32(data), size = data.length;
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0, true);
+    lh.setUint16(8, 0, true); lh.setUint16(10, 0, true); lh.setUint16(12, 0, true);
+    lh.setUint32(14, crc, true); lh.setUint32(18, size, true); lh.setUint32(22, size, true);
+    lh.setUint16(26, nameBytes.length, true); lh.setUint16(28, 0, true);
+    parts.push(new Uint8Array(lh.buffer), nameBytes, data);
+    const cd = new DataView(new ArrayBuffer(46));
+    cd.setUint32(0, 0x02014b50, true); cd.setUint16(4, 20, true); cd.setUint16(6, 20, true);
+    cd.setUint16(8, 0, true); cd.setUint16(10, 0, true); cd.setUint16(12, 0, true);
+    cd.setUint16(14, 0, true); cd.setUint32(16, crc, true); cd.setUint32(20, size, true);
+    cd.setUint32(24, size, true); cd.setUint16(28, nameBytes.length, true);
+    cd.setUint16(30, 0, true); cd.setUint16(32, 0, true); cd.setUint16(34, 0, true);
+    cd.setUint16(36, 0, true); cd.setUint32(38, 0, true); cd.setUint32(42, offset, true);
+    central.push(new Uint8Array(cd.buffer), nameBytes);
+    offset += 30 + nameBytes.length + size;
+    centralSize += 46 + nameBytes.length;
+  }
+  const eo = new DataView(new ArrayBuffer(22));
+  eo.setUint32(0, 0x06054b50, true); eo.setUint16(8, files.length, true);
+  eo.setUint16(10, files.length, true); eo.setUint32(12, centralSize, true);
+  eo.setUint32(16, offset, true); eo.setUint16(20, 0, true);
+  const all = [...parts, ...central, new Uint8Array(eo.buffer)];
+  let total = 0; all.forEach(a => total += a.length);
+  const out = new Uint8Array(total); let p = 0;
+  for (const a of all) { out.set(a, p); p += a.length; }
+  return out;
+}
+
+/* ================================================================
+   Recopilar archivos del alumno
+   ================================================================ */
+async function collectFiles(opts) {
+  const enc = new TextEncoder();
+  const files = [
+    { name: "index.html", data: enc.encode(indexHtml(opts.title)) },
+    { name: "data.js",    data: enc.encode(dataJs(opts)) },
+  ];
+  if (opts.headerFile)
+    files.push({ name: "img/header." + extOf(opts.headerFile),
+                 data: new Uint8Array(await opts.headerFile.arrayBuffer()) });
+  if (opts.footerFile)
+    files.push({ name: "img/footer." + extOf(opts.footerFile),
+                 data: new Uint8Array(await opts.footerFile.arrayBuffer()) });
+  return files;
+}
+
+/* ================================================================
+   Lectura del formulario
+   ================================================================ */
+function readForm() {
+  const name = document.getElementById("name").value.trim();
+  if (!name) throw new Error("Escribe el nombre del alumno.");
+  const rawTitle = document.getElementById("title").value.trim();
+  return {
+    name,
+    title: rawTitle || "Los estudios de " + name,
+    headerFile: document.getElementById("header").files[0] || null,
+    footerFile: document.getElementById("footer").files[0] || null,
+    footerTitle: document.getElementById("footerTitle").value.trim(),
+    footerText:  document.getElementById("footerText").value.trim(),
+    code: randomCode(),
+  };
+}
+
+function showResult(opts, mode) {
+  const url = "sites/" + opts.code + "/";
+  const out = document.getElementById("out");
+  out.className = "out show";
+  out.innerHTML =
+    `<p><strong>¡Listo!</strong> Alumno: <strong>${esc(opts.name)}<\/strong><\/p>` +
+    `<p>Código de carpeta: <code>${opts.code}<\/code><\/p>` +
+    (mode === "zip"
+      ? `<p>Se descargó <code>${opts.code}.zip<\/code>. Descomprímelo dentro de <code>sites\/<\/code> de tu repo (queda <code>sites\/${opts.code}\/<\/code>), haz commit y push.<\/p>`
+      : `<p>Se escribió la carpeta directamente en <code>sites\/${opts.code}\/<\/code>. Haz commit y push.<\/p>`) +
+    `<p>URL del alumno: <code>${url}<\/code><\/p>` +
+    `<p>Agrega esta fila a <code>ROSTER.md<\/code>:<\/p>` +
+    `<pre><code>| \`${opts.code}\` | ${esc(opts.name)} | …\/the-berean-way\/${url} |<\/code><\/pre>`;
+}
+
+/* ================================================================
+   Acciones
+   ================================================================ */
+function msg(t) { document.getElementById("msg").textContent = t || ""; }
+
+document.getElementById("zipBtn").addEventListener("click", async () => {
+  msg("");
+  try {
+    const opts = readForm();
+    const files = (await collectFiles(opts)).map(f => ({ name: opts.code + "/" + f.name, data: f.data }));
+    const zip = buildZip(files);
+    const blob = new Blob([zip], { type: "application/zip" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = opts.code + ".zip";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    showResult(opts, "zip");
+  } catch (e) { msg(e.message); }
+});
+
+document.getElementById("fsBtn").addEventListener("click", async () => {
+  msg("");
+  if (!window.showDirectoryPicker) {
+    msg("Tu navegador no permite escribir carpetas (usa Chrome/Edge en localhost), o usa el botón .zip.");
+    return;
+  }
+  try {
+    const opts = readForm();
+    const files = await collectFiles(opts);
+    const sitesDir = await window.showDirectoryPicker();
+    const dir = await sitesDir.getDirectoryHandle(opts.code, { create: true });
+    for (const f of files) {
+      const segs = f.name.split("/");
+      let cur = dir;
+      for (let i = 0; i < segs.length - 1; i++) cur = await cur.getDirectoryHandle(segs[i], { create: true });
+      const fh = await cur.getFileHandle(segs[segs.length - 1], { create: true });
+      const w = await fh.createWritable();
+      await w.write(f.data); await w.close();
+    }
+    showResult(opts, "fs");
+  } catch (e) { if (e.name !== "AbortError") msg(e.message); }
+});
+
+/* expuesto para pruebas */
+window.__tool = { buildZip, crc32, dataJs, indexHtml, randomCode, extOf };
+<\/script>
+<\/body>
+<\/html>
