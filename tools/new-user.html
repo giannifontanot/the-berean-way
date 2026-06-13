@@ -29,10 +29,6 @@
   .drop-zone:hover, .drop-zone.drag-over { border-color:var(--accent); background:#eef6fb; }
   .drop-zone input[type=file] {
     position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
-  .drop-zone .dz-thumb {
-    width:100%; height:80px; border-radius:8px; background:#f0f0f0 center/cover no-repeat;
-    margin-bottom:8px; border:1px solid var(--line);
-  }
   .drop-zone .dz-label { pointer-events:none; }
   .drop-zone.has-file { border-style:solid; border-color:#aaa; }
   .drop-zone.has-file .dz-label { color:#444; }
@@ -51,12 +47,12 @@
 </style>
 </head>
 <body>
-  <h1>Crear alumno nuevo</h1>
+  <h1>Crear usuario nuevo</h1>
   <p class="muted">Rellena el formulario y descarga la carpeta lista para el repo.
   Todo ocurre en tu navegador — no se sube nada a internet.</p>
 
   <!-- ── Datos básicos ── -->
-  <h2>Datos del alumno</h2>
+  <h2>Datos del usuario</h2>
 
   <label>Nombre *</label>
   <input type="text" id="name" placeholder="Jennifer" autocomplete="off">
@@ -66,10 +62,10 @@
 
   <!-- ── Header ── -->
   <h2>Header (imagen de fondo superior)</h2>
-  <small class="hint" style="margin-top:-2px">Si la dejas vacía se usa el header compartido de todos los alumnos.</small>
+  <small class="hint" style="margin-top:-2px">Si la dejas vacía se usa el header compartido de todos los usuarios.</small>
   <div class="drop-zone" id="dzHeader">
     <input type="file" id="header" accept="image/*">
-    <div class="dz-thumb" id="thHeader"></div>
+    <img id="thHeader" alt="" style="display:none;width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px;border:1px solid var(--line);">
     <span class="dz-label">Arrastra una imagen o haz clic para elegir</span>
   </div>
 
@@ -78,7 +74,7 @@
   <small class="hint" style="margin-top:-2px">Si la dejas vacía se usa el footer compartido.</small>
   <div class="drop-zone" id="dzFooter">
     <input type="file" id="footer" accept="image/*">
-    <div class="dz-thumb" id="thFooter"></div>
+    <img id="thFooter" alt="" style="display:none;width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:8px;border:1px solid var(--line);">
     <span class="dz-label">Arrastra una imagen o haz clic para elegir</span>
   </div>
 
@@ -129,8 +125,8 @@ function bindDropZone(zoneId, inputId, thumbId) {
 
   function applyFile(file) {
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    thumb.style.backgroundImage = `url(${url})`;
+    thumb.src = URL.createObjectURL(file);
+    thumb.style.display = "block";
     zone.classList.add("has-file");
     zone.querySelector(".dz-label").textContent = file.name;
   }
@@ -177,7 +173,7 @@ function indexHtml(title) {
 
 function dataJs(opts) {
   const lines = [];
-  lines.push("/* Alumno: " + (opts.name || "") + "  (carpeta: " + opts.code + ") */");
+  lines.push("/* Usuario: " + (opts.name || "") + "  (carpeta: " + opts.code + ") */");
   lines.push("window.STUDENT_SITE = {");
   lines.push("  title: " + jsstr(opts.title) + ",");
   lines.push("  student: " + jsstr(opts.name) + ",");
@@ -196,7 +192,7 @@ function dataJs(opts) {
   lines.push("      slug: \"estudio-1\",");
   lines.push("      title: \"Estudio 1\",");
   lines.push("      type: \"accordion\",");
-  lines.push("      purpose: \"Edita este archivo para poner el contenido de " + (opts.name || "este alumno") + ".\",");
+  lines.push("      purpose: \"Edita este archivo para poner el contenido de " + (opts.name || "este usuario") + ".\",");
   lines.push("      items: [");
   lines.push("        { heading: \"Primer tema\", body: \"<p>Escribe aquí el contenido.<\/p>\" }");
   lines.push("      ]");
@@ -260,7 +256,7 @@ function buildZip(files) {
 }
 
 /* ================================================================
-   Recopilar archivos del alumno
+   Recopilar archivos del usuario
    ================================================================ */
 async function collectFiles(opts) {
   const enc = new TextEncoder();
@@ -282,7 +278,7 @@ async function collectFiles(opts) {
    ================================================================ */
 function readForm() {
   const name = document.getElementById("name").value.trim();
-  if (!name) throw new Error("Escribe el nombre del alumno.");
+  if (!name) throw new Error("Escribe el nombre del usuario.");
   const rawTitle = document.getElementById("title").value.trim();
   return {
     name,
@@ -300,12 +296,12 @@ function showResult(opts, mode) {
   const out = document.getElementById("out");
   out.className = "out show";
   out.innerHTML =
-    `<p><strong>¡Listo!</strong> Alumno: <strong>${esc(opts.name)}<\/strong><\/p>` +
+    `<p><strong>¡Listo!</strong> Usuario: <strong>${esc(opts.name)}<\/strong><\/p>` +
     `<p>Código de carpeta: <code>${opts.code}<\/code><\/p>` +
     (mode === "zip"
       ? `<p>Se descargó <code>${opts.code}.zip<\/code>. Descomprímelo dentro de <code>sites\/<\/code> de tu repo (queda <code>sites\/${opts.code}\/<\/code>), haz commit y push.<\/p>`
       : `<p>Se escribió la carpeta directamente en <code>sites\/${opts.code}\/<\/code>. Haz commit y push.<\/p>`) +
-    `<p>URL del alumno: <code>${url}<\/code><\/p>` +
+    `<p>URL del usuario: <code>${url}<\/code><\/p>` +
     `<p>Agrega esta fila a <code>ROSTER.md<\/code>:<\/p>` +
     `<pre><code>| \`${opts.code}\` | ${esc(opts.name)} | …\/the-berean-way\/${url} |<\/code><\/pre>`;
 }
