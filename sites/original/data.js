@@ -12,78 +12,150 @@
      type: "accordion"  → usa "purpose" + "items" (heading/body)
      type: "gallery"    → usa "lead" + "images" (src/caption)
    El campo "body" admite HTML (puedes usar <p>, <strong>, etc.).
+
+   CONTROL DE PUBLICACIÓN:
+     published: true   → la lección aparece en el menú.
+     published: false  → la lección queda oculta (no aparece ni se puede abrir).
+     (si omites "published", la lección se muestra por defecto)
+   Así puedes tener todas las lecciones listas y publicarlas poco a poco:
+   solo cambia false → true cuando quieras revelar la siguiente.
    ============================================================ */
 
 window.STUDENT_SITE = {
-  title: "Los estudios de Samuel",
+  title: "Los estudios bíblicos",
   student: "",   // nombre para el saludo interno (no aparece en la URL). Ej: "Samuel"
 
   // Encabezado propio de este alumno (background del header). Opcional.
   // Si lo omites, se usa el header compartido (assets/img/header-bg.svg).
-  // Pon la imagen en la carpeta img/ del alumno y referénciala así:
   // headerImage: "img/header.svg",
 
-  // Pie de página con background (igual que el header). Opcional.
+  // Pie de página con background. Opcional.
   // Si omites "image", se usa el footer compartido (assets/img/footer-bg.svg).
   footer: {
     // image: "img/footer.svg",
-    title: "El que permanece en él, anda como él anduvo.",
-    text: "Los estudios de Samuel · 1 Juan 2:6"
+    title: "Como los de Berea, escudriñaban cada día las Escrituras.",
+    text: "Hechos 17:11"
   },
 
   pages: [
     {
-      slug: "restaurando",
-      title: "Restaurando el carácter de Jesús",
+      slug: "leccion-1",
+      title: "Lección 1: ¿Quién es Jesús?",
+      published: true,
       type: "accordion",
-      purpose: "Ayudar a formar el carácter de la persona tomando como base el ejemplo de Cristo.",
+      purpose: "Conocer a Jesús tal como lo presenta la Escritura, antes de seguirlo.",
       items: [
-        {
-          heading: "1 Juan 2:6",
-          body: "<p>«El que dice que permanece en él, debe andar como él anduvo.»</p>" +
-                "<p>Seguir el ejemplo de Cristo es la medida del carácter cristiano.</p>"
-        },
-        {
-          heading: "Lucas 4:1-13",
-          body: "<p>Jesús vence la tentación en el desierto respondiendo con la Escritura.</p>"
-        },
-        {
-          heading: "Lucas 4:33-37",
-          body: "<p>La autoridad de su palabra: libera al hombre del espíritu inmundo.</p>"
-        },
-        {
-          heading: "Lucas 4:42-44",
-          body: "<p>Su propósito: anunciar el reino de Dios en otras ciudades también.</p>"
-        },
-        {
-          heading: "Lucas 7:46-48",
-          body: "<p>El perdón y el amor: «sus muchos pecados le son perdonados, porque amó mucho.»</p>"
-        }
+        { heading: "Juan 1:1-14", body: "<p>El Verbo era Dios y se hizo carne. Escribe aquí tus notas.</p>" },
+        { heading: "Colosenses 1:15-20", body: "<p>Imagen del Dios invisible; en él todo subsiste.</p>" },
+        { heading: "Para reflexionar", body: "<p>¿Qué cambia en mi vida si Jesús es realmente quien dice ser?</p>" }
       ]
     },
 
     {
-      slug: "tentaciones",
-      title: "Las tentaciones en el desierto",
+      slug: "leccion-2",
+      title: "Lección 2: La Palabra de Dios",
+      published: false,
       type: "accordion",
-      purpose: "Aprender de cómo Jesús respondió a la tentación para enfrentar las nuestras.",
+      purpose: "Entender por qué la Biblia es la base firme para conocer a Dios.",
       items: [
-        { heading: "Primera tentación — el pan", body: "<p>«No solo de pan vivirá el hombre.» (Lucas 4:4)</p>" },
-        { heading: "Segunda tentación — los reinos", body: "<p>«Al Señor tu Dios adorarás, y a él solo servirás.» (Lucas 4:8)</p>" },
-        { heading: "Tercera tentación — el templo", body: "<p>«No tentarás al Señor tu Dios.» (Lucas 4:12)</p>" }
+        { heading: "2 Timoteo 3:16-17", body: "<p>Toda la Escritura es inspirada por Dios. Notas aquí.</p>" },
+        { heading: "Hechos 17:11", body: "<p>Los de Berea examinaban cada día las Escrituras.</p>" }
       ]
     },
 
     {
-      slug: "galeria",
-      title: "Galería",
-      type: "gallery",
-      lead: "Toca una imagen para verla en grande.",
-      images: [
-        { src: "img/foto-1.svg", caption: "Descripción 1" },
-        { src: "img/foto-2.svg", caption: "Descripción 2" },
-        { src: "img/foto-3.svg", caption: "Descripción 3" },
-        { src: "img/foto-4.svg", caption: "Descripción 4" }
+      slug: "leccion-3",
+      title: "Lección 3: El arrepentimiento",
+      published: false,
+      type: "accordion",
+      purpose: "Comprender qué es volverse a Dios de todo corazón.",
+      items: [
+        { heading: "Hechos 3:19", body: "<p>«Arrepentíos y convertíos, para que sean borrados vuestros pecados.»</p>" },
+        { heading: "Lucas 15:11-24", body: "<p>El hijo pródigo: el regreso al Padre.</p>" }
+      ]
+    },
+
+    {
+      slug: "leccion-4",
+      title: "Lección 4: La fe y la salvación",
+      published: false,
+      type: "accordion",
+      purpose: "Ver que la salvación es un regalo de Dios recibido por fe.",
+      items: [
+        { heading: "Efesios 2:8-9", body: "<p>Por gracia sois salvos por medio de la fe.</p>" },
+        { heading: "Romanos 10:9-10", body: "<p>Confesar y creer para ser salvo.</p>" }
+      ]
+    },
+
+    {
+      slug: "leccion-5",
+      title: "Lección 5: El bautismo",
+      published: false,
+      type: "accordion",
+      purpose: "Conocer el significado del bautismo como paso de obediencia.",
+      items: [
+        { heading: "Romanos 6:3-4", body: "<p>Sepultados con él en el bautismo para andar en vida nueva.</p>" },
+        { heading: "Mateo 28:19-20", body: "<p>El mandato de hacer discípulos y bautizarlos.</p>" }
+      ]
+    },
+
+    {
+      slug: "leccion-6",
+      title: "Lección 6: La oración",
+      published: false,
+      type: "accordion",
+      purpose: "Aprender a hablar con Dios como con un Padre.",
+      items: [
+        { heading: "Mateo 6:9-13", body: "<p>El modelo de oración que Jesús enseñó.</p>" },
+        { heading: "Filipenses 4:6-7", body: "<p>Por nada estéis afanosos; presentad vuestras peticiones.</p>" }
+      ]
+    },
+
+    {
+      slug: "leccion-7",
+      title: "Lección 7: El Espíritu Santo",
+      published: false,
+      type: "accordion",
+      purpose: "Reconocer la obra del Espíritu en la vida del creyente.",
+      items: [
+        { heading: "Juan 14:16-17", body: "<p>El Consolador que estará con nosotros para siempre.</p>" },
+        { heading: "Gálatas 5:22-23", body: "<p>El fruto del Espíritu.</p>" }
+      ]
+    },
+
+    {
+      slug: "leccion-8",
+      title: "Lección 8: La iglesia y la comunión",
+      published: false,
+      type: "accordion",
+      purpose: "Entender el valor de caminar junto a otros creyentes.",
+      items: [
+        { heading: "Hechos 2:42-47", body: "<p>Perseveraban en la doctrina, la comunión y la oración.</p>" },
+        { heading: "Hebreos 10:24-25", body: "<p>No dejar de congregarnos.</p>" }
+      ]
+    },
+
+    {
+      slug: "leccion-9",
+      title: "Lección 9: El carácter cristiano",
+      published: false,
+      type: "accordion",
+      purpose: "Crecer en el carácter de Cristo en lo cotidiano.",
+      items: [
+        { heading: "1 Juan 2:6", body: "<p>El que permanece en él, debe andar como él anduvo.</p>" },
+        { heading: "Mateo 5:1-12", body: "<p>Las bienaventuranzas: el corazón del reino.</p>" }
+      ]
+    },
+
+    {
+      slug: "leccion-10",
+      title: "Lección 10: La esperanza — el regreso de Cristo",
+      published: false,
+      type: "accordion",
+      purpose: "Vivir con la esperanza del regreso de Jesús.",
+      items: [
+        { heading: "Juan 14:1-3", body: "<p>«Vendré otra vez y os tomaré a mí mismo.»</p>" },
+        { heading: "1 Tesalonicenses 4:16-17", body: "<p>El Señor descenderá del cielo.</p>" }
       ]
     }
   ]
