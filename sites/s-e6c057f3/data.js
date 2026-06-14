@@ -27,7 +27,7 @@ window.STUDENT_SITE = {
     {
       slug: "leccion-2",
       title: "Lección 2: La Palabra de Dios",
-      published: false,
+      published: true,
       type: "accordion",
       purpose: "Entender por qué la Biblia es la base firme para conocer a Dios.",
       items: [
@@ -39,7 +39,7 @@ window.STUDENT_SITE = {
     {
       slug: "leccion-3",
       title: "Lección 3: El arrepentimiento",
-      published: false,
+      published: true,
       type: "accordion",
       purpose: "Comprender qué es volverse a Dios de todo corazón.",
       items: [
@@ -51,7 +51,7 @@ window.STUDENT_SITE = {
     {
       slug: "leccion-4",
       title: "Lección 4: La fe y la salvación",
-      published: false,
+      published: true,
       type: "accordion",
       purpose: "Ver que la salvación es un regalo de Dios recibido por fe.",
       items: [
@@ -63,7 +63,7 @@ window.STUDENT_SITE = {
     {
       slug: "leccion-5",
       title: "Lección 5: El bautismo",
-      published: false,
+      published: true,
       type: "accordion",
       purpose: "Conocer el significado del bautismo como paso de obediencia.",
       items: [
@@ -75,7 +75,7 @@ window.STUDENT_SITE = {
     {
       slug: "leccion-6",
       title: "Lección 6: La oración",
-      published: false,
+      published: true,
       type: "accordion",
       purpose: "Aprender a hablar con Dios como con un Padre.",
       items: [
@@ -87,7 +87,7 @@ window.STUDENT_SITE = {
     {
       slug: "leccion-7",
       title: "Lección 7: El Espíritu Santo",
-      published: false,
+      published: true,
       type: "accordion",
       purpose: "Reconocer la obra del Espíritu en la vida del creyente.",
       items: [
@@ -99,7 +99,7 @@ window.STUDENT_SITE = {
     {
       slug: "leccion-8",
       title: "Lección 8: La iglesia y la comunión",
-      published: false,
+      published: true,
       type: "accordion",
       purpose: "Entender el valor de caminar junto a otros creyentes.",
       items: [
@@ -111,7 +111,7 @@ window.STUDENT_SITE = {
     {
       slug: "leccion-9",
       title: "Lección 9: El carácter cristiano",
-      published: false,
+      published: true,
       type: "accordion",
       purpose: "Crecer en el carácter de Cristo en lo cotidiano.",
       items: [
@@ -123,7 +123,7 @@ window.STUDENT_SITE = {
     {
       slug: "leccion-10",
       title: "Lección 10: La esperanza — el regreso de Cristo",
-      published: false,
+      published: true,
       type: "accordion",
       purpose: "Vivir con la esperanza del regreso de Jesús.",
       items: [
