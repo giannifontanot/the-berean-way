@@ -13,7 +13,8 @@
   "use strict";
 
   const SITE = window.STUDENT_SITE || { title: "Estudios", student: "", pages: [] };
-  const PAGES = Array.isArray(SITE.pages) ? SITE.pages : [];
+  // Pages without a `published` field default to visible; set published:false to hide.
+  const PAGES = (Array.isArray(SITE.pages) ? SITE.pages : []).filter(p => p.published !== false);
 
   document.addEventListener("DOMContentLoaded", () => {
     renderChrome();
