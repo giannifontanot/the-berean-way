@@ -97,7 +97,10 @@
     // Imagen del header: la de la página manda; si no, la del alumno (SITE);
     // si ninguna, queda el default compartido definido en el CSS.
     const headerImg = page.headerImage || SITE.headerImage;
-    const headerStyle = headerImg ? ` style="--header-image:url('${esc(headerImg)}')"` : "";
+    // Ruta absoluta: una url() dentro de una variable CSS se resuelve relativa a
+    // assets/styles.css, no a la carpeta del usuario; resolverla aquí lo evita.
+    const headerUrl = headerImg ? new URL(headerImg, location.href).href : "";
+    const headerStyle = headerUrl ? ` style="--header-image:url('${esc(headerUrl)}')"` : "";
 
     let body = "";
     if (page.type === "gallery") {
@@ -163,7 +166,8 @@
   function renderFooter(footer) {
     // footer.image se resuelve relativo a la carpeta del alumno; si falta,
     // el CSS usa el footer-bg.svg compartido.
-    const style = footer.image ? ` style="--footer-image:url('${esc(footer.image)}')"` : "";
+    const footerUrl = footer.image ? new URL(footer.image, location.href).href : "";
+    const style = footerUrl ? ` style="--footer-image:url('${esc(footerUrl)}')"` : "";
     const title = footer.title ? `<h2 class="site-footer__title">${esc(footer.title)}</h2>` : "";
     const text = footer.text ? `<p class="site-footer__text">${esc(footer.text)}</p>` : "";
     return `<footer class="site-footer"${style}>${title}${text}</footer>`;
