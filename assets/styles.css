@@ -69,7 +69,6 @@ body {
 .hero {
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.38);
   min-height: var(--header-height);
   margin-top: calc(-1 * var(--topbar-height));
   padding: calc(var(--topbar-height) + 36px) 20px calc(var(--topbar-height) + 36px);
@@ -149,14 +148,14 @@ body {
   transition: transform 0.25s ease; color: var(--color-muted);
 }
 .accordion__item.open .accordion__chevron { transform: rotate(180deg); }
-.accordion__panel { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
-/* Content fades in after panel finishes opening; fades out immediately on close. */
+.accordion__panel { overflow: hidden; max-height: 0; transition: max-height 0.25s ease; }
+/* Content fades in quickly after panel opens; fades out immediately on close. */
 .accordion__panel-inner {
   padding: 2px 4px 20px; color: var(--color-text);
-  opacity: 0; transition: opacity 0.2s ease;
+  opacity: 0; transition: opacity 0.1s ease;
 }
 .accordion__item.open .accordion__panel-inner {
-  opacity: 1; transition: opacity 0.3s ease 0.25s;
+  opacity: 1; transition: opacity 0.15s ease 0.15s;
 }
 .accordion__panel-inner p:last-child { margin-bottom: 0; }
 .accordion__panel-inner ul, .accordion__panel-inner ol { margin: 0 0 14px; padding-left: 24px; }
