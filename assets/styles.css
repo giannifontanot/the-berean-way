@@ -3,6 +3,10 @@
    Mobile-first. El contenido lo renderiza app.js desde data.js.
    ============================================================ */
 
+/* Lato (300 light / 400) para los títulos del header. La carga el navegador
+   del visitante desde Google Fonts; si falla, cae a una sans-serif del sistema. */
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400&display=swap");
+
 :root {
   --color-text: #232323;
   --color-muted: #5b5b5b;
@@ -16,6 +20,7 @@
   --topbar-height: 52px;
   --font-serif: Georgia, "Times New Roman", serif;
   --font-sans: Arial, Helvetica, sans-serif;
+  --font-display: "Lato", "Helvetica Neue", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -82,14 +87,15 @@ body {
   background-position: center center;
 }
 .hero__title {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   color: #fff;
-  font-weight: 400;
-  font-size: clamp(1.9rem, 7vw, 3rem);
-  line-height: 1.15;
+  font-weight: 300;            /* Lato Light */
+  font-size: clamp(2.1rem, 9vw, 4rem);   /* hasta ~64px en pantallas grandes */
+  letter-spacing: 0.01em;
+  line-height: 1.12;
   margin: 0;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
-  max-width: 14ch;
+  max-width: 16ch;
 }
 .hero__subtitle {
   color: rgba(255, 255, 255, 0.92);
