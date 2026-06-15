@@ -60,15 +60,15 @@ vista previa, y genera el <code>data.js</code> listo para una carpeta de usuario
 <details class="help">
   <summary>📖 Guía rápida del formato</summary>
   <table>
-    <tr><td># Título</td><td>Empieza una lección nueva (es el título que va en el menú).</td></tr>
+    <tr><td># Título</td><td>Empieza una lección nueva (es el título que va en el menú). Un solo <code>#</code>.</td></tr>
     <tr><td>texto suelto</td><td>Lo que escribas debajo del título (antes del primer <code>=</code>) es la introducción, fuera del acordeón.</td></tr>
-    <tr><td>= Encabezado</td><td><strong>Abre</strong> un acordeón. El texto en esa línea es el botón que se hace clic.</td></tr>
+    <tr><td>=</td><td><strong>Abre</strong> un acordeón. El encabezado puede ir en la misma línea (<code>= Juan 1:1</code>) o en la línea siguiente (p.ej. <code>### Juan 1:1</code>).</td></tr>
     <tr><td>==</td><td><strong>Cierra</strong> el acordeón.</td></tr>
     <tr><td>- punto</td><td>Lista de viñetas.</td></tr>
     <tr><td>**negrita**</td><td>Texto en <strong>negrita</strong>.</td></tr>
     <tr><td>*cursiva*</td><td>Texto en <em>cursiva</em>.</td></tr>
     <tr><td>{rojo: texto}</td><td>Color. Nombres: rojo, azul, verde, dorado, gris, naranja, morado. O hex: <code>{#ff8800: texto}</code>.</td></tr>
-    <tr><td>{biblia: 1 En el principio...}</td><td>Escritura en rojo 18px; los números de versículo salen pequeños (10px).</td></tr>
+    <tr><td>{biblia: 1 En el principio...}</td><td>Escritura en rojo 18px; los números de versículo salen pequeños (10px). Puede abarcar varias líneas.</td></tr>
   </table>
 </details>
 
@@ -91,21 +91,24 @@ vista previa, y genera el <code>data.js</code> listo para una carpeta de usuario
     <input type="text" id="footerText" value="Hechos 17:11">
 
     <h2>2 · Lecciones (pega aquí)</h2>
-    <textarea id="src" spellcheck="false"># ¿Quién es Jesús?
+    <textarea id="src" spellcheck="false"># Buscando a Dios
 
-Conocer a Jesús tal como lo presenta la Escritura, antes de seguirlo.
+=
+### Jeremías 29:11-13
+{biblia: 11 Porque yo conozco los planes que tengo para ustedes —afirma el Señor—, planes de bienestar y no de calamidad, a fin de darles un futuro y una esperanza. 12 Entonces ustedes me invocarán, vendrán a suplicarme y yo los escucharé. 13 Me buscarán y me encontrarán cuando me busquen de todo corazón.}
 
-= Juan 1:1-14
-{biblia: 1 En el principio era el Verbo, y el Verbo era con Dios, y el Verbo era Dios. 2 Este era en el principio con Dios.}
+A. Contexto: Dios envió un mensaje al pueblo de Israel durante su destierro en Babilonia.
 
-Puntos clave:
-- Estaba en el principio con Dios
-- Todo fue hecho por medio de él
-- En él estaba la **vida**
+B. Así como con Israel, Dios desea tener una relación cercana con cada uno de nosotros.
 ==
 
-= Para reflexionar
-¿Qué cambia en mi vida si {rojo: Jesús} es realmente quien dice ser?
+=
+### ¿Cómo tener una relación personal con Dios?
+Es una amistad en dos sentidos:
+
+1. Escuchamos a Dios hablar: Estudiando la Biblia.
+
+2. Nosotros hablamos con Dios: Orando.
 ==
 </textarea>
 
@@ -171,8 +174,29 @@ function inline(text) {
   return t;
 }
 
+/* une líneas de un bloque {marca: ...} que abarca varias líneas
+   (p.ej. un {biblia: ...} con una línea en blanco en medio) en una sola. */
+function mergeBraces(lines) {
+  const out = [];
+  let buf = null;
+  for (const line of lines) {
+    if (buf !== null) {
+      buf += " " + line.trim();
+      if (buf.indexOf("}") > -1) { out.push(buf); buf = null; }
+      continue;
+    }
+    const op = (line.match(/\{/g) || []).length;
+    const cl = (line.match(/\}/g) || []).length;
+    if (op > cl) buf = line;
+    else out.push(line);
+  }
+  if (buf !== null) out.push(buf);
+  return out;
+}
+
 /* convierte un bloque de líneas en párrafos / listas */
 function blockToHtml(lines) {
+  lines = mergeBraces(lines);
   const out = [];
   let para = [], list = null;
   const flushPara = () => { if (para.length) { out.push("<p>" + inline(para.join(" ")) + "</p>"); para = []; } };
@@ -197,21 +221,38 @@ function parseLessons(text) {
   let cur = null, acc = null, introLines = [];
 
   const closeAcc = () => {
-    if (acc) { cur.items.push({ heading: acc.heading, body: blockToHtml(acc.body) }); acc = null; }
+    if (acc) { cur.items.push({ heading: acc.heading || "(sin título)", body: blockToHtml(acc.body) }); acc = null; }
   };
   const closePage = () => {
     if (cur) { closeAcc(); cur.purposeHtml = blockToHtml(introLines); pages.push(cur); }
   };
 
   for (const line of lines) {
-    const mh = line.match(/^#\s+(.+)/);
+    // Título de lección: un solo '#' (no '##', '###', ...)
+    const mh = line.match(/^#(?!#)\s*(.+)/);
     if (mh) { closePage(); cur = { title: mh[1].trim(), items: [] }; introLines = []; acc = null; continue; }
     if (!cur) continue;
-    const ma = line.match(/^=\s*(?!=)(.+)/);   // "= Encabezado" (no "==")
-    if (ma) { closeAcc(); acc = { heading: ma[1].trim(), body: [] }; continue; }
+
+    // Cierre de acordeón
     if (/^==\s*$/.test(line)) { closeAcc(); continue; }
-    if (acc) acc.body.push(line);
-    else introLines.push(line);
+
+    // Apertura de acordeón: '=' (encabezado opcional en la misma línea)
+    const mo = line.match(/^=(?!=)\s*(.*)$/);
+    if (mo) { closeAcc(); acc = { heading: mo[1].trim(), body: [] }; continue; }
+
+    if (acc) {
+      // Si el acordeón aún no tiene encabezado, la primera línea no vacía
+      // (sea '### Algo' o texto normal) se convierte en el encabezado.
+      if (!acc.heading) {
+        if (line.trim() === "") continue;
+        const hm = line.match(/^#{1,6}\s*(.+)/);
+        acc.heading = (hm ? hm[1] : line).trim();
+        continue;
+      }
+      acc.body.push(line);
+    } else {
+      introLines.push(line);
+    }
   }
   closePage();
 
@@ -288,7 +329,8 @@ function build() {
     footerText: document.getElementById("footerText").value.trim()
   };
   document.getElementById("out").value = genDataJs(pages, opts);
-  document.getElementById("msg").textContent = pages.length + " lección(es) generada(s).";
+  document.getElementById("msg").textContent = pages.length + " lección(es) generada(s) · " +
+    pages.reduce((n, p) => n + p.items.length, 0) + " acordeón(es).";
 }
 
 document.getElementById("genBtn").addEventListener("click", build);
