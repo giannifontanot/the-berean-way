@@ -17,8 +17,8 @@
   --header-image: url("img/header-bg.svg"); /* resuelto relativo a assets/ */
   /* Proporción constante del alto de la pantalla (sin topes en px), así se ve
      igual en cualquier dispositivo. svh = viewport estable en móvil. */
-  --header-height: 60vh;   /* respaldo para navegadores sin svh */
-  --header-height: 60svh;
+  --header-height: 48vh;   /* respaldo para navegadores sin svh */
+  --header-height: 48svh;  /* portrait móvil */
   --max-width: 820px;
   --topbar-height: 52px;
   --font-serif: Georgia, "Times New Roman", serif;
@@ -247,7 +247,10 @@ body {
 .nav-drawer__list a:hover { background: #f3f5f8; }
 .nav-drawer__list a.active { color: var(--color-accent); border-left-color: var(--color-accent); font-weight: 600; }
 
-@media (min-width: 720px) { :root { --header-height: 64vh; --header-height: 64svh; } }
+/* Landscape en móvil: el svh ya es pequeño, bajamos el % para no cubrir demasiado. */
+@media (orientation: landscape) and (max-width: 900px) { :root { --header-height: 55vh; --header-height: 55svh; } }
+/* Desktop portrait / landscape ancho. */
+@media (min-width: 720px) { :root { --header-height: 42vh; --header-height: 42svh; } }
 
 /* Respeta a quien prefiere menos movimiento: sin parallax. */
 @media (prefers-reduced-motion: reduce) {
