@@ -19,7 +19,6 @@
               display:flex; align-items:center; justify-content:center; font-size:.9rem; }
   .step-body { padding-top:4px; }
   .step-body strong { display:block; margin-bottom:2px; }
-  /* bookmarklet button */
   .bm-wrap { margin:24px 0; padding:20px; background:#f0f6fb;
              border-radius:14px; border:2px dashed var(--accent); text-align:center; }
   .bm-wrap p { margin:0 0 12px; color:#444; font-size:.95rem; }
@@ -27,14 +26,8 @@
     display:inline-block; padding:14px 22px; background:var(--accent); color:#fff;
     border-radius:10px; font-size:1rem; font-weight:600; text-decoration:none;
     cursor:grab; border:none; box-shadow:0 2px 8px rgba(42,111,151,.35);
-    transition:background .15s;
   }
-  .bm-btn:hover { background:#1d5275; }
-  .bm-btn:active { cursor:grabbing; }
   .hint { color:#666; font-size:.85rem; margin-top:10px; }
-  .note { background:#fff8e6; border-left:3px solid #e0a800; border-radius:8px;
-          padding:10px 14px; font-size:.9rem; color:#5a4a00; margin:14px 0; }
-  /* result box */
   textarea {
     width:100%; min-height:320px; font-family:monospace; font-size:.82rem;
     padding:12px; border:1px solid var(--line); border-radius:10px;
@@ -53,15 +46,7 @@
 <body>
 
 <h1>Extractor de Google Sites</h1>
-<p class="muted">Copia el contenido de un Google Site a tu portapapeles en formato de texto estructurado,
-listo para convertirlo en lecciones de The Berean Way.</p>
-
-<div class="note">
-  <strong>✅ Sí extrae el texto dentro de acordeones.</strong>
-  Antes de copiar, el script abre automáticamente todas las secciones plegables
-  y además lee el texto oculto como respaldo, así que no se pierde nada aunque
-  esté colapsado.
-</div>
+<p class="muted">Extrae el contenido de un Google Site y lo muestra en un cuadro para que puedas copiarlo y pegarlo en el chat con Claude.</p>
 
 <h2>Cómo usarlo</h2>
 
@@ -69,33 +54,32 @@ listo para convertirlo en lecciones de The Berean Way.</p>
   <div class="step-num">1</div>
   <div class="step-body">
     <strong>Arrastra el botón a tu barra de marcadores</strong>
-    Mantén presionado el botón de abajo y arrástralo hasta la barra de favoritos
-    de tu navegador (Chrome, Edge o Firefox). Solo necesitas instalarlo una vez.
+    Arrastra el botón azul de abajo hasta la barra de favoritos. Si no la ves:
+    <kbd>Ctrl+Shift+B</kbd> (Windows) · <kbd>Cmd+Shift+B</kbd> (Mac).
   </div>
 </div>
 
 <div class="bm-wrap">
   <p>Arrastra este botón a tu barra de favoritos:</p>
-  <a class="bm-btn" id="bmLink" href="#">&#128203; Extraer contenido</a>
-  <p class="hint">Si no ves la barra de favoritos: <kbd>Ctrl+Shift+B</kbd> (Windows) · <kbd>Cmd+Shift+B</kbd> (Mac)</p>
+  <a class="bm-btn" id="bmLink" href="#">&#128203; Extraer página</a>
+  <p class="hint">Vuelve a arrastrarlo si ya tenías instalada una versión anterior.</p>
 </div>
 
 <div class="step">
   <div class="step-num">2</div>
   <div class="step-body">
-    <strong>Abre el Google Site en otra pestaña</strong>
-    Ve a <code>sites.google.com/view/los-estudios-de-jennifer/</code>
-    y navega a la página (lección) que quieres copiar.
+    <strong>Ve al Google Site y abre los acordeones manualmente</strong>
+    Navega a la lección que quieres copiar. <strong>Haz clic en cada sección del acordeón</strong>
+    para que estén abiertas y visibles antes de usar el marcador.
   </div>
 </div>
 
 <div class="step">
   <div class="step-num">3</div>
   <div class="step-body">
-    <strong>Haz clic en el marcador “Extraer contenido”</strong>
-    El script abre todos los acordeones, espera un momento, extrae el texto
-    (incluido el que estaba colapsado) y lo copia al portapapeles. Te muestra
-    una vista previa para confirmar.
+    <strong>Haz clic en el marcador “Extraer página”</strong>
+    Aparecerá un cuadro negro flotante sobre la página con todo el texto.
+    Haz clic en <strong>Seleccionar todo y copiar</strong>, luego cierra el cuadro.
   </div>
 </div>
 
@@ -103,123 +87,148 @@ listo para convertirlo en lecciones de The Berean Way.</p>
   <div class="step-num">4</div>
   <div class="step-body">
     <strong>Pega el resultado aquí abajo</strong>
-    Vuelve a esta página y pega el texto. Luego cópialo al chat con Claude
-    para que lo convierta en lecciones del formato <code>data.js</code>.
+    Vuelve a esta página y pega el texto en el cuadro de abajo. Cuando tengas
+    todas las lecciones, cópialas al chat con Claude.
   </div>
 </div>
 
-<h2>Pegar el contenido extraído</h2>
-<p>Después de usar el marcador en cada lección, pega el resultado aquí.
-Puedes pegar varias lecciones seguidas.</p>
-
+<h2>Texto extraído (pega aquí)</h2>
 <textarea id="rawText" placeholder="Pega aquí el texto extraído del Google Site..."></textarea>
 
 <div class="btns">
-  <button class="primary" id="copyBtn">&#128203; Copiar todo al portapapeles</button>
+  <button class="primary" id="copyBtn">&#128203; Copiar al portapapeles</button>
   <button class="ghost"   id="clearBtn">Limpiar</button>
 </div>
 <p class="ok" id="okMsg"></p>
 
 <script>
 /* ============================================================
-   Bookmarklet code (runs inside the Google Sites tab)
-   ------------------------------------------------------------
-   1. Abre todos los acordeones / secciones plegables.
-   2. Espera a que rendericen.
-   3. Extrae headings + texto (incluido el que estaba oculto).
+   Bookmarklet: abre un panel flotante con el texto de la página.
+   No depende del portapapeles automático.
    ============================================================ */
-const BOOKMARKLET_CODE = (function() {
-
-  // --- 1. Expandir todo lo plegable ---
-  function expandAll() {
-    let clicked = 0;
-    // Botones/encabezados con estado aria-expanded=false
-    document.querySelectorAll('[aria-expanded="false"]').forEach(el => {
-      try { el.click(); clicked++; } catch (e) {}
-    });
-    // Detalles HTML nativos
-    document.querySelectorAll('details:not([open])').forEach(d => {
-      d.open = true; clicked++;
-    });
-    return clicked;
-  }
-
-  // --- 3. Extraer el contenido ---
-  function extractPage() {
-    const blocks = [];
-    const seen   = new Set();
-
-    const sel = [
-      'h1','h2','h3','h4',
-      '[role="heading"]',
-      'p','li',
-      '[data-block-id] div[dir]',
-      '.tyJCtd',
-      'c-wiz p', 'c-wiz li',
-      'div.XqQF9c'
-    ].join(',');
-
-    document.querySelectorAll(sel).forEach(el => {
-      // textContent captura también el texto que sigue oculto (respaldo)
-      const txt = ((el.innerText && el.innerText.trim()) || el.textContent || '').trim();
-      if (!txt || txt.length < 3 || seen.has(txt)) return;
-      seen.add(txt);
-
-      const tag  = el.tagName ? el.tagName.toLowerCase() : 'p';
-      const role = el.getAttribute('role') || '';
-      const isHeading = /^h[1-4]$/.test(tag) || role === 'heading';
-      blocks.push({ type: isHeading ? 'heading' : 'text', content: txt });
-    });
-
-    if (!blocks.length) blocks.push({ type:'text', content: document.body.innerText });
-
-    const lines = [];
-    lines.push('=== PÁGINA: ' + document.title + ' ===');
+const BM = function() {
+  // Recoger todo el texto visible de la página
+  function getAll() {
+    var lines = [];
+    lines.push('=== ' + document.title + ' ===');
     lines.push('URL: ' + location.href);
     lines.push('');
-    blocks.forEach(b => {
-      if (b.type === 'heading') lines.push('\n# ' + b.content);
-      else lines.push(b.content);
-    });
+
+    // Intento 1: recorrer el DOM en orden y recoger nodos de texto
+    var walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_ELEMENT,
+      null, false
+    );
+    var seen = new Set();
+    var node = walker.nextNode();
+    while (node) {
+      var tag = (node.tagName || '').toLowerCase();
+      if (['script','style','noscript','svg','path'].indexOf(tag) > -1) {
+        node = walker.nextNode(); continue;
+      }
+      // Solo elementos hoja o casi hoja
+      if (node.children.length === 0 || tag === 'p' || /^h[1-6]$/.test(tag) || tag === 'li') {
+        var txt = (node.innerText || node.textContent || '').trim();
+        if (txt && txt.length > 2 && !seen.has(txt)) {
+          seen.add(txt);
+          if (/^h[1-6]$/.test(tag)) lines.push('\n## ' + txt);
+          else lines.push(txt);
+        }
+      }
+      node = walker.nextNode();
+    }
+
+    // Fallback: si no salió casi nada, volcar innerText completo
+    if (lines.length < 5) {
+      return '=== ' + document.title + ' ===\nURL: ' + location.href + '\n\n' +
+             document.body.innerText;
+    }
     return lines.join('\n');
   }
 
-  function copy(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).catch(() => {});
-    } else {
-      const ta = document.createElement('textarea');
-      ta.value = text; document.body.appendChild(ta);
-      ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-    }
-  }
+  var text = getAll();
 
-  // --- Orquestación: expandir -> esperar -> extraer ---
-  const opened = expandAll();
-  setTimeout(function() {
-    const text = extractPage();
-    copy(text);
-    const preview = text.slice(0, 600) + (text.length > 600 ? '\n\n[... ' + text.length + ' caracteres en total]' : '');
-    alert('✅ Contenido copiado (' + opened + ' secciones abiertas):\n\n' + preview);
-  }, 600);
+  // Crear panel flotante
+  var overlay = document.createElement('div');
+  overlay.style.cssText = [
+    'position:fixed','top:0','left:0','width:100%','height:100%',
+    'background:rgba(0,0,0,.7)','z-index:2147483647',
+    'display:flex','flex-direction:column','align-items:center','justify-content:center',
+    'padding:20px','box-sizing:border-box'
+  ].join(';');
 
-}).toString();
+  var box = document.createElement('div');
+  box.style.cssText = [
+    'background:#1e1e2e','color:#cdd6f4','border-radius:12px',
+    'width:100%','max-width:700px','max-height:80vh',
+    'display:flex','flex-direction:column','padding:16px','gap:10px',
+    'font-family:monospace','font-size:13px'
+  ].join(';');
 
-const bm = 'javascript:('+encodeURIComponent('('+BOOKMARKLET_CODE+')()')+')void 0';
+  var header = document.createElement('div');
+  header.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap';
+
+  var title = document.createElement('span');
+  title.textContent = '✅ Contenido extraído — selecciona y copia:';
+  title.style.cssText = 'flex:1;font-weight:600;color:#a6e3a1;font-family:sans-serif;font-size:14px';
+
+  var btnSel = document.createElement('button');
+  btnSel.textContent = '📋 Seleccionar todo y copiar';
+  btnSel.style.cssText = [
+    'padding:7px 12px','border-radius:8px','border:none','cursor:pointer',
+    'background:#2a6f97','color:#fff','font-size:13px','font-family:sans-serif'
+  ].join(';');
+
+  var btnClose = document.createElement('button');
+  btnClose.textContent = '✕ Cerrar';
+  btnClose.style.cssText = [
+    'padding:7px 12px','border-radius:8px','border:none','cursor:pointer',
+    'background:#45475a','color:#cdd6f4','font-size:13px','font-family:sans-serif'
+  ].join(';');
+
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = [
+    'flex:1','resize:none','background:#181825','color:#cdd6f4',
+    'border:1px solid #45475a','border-radius:8px','padding:10px',
+    'font-family:monospace','font-size:12px','line-height:1.5','overflow-y:auto'
+  ].join(';');
+
+  btnSel.addEventListener('click', function() {
+    ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    if (navigator.clipboard) navigator.clipboard.writeText(ta.value).catch(function(){});
+    btnSel.textContent = '✅ Copiado!';
+    setTimeout(function(){ btnSel.textContent = '📋 Seleccionar todo y copiar'; }, 2000);
+  });
+
+  btnClose.addEventListener('click', function() { document.body.removeChild(overlay); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) document.body.removeChild(overlay); });
+
+  header.appendChild(title);
+  header.appendChild(btnSel);
+  header.appendChild(btnClose);
+  box.appendChild(header);
+  box.appendChild(ta);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  ta.focus();
+  ta.select();
+};
+
+var bm = 'javascript:(' + encodeURIComponent('(' + BM.toString() + ')()') + ')void 0';
 document.getElementById('bmLink').href = bm;
 
-/* ============================================================
-   Botones de la página
-   ============================================================ */
-document.getElementById('copyBtn').addEventListener('click', () => {
-  const txt = document.getElementById('rawText').value;
+/* Botones locales */
+document.getElementById('copyBtn').addEventListener('click', function() {
+  var txt = document.getElementById('rawText').value;
   if (!txt.trim()) { document.getElementById('okMsg').textContent = 'El cuadro está vacío.'; return; }
   navigator.clipboard.writeText(txt)
-    .then(() => { document.getElementById('okMsg').textContent = '✅ Copiado. Ahóra pégalo en el chat con Claude.'; })
-    .catch(() => { document.getElementById('okMsg').textContent = 'No se pudo copiar. Usa Ctrl+A y Ctrl+C en el cuadro.'; });
+    .then(function() { document.getElementById('okMsg').textContent = '✅ Copiado. Pégalo en el chat con Claude.'; })
+    .catch(function() { document.getElementById('okMsg').textContent = 'Usa Ctrl+A y Ctrl+C en el cuadro.'; });
 });
-
-document.getElementById('clearBtn').addEventListener('click', () => {
+document.getElementById('clearBtn').addEventListener('click', function() {
   document.getElementById('rawText').value = '';
   document.getElementById('okMsg').textContent = '';
 });
