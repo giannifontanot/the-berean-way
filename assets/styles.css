@@ -69,7 +69,10 @@ body {
   text-align: center;
   background-image: linear-gradient(rgba(8, 11, 28, 0.35), rgba(8, 11, 28, 0.55)), var(--header-image);
   background-size: cover;
-  background-position: center;
+  background-position: center center;
+  /* Parallax: la imagen queda "fija" al viewport y el contenido se desliza
+     por encima, dando sensación de profundidad/lejanía al hacer scroll. */
+  background-attachment: fixed;
 }
 .hero__title {
   font-family: var(--font-serif);
@@ -175,7 +178,8 @@ body {
   color: #fff;
   background-image: linear-gradient(rgba(8, 11, 28, 0.45), rgba(8, 11, 28, 0.65)), var(--footer-image);
   background-size: cover;
-  background-position: center;
+  background-position: center center;
+  background-attachment: fixed;
 }
 .site-footer__title {
   font-family: var(--font-serif);
@@ -220,3 +224,10 @@ body {
 .nav-drawer__list a.active { color: var(--color-accent); border-left-color: var(--color-accent); font-weight: 600; }
 
 @media (min-width: 720px) { :root { --header-height: 420px; } }
+
+/* El parallax (background-attachment: fixed) tiene errores conocidos en
+   navegadores táctiles (iOS Safari: salto/zoom). Ahí volvemos a scroll normal,
+   manteniendo la imagen centrada. */
+@media (hover: none), (pointer: coarse) {
+  .hero, .site-footer { background-attachment: scroll; }
+}

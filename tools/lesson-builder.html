@@ -5,72 +5,87 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Editor de lecciones · The Berean Way</title>
 <style>
-  :root { --accent:#2a6f97; --line:#dcdcdc; --green:#1a7f4b; }
+  :root {
+    --bg:#f6f3ee;          /* papel cálido */
+    --card:#fffdfa;        /* tarjetas */
+    --ink:#34302b;         /* texto principal */
+    --muted:#8a8076;       /* texto secundario */
+    --line:#e6ded3;        /* líneas suaves */
+    --accent:#9c6b46;      /* café/tostado */
+    --accent-dark:#7c5235;
+    --accent-soft:#efe5da;  /* fondo suave del acento */
+    --green:#5a7a4f;       /* verde salvia para confirmaciones */
+  }
   * { box-sizing:border-box; }
-  body { font-family:Arial,Helvetica,sans-serif;
-         font-size:18px; line-height:1.5;
-         max-width:1040px; margin:0 auto; padding:24px 18px 80px; color:#222; }
-  h1 { font-family:Georgia,serif; font-weight:400; }
-  h2 { font-size:1rem; font-weight:700; margin:26px 0 6px;
-       border-bottom:1px solid var(--line); padding-bottom:6px; color:#444; }
-  p.muted { color:#666; }
-  label { display:block; font-weight:600; margin:14px 0 5px; }
+  body { font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+         font-size:18px; line-height:1.55;
+         max-width:1040px; margin:0 auto; padding:30px 20px 90px;
+         color:var(--ink); background:var(--bg); }
+  h1 { font-weight:600; letter-spacing:.2px; margin:0 0 4px; }
+  h2 { font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+       margin:30px 0 8px; padding-bottom:7px; border-bottom:1px solid var(--line); color:var(--accent-dark); }
+  p.muted { color:var(--muted); }
+  label { display:block; font-weight:600; font-size:.92rem; margin:14px 0 5px; color:#5c544b; }
   input[type=text], textarea {
-    width:100%; font-size:.95rem; padding:9px 12px; border:1px solid var(--line); border-radius:9px; }
-  textarea.src { min-height:220px; font-family:monospace; font-size:.85rem; line-height:1.5; resize:vertical; }
-  textarea#out { min-height:240px; font-family:monospace; font-size:.78rem; background:#1e1e2e; color:#cdd6f4; resize:vertical; width:100%; }
+    width:100%; font-family:inherit; font-size:.95rem; padding:10px 13px;
+    border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); }
+  input[type=text]:focus, textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  textarea.src { min-height:220px; font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace; font-size:.84rem; line-height:1.5; resize:vertical; }
+  textarea#out { min-height:240px; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.76rem; background:#2b2622; color:#e8dccb; border-color:#2b2622; resize:vertical; width:100%; }
   .row { display:flex; gap:18px; flex-wrap:wrap; }
   .col { flex:1 1 420px; min-width:0; }
-  .btns { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; align-items:center; }
-  button { font-size:.95rem; padding:10px 16px; border-radius:9px; border:none; cursor:pointer; }
+  .btns { display:flex; gap:10px; flex-wrap:wrap; margin:16px 0; align-items:center; }
+  button { font-family:inherit; font-size:.92rem; padding:10px 17px; border-radius:10px; border:1px solid transparent; cursor:pointer; transition:background .15s, border-color .15s; }
   .primary { background:var(--accent); color:#fff; }
-  .ghost   { background:#eef2f6; color:#23415a; }
+  .primary:hover { background:var(--accent-dark); }
+  .ghost   { background:var(--card); color:var(--accent-dark); border-color:var(--line); }
+  .ghost:hover { background:var(--accent-soft); border-color:var(--accent); }
   .ok { color:var(--green); font-weight:600; min-height:1.4em; }
-  code { background:#eef2f6; padding:2px 6px; border-radius:5px; font-size:.85rem; }
-  details.help { margin:10px 0 4px; background:#f7f9fb; border:1px solid var(--line); border-radius:10px; padding:8px 14px; }
-  details.help summary { cursor:pointer; font-weight:600; color:var(--accent); }
+  code { background:var(--accent-soft); color:var(--accent-dark); padding:2px 6px; border-radius:5px; font-size:.85rem; font-family:ui-monospace,Menlo,Consolas,monospace; }
+  details.help { margin:10px 0 4px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 16px; }
+  details.help summary { cursor:pointer; font-weight:600; color:var(--accent-dark); }
   details.help table { width:100%; border-collapse:collapse; margin-top:10px; font-size:.88rem; }
-  details.help td { padding:5px 8px; border-bottom:1px solid #eee; vertical-align:top; }
-  details.help td:first-child { white-space:nowrap; font-family:monospace; color:#23415a; }
+  details.help td { padding:5px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  details.help td:first-child { white-space:nowrap; font-family:ui-monospace,Menlo,Consolas,monospace; color:var(--accent-dark); }
 
   /* ---- tarjeta de lección ---- */
-  .lesson-card { border:1px solid var(--line); border-radius:12px; margin:14px 0; background:#fff; overflow:hidden; }
+  .lesson-card { border:1px solid var(--line); border-radius:14px; margin:16px 0; background:var(--card); overflow:hidden; box-shadow:0 1px 2px rgba(52,48,43,.04); }
   .lesson-card__head {
-    display:flex; align-items:center; gap:8px; padding:10px 12px; background:#f3f6f9; border-bottom:1px solid var(--line); }
-  .lesson-card__num { font-weight:700; color:var(--accent); white-space:nowrap; }
+    display:flex; align-items:center; gap:8px; padding:11px 14px; background:var(--accent-soft); border-bottom:1px solid var(--line); }
+  .lesson-card__num { font-weight:700; font-size:.82rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-dark); white-space:nowrap; }
   .lesson-card__title { flex:1; min-width:0; }
   .lesson-card__title input { font-weight:600; }
-  .lesson-card__head button { padding:6px 10px; font-size:.9rem; background:#e7edf3; color:#23415a; }
-  .lesson-card__head button:hover { background:#d8e2ec; }
-  .lesson-card__head button.del:hover { background:#f3d4d4; color:#a11; }
-  .lesson-card__body { padding:12px 14px; }
+  .lesson-card__head button { padding:6px 11px; font-size:.9rem; background:var(--card); color:var(--accent-dark); border:1px solid var(--line); }
+  .lesson-card__head button:hover { background:#fff; border-color:var(--accent); }
+  .lesson-card__head button.del:hover { background:#f1e1da; border-color:#b06a52; color:#9a3b22; }
+  .lesson-card__body { padding:14px 16px; }
   .lesson-card.collapsed .lesson-card__body { display:none; }
 
   /* ---- subir imágenes (header/footer) ---- */
   .imgrow { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; }
   .imgrow .col { flex:1 1 200px; }
-  .dz { border:2px dashed var(--line); border-radius:10px; padding:10px; text-align:center;
-        cursor:pointer; color:#888; font-size:.82rem; background:#fafbfc; position:relative; margin-top:6px; }
-  .dz:hover, .dz.drag-over { border-color:var(--accent); background:#eef6fb; }
+  .dz { border:2px dashed var(--line); border-radius:11px; padding:11px; text-align:center;
+        cursor:pointer; color:var(--muted); font-size:.82rem; background:var(--bg); position:relative; margin-top:6px; }
+  .dz:hover, .dz.drag-over { border-color:var(--accent); background:var(--accent-soft); }
   .dz input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
   .dz .dz-label { pointer-events:none; }
-  .dz img { display:none; width:100%; height:60px; object-fit:cover; border-radius:6px; margin-bottom:6px; border:1px solid var(--line); }
-  .dz.has-file { border-style:solid; border-color:#aaa; }
-  .dz.has-file .dz-label { color:#444; }
+  .dz img { display:none; width:100%; height:60px; object-fit:cover; border-radius:7px; margin-bottom:6px; border:1px solid var(--line); }
+  .dz.has-file { border-style:solid; border-color:var(--accent); }
+  .dz.has-file .dz-label { color:var(--ink); }
 
   /* ---- vista previa (imita el sitio real) ---- */
-  .preview { border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:#fff; min-height:240px; }
+  .preview { border:1px solid var(--line); border-radius:14px; padding:16px 18px; background:var(--card); min-height:240px; box-shadow:0 1px 2px rgba(52,48,43,.04); }
   .pv-lesson { margin-bottom:26px; }
-  .pv-lesson > h3 { font-family:Georgia,serif; font-weight:400; font-size:1.5rem; margin:0 0 8px; color:#1a1a1a; }
-  .pv-intro { color:#333; margin-bottom:10px; }
+  .pv-lesson > h3 { font-weight:600; font-size:1.5rem; margin:0 0 8px; color:var(--ink); }
+  .pv-intro { color:#56504a; margin-bottom:10px; }
   .pv-acc { border-top:1px solid var(--line); margin-top:8px; }
   .pv-item { border-bottom:1px solid var(--line); }
   .pv-head {
-    cursor:pointer; padding:14px 2px; color:var(--accent); font-size:1.02rem;
+    cursor:pointer; padding:14px 2px; color:var(--accent-dark); font-size:1.02rem;
     display:flex; align-items:center; justify-content:space-between; gap:12px;
   }
-  .pv-head:hover { color:#1f5273; }
-  .pv-chev { flex:0 0 auto; transition:transform .3s ease; color:#999; font-size:.8rem; }
+  .pv-head:hover { color:var(--accent); }
+  .pv-chev { flex:0 0 auto; transition:transform .3s ease; color:var(--muted); font-size:.8rem; }
   .pv-item.open .pv-chev { transform:rotate(180deg); }
   .pv-panel { overflow:hidden; max-height:0; transition:max-height .38s ease; }
   .pv-panel-inner { padding:2px 4px 18px; }
