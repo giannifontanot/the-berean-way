@@ -93,6 +93,19 @@ vista previa, y genera el <code>data.js</code> listo para una carpeta de usuario
         <input type="text" id="student" placeholder="NOMBRE" value="NOMBRE">
       </div>
     </div>
+    <div class="row">
+      <div class="col" style="flex:1 1 180px">
+        <label>Imagen del header (ruta)</label>
+        <input type="text" id="headerImage" placeholder="img/header.png">
+      </div>
+      <div class="col" style="flex:1 1 180px">
+        <label>Imagen del footer (ruta)</label>
+        <input type="text" id="footerImage" placeholder="img/footer.png">
+      </div>
+    </div>
+    <p class="muted" style="font-size:.82rem;margin:4px 0 0">Sube el archivo de imagen a la carpeta <code>img/</code> del sitio y pon aquí su ruta.
+    Si lo dejas vacío se usa el fondo compartido. Se recuerda la última imagen usada.</p>
+
     <label>Frase del footer</label>
     <input type="text" id="footerTitle" value="Como los de Berea, escudriñaban cada día las Escrituras.">
     <label>Texto del footer</label>
@@ -330,7 +343,9 @@ function genDataJs(pages, opts) {
   L.push("window.STUDENT_SITE = {");
   L.push("  title: " + q(opts.siteTitle) + ",");
   L.push("  student: " + q(opts.student) + ",");
+  if (opts.headerImage) L.push("  headerImage: " + q(opts.headerImage) + ",");
   L.push("  footer: {");
+  if (opts.footerImage) L.push("    image: " + q(opts.footerImage) + ",");
   L.push("    title: " + q(opts.footerTitle) + ",");
   L.push("    text: " + q(opts.footerText));
   L.push("  },");
@@ -397,13 +412,33 @@ function build() {
   const opts = {
     siteTitle: document.getElementById("siteTitle").value.trim(),
     student: document.getElementById("student").value.trim(),
+    headerImage: document.getElementById("headerImage").value.trim(),
+    footerImage: document.getElementById("footerImage").value.trim(),
     footerTitle: document.getElementById("footerTitle").value.trim(),
     footerText: document.getElementById("footerText").value.trim()
   };
+  rememberImages(opts.headerImage, opts.footerImage);
   document.getElementById("out").value = genDataJs(pages, opts);
   document.getElementById("msg").textContent = pages.length + " lección(es) generada(s) · " +
     pages.reduce((n, p) => n + p.items.length, 0) + " acordeón(es).";
 }
+
+/* Recuerda la última imagen usada para header/footer (default en la próxima visita) */
+function rememberImages(header, footer) {
+  try {
+    if (header) localStorage.setItem("tbw_headerImage", header);
+    if (footer) localStorage.setItem("tbw_footerImage", footer);
+  } catch (e) { /* localStorage no disponible */ }
+}
+function restoreImages() {
+  try {
+    const h = localStorage.getItem("tbw_headerImage");
+    const f = localStorage.getItem("tbw_footerImage");
+    if (h) document.getElementById("headerImage").value = h;
+    if (f) document.getElementById("footerImage").value = f;
+  } catch (e) { /* localStorage no disponible */ }
+}
+restoreImages();
 
 document.getElementById("genBtn").addEventListener("click", build);
 document.getElementById("src").addEventListener("input", () => renderPreview(parseLessons(document.getElementById("src").value)));
