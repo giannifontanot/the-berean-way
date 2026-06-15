@@ -69,6 +69,7 @@ body {
 .hero {
   position: relative;
   overflow: hidden;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.38);
   min-height: var(--header-height);
   margin-top: calc(-1 * var(--topbar-height));
   padding: calc(var(--topbar-height) + 36px) 20px 44px;
@@ -199,7 +200,7 @@ body {
 .site-footer > *:not(.site-footer__bg) { position: relative; z-index: 1; }
 /* Fondo del footer: estático (sin parallax), llena exactamente el footer. */
 .site-footer__bg {
-  position: absolute; inset: 0;
+  position: absolute; inset: 0 16px;
   z-index: 0; pointer-events: none;
   background-image: linear-gradient(rgba(8, 11, 28, 0.45), rgba(8, 11, 28, 0.65)), var(--footer-image);
   background-size: cover;
