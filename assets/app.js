@@ -101,6 +101,7 @@
     // Ruta absoluta: una url() dentro de una variable CSS se resuelve relativa a
     // assets/styles.css, no a la carpeta del usuario; resolverla aquí lo evita.
     const headerUrl = headerImg ? new URL(headerImg, location.href).href : "";
+    // El estilo va en la capa de fondo (.hero__bg), que app.js mueve con parallax.
     const headerStyle = headerUrl ? ` style="--header-image:url('${esc(headerUrl)}')"` : "";
 
     let body = "";
@@ -114,7 +115,8 @@
     const footer = page.footer || SITE.footer;
 
     app.innerHTML = `
-      <section class="hero"${headerStyle}>
+      <section class="hero">
+        <div class="hero__bg"${headerStyle}></div>
         <h1 class="hero__title">${esc(page.title)}</h1>
       </section>
       ${page.type === "gallery" ? "" : searchBoxHtml()}
@@ -126,6 +128,7 @@
     wireSearch();
     wireGallery();
     wireTopbarScroll();
+    wireParallax();
     try { window.scrollTo(0, 0); } catch (e) { /* entorno sin scroll */ }
   }
 
@@ -175,7 +178,7 @@
     const style = footerUrl ? ` style="--footer-image:url('${esc(footerUrl)}')"` : "";
     const title = footer.title ? `<h2 class="site-footer__title">${esc(footer.title)}</h2>` : "";
     const text = footer.text ? `<p class="site-footer__text">${esc(footer.text)}</p>` : "";
-    return `<footer class="site-footer"${style}>${title}${text}</footer>`;
+    return `<footer class="site-footer"><div class="site-footer__bg"${style}></div>${title}${text}</footer>`;
   }
 
   function markActiveLink(slug) {
@@ -243,6 +246,42 @@
     const onScroll = () => topbar.classList.toggle("solid", window.scrollY > hero.offsetHeight - 80);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  /* ---------- Parallax 3D del header/footer ----------
+     La imagen de fondo se desplaza a MENOS velocidad que el contenido,
+     así el título "se mueve más" que el fondo y se siente profundidad.
+     Un solo listener global que vuelve a leer los elementos en cada scroll
+     (sobreviven a los re-render de página). */
+  let parallaxWired = false;
+  function wireParallax() {
+    if (!parallaxWired) {
+      parallaxWired = true;
+      window.addEventListener("scroll", updateParallax, { passive: true });
+      window.addEventListener("resize", updateParallax, { passive: true });
+    }
+    updateParallax();
+  }
+  function updateParallax() {
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const y = window.scrollY || window.pageYOffset || 0;
+
+    const heroBg = document.querySelector(".hero__bg");
+    if (heroBg) {
+      // Fondo a ~0.65 de la velocidad del contenido (se desplaza 0.35·scroll).
+      heroBg.style.transform = reduce ? "" : "translate3d(0," + (y * 0.35).toFixed(1) + "px,0)";
+    }
+
+    const footerBg = document.querySelector(".site-footer__bg");
+    if (footerBg) {
+      if (reduce) { footerBg.style.transform = ""; return; }
+      // Basado en la posición del footer en el viewport, acotado para no
+      // descubrir los bordes de la capa (que es 180% de alta).
+      const rect = footerBg.parentElement.getBoundingClientRect();
+      let ty = (window.innerHeight - rect.top) * 0.12 - 30;
+      ty = Math.max(-70, Math.min(70, ty));
+      footerBg.style.transform = "translate3d(0," + ty.toFixed(1) + "px,0)";
+    }
   }
 
   /* ---------- util ---------- */
