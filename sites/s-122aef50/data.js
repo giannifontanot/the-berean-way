@@ -26,7 +26,7 @@ window.STUDENT_SITE = {
     {
       slug: "leccion-2",
       title: "Lección 2: La Palabra de Dios",
-      published: false,
+      published: true,
       type: "accordion",
       purpose: "Entender por qué la Biblia es la base firme para conocer a Dios.",
       items: [
@@ -38,7 +38,7 @@ window.STUDENT_SITE = {
     {
       slug: "leccion-3",
       title: "Lección 3: El arrepentimiento",
-      published: false,
+      published: true,
       type: "accordion",
       purpose: "Comprender qué es volverse a Dios de todo corazón.",
       items: [
