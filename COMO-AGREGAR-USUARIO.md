@@ -127,13 +127,13 @@ Cambia `false → true` para revelar una lección, haz commit y push.
 
 Usa `tools/lesson-builder.html`:
 
-1. Llena el título, nombre (`NOMBRE`), imagen de header, imagen de footer y texto del footer.
+1. Llena el título, nombre (`NOMBRE`), imagen de header (arrastra o selecciona el archivo), imagen de footer y texto del footer.
 2. Escribe las lecciones en el formato sencillo.
-3. Haz clic en **⚙ Generar data.js** y luego **📋 Copiar data.js**.
-4. Pega el resultado en `sites/templates/<serie>/data.js` (reemplaza todo el archivo).
-5. Haz commit y push. Los próximos alumnos que uses con esa serie recibirán el contenido actualizado.
-
-Si cambiaste la imagen de header o footer, sube también el archivo de imagen a `sites/templates/<serie>/img/`.
+3. Haz clic en **⚙ Generar data.js**.
+4. Elige cómo guardar:
+   - **⬇ Descargar .zip** — descarga un ZIP con `data.js` y las imágenes. Descomprímelo dentro de `sites/templates/<serie>/` (reemplaza los archivos existentes).
+   - **💾 Guardar en carpeta…** _(Chrome/Edge)_ — selecciona la carpeta `sites/templates/<serie>/` y la herramienta escribe los archivos directamente. Luego: `git add · commit · push`.
+5. Los próximos alumnos que crees con esa serie recibirán el contenido actualizado.
 
 ---
 
