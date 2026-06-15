@@ -184,8 +184,8 @@ body {
   --footer-image: url("img/footer-bg.svg"); /* default compartido; cada alumno puede sobreescribirlo */
   position: relative;
   overflow: hidden;
-  min-height: 220px;
-  padding: 48px 20px;
+  min-height: 16vh;          /* delgado: ~1/6 de la pantalla */
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -194,9 +194,10 @@ body {
   color: #fff;
 }
 .site-footer > *:not(.site-footer__bg) { position: relative; z-index: 1; }
+/* Fondo del footer: estático (sin parallax), llena exactamente el footer. */
 .site-footer__bg {
-  position: absolute; left: 0; right: 0; top: -40%; height: 180%;
-  z-index: 0; pointer-events: none; will-change: transform;
+  position: absolute; inset: 0;
+  z-index: 0; pointer-events: none;
   background-image: linear-gradient(rgba(8, 11, 28, 0.45), rgba(8, 11, 28, 0.65)), var(--footer-image);
   background-size: cover;
   background-position: center center;
