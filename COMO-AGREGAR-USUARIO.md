@@ -125,15 +125,21 @@ Cambia `false → true` para revelar una lección, haz commit y push.
 
 ## Cómo actualizar o crear un original (serie)
 
-Usa `tools/lesson-builder.html`:
+Usa `tools/lesson-builder.html`. Cada lección es una **tarjeta** con su propio contenido y sus imágenes.
 
-1. Llena el título, nombre (`NOMBRE`), imagen de header (arrastra o selecciona el archivo), imagen de footer y texto del footer.
-2. Escribe las lecciones en el formato sencillo.
+1. **Datos del sitio** (una sola vez): título del sitio y nombre (`NOMBRE`).
+2. **Por cada lección** (una tarjeta):
+   - Escribe el **título de la lección** (es el texto que se ve en el encabezado de esa página).
+   - Escribe el contenido en el formato sencillo.
+   - Sube su **imagen de header** y su **imagen de footer** (arrastra o selecciona el archivo). El footer no lleva texto.
+   - Usa **➕ Agregar lección** para añadir más, y los botones ↑ ↓ 🗑 para ordenar o borrar.
 3. Haz clic en **⚙ Generar data.js**.
 4. Elige cómo guardar:
-   - **⬇ Descargar .zip** — descarga un ZIP con `data.js` y las imágenes. Descomprímelo dentro de `sites/templates/<serie>/` (reemplaza los archivos existentes).
-   - **💾 Guardar en carpeta…** _(Chrome/Edge)_ — selecciona la carpeta `sites/templates/<serie>/` y la herramienta escribe los archivos directamente. Luego: `git add · commit · push`.
+   - **⬇ Descargar .zip** — descarga un ZIP con `data.js` y la carpeta `img/` (las imágenes ya van con nombre único por lección, p.ej. `img/leccion-1-header.png`). Descomprímelo dentro de `sites/templates/<serie>/` (reemplaza los archivos existentes).
+   - **💾 Guardar en carpeta…** _(Chrome/Edge)_ — selecciona la carpeta `sites/templates/<serie>/` y la herramienta escribe `data.js` + las imágenes directamente. Luego: `git add · commit · push`.
 5. Los próximos alumnos que crees con esa serie recibirán el contenido actualizado.
+
+> **Editar un original existente:** abre el lesson-builder y haz clic en **📂 Cargar data.js…**. Selecciona el `data.js` de la serie (`sites/templates/<serie>/data.js`) y la herramienta rellena todas las tarjetas para que edites solo lo que necesites. (Las imágenes ya guardadas conservan su ruta; solo vuelve a subirlas si quieres cambiarlas.)
 
 ---
 
