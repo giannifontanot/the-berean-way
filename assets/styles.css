@@ -95,6 +95,10 @@ body {
 .content p { margin: 0 0 14px; color: var(--color-text); }
 .lead { color: var(--color-text); }
 
+/* Texto enriquecido generado desde data.js (lesson-builder) */
+.scripture { color: #c0392b; font-size: 18px; line-height: 1.7; }
+.scripture sup { font-size: 10px; font-weight: 600; vertical-align: super; }
+
 /* ----------------------- Search box ----------------------- */
 .search {
   max-width: var(--max-width); margin: 0 auto; padding: 0 20px;
