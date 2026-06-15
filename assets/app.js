@@ -243,7 +243,9 @@
     const hero = document.querySelector(".hero");
     if (!topbar) return;
     if (!hero) { topbar.classList.add("solid"); return; }
-    const onScroll = () => topbar.classList.toggle("solid", window.scrollY > hero.offsetHeight - 80);
+    // Transparente mientras la barra está sobre el header; oscura (.solid) en
+    // cuanto el header termina de pasar por detrás de la barra.
+    const onScroll = () => topbar.classList.toggle("solid", window.scrollY > hero.offsetHeight - topbar.offsetHeight);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
   }
