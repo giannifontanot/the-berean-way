@@ -6,16 +6,29 @@ Guía paso a paso para crear la carpeta de un nuevo alumno en The Berean Way.
 
 ## Requisitos previos
 
-- Google Chrome o Microsoft Edge (para la opción "Guardar directo en el repo")  
-- Acceso de escritura al repositorio `giannifontanot/the-berean-way`  
+- Un servidor local para abrir `tools/new-user.html` (por ejemplo VS Code Live Server)
+- Acceso de escritura al repositorio `giannifontanot/the-berean-way`
 - Git instalado y configurado en tu computadora
+
+> **¿Por qué servidor local?**  
+> La herramienta lee el original de la serie por `fetch()`. Eso no funciona si abres el archivo directamente desde el Explorador (protocolo `file://`). Con Live Server o cualquier servidor local sí funciona.
+
+---
+
+## Cómo funciona el sistema (visión general)
+
+| Herramienta | Qué hace |
+|---|---|
+| `tools/lesson-builder.html` | **Crea o edita los originales.** Escribe lecciones en formato sencillo → genera `data.js` completo (contenido, header, footer). |
+| `sites/templates/<serie>/data.js` | **Los originales.** Cada serie (Fundamentos, Discipulado, Evangelismo) tiene su propio archivo con el contenido definitivo. |
+| `tools/new-user.html` | **Crea alumnos.** Copia un original tal cual y solo cambia el nombre. |
 
 ---
 
 ## Paso 1 — Abrir la herramienta
 
-Abre el archivo `tools/new-user.html` en tu navegador.  
-Puedes hacerlo con doble clic desde el Explorador de archivos, o con File → Open en el navegador.
+Abre `tools/new-user.html` desde tu servidor local (Live Server, etc.).  
+No la abras con doble clic: necesita fetch para leer el original.
 
 ---
 
@@ -23,110 +36,112 @@ Puedes hacerlo con doble clic desde el Explorador de archivos, o con File → Op
 
 | Campo | Descripción |
 |---|---|
-| **Nombre del usuario** | Nombre del alumno (ej. "Paquito") |
-| **Imagen de encabezado** | JPG/PNG que aparece en la parte superior de cada lección |
-| **Imagen de pie de página** | JPG/PNG decorativa en el footer |
+| **Nombre** | Nombre del alumno (ej. "Paquito") |
+| **Título del sitio** | Opcional. Si lo dejas vacío se usa «Los estudios de NOMBRE». |
+| **Serie** | El original a copiar: Fundamentos, Discipulado o Evangelismo. |
 
-Arrastra las imágenes a las zonas de carga o haz clic en ellas para seleccionarlas.
+La herramienta lee `sites/templates/<serie>/data.js`, sustituye `NOMBRE` por el nombre del alumno, y genera la carpeta lista.
 
 ---
 
 ## Paso 3 — Generar la carpeta del alumno
 
-Tienes dos opciones:
-
 ### Opción A — Descargar como ZIP _(cualquier navegador)_
 
 1. Haz clic en **⬇ Descargar carpeta (.zip)**.
-2. Se descarga un archivo `s-XXXXXXXX.zip` con código aleatorio único.
-3. Descomprímelo dentro de la carpeta `sites/` del repositorio.  
-   Resultado: `sites/s-XXXXXXXX/` con `index.html`, `data.js`, e `img/`.
+2. Se descarga `s-XXXXXXXX.zip` con código aleatorio único.
+3. Descomprímelo dentro de `sites/` del repositorio.  
+   Resultado: `sites/s-XXXXXXXX/` con `index.html` y `data.js`.
 
-### Opción B — Guardar directo en el repo _(Chrome/Edge, desde carpeta local)_
+### Opción B — Guardar directo en el repo _(Chrome/Edge)_
 
 1. Haz clic en **Guardar directo en el repo…**
-2. En el selector que aparece, navega hasta la carpeta `sites/` del repositorio y selecciónala.
-3. La herramienta escribe la carpeta `s-XXXXXXXX/` directamente ahí.
+2. Selecciona la carpeta `sites/` del repositorio.
+3. La herramienta escribe `s-XXXXXXXX/` directamente ahí.
 
 ---
 
-## Paso 4 — Personalizar las lecciones
-
-Abre `sites/s-XXXXXXXX/data.js` en cualquier editor de texto.
-
-- Cada lección tiene un campo `published: true` o `published: false`.
-- Cambia a `published: true` solo las lecciones que quieres que el alumno vea ya.
-- El resto queda oculto hasta que lo actives.
-
-```js
-{ slug: "leccion-1", title: "Lección 1: ¿Quién es Jesús?", published: true,  ... },
-{ slug: "leccion-2", title: "Lección 2: La Palabra de Dios", published: false, ... },
-```
-
----
-
-## Paso 5 — Subir al repositorio
-
-Desde la terminal, dentro de la carpeta del repositorio:
+## Paso 4 — Subir al repositorio
 
 ```bash
-# 1. Asegúrate de tener la versión más reciente de main
+# 1. Trae los últimos cambios de main
 git pull origin main
 
 # 2. Crea una rama para el nuevo alumno
 git checkout -b agregar-usuario-NOMBRE
 
-# 3. Agrega solo la carpeta del alumno nuevo
+# 3. Agrega la carpeta del alumno
 git add sites/s-XXXXXXXX/
 
-# 4. Confirma los cambios
+# 4. Confirma
 git commit -m "Agrega sitio para NOMBRE (s-XXXXXXXX)"
 
 # 5. Sube la rama
 git push -u origin agregar-usuario-NOMBRE
 ```
 
-Luego abre un **Pull Request** en GitHub y mézclalo a `main`.
+Abre un **Pull Request** en GitHub y mézclalo a `main`.
 
 ---
 
-## Paso 6 — Registrar al alumno en ROSTER.md
+## Paso 5 — Registrar al alumno en ROSTER.md
 
-Abre `ROSTER.md` y agrega una fila a la tabla:
+Agrega una fila:
 
 ```
 | `s-XXXXXXXX` | NOMBRE | https://giannifontanot.github.io/the-berean-way/sites/s-XXXXXXXX/ |
 ```
 
-Incluye este cambio en el mismo commit o en el PR del paso anterior.
-
 ---
 
-## Paso 7 — Compartir la URL
-
-Una vez que el PR esté mezclado, el sitio del alumno estará disponible en:
+## Paso 6 — Compartir la URL
 
 ```
 https://giannifontanot.github.io/the-berean-way/sites/s-XXXXXXXX/
 ```
 
-Comparte esa URL directamente con el alumno. No hay login; la URL larga es la "contraseña".
+No hay login; la URL larga es la "contraseña".
 
 ---
 
-## Activar lecciones adicionales más adelante
+## Ajustes especiales por alumno
 
-1. Abre `sites/s-XXXXXXXX/data.js`.
-2. Cambia `published: false` → `published: true` en las lecciones que quieres publicar.
-3. Haz commit y push de ese cambio (mismo flujo de rama → PR → merge).
+Si necesitas algo distinto al original (lecciones diferentes, otra imagen, texto del footer), edita `sites/s-XXXXXXXX/data.js` directamente en GitHub y haz commit.
 
 ---
 
-## Solución de problemas comunes
+## Controlar qué lecciones ve el alumno
+
+En `sites/s-XXXXXXXX/data.js` cada lección tiene `published: true` o `published: false`.
+
+```js
+{ slug: "leccion-1", title: "Lección 1: ¿Quién es Jesús?", published: true,  ... },
+{ slug: "leccion-2", title: "Lección 2: La Palabra de Dios", published: false, ... },
+```
+
+Cambia `false → true` para revelar una lección, haz commit y push.
+
+---
+
+## Cómo actualizar o crear un original (serie)
+
+Usa `tools/lesson-builder.html`:
+
+1. Llena el título, nombre (`NOMBRE`), imagen de header, imagen de footer y texto del footer.
+2. Escribe las lecciones en el formato sencillo.
+3. Haz clic en **⚙ Generar data.js** y luego **📋 Copiar data.js**.
+4. Pega el resultado en `sites/templates/<serie>/data.js` (reemplaza todo el archivo).
+5. Haz commit y push. Los próximos alumnos que uses con esa serie recibirán el contenido actualizado.
+
+Si cambiaste la imagen de header o footer, sube también el archivo de imagen a `sites/templates/<serie>/img/`.
+
+---
+
+## Solución de problemas
 
 | Problema | Causa probable | Solución |
 |---|---|---|
-| `git push` rechazado | Hay cambios en `main` que no tienes localmente | Corre `git pull origin main` primero |
-| Las imágenes no se ven en el sitio | Las imágenes no se subieron a `img/` | Verifica que `sites/s-XXXXXXXX/img/` contenga los archivos |
-| La lección no aparece en el menú | `published: false` | Cambia a `published: true` y haz push |
-| "Guardar directo" no funciona | Navegador no es Chrome/Edge, o se abrió el HTML desde un servidor remoto | Usa la opción de descarga ZIP |
+| "No se pudo leer el original" | new-user.html abierto como `file://` | Ábrelo desde un servidor local (Live Server, etc.) |
+| `git push` rechazado | Hay cambios en `main` que no tienes | Corre `git pull origin main` primero |
+| Las imágenes no se ven | No se subieron a `img/` | Verifica que `sites/s-XXXXXXXX/img/` tenga los archivos |
+| La lección no aparece | `published: false` | Cambia a `published: true` y haz push |
