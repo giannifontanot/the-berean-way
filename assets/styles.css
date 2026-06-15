@@ -96,6 +96,10 @@ body {
 .content p { margin: 0 0 14px; color: var(--color-text); }
 .lead { color: var(--color-text); }
 
+/* Texto enriquecido generado desde data.js (lesson-builder) */
+.scripture { color: #c0392b; font-size: 18px; line-height: 1.7; }
+.scripture sup { font-size: 10px; font-weight: 600; vertical-align: super; }
+
 /* ----------------------- Search box ----------------------- */
 .search {
   max-width: var(--max-width); margin: 0 auto; padding: 0 20px;
@@ -127,6 +131,8 @@ body {
 .accordion__panel { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; }
 .accordion__panel-inner { padding: 2px 4px 20px; color: var(--color-text); }
 .accordion__panel-inner p:last-child { margin-bottom: 0; }
+.accordion__panel-inner ul, .accordion__panel-inner ol { margin: 0 0 14px; padding-left: 24px; }
+.accordion__panel-inner li { margin: 0 0 5px; }
 .accordion__item.hidden { display: none; }
 
 /* ----------------------- Picture gallery ----------------------- */
