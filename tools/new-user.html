@@ -13,9 +13,12 @@
   h2 { font-size:1rem; font-weight:700; margin:32px 0 4px; border-bottom:1px solid var(--line); padding-bottom:6px; color:#444; }
   p.muted { color:#666; }
   label { display:block; font-weight:600; margin:16px 0 5px; }
-  input[type=text], textarea {
+  input[type=text], textarea, select {
     width:100%; font-size:1rem; padding:10px 12px; border:1px solid var(--line); border-radius:9px; }
   textarea { min-height:64px; resize:vertical; }
+  select { background:#fff; cursor:pointer; }
+  .serie-desc { margin:6px 0 0; font-size:.88rem; color:#555; padding:8px 12px;
+                background:#f0f6fb; border-radius:8px; border-left:3px solid var(--accent); }
   .row { display:flex; gap:14px; flex-wrap:wrap; }
   .row > div { flex:1 1 220px; }
 
@@ -50,6 +53,16 @@
   <h1>Crear usuario nuevo</h1>
   <p class="muted">Rellena el formulario y descarga la carpeta lista para el repo.
   Todo ocurre en tu navegador — no se sube nada a internet.</p>
+
+  <!-- ── Serie de estudios ── -->
+  <h2>Serie de estudios</h2>
+  <label>Elige la serie *</label>
+  <select id="serie">
+    <option value="fundamentos">Fundamentos — para quien acaba de creer</option>
+    <option value="discipulado">Discipulado — para crecer en la fe</option>
+    <option value="evangelismo">Evangelismo — para equipar a compartir la fe</option>
+  </select>
+  <p class="serie-desc" id="serieDesc">10 lecciones: ¿Quién es Jesús?, la Biblia, el arrepentimiento, la fe, el bautismo, la oración, el Espíritu Santo, la iglesia, el carácter cristiano y la esperanza.</p>
 
   <!-- ── Datos básicos ── -->
   <h2>Datos del usuario</h2>
@@ -94,6 +107,91 @@
 
 <script>
 "use strict";
+
+/* ================================================================
+   Descripciones de series
+   ================================================================ */
+const SERIE_DESC = {
+  fundamentos: "10 lecciones: ¿Quién es Jesús?, la Biblia, el arrepentimiento, la fe, el bautismo, la oración, el Espíritu Santo, la iglesia, el carácter cristiano y la esperanza.",
+  discipulado:  "10 lecciones: identidad en Cristo, la obediencia, la Palabra diaria, la tentación, el perdón, servir, la mayordomía, las relaciones, el testimonio y perseverar.",
+  evangelismo:  "10 lecciones: el evangelio en una frase, el pecado, la cruz, cómo compartir, responder objeciones, la urgencia, orar por perdidos, discipular al nuevo creyente, historias bíblicas y vivir como testigo."
+};
+
+const serieEl   = document.getElementById("serie");
+const serieDesc = document.getElementById("serieDesc");
+serieEl.addEventListener("change", () => { serieDesc.textContent = SERIE_DESC[serieEl.value] || ""; });
+
+/* ================================================================
+   Páginas de cada serie
+   ================================================================ */
+const SERIES_PAGES = {
+  fundamentos: [
+    { slug:"leccion-1",  title:"Lección 1: ¿Quién es Jesús?",              published:true,  purpose:"Conocer a Jesús tal como lo presenta la Escritura, antes de seguirlo.",
+      items:[ {heading:"Juan 1:1-14",body:"<p>El Verbo era Dios y se hizo carne. Escribe aquí tus notas.</p>"}, {heading:"Colosenses 1:15-20",body:"<p>Imagen del Dios invisible; en él todo subsiste.</p>"}, {heading:"Para reflexionar",body:"<p>¿Qué cambia en mi vida si Jesús es realmente quien dice ser?</p>"} ] },
+    { slug:"leccion-2",  title:"Lección 2: La Palabra de Dios",             published:false, purpose:"Entender por qué la Biblia es la base firme para conocer a Dios.",
+      items:[ {heading:"2 Timoteo 3:16-17",body:"<p>Toda la Escritura es inspirada por Dios. Notas aquí.</p>"}, {heading:"Hechos 17:11",body:"<p>Los de Berea examinaban cada día las Escrituras.</p>"} ] },
+    { slug:"leccion-3",  title:"Lección 3: El arrepentimiento",             published:false, purpose:"Comprender qué es volverse a Dios de todo corazón.",
+      items:[ {heading:"Hechos 3:19",body:"<p>«Arrepentíos y convertíos, para que sean borrados vuestros pecados.»</p>"}, {heading:"Lucas 15:11-24",body:"<p>El hijo pródigo: el regreso al Padre.</p>"} ] },
+    { slug:"leccion-4",  title:"Lección 4: La fe y la salvación",           published:false, purpose:"Ver que la salvación es un regalo de Dios recibido por fe.",
+      items:[ {heading:"Efesios 2:8-9",body:"<p>Por gracia sois salvos por medio de la fe.</p>"}, {heading:"Romanos 10:9-10",body:"<p>Confesar y creer para ser salvo.</p>"} ] },
+    { slug:"leccion-5",  title:"Lección 5: El bautismo",                    published:false, purpose:"Conocer el significado del bautismo como paso de obediencia.",
+      items:[ {heading:"Romanos 6:3-4",body:"<p>Sepultados con él en el bautismo para andar en vida nueva.</p>"}, {heading:"Mateo 28:19-20",body:"<p>El mandato de hacer discípulos y bautizarlos.</p>"} ] },
+    { slug:"leccion-6",  title:"Lección 6: La oración",                     published:false, purpose:"Aprender a hablar con Dios como con un Padre.",
+      items:[ {heading:"Mateo 6:9-13",body:"<p>El modelo de oración que Jesús enseñó.</p>"}, {heading:"Filipenses 4:6-7",body:"<p>Por nada estéis afanosos; presentad vuestras peticiones.</p>"} ] },
+    { slug:"leccion-7",  title:"Lección 7: El Espíritu Santo",              published:false, purpose:"Reconocer la obra del Espíritu en la vida del creyente.",
+      items:[ {heading:"Juan 14:16-17",body:"<p>El Consolador que estará con nosotros para siempre.</p>"}, {heading:"Gálatas 5:22-23",body:"<p>El fruto del Espíritu.</p>"} ] },
+    { slug:"leccion-8",  title:"Lección 8: La iglesia y la comunión",       published:false, purpose:"Entender el valor de caminar junto a otros creyentes.",
+      items:[ {heading:"Hechos 2:42-47",body:"<p>Perseveraban en la doctrina, la comunión y la oración.</p>"}, {heading:"Hebreos 10:24-25",body:"<p>No dejar de congregarnos.</p>"} ] },
+    { slug:"leccion-9",  title:"Lección 9: El carácter cristiano",          published:false, purpose:"Crecer en el carácter de Cristo en lo cotidiano.",
+      items:[ {heading:"1 Juan 2:6",body:"<p>El que permanece en él, debe andar como él anduvo.</p>"}, {heading:"Mateo 5:1-12",body:"<p>Las bienaventuranzas: el corazón del reino.</p>"} ] },
+    { slug:"leccion-10", title:"Lección 10: La esperanza — el regreso de Cristo", published:false, purpose:"Vivir con la esperanza del regreso de Jesús.",
+      items:[ {heading:"Juan 14:1-3",body:"<p>«Vendré otra vez y os tomaré a mí mismo.»</p>"}, {heading:"1 Tesalonicenses 4:16-17",body:"<p>El Señor descenderá del cielo.</p>"} ] }
+  ],
+  discipulado: [
+    { slug:"leccion-1",  title:"Lección 1: Mi identidad en Cristo",         published:true,  purpose:"Descubrir quién soy ahora que estoy en Cristo.",
+      items:[ {heading:"2 Corintios 5:17",body:"<p>«Si alguno está en Cristo, nueva criatura es.» ¿Qué ha cambiado en ti?</p>"}, {heading:"Efesios 1:3-8",body:"<p>Bendecidos con toda bendición espiritual en Cristo.</p>"}, {heading:"Para reflexionar",body:"<p>¿Qué mentiras sobre tu identidad debes reemplazar con la verdad de quién eres en Cristo?</p>"} ] },
+    { slug:"leccion-2",  title:"Lección 2: La obediencia como amor",        published:false, purpose:"Entender que obedecer a Dios no es religión sino amor.",
+      items:[ {heading:"Juan 14:15",body:"<p>«Si me amáis, guardad mis mandamientos.»</p>"}, {heading:"1 Juan 5:3",body:"<p>Sus mandamientos no son gravosos.</p>"} ] },
+    { slug:"leccion-3",  title:"Lección 3: La Palabra diaria",              published:false, purpose:"Cultivar el hábito de leer y meditar la Biblia cada día.",
+      items:[ {heading:"Salmo 119:105",body:"<p>«Lámpara es a mis pies tu palabra.»</p>"}, {heading:"Josué 1:8",body:"<p>Meditar de día y de noche; el camino próspero.</p>"} ] },
+    { slug:"leccion-4",  title:"Lección 4: La tentación y la victoria",     published:false, purpose:"Conocer cómo Dios provee salida en cada tentación.",
+      items:[ {heading:"1 Corintios 10:13",body:"<p>No os ha sobrevenido ninguna tentación que no sea humana.</p>"}, {heading:"Santiago 4:7",body:"<p>Resistid al diablo y huirá de vosotros.</p>"} ] },
+    { slug:"leccion-5",  title:"Lección 5: El perdón — dar y recibir",      published:false, purpose:"Experimentar la libertad del perdón en ambas direcciones.",
+      items:[ {heading:"Efesios 4:32",body:"<p>Perdonándoos unos a otros, como Dios también os perdonó en Cristo.</p>"}, {heading:"Mateo 18:21-35",body:"<p>La parábola del siervo que no perdonó.</p>"} ] },
+    { slug:"leccion-6",  title:"Lección 6: Servir como Jesús",              published:false, purpose:"Aprender que el liderazgo cristiano es servicio.",
+      items:[ {heading:"Marcos 10:43-45",body:"<p>«El que quiera ser grande entre vosotros será vuestro servidor.»</p>"}, {heading:"Juan 13:12-17",body:"<p>Jesús lava los pies de sus discípulos.</p>"} ] },
+    { slug:"leccion-7",  title:"Lección 7: La mayordomía y el dar",         published:false, purpose:"Ver que todo lo que tenemos es de Dios y estamos llamados a ser generosos.",
+      items:[ {heading:"2 Corintios 9:6-8",body:"<p>El que siembra generosamente, generosamente también segará.</p>"}, {heading:"Lucas 21:1-4",body:"<p>La ofrenda de la viuda: dar de lo que se tiene.</p>"} ] },
+    { slug:"leccion-8",  title:"Lección 8: Las relaciones que edifican",    published:false, purpose:"Cultivar relaciones sanas dentro y fuera del cuerpo de Cristo.",
+      items:[ {heading:"Proverbios 27:17",body:"<p>«El hierro con hierro se aguza; y así el hombre aguza el rostro de su amigo.»</p>"}, {heading:"Romanos 12:9-13",body:"<p>El amor sincero y la vida en comunidad cristiana.</p>"} ] },
+    { slug:"leccion-9",  title:"Lección 9: Mi testimonio",                  published:false, purpose:"Aprender a contar mi historia de fe de manera clara y natural.",
+      items:[ {heading:"1 Pedro 3:15",body:"<p>Estad siempre preparados para presentar defensa ante todo el que os demande razón de la esperanza.</p>"}, {heading:"Hechos 26:1-23",body:"<p>Pablo comparte su testimonio: antes, el encuentro, el después.</p>"} ] },
+    { slug:"leccion-10", title:"Lección 10: Perseverar hasta el final",      published:false, purpose:"Mantener la fe firme hasta ver a Cristo.",
+      items:[ {heading:"Hebreos 12:1-3",body:"<p>Corramos con paciencia la carrera que nos es propuesta, puestos los ojos en Jesús.</p>"}, {heading:"Apocalipsis 2:10",body:"<p>«Sé fiel hasta la muerte, y yo te daré la corona de la vida.»</p>"} ] }
+  ],
+  evangelismo: [
+    { slug:"leccion-1",  title:"Lección 1: El evangelio en una frase",      published:true,  purpose:"Ser capaz de explicar el evangelio de forma clara y breve.",
+      items:[ {heading:"1 Corintios 15:3-4",body:"<p>Cristo murió por nuestros pecados, fue sepultado y resucitó al tercer día. Practica decirlo con tus propias palabras.</p>"}, {heading:"Romanos 1:16",body:"<p>El evangelio es poder de Dios para salvación.</p>"}, {heading:"Para practicar",body:"<p>Escribe el evangelio en 2-3 oraciones como si se lo explicaras a un amigo.</p>"} ] },
+    { slug:"leccion-2",  title:"Lección 2: El problema del pecado",         published:false, purpose:"Entender por qué todos necesitamos el evangelio.",
+      items:[ {heading:"Romanos 3:23",body:"<p>«Todos pecaron y están destituidos de la gloria de Dios.»</p>"}, {heading:"Romanos 6:23",body:"<p>«La paga del pecado es muerte.»</p>"} ] },
+    { slug:"leccion-3",  title:"Lección 3: La obra de Cristo en la cruz",   published:false, purpose:"Comprender lo que Jesús logró en la cruz por nosotros.",
+      items:[ {heading:"Isaías 53:4-6",body:"<p>Él llevó nuestros pecados; por su llaga fuimos nosotros curados.</p>"}, {heading:"2 Corintios 5:21",body:"<p>Al que no conoció pecado, por nosotros lo hizo pecado.</p>"} ] },
+    { slug:"leccion-4",  title:"Lección 4: Cómo compartir tu fe",           published:false, purpose:"Aprender a iniciar conversaciones espirituales de manera natural.",
+      items:[ {heading:"Colosenses 4:5-6",body:"<p>Andad sabiamente para con los de afuera; que vuestra conversación sea siempre con gracia.</p>"}, {heading:"Juan 4:7-26",body:"<p>Jesús y la mujer samaritana: el arte de llegar al corazón.</p>"} ] },
+    { slug:"leccion-5",  title:"Lección 5: Responder objeciones comunes",   published:false, purpose:"Estar preparado para responder preguntas difíciles con gracia y verdad.",
+      items:[ {heading:"1 Pedro 3:15",body:"<p>Estad siempre preparados para dar razón de vuestra esperanza, pero con mansedumbre.</p>"}, {heading:"Objeciones frecuentes",body:"<p>¿Cómo puede Dios permitir el sufrimiento? ¿Hay un solo camino? ¿La Biblia es confiable?</p>"} ] },
+    { slug:"leccion-6",  title:"Lección 6: La urgencia — el tiempo es corto", published:false, purpose:"Sentir el peso eterno de compartir el evangelio ahora.",
+      items:[ {heading:"2 Corintios 6:2",body:"<p>«Ahora es el tiempo aceptable; ahora es el día de salvación.»</p>"}, {heading:"Ezequiel 33:8",body:"<p>La responsabilidad del que conoce la verdad.</p>"} ] },
+    { slug:"leccion-7",  title:"Lección 7: Orar por los perdidos",           published:false, purpose:"Hacer de la intercesión el fundamento de nuestro evangelismo.",
+      items:[ {heading:"1 Timoteo 2:1-4",body:"<p>Que se hagan rogativas, oraciones, peticiones y acciones de gracias por todos los hombres.</p>"}, {heading:"Para practicar",body:"<p>Escribe 3 nombres de personas perdidas por quienes orarás esta semana.</p>"} ] },
+    { slug:"leccion-8",  title:"Lección 8: El discipulado del nuevo creyente", published:false, purpose:"Saber qué hacer después de que alguien cree.",
+      items:[ {heading:"Mateo 28:19-20",body:"<p>«Id y haced discípulos… enseñándoles que guarden todas las cosas que os he mandado.»</p>"}, {heading:"1 Tesalonicenses 2:7-8",body:"<p>Como la nodriza que cuida a sus propios hijos, compartimos no solo el evangelio sino también nuestras propias vidas.</p>"} ] },
+    { slug:"leccion-9",  title:"Lección 9: Historias bíblicas de evangelismo", published:false, purpose:"Aprender de los evangelistas de la Biblia.",
+      items:[ {heading:"Hechos 8:26-38",body:"<p>Felipe y el etíope: seguir la guía del Espíritu y explicar las Escrituras.</p>"}, {heading:"Hechos 17:16-34",body:"<p>Pablo en Atenas: hablar al contexto cultural sin comprometer el mensaje.</p>"} ] },
+    { slug:"leccion-10", title:"Lección 10: Vivir como testigo cada día",     published:false, purpose:"Integrar el evangelismo en la vida diaria, no como evento sino como estilo de vida.",
+      items:[ {heading:"Hechos 1:8",body:"<p>«Me seréis testigos en Jerusalén, en Judea, en Samaria y hasta lo último de la tierra.»</p>"}, {heading:"Mateo 5:13-16",body:"<p>Sal de la tierra y luz del mundo: visibilidad sin arrogancia.</p>"} ] }
+  ]
+};
 
 /* ================================================================
    Util
@@ -172,31 +270,37 @@ function indexHtml(title) {
 }
 
 function dataJs(opts) {
+  const pages = SERIES_PAGES[opts.serie] || SERIES_PAGES.fundamentos;
+  const enc = s => JSON.stringify(s == null ? "" : String(s));
+
   const lines = [];
   lines.push("/* Usuario: " + (opts.name || "") + "  (carpeta: " + opts.code + ") */");
+  lines.push("/* Serie: " + opts.serie + " */");
   lines.push("window.STUDENT_SITE = {");
-  lines.push("  title: " + jsstr(opts.title) + ",");
-  lines.push("  student: " + jsstr(opts.name) + ",");
+  lines.push("  title: " + enc(opts.title) + ",");
+  lines.push("  student: " + enc(opts.name) + ",");
   if (opts.headerFile)
-    lines.push("  headerImage: " + jsstr("img/header." + extOf(opts.headerFile)) + ",");
+    lines.push("  headerImage: " + enc("img/header." + extOf(opts.headerFile)) + ",");
   const hasFooter = opts.footerFile || opts.footerTitle || opts.footerText;
-  if (hasFooter) {
-    lines.push("  footer: {");
-    if (opts.footerFile) lines.push("    image: " + jsstr("img/footer." + extOf(opts.footerFile)) + ",");
-    if (opts.footerTitle) lines.push("    title: " + jsstr(opts.footerTitle) + ",");
-    if (opts.footerText)  lines.push("    text: "  + jsstr(opts.footerText)  + ",");
-    lines.push("  },");
-  }
+  lines.push("  footer: {");
+  if (opts.footerFile)  lines.push("    image: "  + enc("img/footer." + extOf(opts.footerFile)) + ",");
+  lines.push("    title: " + enc(opts.footerTitle || "Como los de Berea, escudriñaban cada día las Escrituras.") + ",");
+  lines.push("    text: "  + enc(opts.footerText  || "Hechos 17:11") + ",");
+  lines.push("  },");
   lines.push("  pages: [");
-  lines.push("    {");
-  lines.push("      slug: \"estudio-1\",");
-  lines.push("      title: \"Estudio 1\",");
-  lines.push("      type: \"accordion\",");
-  lines.push("      purpose: \"Edita este archivo para poner el contenido de " + (opts.name || "este usuario") + ".\",");
-  lines.push("      items: [");
-  lines.push("        { heading: \"Primer tema\", body: \"<p>Escribe aquí el contenido.<\/p>\" }");
-  lines.push("      ]");
-  lines.push("    }");
+  for (const p of pages) {
+    lines.push("    {");
+    lines.push("      slug: "      + enc(p.slug)    + ",");
+    lines.push("      title: "     + enc(p.title)   + ",");
+    lines.push("      published: " + p.published    + ",");
+    lines.push("      type: \"accordion\",");
+    lines.push("      purpose: "   + enc(p.purpose) + ",");
+    lines.push("      items: [");
+    for (const it of p.items)
+      lines.push("        { heading: " + enc(it.heading) + ", body: " + enc(it.body) + " },");
+    lines.push("      ]");
+    lines.push("    },");
+  }
   lines.push("  ]");
   lines.push("};");
   return lines.join("\n") + "\n";
@@ -279,10 +383,15 @@ async function collectFiles(opts) {
 function readForm() {
   const name = document.getElementById("name").value.trim();
   if (!name) throw new Error("Escribe el nombre del usuario.");
+  const serie = document.getElementById("serie").value;
   const rawTitle = document.getElementById("title").value.trim();
+  const defaultTitle = serie === "discipulado" ? "Discipulado con " + name
+                     : serie === "evangelismo"  ? "Evangelismo con " + name
+                     : "Los estudios de " + name;
   return {
     name,
-    title: rawTitle || "Los estudios de " + name,
+    serie,
+    title: rawTitle || defaultTitle,
     headerFile: document.getElementById("header").files[0] || null,
     footerFile: document.getElementById("footer").files[0] || null,
     footerTitle: document.getElementById("footerTitle").value.trim(),
@@ -296,7 +405,7 @@ function showResult(opts, mode) {
   const out = document.getElementById("out");
   out.className = "out show";
   out.innerHTML =
-    `<p><strong>¡Listo!</strong> Usuario: <strong>${esc(opts.name)}<\/strong><\/p>` +
+    `<p><strong>¡Listo!</strong> Usuario: <strong>${esc(opts.name)}<\/strong> · Serie: <strong>${esc(opts.serie)}<\/strong><\/p>` +
     `<p>Código de carpeta: <code>${opts.code}<\/code><\/p>` +
     (mode === "zip"
       ? `<p>Se descargó <code>${opts.code}.zip<\/code>. Descomprímelo dentro de <code>sites\/<\/code> de tu repo (queda <code>sites\/${opts.code}\/<\/code>), haz commit y push.<\/p>`
@@ -351,7 +460,7 @@ document.getElementById("fsBtn").addEventListener("click", async () => {
 });
 
 /* expuesto para pruebas */
-window.__tool = { buildZip, crc32, dataJs, indexHtml, randomCode, extOf };
+window.__tool = { buildZip, crc32, dataJs, indexHtml, randomCode, extOf, SERIES_PAGES };
 </script>
 </body>
 </html>
