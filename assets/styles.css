@@ -15,7 +15,7 @@
   --color-line: #e2e2e2;
   --color-bg: #ffffff;
   --header-image: url("img/header-bg.svg"); /* resuelto relativo a assets/ */
-  --header-height: 340px;
+  --header-height: clamp(340px, 52vh, 480px); /* header más alto, proporcional a la pantalla */
   --max-width: 820px;
   --topbar-height: 52px;
   --font-serif: Georgia, "Times New Roman", serif;
@@ -242,7 +242,7 @@ body {
 .nav-drawer__list a:hover { background: #f3f5f8; }
 .nav-drawer__list a.active { color: var(--color-accent); border-left-color: var(--color-accent); font-weight: 600; }
 
-@media (min-width: 720px) { :root { --header-height: 420px; } }
+@media (min-width: 720px) { :root { --header-height: clamp(420px, 56vh, 620px); } }
 
 /* Respeta a quien prefiere menos movimiento: sin parallax. */
 @media (prefers-reduced-motion: reduce) {
