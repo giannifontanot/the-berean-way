@@ -238,16 +238,25 @@
     }));
   }
 
+  // Un solo listener global (no se apila en cada navegación); lee el header
+  // actual en cada scroll para no quedarse con uno viejo de altura 0.
+  let topbarWired = false;
   function wireTopbarScroll() {
+    if (!topbarWired) {
+      topbarWired = true;
+      window.addEventListener("scroll", updateTopbar, { passive: true });
+    }
+    updateTopbar();
+  }
+  function updateTopbar() {
     const topbar = document.querySelector(".topbar");
     const hero = document.querySelector(".hero");
     if (!topbar) return;
     if (!hero) { topbar.classList.add("solid"); return; }
     // Transparente mientras la barra está sobre el header; oscura (.solid) en
     // cuanto el header termina de pasar por detrás de la barra.
-    const onScroll = () => topbar.classList.toggle("solid", window.scrollY > hero.offsetHeight - topbar.offsetHeight);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const y = window.scrollY || window.pageYOffset || 0;
+    topbar.classList.toggle("solid", y > hero.offsetHeight - topbar.offsetHeight);
   }
 
   /* ---------- Parallax 3D del header/footer ----------
