@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extractor de Google Sites · The Berean Way</title>
+<style>
+  :root { --accent:#2a6f97; --line:#dcdcdc; --green:#1a7f4b; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+         max-width:680px; margin:0 auto; padding:28px 18px 80px; color:#222; line-height:1.6; }
+  h1 { font-family:Georgia,serif; font-weight:400; }
+  h2 { font-size:1rem; font-weight:700; margin:32px 0 6px;
+       border-bottom:1px solid var(--line); padding-bottom:6px; color:#444; }
+  p.muted { color:#666; }
+  .step { display:flex; gap:14px; margin:18px 0; }
+  .step-num { flex-shrink:0; width:32px; height:32px; border-radius:50%;
+              background:var(--accent); color:#fff; font-weight:700;
+              display:flex; align-items:center; justify-content:center; font-size:.9rem; }
+  .step-body { padding-top:4px; }
+  .step-body strong { display:block; margin-bottom:2px; }
+  /* bookmarklet button */
+  .bm-wrap { margin:24px 0; padding:20px; background:#f0f6fb;
+             border-radius:14px; border:2px dashed var(--accent); text-align:center; }
+  .bm-wrap p { margin:0 0 12px; color:#444; font-size:.95rem; }
+  .bm-btn {
+    display:inline-block; padding:14px 22px; background:var(--accent); color:#fff;
+    border-radius:10px; font-size:1rem; font-weight:600; text-decoration:none;
+    cursor:grab; border:none; box-shadow:0 2px 8px rgba(42,111,151,.35);
+    transition:background .15s;
+  }
+  .bm-btn:hover { background:#1d5275; }
+  .bm-btn:active { cursor:grabbing; }
+  .hint { color:#666; font-size:.85rem; margin-top:10px; }
+  /* result box */
+  .out { margin-top:28px; display:none; }
+  .out.show { display:block; }
+  textarea {
+    width:100%; min-height:320px; font-family:monospace; font-size:.82rem;
+    padding:12px; border:1px solid var(--line); border-radius:10px;
+    background:#fafbfc; resize:vertical;
+  }
+  .btns { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  button { font-size:.95rem; padding:10px 16px; border-radius:9px; border:none; cursor:pointer; }
+  .primary { background:var(--accent); color:#fff; }
+  .ghost   { background:#eef2f6; color:#23415a; }
+  .ok { color:var(--green); font-weight:600; margin-top:8px; min-height:1.4em; }
+  code { background:#eef2f6; padding:2px 6px; border-radius:5px; font-size:.88rem; }
+  kbd  { background:#e8e8e8; border:1px solid #bbb; border-radius:4px;
+         padding:1px 6px; font-size:.85rem; font-family:inherit; }
+</style>
+</head>
+<body>
+
+<h1>Extractor de Google Sites</h1>
+<p class="muted">Copia el contenido de un Google Site a tu portapapeles en formato de texto estructurado,
+listo para convertirlo en lecciones de The Berean Way.</p>
+
+<h2>Cómo usarlo</h2>
+
+<div class="step">
+  <div class="step-num">1</div>
+  <div class="step-body">
+    <strong>Arrastra el botón a tu barra de marcadores</strong>
+    Mantén presionado el botón de abajo y arrástralo hasta la barra de favoritos
+    de tu navegador (Chrome, Edge o Firefox). Quédate con ese marcador — solo
+    necesitas instalarlo una vez.
+  </div>
+</div>
+
+<div class="bm-wrap">
+  <p>Arrastra este botón a tu barra de favoritos:</p>
+  <a class="bm-btn" id="bmLink" href="#">&#128203; Extraer contenido</a>
+  <p class="hint">Si no ves la barra de favoritos: <kbd>Ctrl+Shift+B</kbd> (Windows) · <kbd>Cmd+Shift+B</kbd> (Mac)</p>
+</div>
+
+<div class="step">
+  <div class="step-num">2</div>
+  <div class="step-body">
+    <strong>Abre el Google Site en otra pestaña</strong>
+    Ve a <code>sites.google.com/view/los-estudios-de-jennifer/</code>
+    y navega a la página (lección) que quieres copiar.
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">3</div>
+  <div class="step-body">
+    <strong>Haz clic en el marcador “Extraer contenido”</strong>
+    El script corre en esa pestaña, extrae el texto estructurado y lo copia
+    al portapapeles. También lo muestra en un cuadro emergente para que
+    puedas revisarlo.
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-num">4</div>
+  <div class="step-body">
+    <strong>Pega el resultado aquí abajo</strong>
+    Vuelve a esta página y pega el texto en el cuadro de abajo.
+    Luego haz clic en <strong>Enviar a Claude</strong> para que lo convierta
+    en lecciones del formato <code>data.js</code>.
+  </div>
+</div>
+
+<h2>Pegar el contenido extraído</h2>
+<p>Después de usar el marcador en cada lección, pega el resultado aquí.
+Puedes pegar varias lecciones seguidas; séparlas con una línea en blanco.</p>
+
+<textarea id="rawText" placeholder="Pega aquí el texto extraído del Google Site..."></textarea>
+
+<div class="btns">
+  <button class="primary" id="copyBtn">&#128203; Copiar todo al portapapeles</button>
+  <button class="ghost"   id="clearBtn">Limpiar</button>
+</div>
+<p class="ok" id="okMsg"></p>
+
+<script>
+/* ============================================================
+   Bookmarklet code (runs inside Google Sites tab)
+   ============================================================ */
+const BOOKMARKLET_CODE = (function() {
+  function extractPage() {
+    // Recoge todos los bloques de texto visibles en orden DOM
+    const blocks = [];
+    const seen   = new Set();
+
+    // Selectores que Google Sites suele usar
+    const sel = [
+      'h1','h2','h3','h4',
+      '[role="heading"]',
+      'p','li',
+      '[data-block-id] div[dir]',   // bloques de texto en nuevo Google Sites
+      '.tyJCtd',                    // contenedor principal de contenido
+      'c-wiz p', 'c-wiz li',
+      'div.XqQF9c',                 // párrafos en algunas versiones
+    ].join(',');
+
+    document.querySelectorAll(sel).forEach(el => {
+      const txt = (el.innerText || el.textContent || '').trim();
+      if (!txt || seen.has(txt)) return;
+      // Ignora menús de navegación (textos muy cortos repetidos)
+      if (txt.length < 3) return;
+      seen.add(txt);
+
+      const tag = el.tagName ? el.tagName.toLowerCase() : 'p';
+      const role = el.getAttribute('role') || '';
+      const isHeading = /^h[1-4]$/.test(tag) || role === 'heading';
+
+      blocks.push({ type: isHeading ? 'heading' : 'text', content: txt });
+    });
+
+    if (!blocks.length) {
+      // Fallback: volcar todo el body como texto plano
+      blocks.push({ type: 'text', content: document.body.innerText });
+    }
+
+    // Formato legible
+    const lines = [];
+    lines.push('=== PÁGINA: ' + document.title + ' ===');
+    lines.push('URL: ' + location.href);
+    lines.push('');
+    blocks.forEach(b => {
+      if (b.type === 'heading') {
+        lines.push('\n# ' + b.content);
+      } else {
+        lines.push(b.content);
+      }
+    });
+    return lines.join('\n');
+  }
+
+  const text = extractPage();
+
+  // Intenta copiar al portapapeles
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(() => {});
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+
+  // Muestra en un alert para confirmar
+  const preview = text.slice(0, 600) + (text.length > 600 ? '\n\n[... ' + text.length + ' caracteres en total]' : '');
+  alert('✅ Contenido copiado al portapapeles:\n\n' + preview);
+}).toString();
+
+// Construye el href del bookmarklet
+const bm = 'javascript:('+encodeURIComponent('('+BOOKMARKLET_CODE+')()')+')void 0';
+document.getElementById('bmLink').href = bm;
+
+/* ============================================================
+   Botones de la página
+   ============================================================ */
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const txt = document.getElementById('rawText').value;
+  if (!txt.trim()) { document.getElementById('okMsg').textContent = 'El cuadro está vacío.'; return; }
+  navigator.clipboard.writeText(txt)
+    .then(() => { document.getElementById('okMsg').textContent = '✅ Copiado al portapapeles. Ahóra pégalo en el chat con Claude.'; })
+    .catch(() => { document.getElementById('okMsg').textContent = 'No se pudo copiar automáticamente. Usa Ctrl+A y Ctrl+C en el cuadro.'; });
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('rawText').value = '';
+  document.getElementById('okMsg').textContent = '';
+});
+</script>
+</body>
+</html>
