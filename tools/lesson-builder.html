@@ -9,7 +9,7 @@
   * { box-sizing:border-box; }
   body { font-family:Arial,Helvetica,sans-serif;
          font-size:18px; line-height:1.5;
-         max-width:980px; margin:0 auto; padding:24px 18px 80px; color:#222; }
+         max-width:1040px; margin:0 auto; padding:24px 18px 80px; color:#222; }
   h1 { font-family:Georgia,serif; font-weight:400; }
   h2 { font-size:1rem; font-weight:700; margin:26px 0 6px;
        border-bottom:1px solid var(--line); padding-bottom:6px; color:#444; }
@@ -17,11 +17,11 @@
   label { display:block; font-weight:600; margin:14px 0 5px; }
   input[type=text], textarea {
     width:100%; font-size:.95rem; padding:9px 12px; border:1px solid var(--line); border-radius:9px; }
-  textarea#src { min-height:340px; font-family:monospace; font-size:.85rem; line-height:1.5; resize:vertical; }
-  textarea#out { min-height:240px; font-family:monospace; font-size:.78rem; background:#1e1e2e; color:#cdd6f4; resize:vertical; }
+  textarea.src { min-height:220px; font-family:monospace; font-size:.85rem; line-height:1.5; resize:vertical; }
+  textarea#out { min-height:240px; font-family:monospace; font-size:.78rem; background:#1e1e2e; color:#cdd6f4; resize:vertical; width:100%; }
   .row { display:flex; gap:18px; flex-wrap:wrap; }
   .col { flex:1 1 420px; min-width:0; }
-  .btns { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+  .btns { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; align-items:center; }
   button { font-size:.95rem; padding:10px 16px; border-radius:9px; border:none; cursor:pointer; }
   .primary { background:var(--accent); color:#fff; }
   .ghost   { background:#eef2f6; color:#23415a; }
@@ -33,7 +33,22 @@
   details.help td { padding:5px 8px; border-bottom:1px solid #eee; vertical-align:top; }
   details.help td:first-child { white-space:nowrap; font-family:monospace; color:#23415a; }
 
+  /* ---- tarjeta de lección ---- */
+  .lesson-card { border:1px solid var(--line); border-radius:12px; margin:14px 0; background:#fff; overflow:hidden; }
+  .lesson-card__head {
+    display:flex; align-items:center; gap:8px; padding:10px 12px; background:#f3f6f9; border-bottom:1px solid var(--line); }
+  .lesson-card__num { font-weight:700; color:var(--accent); white-space:nowrap; }
+  .lesson-card__title { flex:1; min-width:0; }
+  .lesson-card__title input { font-weight:600; }
+  .lesson-card__head button { padding:6px 10px; font-size:.9rem; background:#e7edf3; color:#23415a; }
+  .lesson-card__head button:hover { background:#d8e2ec; }
+  .lesson-card__head button.del:hover { background:#f3d4d4; color:#a11; }
+  .lesson-card__body { padding:12px 14px; }
+  .lesson-card.collapsed .lesson-card__body { display:none; }
+
   /* ---- subir imágenes (header/footer) ---- */
+  .imgrow { display:flex; gap:14px; flex-wrap:wrap; margin-top:10px; }
+  .imgrow .col { flex:1 1 200px; }
   .dz { border:2px dashed var(--line); border-radius:10px; padding:10px; text-align:center;
         cursor:pointer; color:#888; font-size:.82rem; background:#fafbfc; position:relative; margin-top:6px; }
   .dz:hover, .dz.drag-over { border-color:var(--accent); background:#eef6fb; }
@@ -70,14 +85,15 @@
 <body>
 
 <h1>Editor de lecciones</h1>
-<p class="muted">Pega tus lecciones en el formato sencillo (abajo está la guía), míralas en la
-vista previa, y genera el <code>data.js</code> listo para una carpeta de usuario o una plantilla.</p>
+<p class="muted">Cada lección es una tarjeta con su contenido y sus imágenes de header/footer.
+Escribe en el formato sencillo (abajo está la guía), míralo en la vista previa, y genera el
+<code>data.js</code> para una serie original o la carpeta de un alumno. También puedes
+<strong>📂 Cargar</strong> un <code>data.js</code> ya existente para seguir editándolo.</p>
 
 <details class="help">
   <summary>📖 Guía rápida del formato</summary>
   <table>
-    <tr><td># Título</td><td>Empieza una lección nueva (es el título que va en el menú). Un solo <code>#</code>.</td></tr>
-    <tr><td>texto suelto</td><td>Lo que escribas debajo del título (antes del primer <code>=</code>) es la introducción, fuera del acordeón.</td></tr>
+    <tr><td>texto suelto</td><td>Lo que escribas arriba (antes del primer <code>=</code>) es la introducción, fuera del acordeón.</td></tr>
     <tr><td>=</td><td><strong>Abre</strong> un acordeón. El encabezado puede ir en la misma línea (<code>= Juan 1:1</code>) o en la línea siguiente (p.ej. <code>### Juan 1:1</code>).</td></tr>
     <tr><td>==</td><td><strong>Cierra</strong> el acordeón.</td></tr>
     <tr><td>- punto</td><td>Lista de viñetas (•).</td></tr>
@@ -88,6 +104,8 @@ vista previa, y genera el <code>data.js</code> listo para una carpeta de usuario
     <tr><td>{rojo: texto}</td><td>Color. Nombres: rojo, azul, verde, dorado, gris, naranja, morado. O hex: <code>{#ff8800: texto}</code>.</td></tr>
     <tr><td>{biblia: 1 En el principio...}</td><td>Escritura en rojo 18px; los números de versículo salen pequeños (10px). Puede abarcar varias líneas.</td></tr>
   </table>
+  <p class="muted" style="font-size:.85rem">El <strong>título de cada lección</strong> se escribe en el campo de la tarjeta (es el texto del encabezado).
+  La <strong>imagen del header</strong> y la del <strong>footer</strong> se suben en cada tarjeta. El footer no lleva texto.</p>
 </details>
 
 <div class="row">
@@ -103,66 +121,23 @@ vista previa, y genera el <code>data.js</code> listo para una carpeta de usuario
         <input type="text" id="student" placeholder="NOMBRE" value="NOMBRE">
       </div>
     </div>
-    <div class="row">
-      <div class="col" style="flex:1 1 180px">
-        <label>Imagen del header</label>
-        <input type="text" id="headerImage" placeholder="img/header.png">
-        <div class="dz" id="dzHeader">
-          <input type="file" id="headerFile" accept="image/*">
-          <img id="thHeader" alt="">
-          <span class="dz-label">📁 Subir imagen…</span>
-        </div>
-      </div>
-      <div class="col" style="flex:1 1 180px">
-        <label>Imagen del footer</label>
-        <input type="text" id="footerImage" placeholder="img/footer.png">
-        <div class="dz" id="dzFooter">
-          <input type="file" id="footerFile" accept="image/*">
-          <img id="thFooter" alt="">
-          <span class="dz-label">📁 Subir imagen…</span>
-        </div>
-      </div>
+    <p class="muted" style="font-size:.82rem;margin:6px 0 0">El título del sitio y el nombre son únicos para todo el estudio.
+    El texto que se ve en el encabezado de cada página es el <strong>título de la lección</strong>.</p>
+
+    <h2>2 · Lecciones</h2>
+    <div id="lessons"></div>
+    <div class="btns">
+      <button class="ghost" id="addBtn">➕ Agregar lección</button>
     </div>
-    <p class="muted" style="font-size:.82rem;margin:6px 0 0">Sube las imágenes con el botón y luego usa
-    <strong>⬇ Descargar .zip</strong> (incluye <code>data.js</code> + carpeta <code>img/</code>) o
-    <strong>💾 Guardar en carpeta…</strong> para escribir directo en la carpeta de la serie.
-    Si dejas la imagen vacía se usa el fondo compartido. Se recuerda la última ruta usada.</p>
-
-    <label>Frase del footer</label>
-    <input type="text" id="footerTitle" value="Como los de Berea, escudriñaban cada día las Escrituras.">
-    <label>Texto del footer</label>
-    <input type="text" id="footerText" value="Hechos 17:11">
-
-    <h2>2 · Lecciones (pega aquí)</h2>
-    <textarea id="src" spellcheck="false"># Buscando a Dios
-
-=
-### Jeremías 29:11-13
-{biblia: 11 Porque yo conozco los planes que tengo para ustedes —afirma el Señor—, planes de bienestar y no de calamidad, a fin de darles un futuro y una esperanza. 12 Entonces ustedes me invocarán, vendrán a suplicarme y yo los escucharé. 13 Me buscarán y me encontrarán cuando me busquen de todo corazón.}
-
-A. Contexto: Dios envió un mensaje al pueblo de Israel durante su destierro en Babilonia.
-
-B. Así como con Israel, Dios desea tener una relación cercana con cada uno de nosotros.
-
-C. Dios tiene planes perfectos para nuestro bienestar y para darnos esperanza.
-==
-
-=
-### ¿Cómo tener una relación personal con Dios?
-Es una amistad en dos sentidos:
-
-1. Escuchamos a Dios hablar: Estudiando la Biblia.
-
-2. Nosotros hablamos con Dios: Orando.
-==
-</textarea>
 
     <div class="btns">
       <button class="primary" id="genBtn">⚙ Generar data.js</button>
       <button class="ghost" id="copyBtn">📋 Copiar data.js</button>
+      <button class="ghost" id="loadBtn">📂 Cargar data.js…</button>
       <button class="ghost" id="zipBtn">⬇ Descargar .zip</button>
       <button class="ghost" id="saveBtn">💾 Guardar en carpeta…</button>
-      <small style="align-self:center;color:#666;">→ luego: git add · commit · push</small>
+      <small style="color:#666;">→ luego: git add · commit · push</small>
+      <input type="file" id="loadFile" accept=".js,text/javascript" style="display:none">
     </div>
     <p class="ok" id="msg"></p>
 
@@ -222,8 +197,7 @@ function inline(text) {
   return t;
 }
 
-/* une líneas de un bloque {marca: ...} que abarca varias líneas
-   (p.ej. un {biblia: ...} con una línea en blanco en medio) en una sola. */
+/* une líneas de un bloque {marca: ...} que abarca varias líneas en una sola. */
 function mergeBraces(lines) {
   const out = [];
   let buf = null;
@@ -284,8 +258,6 @@ function blockToHtml(lines) {
     }
 
     if (line.trim() === "") {
-      // Si estamos en una lista y la próxima línea no vacía continúa
-      // la misma lista, ignoramos el blanco (lista "suelta").
       if (list) {
         let j = i + 1;
         while (j < lines.length && lines[j].trim() === "") j++;
@@ -298,7 +270,6 @@ function blockToHtml(lines) {
       continue;
     }
 
-    // línea normal
     flushList();
     para.push(line.trim());
   }
@@ -307,36 +278,20 @@ function blockToHtml(lines) {
 }
 
 /* ============================================================
-   Parser de lecciones
+   Parser del cuerpo de UNA lección (sin el título, va aparte)
    ============================================================ */
-function parseLessons(text) {
-  const lines = text.split(/\r?\n/);
-  const pages = [];
-  let cur = null, acc = null, introLines = [];
-
+function parseLessonBody(text) {
+  const lines = String(text || "").split(/\r?\n/);
+  const items = [];
+  let acc = null, introLines = [];
   const closeAcc = () => {
-    if (acc) { cur.items.push({ heading: acc.heading || "(sin título)", body: blockToHtml(acc.body) }); acc = null; }
+    if (acc) { items.push({ heading: acc.heading || "(sin título)", body: blockToHtml(acc.body) }); acc = null; }
   };
-  const closePage = () => {
-    if (cur) { closeAcc(); cur.purposeHtml = blockToHtml(introLines); pages.push(cur); }
-  };
-
   for (const line of lines) {
-    // Título de lección: un solo '#' (no '##', '###', ...)
-    const mh = line.match(/^#(?!#)\s*(.+)/);
-    if (mh) { closePage(); cur = { title: mh[1].trim(), items: [] }; introLines = []; acc = null; continue; }
-    if (!cur) continue;
-
-    // Cierre de acordeón
     if (/^==\s*$/.test(line)) { closeAcc(); continue; }
-
-    // Apertura de acordeón: '=' (encabezado opcional en la misma línea)
     const mo = line.match(/^=(?!=)\s*(.*)$/);
     if (mo) { closeAcc(); acc = { heading: mo[1].trim(), body: [] }; continue; }
-
     if (acc) {
-      // Si el acordeón aún no tiene encabezado, la primera línea no vacía
-      // (sea '### Algo' o texto normal) se convierte en el encabezado.
       if (!acc.heading) {
         if (line.trim() === "") continue;
         const hm = line.match(/^#{1,6}\s*(.+)/);
@@ -348,32 +303,201 @@ function parseLessons(text) {
       introLines.push(line);
     }
   }
-  closePage();
+  closeAcc();
+  return { items, purposeHtml: blockToHtml(introLines) };
+}
 
-  pages.forEach((p, i) => {
-    p.slug = "leccion-" + (i + 1);
-    p.published = (i === 0);   // primera visible, resto oculto
+/* ============================================================
+   Estado de las lecciones (tarjetas)
+   ============================================================ */
+/* Cada lección: { title, src, headerFile, headerExt, headerImage, headerManual,
+                                footerFile, footerExt, footerImage, footerManual } */
+let LESSONS = [];
+
+const DEMO_SRC = `=
+### Jeremías 29:11-13
+{biblia: 11 Porque yo conozco los planes que tengo para ustedes —afirma el Señor—, planes de bienestar y no de calamidad, a fin de darles un futuro y una esperanza. 12 Entonces ustedes me invocarán, vendrán a suplicarme y yo los escucharé. 13 Me buscarán y me encontrarán cuando me busquen de todo corazón.}
+
+A. Contexto: Dios envió un mensaje al pueblo de Israel durante su destierro en Babilonia.
+
+B. Así como con Israel, Dios desea tener una relación cercana con cada uno de nosotros.
+
+C. Dios tiene planes perfectos para nuestro bienestar y para darnos esperanza.
+==
+
+=
+### ¿Cómo tener una relación personal con Dios?
+Es una amistad en dos sentidos:
+
+1. Escuchamos a Dios hablar: Estudiando la Biblia.
+
+2. Nosotros hablamos con Dios: Orando.
+==
+`;
+
+function newLesson(data) {
+  return Object.assign({
+    title: "", src: "",
+    headerFile: null, headerExt: "", headerImage: "", headerManual: false,
+    footerFile: null, footerExt: "", footerImage: "", footerManual: false
+  }, data || {});
+}
+
+/* ============================================================
+   UI de las tarjetas
+   ============================================================ */
+function imageZone(ls, kind, cap) {
+  const wrap = document.createElement("div");
+  wrap.className = "col";
+  wrap.innerHTML =
+    '<label>Imagen del ' + (kind === "header" ? "header" : "footer") + '</label>' +
+    '<input type="text" class="path" placeholder="img/...">' +
+    '<div class="dz"><input type="file" accept="image/*">' +
+    '<img alt=""><span class="dz-label">📁 Subir imagen…</span></div>';
+  const path  = wrap.querySelector(".path");
+  const zone  = wrap.querySelector(".dz");
+  const input = wrap.querySelector('input[type=file]');
+  const thumb = wrap.querySelector("img");
+  const label = wrap.querySelector(".dz-label");
+
+  path.value = ls[kind + "Image"] || "";
+  path.addEventListener("input", () => {
+    ls[kind + "Image"] = path.value.trim();
+    ls[kind + "Manual"] = true;
+    build();
   });
-  return pages;
+
+  function applyFile(file) {
+    if (!file) return;
+    ls[kind + "File"] = file;
+    ls[kind + "Ext"]  = extOf(file);
+    ls[kind + "Manual"] = false;
+    thumb.src = URL.createObjectURL(file);
+    thumb.style.display = "block";
+    zone.classList.add("has-file");
+    label.textContent = file.name;
+    build();   // build() recalcula la ruta por orden y la refleja en el input
+  }
+  input.addEventListener("change", () => applyFile(input.files[0]));
+  zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag-over"); });
+  zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
+  zone.addEventListener("drop", e => {
+    e.preventDefault(); zone.classList.remove("drag-over");
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) applyFile(file);
+  });
+
+  // expone el input de ruta para que build() lo actualice tras renombrar
+  ls["_" + kind + "PathInput"] = path;
+  if (ls[kind + "File"]) { zone.classList.add("has-file"); label.textContent = "(imagen cargada)"; }
+  return wrap;
+}
+
+function renderCards() {
+  const cont = document.getElementById("lessons");
+  cont.innerHTML = "";
+  LESSONS.forEach((ls, i) => {
+    const card = document.createElement("div");
+    card.className = "lesson-card";
+
+    const head = document.createElement("div");
+    head.className = "lesson-card__head";
+    head.innerHTML =
+      '<span class="lesson-card__num">Lección ' + (i + 1) + '</span>' +
+      '<span class="lesson-card__title"><input type="text" placeholder="Título de la lección (ej. Buscando a Dios)"></span>' +
+      '<button class="up" title="Subir">↑</button>' +
+      '<button class="down" title="Bajar">↓</button>' +
+      '<button class="del" title="Eliminar">🗑</button>';
+    const titleInput = head.querySelector(".lesson-card__title input");
+    titleInput.value = ls.title;
+    titleInput.addEventListener("input", () => { ls.title = titleInput.value; build(); });
+    head.querySelector(".up").addEventListener("click", () => moveLesson(i, -1));
+    head.querySelector(".down").addEventListener("click", () => moveLesson(i, +1));
+    head.querySelector(".del").addEventListener("click", () => {
+      if (LESSONS.length === 1 || confirm("¿Eliminar esta lección?")) { LESSONS.splice(i, 1); if (!LESSONS.length) LESSONS.push(newLesson()); renderCards(); build(); }
+    });
+
+    const body = document.createElement("div");
+    body.className = "lesson-card__body";
+    const ta = document.createElement("textarea");
+    ta.className = "src";
+    ta.spellcheck = false;
+    ta.value = ls.src;
+    ta.addEventListener("input", () => { ls.src = ta.value; build(); });
+    body.appendChild(ta);
+
+    const imgrow = document.createElement("div");
+    imgrow.className = "imgrow";
+    imgrow.appendChild(imageZone(ls, "header"));
+    imgrow.appendChild(imageZone(ls, "footer"));
+    body.appendChild(imgrow);
+
+    card.appendChild(head);
+    card.appendChild(body);
+    cont.appendChild(card);
+  });
+}
+
+function moveLesson(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= LESSONS.length) return;
+  [LESSONS[i], LESSONS[j]] = [LESSONS[j], LESSONS[i]];
+  renderCards(); build();
+}
+
+/* ============================================================
+   Construir páginas a partir del estado + recalcular rutas
+   ============================================================ */
+function buildPages() {
+  return LESSONS.map((ls, i) => {
+    const slug = "leccion-" + (i + 1);
+    // Renombra imágenes subidas según el orden actual (a menos que la ruta sea manual).
+    if (ls.headerFile && !ls.headerManual) {
+      ls.headerImage = "img/" + slug + "-header." + (ls.headerExt || "png");
+      if (ls._headerPathInput) ls._headerPathInput.value = ls.headerImage;
+    }
+    if (ls.footerFile && !ls.footerManual) {
+      ls.footerImage = "img/" + slug + "-footer." + (ls.footerExt || "png");
+      if (ls._footerPathInput) ls._footerPathInput.value = ls.footerImage;
+    }
+    const parsed = parseLessonBody(ls.src);
+    return {
+      slug, title: ls.title.trim() || ("Lección " + (i + 1)),
+      published: i === 0,
+      headerImage: ls.headerImage || "",
+      footerImage: ls.footerImage || "",
+      purposeHtml: parsed.purposeHtml, items: parsed.items
+    };
+  });
 }
 
 /* ============================================================
    Generar data.js
    ============================================================ */
+function editorStateComment() {
+  // Guarda el estado del editor (texto original) para poder recargarlo sin pérdida.
+  const state = {
+    siteTitle: document.getElementById("siteTitle").value,
+    student:   document.getElementById("student").value,
+    lessons: LESSONS.map(ls => ({
+      title: ls.title, src: ls.src,
+      headerImage: ls.headerImage || "", footerImage: ls.footerImage || ""
+    }))
+  };
+  const json = JSON.stringify(state);
+  const b64 = btoa(unescape(encodeURIComponent(json)));
+  return "/* lesson-builder-state: " + b64 + " */";
+}
+
 function genDataJs(pages, opts) {
   const q = s => JSON.stringify(s == null ? "" : String(s));
   const L = [];
-  L.push("/* Generado con tools/lesson-builder.html */");
+  L.push(editorStateComment());
+  L.push("/* Generado con tools/lesson-builder.html — no edites la línea de arriba. */");
   L.push("/* published:true muestra la lección; published:false la oculta. */");
   L.push("window.STUDENT_SITE = {");
   L.push("  title: " + q(opts.siteTitle) + ",");
   L.push("  student: " + q(opts.student) + ",");
-  if (opts.headerImage) L.push("  headerImage: " + q(opts.headerImage) + ",");
-  L.push("  footer: {");
-  if (opts.footerImage) L.push("    image: " + q(opts.footerImage) + ",");
-  L.push("    title: " + q(opts.footerTitle) + ",");
-  L.push("    text: " + q(opts.footerText));
-  L.push("  },");
   L.push("  pages: [");
   pages.forEach((p, idx) => {
     L.push("    {");
@@ -381,6 +505,8 @@ function genDataJs(pages, opts) {
     L.push("      title: " + q(p.title) + ",");
     L.push("      published: " + p.published + ",");
     L.push('      type: "accordion",');
+    if (p.headerImage) L.push("      headerImage: " + q(p.headerImage) + ",");
+    if (p.footerImage) L.push("      footer: { image: " + q(p.footerImage) + " },");
     if (p.purposeHtml) L.push("      purposeHtml: " + q(p.purposeHtml) + ",");
     L.push("      items: [");
     p.items.forEach(it => {
@@ -395,7 +521,7 @@ function genDataJs(pages, opts) {
 }
 
 /* ============================================================
-   Vista previa (acordeón con apertura suave, igual al sitio real)
+   Vista previa
    ============================================================ */
 function renderPreview(pages) {
   const pv = document.getElementById("preview");
@@ -413,7 +539,6 @@ function renderPreview(pages) {
            intro + '<div class="pv-acc">' + items + "</div></article>";
   }).join("");
 
-  // Interacción: apertura/cierre suave con max-height
   pv.querySelectorAll(".pv-head").forEach(head => {
     head.addEventListener("click", () => {
       const item = head.parentElement;
@@ -422,89 +547,61 @@ function renderPreview(pages) {
       panel.style.maxHeight = open ? panel.scrollHeight + "px" : null;
     });
   });
-  // Abrir el primero de cada lección con su altura calculada
   pv.querySelectorAll(".pv-item.open .pv-panel").forEach(panel => {
     panel.style.maxHeight = panel.scrollHeight + "px";
   });
 }
 
 /* ============================================================
-   Eventos
+   build(): refresca páginas, preview y data.js
    ============================================================ */
 function build() {
-  const pages = parseLessons(document.getElementById("src").value);
+  const pages = buildPages();
   renderPreview(pages);
   const opts = {
     siteTitle: document.getElementById("siteTitle").value.trim(),
-    student: document.getElementById("student").value.trim(),
-    headerImage: document.getElementById("headerImage").value.trim(),
-    footerImage: document.getElementById("footerImage").value.trim(),
-    footerTitle: document.getElementById("footerTitle").value.trim(),
-    footerText: document.getElementById("footerText").value.trim()
+    student:   document.getElementById("student").value.trim()
   };
-  rememberImages(opts.headerImage, opts.footerImage);
   document.getElementById("out").value = genDataJs(pages, opts);
-  document.getElementById("msg").textContent = pages.length + " lección(es) generada(s) · " +
+  document.getElementById("msg").textContent = pages.length + " lección(es) · " +
     pages.reduce((n, p) => n + p.items.length, 0) + " acordeón(es).";
 }
 
-/* Recuerda la última imagen usada para header/footer (default en la próxima visita) */
-function rememberImages(header, footer) {
-  try {
-    if (header) localStorage.setItem("tbw_headerImage", header);
-    if (footer) localStorage.setItem("tbw_footerImage", footer);
-  } catch (e) { /* localStorage no disponible */ }
+/* ============================================================
+   Cargar un data.js existente (vía comentario de estado)
+   ============================================================ */
+function loadFromText(text) {
+  const m = text.match(/lesson-builder-state:\s*([A-Za-z0-9+/=]+)/);
+  if (!m) {
+    document.getElementById("msg").textContent =
+      "⚠ Ese data.js no tiene estado del editor (quizá es muy antiguo). No se puede cargar para editar.";
+    return;
+  }
+  let state;
+  try { state = JSON.parse(decodeURIComponent(escape(atob(m[1])))); }
+  catch (e) { document.getElementById("msg").textContent = "⚠ No se pudo leer el estado del editor."; return; }
+
+  document.getElementById("siteTitle").value = state.siteTitle || "";
+  document.getElementById("student").value   = state.student || "";
+  LESSONS = (state.lessons || []).map(l => newLesson({
+    title: l.title || "", src: l.src || "",
+    headerImage: l.headerImage || "", headerManual: !!l.headerImage,
+    footerImage: l.footerImage || "", footerManual: !!l.footerImage
+  }));
+  if (!LESSONS.length) LESSONS.push(newLesson({ src: DEMO_SRC, title: "" }));
+  renderCards(); build();
+  document.getElementById("msg").textContent = "✅ Cargado. Recuerda volver a subir las imágenes si quieres cambiarlas.";
 }
-function restoreImages() {
-  try {
-    const h = localStorage.getItem("tbw_headerImage");
-    const f = localStorage.getItem("tbw_footerImage");
-    if (h) document.getElementById("headerImage").value = h;
-    if (f) document.getElementById("footerImage").value = f;
-  } catch (e) { /* localStorage no disponible */ }
-}
-restoreImages();
 
 /* ============================================================
-   Subir imágenes header/footer + empaquetar (.zip / guardar carpeta)
+   Imágenes: extensión + empaquetar (.zip / guardar carpeta)
    ============================================================ */
-const IMG = { header: null, footer: null };   // File objetos elegidos
-
 function extOf(file) {
   const m = (file.name || "").match(/\.([a-z0-9]+)$/i);
   if (m) return m[1].toLowerCase();
   const t = (file.type || "").split("/")[1];
   return t ? t.replace("jpeg", "jpg").replace("svg+xml", "svg") : "png";
 }
-
-function bindImage(kind) {
-  const cap = kind[0].toUpperCase() + kind.slice(1);
-  const zone  = document.getElementById("dz" + cap);
-  const input = document.getElementById(kind + "File");
-  const thumb = document.getElementById("th" + cap);
-  const path  = document.getElementById(kind + "Image");
-
-  function applyFile(file) {
-    if (!file) return;
-    IMG[kind] = file;
-    path.value = "img/" + kind + "." + extOf(file);
-    thumb.src = URL.createObjectURL(file);
-    thumb.style.display = "block";
-    zone.classList.add("has-file");
-    zone.querySelector(".dz-label").textContent = file.name;
-    build();
-  }
-  input.addEventListener("change", () => applyFile(input.files[0]));
-  zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag-over"); });
-  zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
-  zone.addEventListener("drop", e => {
-    e.preventDefault(); zone.classList.remove("drag-over");
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) applyFile(file);
-  });
-}
-bindImage("header");
-bindImage("footer");
 
 /* CRC32 + ZIP (método STORE, sin dependencias) */
 const CRC_TABLE = (() => {
@@ -550,27 +647,50 @@ function buildZip(files) {
   return out;
 }
 
-/* Reúne data.js + imágenes elegidas en una lista de archivos */
+/* Reúne data.js + todas las imágenes subidas (con sus nombres por lección) */
 async function collectFiles() {
-  if (!document.getElementById("out").value) build();
+  build();
   const enc = new TextEncoder();
   const files = [{ name: "data.js", data: enc.encode(document.getElementById("out").value) }];
-  for (const kind of ["header", "footer"]) {
-    const file = IMG[kind];
-    if (file) files.push({ name: "img/" + kind + "." + extOf(file),
-                           data: new Uint8Array(await file.arrayBuffer()) });
+  const seen = new Set();
+  for (const ls of LESSONS) {
+    for (const kind of ["header", "footer"]) {
+      const file = ls[kind + "File"], path = ls[kind + "Image"];
+      if (file && path && !seen.has(path)) {
+        seen.add(path);
+        files.push({ name: path, data: new Uint8Array(await file.arrayBuffer()) });
+      }
+    }
   }
   return files;
 }
 
+/* ============================================================
+   Eventos de los botones
+   ============================================================ */
+document.getElementById("siteTitle").addEventListener("input", build);
+document.getElementById("student").addEventListener("input", build);
+document.getElementById("addBtn").addEventListener("click", () => {
+  LESSONS.push(newLesson()); renderCards(); build();
+});
 document.getElementById("genBtn").addEventListener("click", build);
-document.getElementById("src").addEventListener("input", () => renderPreview(parseLessons(document.getElementById("src").value)));
+
 document.getElementById("copyBtn").addEventListener("click", () => {
   const out = document.getElementById("out");
   if (!out.value) build();
   navigator.clipboard.writeText(out.value)
     .then(() => document.getElementById("msg").textContent = "✅ data.js copiado al portapapeles.")
     .catch(() => { out.select(); document.getElementById("msg").textContent = "Usa Ctrl+C para copiar."; });
+});
+
+document.getElementById("loadBtn").addEventListener("click", () => document.getElementById("loadFile").click());
+document.getElementById("loadFile").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = () => loadFromText(String(r.result));
+  r.readAsText(file);
+  e.target.value = "";
 });
 
 document.getElementById("zipBtn").addEventListener("click", async () => {
@@ -583,7 +703,7 @@ document.getElementById("zipBtn").addEventListener("click", async () => {
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     document.getElementById("msg").textContent =
-      "✅ contenido.zip descargado (" + files.length + " archivo(s)). Descomprímelo dentro de la carpeta de la serie.";
+      "✅ contenido.zip descargado (" + files.length + " archivo(s)). Descomprímelo dentro de la carpeta de la serie/alumno.";
   } catch (e) { document.getElementById("msg").textContent = e.message; }
 });
 
@@ -595,7 +715,7 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   }
   try {
     const files = await collectFiles();
-    const dir = await window.showDirectoryPicker();   // elige la carpeta de la serie
+    const dir = await window.showDirectoryPicker();   // elige la carpeta de la serie/alumno
     for (const f of files) {
       const segs = f.name.split("/");
       let cur = dir;
@@ -609,7 +729,11 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   } catch (e) { if (e.name !== "AbortError") document.getElementById("msg").textContent = e.message; }
 });
 
-/* render inicial */
+/* ============================================================
+   Arranque
+   ============================================================ */
+LESSONS.push(newLesson({ title: "Buscando a Dios", src: DEMO_SRC }));
+renderCards();
 build();
 </script>
 </body>
