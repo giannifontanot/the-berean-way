@@ -250,13 +250,10 @@
   }
   function updateTopbar() {
     const topbar = document.querySelector(".topbar");
-    const hero = document.querySelector(".hero");
     if (!topbar) return;
-    if (!hero) { topbar.classList.add("solid"); return; }
-    // Transparente mientras la barra está sobre el header; oscura (.solid) en
-    // cuanto el header termina de pasar por detrás de la barra.
+    // Transparente arriba del todo; oscura (.solid) en cuanto empiezas a bajar.
     const y = window.scrollY || window.pageYOffset || 0;
-    topbar.classList.toggle("solid", y > hero.offsetHeight - topbar.offsetHeight);
+    topbar.classList.toggle("solid", y > 50);
   }
 
   /* ---------- Parallax 3D del header/footer ----------
