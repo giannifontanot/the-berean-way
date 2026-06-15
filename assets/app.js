@@ -271,17 +271,7 @@
       // Fondo a ~0.65 de la velocidad del contenido (se desplaza 0.35·scroll).
       heroBg.style.transform = reduce ? "" : "translate3d(0," + (y * 0.35).toFixed(1) + "px,0)";
     }
-
-    const footerBg = document.querySelector(".site-footer__bg");
-    if (footerBg) {
-      if (reduce) { footerBg.style.transform = ""; return; }
-      // Basado en la posición del footer en el viewport, acotado para no
-      // descubrir los bordes de la capa (que es 180% de alta).
-      const rect = footerBg.parentElement.getBoundingClientRect();
-      let ty = (window.innerHeight - rect.top) * 0.12 - 30;
-      ty = Math.max(-70, Math.min(70, ty));
-      footerBg.style.transform = "translate3d(0," + ty.toFixed(1) + "px,0)";
-    }
+    // El footer es fijo (sin parallax) a propósito.
   }
 
   /* ---------- util ---------- */
