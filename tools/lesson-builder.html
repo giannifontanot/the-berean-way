@@ -55,6 +55,9 @@
   .lesson-card__num { font-weight:700; font-size:.82rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-dark); white-space:nowrap; }
   .lesson-card__title { flex:1; min-width:0; }
   .lesson-card__title input { font-weight:600; }
+  .lesson-card__head .pub { display:inline-flex; align-items:center; gap:5px; font-size:.82rem; font-weight:600;
+    color:var(--accent-dark); white-space:nowrap; cursor:pointer; user-select:none; }
+  .lesson-card__head .pub input { accent-color:var(--accent); width:15px; height:15px; }
   .lesson-card__head button { padding:6px 11px; font-size:.9rem; background:var(--card); color:var(--accent-dark); border:1px solid var(--line); }
   .lesson-card__head button:hover { background:#fff; border-color:var(--accent); }
   .lesson-card__head button.del:hover { background:#f1e1da; border-color:#b06a52; color:#9a3b22; }
@@ -364,7 +367,7 @@ Es una amistad en dos sentidos:
 
 function newLesson(data) {
   return Object.assign({
-    title: "", src: "",
+    title: "", src: "", published: true,
     headerFile: null, headerExt: "", headerImage: "", headerManual: false,
     footerFile: null, footerExt: "", footerImage: "", footerManual: false
   }, data || {});
@@ -432,12 +435,16 @@ function renderCards() {
     head.innerHTML =
       '<span class="lesson-card__num">Lección ' + (i + 1) + '</span>' +
       '<span class="lesson-card__title"><input type="text" placeholder="Título de la lección (ej. Buscando a Dios)"></span>' +
+      '<label class="pub" title="Si está marcada, la lección aparece en el menú del alumno"><input type="checkbox"> visible</label>' +
       '<button class="up" title="Subir">↑</button>' +
       '<button class="down" title="Bajar">↓</button>' +
       '<button class="del" title="Eliminar">🗑</button>';
     const titleInput = head.querySelector(".lesson-card__title input");
     titleInput.value = ls.title;
     titleInput.addEventListener("input", () => { ls.title = titleInput.value; build(); });
+    const pub = head.querySelector(".pub input");
+    pub.checked = ls.published !== false;
+    pub.addEventListener("change", () => { ls.published = pub.checked; build(); });
     head.querySelector(".up").addEventListener("click", () => moveLesson(i, -1));
     head.querySelector(".down").addEventListener("click", () => moveLesson(i, +1));
     head.querySelector(".del").addEventListener("click", () => {
@@ -490,7 +497,7 @@ function buildPages() {
     const parsed = parseLessonBody(ls.src);
     return {
       slug, title: ls.title.trim() || ("Lección " + (i + 1)),
-      published: i === 0,
+      published: ls.published !== false,
       headerImage: ls.headerImage || "",
       footerImage: ls.footerImage || "",
       purposeHtml: parsed.purposeHtml, items: parsed.items
@@ -507,7 +514,7 @@ function editorStateComment() {
     siteTitle: document.getElementById("siteTitle").value,
     student:   document.getElementById("student").value,
     lessons: LESSONS.map(ls => ({
-      title: ls.title, src: ls.src,
+      title: ls.title, src: ls.src, published: ls.published !== false,
       headerImage: ls.headerImage || "", footerImage: ls.footerImage || ""
     }))
   };
@@ -610,8 +617,9 @@ function loadFromText(text) {
 
   document.getElementById("siteTitle").value = state.siteTitle || "";
   document.getElementById("student").value   = state.student || "";
-  LESSONS = (state.lessons || []).map(l => newLesson({
+  LESSONS = (state.lessons || []).map((l, i) => newLesson({
     title: l.title || "", src: l.src || "",
+    published: l.published !== undefined ? l.published !== false : (i === 0),
     headerImage: l.headerImage || "", headerManual: !!l.headerImage,
     footerImage: l.footerImage || "", footerManual: !!l.footerImage
   }));

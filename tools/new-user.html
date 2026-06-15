@@ -181,10 +181,21 @@ function buildZip(files) {
    ================================================================ */
 async function collectFiles(opts) {
   const enc = new TextEncoder();
-  return [
+  const dataJs = await buildDataJs(opts);
+  const files = [
     { name: "index.html", data: enc.encode(indexHtml(opts.title || "Los estudios de " + opts.name)) },
-    { name: "data.js",    data: enc.encode(await buildDataJs(opts)) },
+    { name: "data.js",    data: enc.encode(dataJs) },
   ];
+  // Copia las imágenes que el original referencia (header/footer por lección),
+  // para que el alumno tenga su propia carpeta img/ y no apunte al template.
+  const imgPaths = [...new Set(dataJs.match(/img\/[A-Za-z0-9._-]+/g) || [])];
+  for (const rel of imgPaths) {
+    try {
+      const res = await fetch("../sites/templates/" + opts.series + "/" + rel);
+      if (res.ok) files.push({ name: rel, data: new Uint8Array(await res.arrayBuffer()) });
+    } catch (e) { /* imagen faltante en el original: se omite */ }
+  }
+  return files;
 }
 
 /* ================================================================
@@ -249,7 +260,10 @@ document.getElementById("fsBtn").addEventListener("click", async () => {
     const sitesDir = await window.showDirectoryPicker();
     const dir = await sitesDir.getDirectoryHandle(opts.code, { create: true });
     for (const f of files) {
-      const fh = await dir.getFileHandle(f.name, { create: true });
+      const segs = f.name.split("/");
+      let cur = dir;
+      for (let i = 0; i < segs.length - 1; i++) cur = await cur.getDirectoryHandle(segs[i], { create: true });
+      const fh = await cur.getFileHandle(segs[segs.length - 1], { create: true });
       const w = await fh.createWritable();
       await w.write(f.data); await w.close();
     }
