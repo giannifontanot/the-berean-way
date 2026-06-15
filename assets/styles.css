@@ -44,9 +44,10 @@ body {
   align-items: center;
   gap: 12px;
   padding: 0 12px;
-  background: rgba(10, 14, 30, 0.55);
-  backdrop-filter: blur(6px);
+  /* Transparente sobre el header; se vuelve sólida al hacer scroll (.solid). */
+  background: transparent;
   color: #fff;
+  transition: background 0.25s ease;
 }
 .topbar.solid { background: #11152b; }
 .icon-btn {
