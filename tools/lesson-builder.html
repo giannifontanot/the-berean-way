@@ -37,15 +37,19 @@
   .pv-lesson { margin-bottom:26px; }
   .pv-lesson > h3 { font-family:Georgia,serif; font-weight:400; font-size:1.5rem; margin:0 0 8px; color:#1a1a1a; }
   .pv-intro { color:#333; margin-bottom:10px; }
-  .pv-acc { border-top:1px solid var(--line); }
-  .pv-acc details { border-bottom:1px solid var(--line); }
-  .pv-acc summary { cursor:pointer; padding:12px 2px; color:var(--accent); font-size:1.02rem; list-style:none; }
-  .pv-acc summary::-webkit-details-marker { display:none; }
-  .pv-acc summary::before { content:"\25B8"; display:inline-block; margin-right:8px; transition:transform .2s; }
-  .pv-acc details[open] summary::before { transform:rotate(90deg); }
-  .pv-acc .pv-body { padding:2px 4px 16px; }
-  .pv-body p { margin:0 0 12px; }
-  .pv-body ul { margin:0 0 12px; padding-left:22px; }
+  .pv-acc { border-top:1px solid var(--line); margin-top:8px; }
+  .pv-item { border-bottom:1px solid var(--line); }
+  .pv-head {
+    cursor:pointer; padding:14px 2px; color:var(--accent); font-size:1.02rem;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .pv-head:hover { color:#1f5273; }
+  .pv-chev { flex:0 0 auto; transition:transform .3s ease; color:#999; font-size:.8rem; }
+  .pv-item.open .pv-chev { transform:rotate(180deg); }
+  .pv-panel { overflow:hidden; max-height:0; transition:max-height .38s ease; }
+  .pv-panel-inner { padding:2px 4px 18px; }
+  .pv-panel-inner p { margin:0 0 12px; }
+  .pv-panel-inner ul { margin:0 0 12px; padding-left:22px; }
   /* el estilo de {biblia:} idéntico al sitio real */
   .scripture { color:#c0392b; font-size:18px; line-height:1.7; }
   .scripture sup { font-size:10px; font-weight:600; vertical-align:super; }
@@ -299,7 +303,7 @@ function genDataJs(pages, opts) {
 }
 
 /* ============================================================
-   Vista previa
+   Vista previa (acordeón con apertura suave, igual al sitio real)
    ============================================================ */
 function renderPreview(pages) {
   const pv = document.getElementById("preview");
@@ -307,13 +311,29 @@ function renderPreview(pages) {
   pv.innerHTML = pages.map(p => {
     const intro = p.purposeHtml ? '<div class="pv-intro">' + p.purposeHtml + "</div>" : "";
     const items = p.items.map((it, i) =>
-      "<details" + (i === 0 ? " open" : "") + "><summary>" + escapeHtml(it.heading) + "</summary>" +
-      '<div class="pv-body">' + it.body + "</div></details>"
+      '<div class="pv-item' + (i === 0 ? " open" : "") + '">' +
+        '<div class="pv-head"><span>' + escapeHtml(it.heading) + '</span><span class="pv-chev">▼</span></div>' +
+        '<div class="pv-panel"><div class="pv-panel-inner">' + it.body + "</div></div>" +
+      "</div>"
     ).join("");
     const flag = p.published ? "" : ' <span style="font-size:.7rem;color:#999">(oculta)</span>';
     return '<article class="pv-lesson"><h3>' + escapeHtml(p.title) + flag + "</h3>" +
            intro + '<div class="pv-acc">' + items + "</div></article>";
   }).join("");
+
+  // Interacción: apertura/cierre suave con max-height
+  pv.querySelectorAll(".pv-head").forEach(head => {
+    head.addEventListener("click", () => {
+      const item = head.parentElement;
+      const panel = item.querySelector(".pv-panel");
+      const open = item.classList.toggle("open");
+      panel.style.maxHeight = open ? panel.scrollHeight + "px" : null;
+    });
+  });
+  // Abrir el primero de cada lección con su altura calculada
+  pv.querySelectorAll(".pv-item.open .pv-panel").forEach(panel => {
+    panel.style.maxHeight = panel.scrollHeight + "px";
+  });
 }
 
 /* ============================================================
