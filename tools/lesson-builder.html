@@ -33,6 +33,16 @@
   details.help td { padding:5px 8px; border-bottom:1px solid #eee; vertical-align:top; }
   details.help td:first-child { white-space:nowrap; font-family:monospace; color:#23415a; }
 
+  /* ---- subir imágenes (header/footer) ---- */
+  .dz { border:2px dashed var(--line); border-radius:10px; padding:10px; text-align:center;
+        cursor:pointer; color:#888; font-size:.82rem; background:#fafbfc; position:relative; margin-top:6px; }
+  .dz:hover, .dz.drag-over { border-color:var(--accent); background:#eef6fb; }
+  .dz input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+  .dz .dz-label { pointer-events:none; }
+  .dz img { display:none; width:100%; height:60px; object-fit:cover; border-radius:6px; margin-bottom:6px; border:1px solid var(--line); }
+  .dz.has-file { border-style:solid; border-color:#aaa; }
+  .dz.has-file .dz-label { color:#444; }
+
   /* ---- vista previa (imita el sitio real) ---- */
   .preview { border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:#fff; min-height:240px; }
   .pv-lesson { margin-bottom:26px; }
@@ -95,16 +105,28 @@ vista previa, y genera el <code>data.js</code> listo para una carpeta de usuario
     </div>
     <div class="row">
       <div class="col" style="flex:1 1 180px">
-        <label>Imagen del header (ruta)</label>
+        <label>Imagen del header</label>
         <input type="text" id="headerImage" placeholder="img/header.png">
+        <div class="dz" id="dzHeader">
+          <input type="file" id="headerFile" accept="image/*">
+          <img id="thHeader" alt="">
+          <span class="dz-label">📁 Subir imagen…</span>
+        </div>
       </div>
       <div class="col" style="flex:1 1 180px">
-        <label>Imagen del footer (ruta)</label>
+        <label>Imagen del footer</label>
         <input type="text" id="footerImage" placeholder="img/footer.png">
+        <div class="dz" id="dzFooter">
+          <input type="file" id="footerFile" accept="image/*">
+          <img id="thFooter" alt="">
+          <span class="dz-label">📁 Subir imagen…</span>
+        </div>
       </div>
     </div>
-    <p class="muted" style="font-size:.82rem;margin:4px 0 0">Sube el archivo de imagen a la carpeta <code>img/</code> del sitio y pon aquí su ruta.
-    Si lo dejas vacío se usa el fondo compartido. Se recuerda la última imagen usada.</p>
+    <p class="muted" style="font-size:.82rem;margin:6px 0 0">Sube las imágenes con el botón y luego usa
+    <strong>⬇ Descargar .zip</strong> (incluye <code>data.js</code> + carpeta <code>img/</code>) o
+    <strong>💾 Guardar en carpeta…</strong> para escribir directo en la carpeta de la serie.
+    Si dejas la imagen vacía se usa el fondo compartido. Se recuerda la última ruta usada.</p>
 
     <label>Frase del footer</label>
     <input type="text" id="footerTitle" value="Como los de Berea, escudriñaban cada día las Escrituras.">
@@ -138,6 +160,8 @@ Es una amistad en dos sentidos:
     <div class="btns">
       <button class="primary" id="genBtn">⚙ Generar data.js</button>
       <button class="ghost" id="copyBtn">📋 Copiar data.js</button>
+      <button class="ghost" id="zipBtn">⬇ Descargar .zip</button>
+      <button class="ghost" id="saveBtn">💾 Guardar en carpeta…</button>
     </div>
     <p class="ok" id="msg"></p>
 
@@ -440,6 +464,104 @@ function restoreImages() {
 }
 restoreImages();
 
+/* ============================================================
+   Subir imágenes header/footer + empaquetar (.zip / guardar carpeta)
+   ============================================================ */
+const IMG = { header: null, footer: null };   // File objetos elegidos
+
+function extOf(file) {
+  const m = (file.name || "").match(/\.([a-z0-9]+)$/i);
+  if (m) return m[1].toLowerCase();
+  const t = (file.type || "").split("/")[1];
+  return t ? t.replace("jpeg", "jpg").replace("svg+xml", "svg") : "png";
+}
+
+function bindImage(kind) {
+  const cap = kind[0].toUpperCase() + kind.slice(1);
+  const zone  = document.getElementById("dz" + cap);
+  const input = document.getElementById(kind + "File");
+  const thumb = document.getElementById("th" + cap);
+  const path  = document.getElementById(kind + "Image");
+
+  function applyFile(file) {
+    if (!file) return;
+    IMG[kind] = file;
+    path.value = "img/" + kind + "." + extOf(file);
+    thumb.src = URL.createObjectURL(file);
+    thumb.style.display = "block";
+    zone.classList.add("has-file");
+    zone.querySelector(".dz-label").textContent = file.name;
+    build();
+  }
+  input.addEventListener("change", () => applyFile(input.files[0]));
+  zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag-over"); });
+  zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
+  zone.addEventListener("drop", e => {
+    e.preventDefault(); zone.classList.remove("drag-over");
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) applyFile(file);
+  });
+}
+bindImage("header");
+bindImage("footer");
+
+/* CRC32 + ZIP (método STORE, sin dependencias) */
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) { let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0; }
+  return t;
+})();
+function crc32(bytes) {
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function buildZip(files) {
+  const enc = new TextEncoder();
+  const parts = [], central = [];
+  let offset = 0, centralSize = 0;
+  for (const f of files) {
+    const nameBytes = enc.encode(f.name), data = f.data;
+    const crc = crc32(data), size = data.length;
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true);
+    lh.setUint32(14, crc, true); lh.setUint32(18, size, true); lh.setUint32(22, size, true);
+    lh.setUint16(26, nameBytes.length, true);
+    parts.push(new Uint8Array(lh.buffer), nameBytes, data);
+    const cd = new DataView(new ArrayBuffer(46));
+    cd.setUint32(0, 0x02014b50, true); cd.setUint16(4, 20, true); cd.setUint16(6, 20, true);
+    cd.setUint32(16, crc, true); cd.setUint32(20, size, true); cd.setUint32(24, size, true);
+    cd.setUint16(28, nameBytes.length, true); cd.setUint32(42, offset, true);
+    central.push(new Uint8Array(cd.buffer), nameBytes);
+    offset += 30 + nameBytes.length + size;
+    centralSize += 46 + nameBytes.length;
+  }
+  const eo = new DataView(new ArrayBuffer(22));
+  eo.setUint32(0, 0x06054b50, true); eo.setUint16(8, files.length, true);
+  eo.setUint16(10, files.length, true); eo.setUint32(12, centralSize, true);
+  eo.setUint32(16, offset, true);
+  const all = [...parts, ...central, new Uint8Array(eo.buffer)];
+  let total = 0; all.forEach(a => total += a.length);
+  const out = new Uint8Array(total); let p = 0;
+  for (const a of all) { out.set(a, p); p += a.length; }
+  return out;
+}
+
+/* Reúne data.js + imágenes elegidas en una lista de archivos */
+async function collectFiles() {
+  if (!document.getElementById("out").value) build();
+  const enc = new TextEncoder();
+  const files = [{ name: "data.js", data: enc.encode(document.getElementById("out").value) }];
+  for (const kind of ["header", "footer"]) {
+    const file = IMG[kind];
+    if (file) files.push({ name: "img/" + kind + "." + extOf(file),
+                           data: new Uint8Array(await file.arrayBuffer()) });
+  }
+  return files;
+}
+
 document.getElementById("genBtn").addEventListener("click", build);
 document.getElementById("src").addEventListener("input", () => renderPreview(parseLessons(document.getElementById("src").value)));
 document.getElementById("copyBtn").addEventListener("click", () => {
@@ -448,6 +570,42 @@ document.getElementById("copyBtn").addEventListener("click", () => {
   navigator.clipboard.writeText(out.value)
     .then(() => document.getElementById("msg").textContent = "✅ data.js copiado al portapapeles.")
     .catch(() => { out.select(); document.getElementById("msg").textContent = "Usa Ctrl+C para copiar."; });
+});
+
+document.getElementById("zipBtn").addEventListener("click", async () => {
+  try {
+    const files = await collectFiles();
+    const zip = buildZip(files);
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([zip], { type: "application/zip" }));
+    a.download = "contenido.zip";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    document.getElementById("msg").textContent =
+      "✅ contenido.zip descargado (" + files.length + " archivo(s)). Descomprímelo dentro de la carpeta de la serie.";
+  } catch (e) { document.getElementById("msg").textContent = e.message; }
+});
+
+document.getElementById("saveBtn").addEventListener("click", async () => {
+  if (!window.showDirectoryPicker) {
+    document.getElementById("msg").textContent =
+      "Tu navegador no permite escribir carpetas (usa Chrome/Edge en localhost), o usa el botón .zip.";
+    return;
+  }
+  try {
+    const files = await collectFiles();
+    const dir = await window.showDirectoryPicker();   // elige la carpeta de la serie
+    for (const f of files) {
+      const segs = f.name.split("/");
+      let cur = dir;
+      for (let i = 0; i < segs.length - 1; i++) cur = await cur.getDirectoryHandle(segs[i], { create: true });
+      const fh = await cur.getFileHandle(segs[segs.length - 1], { create: true });
+      const w = await fh.createWritable();
+      await w.write(f.data); await w.close();
+    }
+    document.getElementById("msg").textContent =
+      "✅ Guardado en la carpeta elegida (" + files.length + " archivo(s)).";
+  } catch (e) { if (e.name !== "AbortError") document.getElementById("msg").textContent = e.message; }
 });
 
 /* render inicial */
