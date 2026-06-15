@@ -49,7 +49,8 @@
   .pv-panel { overflow:hidden; max-height:0; transition:max-height .38s ease; }
   .pv-panel-inner { padding:2px 4px 18px; }
   .pv-panel-inner p { margin:0 0 12px; }
-  .pv-panel-inner ul { margin:0 0 12px; padding-left:22px; }
+  .pv-panel-inner ul, .pv-panel-inner ol { margin:0 0 12px; padding-left:24px; }
+  .pv-panel-inner li { margin:0 0 4px; }
   /* el estilo de {biblia:} idéntico al sitio real */
   .scripture { color:#c0392b; font-size:18px; line-height:1.7; }
   .scripture sup { font-size:10px; font-weight:600; vertical-align:super; }
@@ -68,7 +69,9 @@ vista previa, y genera el <code>data.js</code> listo para una carpeta de usuario
     <tr><td>texto suelto</td><td>Lo que escribas debajo del título (antes del primer <code>=</code>) es la introducción, fuera del acordeón.</td></tr>
     <tr><td>=</td><td><strong>Abre</strong> un acordeón. El encabezado puede ir en la misma línea (<code>= Juan 1:1</code>) o en la línea siguiente (p.ej. <code>### Juan 1:1</code>).</td></tr>
     <tr><td>==</td><td><strong>Cierra</strong> el acordeón.</td></tr>
-    <tr><td>- punto</td><td>Lista de viñetas.</td></tr>
+    <tr><td>- punto</td><td>Lista de viñetas (•).</td></tr>
+    <tr><td>A. / B. / C.</td><td>Lista ordenada con <strong>letras</strong> (A, B, C…). Pueden tener líneas en blanco entre cada punto.</td></tr>
+    <tr><td>1. / 2. / 3.</td><td>Lista ordenada con <strong>números</strong>.</td></tr>
     <tr><td>**negrita**</td><td>Texto en <strong>negrita</strong>.</td></tr>
     <tr><td>*cursiva*</td><td>Texto en <em>cursiva</em>.</td></tr>
     <tr><td>{rojo: texto}</td><td>Color. Nombres: rojo, azul, verde, dorado, gris, naranja, morado. O hex: <code>{#ff8800: texto}</code>.</td></tr>
@@ -104,6 +107,8 @@ vista previa, y genera el <code>data.js</code> listo para una carpeta de usuario
 A. Contexto: Dios envió un mensaje al pueblo de Israel durante su destierro en Babilonia.
 
 B. Así como con Israel, Dios desea tener una relación cercana con cada uno de nosotros.
+
+C. Dios tiene planes perfectos para nuestro bienestar y para darnos esperanza.
 ==
 
 =
@@ -198,19 +203,65 @@ function mergeBraces(lines) {
   return out;
 }
 
+/* clasifica una línea como elemento de lista, o null si no lo es */
+function classifyListItem(line) {
+  let m;
+  if (m = line.match(/^\s*-\s+(.*)$/))          return { type: "ul",       text: m[1] };
+  if (m = line.match(/^\s*([0-9]+)[.)]\s+(.*)$/)) return { type: "ol-num",   text: m[2] };
+  if (m = line.match(/^\s*([A-Z])[.)]\s+(.*)$/))  return { type: "ol-alpha", text: m[2] };
+  return null;
+}
+
+function openTag(type) {
+  if (type === "ul") return "<ul>";
+  if (type === "ol-alpha") return '<ol style="list-style-type:upper-alpha">';
+  return "<ol>";
+}
+function closeTag(type) { return type === "ul" ? "</ul>" : "</ol>"; }
+
 /* convierte un bloque de líneas en párrafos / listas */
 function blockToHtml(lines) {
-  lines = mergeBraces(lines);
+  lines = mergeBraces(lines).map(l => l.replace(/\s+$/, ""));
   const out = [];
-  let para = [], list = null;
+  let para = [], list = null;   // list = { type, items:[] }
   const flushPara = () => { if (para.length) { out.push("<p>" + inline(para.join(" ")) + "</p>"); para = []; } };
-  const flushList = () => { if (list) { out.push("<ul>" + list.map(li => "<li>" + inline(li) + "</li>").join("") + "</ul>"); list = null; } };
+  const flushList = () => {
+    if (list) {
+      out.push(openTag(list.type) + list.items.map(li => "<li>" + inline(li) + "</li>").join("") + closeTag(list.type));
+      list = null;
+    }
+  };
 
-  for (const raw of lines) {
-    const line = raw.replace(/\s+$/, "");
-    if (/^\s*-\s+/.test(line)) { flushPara(); (list = list || []).push(line.replace(/^\s*-\s+/, "")); }
-    else if (line.trim() === "") { flushPara(); flushList(); }
-    else { flushList(); para.push(line.trim()); }
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const item = classifyListItem(line);
+
+    if (item) {
+      flushPara();
+      if (list && list.type !== item.type) flushList();
+      if (!list) list = { type: item.type, items: [] };
+      list.items.push(item.text);
+      continue;
+    }
+
+    if (line.trim() === "") {
+      // Si estamos en una lista y la próxima línea no vacía continúa
+      // la misma lista, ignoramos el blanco (lista "suelta").
+      if (list) {
+        let j = i + 1;
+        while (j < lines.length && lines[j].trim() === "") j++;
+        const next = j < lines.length ? classifyListItem(lines[j]) : null;
+        if (next && next.type === list.type) continue;
+        flushList();
+      } else {
+        flushPara();
+      }
+      continue;
+    }
+
+    // línea normal
+    flushList();
+    para.push(line.trim());
   }
   flushPara(); flushList();
   return out.join("");
