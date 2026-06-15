@@ -129,21 +129,7 @@ Escribe en el formato sencillo (abajo está la guía), míralo en la vista previ
 
 <div class="row">
   <div class="col">
-    <h2>1 · Datos del sitio</h2>
-    <div class="row">
-      <div class="col" style="flex:1 1 180px">
-        <label>Título del sitio</label>
-        <input type="text" id="siteTitle" placeholder="Los estudios de NOMBRE" value="Los estudios de NOMBRE">
-      </div>
-      <div class="col" style="flex:1 1 140px">
-        <label>Nombre (student)</label>
-        <input type="text" id="student" placeholder="NOMBRE" value="NOMBRE">
-      </div>
-    </div>
-    <p class="muted" style="font-size:.82rem;margin:6px 0 0">El título del sitio y el nombre son únicos para todo el estudio.
-    El texto que se ve en el encabezado de cada página es el <strong>título de la lección</strong>.</p>
-
-    <h2>2 · Lecciones</h2>
+    <h2>1 · Lecciones</h2>
     <div id="lessons"></div>
     <div class="btns">
       <button class="ghost" id="addBtn">➕ Agregar lección</button>
@@ -343,6 +329,8 @@ function parseLessonBody(text) {
 /* Cada lección: { title, src, headerFile, headerExt, headerImage, headerManual,
                                 footerFile, footerExt, footerImage, footerManual } */
 let LESSONS = [];
+// Título y student se toman del data.js cargado; no son editables en lesson-builder.
+let SITE_META = { siteTitle: "Los estudios de NOMBRE", student: "NOMBRE" };
 
 const DEMO_SRC = `=
 ### Jeremías 29:11-13
@@ -511,8 +499,8 @@ function buildPages() {
 function editorStateComment() {
   // Guarda el estado del editor (texto original) para poder recargarlo sin pérdida.
   const state = {
-    siteTitle: document.getElementById("siteTitle").value,
-    student:   document.getElementById("student").value,
+    siteTitle: SITE_META.siteTitle,
+    student:   SITE_META.student,
     lessons: LESSONS.map(ls => ({
       title: ls.title, src: ls.src, published: ls.published !== false,
       headerImage: ls.headerImage || "", footerImage: ls.footerImage || ""
@@ -593,8 +581,8 @@ function build() {
   const pages = buildPages();
   renderPreview(pages);
   const opts = {
-    siteTitle: document.getElementById("siteTitle").value.trim(),
-    student:   document.getElementById("student").value.trim()
+    siteTitle: SITE_META.siteTitle,
+    student:   SITE_META.student
   };
   document.getElementById("out").value = genDataJs(pages, opts);
   document.getElementById("msg").textContent = pages.length + " lección(es) · " +
@@ -615,8 +603,8 @@ function loadFromText(text) {
   try { state = JSON.parse(decodeURIComponent(escape(atob(m[1])))); }
   catch (e) { document.getElementById("msg").textContent = "⚠ No se pudo leer el estado del editor."; return; }
 
-  document.getElementById("siteTitle").value = state.siteTitle || "";
-  document.getElementById("student").value   = state.student || "";
+  SITE_META.siteTitle = state.siteTitle || "Los estudios de NOMBRE";
+  SITE_META.student   = state.student   || "NOMBRE";
   LESSONS = (state.lessons || []).map((l, i) => newLesson({
     title: l.title || "", src: l.src || "",
     published: l.published !== undefined ? l.published !== false : (i === 0),
@@ -703,8 +691,6 @@ async function collectFiles() {
 /* ============================================================
    Eventos de los botones
    ============================================================ */
-document.getElementById("siteTitle").addEventListener("input", build);
-document.getElementById("student").addEventListener("input", build);
 document.getElementById("addBtn").addEventListener("click", () => {
   LESSONS.push(newLesson()); renderCards(); build();
 });
