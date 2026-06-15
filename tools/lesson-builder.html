@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor de lecciones · The Berean Way</title>
+<style>
+  :root { --accent:#2a6f97; --line:#dcdcdc; --green:#1a7f4b; }
+  * { box-sizing:border-box; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+         max-width:980px; margin:0 auto; padding:24px 18px 80px; color:#222; line-height:1.55; }
+  h1 { font-family:Georgia,serif; font-weight:400; }
+  h2 { font-size:1rem; font-weight:700; margin:26px 0 6px;
+       border-bottom:1px solid var(--line); padding-bottom:6px; color:#444; }
+  p.muted { color:#666; }
+  label { display:block; font-weight:600; margin:14px 0 5px; }
+  input[type=text], textarea {
+    width:100%; font-size:.95rem; padding:9px 12px; border:1px solid var(--line); border-radius:9px; }
+  textarea#src { min-height:340px; font-family:monospace; font-size:.85rem; line-height:1.5; resize:vertical; }
+  textarea#out { min-height:240px; font-family:monospace; font-size:.78rem; background:#1e1e2e; color:#cdd6f4; resize:vertical; }
+  .row { display:flex; gap:18px; flex-wrap:wrap; }
+  .col { flex:1 1 420px; min-width:0; }
+  .btns { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+  button { font-size:.95rem; padding:10px 16px; border-radius:9px; border:none; cursor:pointer; }
+  .primary { background:var(--accent); color:#fff; }
+  .ghost   { background:#eef2f6; color:#23415a; }
+  .ok { color:var(--green); font-weight:600; min-height:1.4em; }
+  code { background:#eef2f6; padding:2px 6px; border-radius:5px; font-size:.85rem; }
+  details.help { margin:10px 0 4px; background:#f7f9fb; border:1px solid var(--line); border-radius:10px; padding:8px 14px; }
+  details.help summary { cursor:pointer; font-weight:600; color:var(--accent); }
+  details.help table { width:100%; border-collapse:collapse; margin-top:10px; font-size:.88rem; }
+  details.help td { padding:5px 8px; border-bottom:1px solid #eee; vertical-align:top; }
+  details.help td:first-child { white-space:nowrap; font-family:monospace; color:#23415a; }
+
+  /* ---- vista previa (imita el sitio real) ---- */
+  .preview { border:1px solid var(--line); border-radius:12px; padding:14px 16px; background:#fff; min-height:240px; }
+  .pv-lesson { margin-bottom:26px; }
+  .pv-lesson > h3 { font-family:Georgia,serif; font-weight:400; font-size:1.5rem; margin:0 0 8px; color:#1a1a1a; }
+  .pv-intro { color:#333; margin-bottom:10px; }
+  .pv-acc { border-top:1px solid var(--line); }
+  .pv-acc details { border-bottom:1px solid var(--line); }
+  .pv-acc summary { cursor:pointer; padding:12px 2px; color:var(--accent); font-size:1.02rem; list-style:none; }
+  .pv-acc summary::-webkit-details-marker { display:none; }
+  .pv-acc summary::before { content:"\25B8"; display:inline-block; margin-right:8px; transition:transform .2s; }
+  .pv-acc details[open] summary::before { transform:rotate(90deg); }
+  .pv-acc .pv-body { padding:2px 4px 16px; }
+  .pv-body p { margin:0 0 12px; }
+  .pv-body ul { margin:0 0 12px; padding-left:22px; }
+  /* el estilo de {biblia:} idéntico al sitio real */
+  .scripture { color:#c0392b; font-size:18px; line-height:1.7; }
+  .scripture sup { font-size:10px; font-weight:600; vertical-align:super; }
+</style>
+</head>
+<body>
+
+<h1>Editor de lecciones</h1>
+<p class="muted">Pega tus lecciones en el formato sencillo (abajo está la guía), míralas en la
+vista previa, y genera el <code>data.js</code> listo para una carpeta de usuario o una plantilla.</p>
+
+<details class="help">
+  <summary>📖 Guía rápida del formato</summary>
+  <table>
+    <tr><td># Título</td><td>Empieza una lección nueva (es el título que va en el menú).</td></tr>
+    <tr><td>texto suelto</td><td>Lo que escribas debajo del título (antes del primer <code>=</code>) es la introducción, fuera del acordeón.</td></tr>
+    <tr><td>= Encabezado</td><td><strong>Abre</strong> un acordeón. El texto en esa línea es el botón que se hace clic.</td></tr>
+    <tr><td>==</td><td><strong>Cierra</strong> el acordeón.</td></tr>
+    <tr><td>- punto</td><td>Lista de viñetas.</td></tr>
+    <tr><td>**negrita**</td><td>Texto en <strong>negrita</strong>.</td></tr>
+    <tr><td>*cursiva*</td><td>Texto en <em>cursiva</em>.</td></tr>
+    <tr><td>{rojo: texto}</td><td>Color. Nombres: rojo, azul, verde, dorado, gris, naranja, morado. O hex: <code>{#ff8800: texto}</code>.</td></tr>
+    <tr><td>{biblia: 1 En el principio...}</td><td>Escritura en rojo 18px; los números de versículo salen pequeños (10px).</td></tr>
+  </table>
+</details>
+
+<div class="row">
+  <div class="col">
+    <h2>1 · Datos del sitio</h2>
+    <div class="row">
+      <div class="col" style="flex:1 1 180px">
+        <label>Título del sitio</label>
+        <input type="text" id="siteTitle" placeholder="Los estudios de NOMBRE" value="Los estudios de NOMBRE">
+      </div>
+      <div class="col" style="flex:1 1 140px">
+        <label>Nombre (student)</label>
+        <input type="text" id="student" placeholder="NOMBRE" value="NOMBRE">
+      </div>
+    </div>
+    <label>Frase del footer</label>
+    <input type="text" id="footerTitle" value="Como los de Berea, escudriñaban cada día las Escrituras.">
+    <label>Texto del footer</label>
+    <input type="text" id="footerText" value="Hechos 17:11">
+
+    <h2>2 · Lecciones (pega aquí)</h2>
+    <textarea id="src" spellcheck="false"># ¿Quién es Jesús?
+
+Conocer a Jesús tal como lo presenta la Escritura, antes de seguirlo.
+
+= Juan 1:1-14
+{biblia: 1 En el principio era el Verbo, y el Verbo era con Dios, y el Verbo era Dios. 2 Este era en el principio con Dios.}
+
+Puntos clave:
+- Estaba en el principio con Dios
+- Todo fue hecho por medio de él
+- En él estaba la **vida**
+==
+
+= Para reflexionar
+¿Qué cambia en mi vida si {rojo: Jesús} es realmente quien dice ser?
+==
+</textarea>
+
+    <div class="btns">
+      <button class="primary" id="genBtn">⚙ Generar data.js</button>
+      <button class="ghost" id="copyBtn">📋 Copiar data.js</button>
+    </div>
+    <p class="ok" id="msg"></p>
+
+    <h2>3 · data.js generado</h2>
+    <textarea id="out" spellcheck="false" readonly></textarea>
+  </div>
+
+  <div class="col">
+    <h2>Vista previa</h2>
+    <div class="preview" id="preview"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   Convertidor de marcas → HTML
+   ============================================================ */
+const NAMED = {
+  rojo:"#c0392b", azul:"#2a6f97", verde:"#1a7f4b",
+  dorado:"#b8860b", gris:"#777777", naranja:"#e67e22", morado:"#7d3c98"
+};
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+/* convierte el contenido inline (una línea o párrafo ya unido) */
+function inline(text) {
+  let t = escapeHtml(text);
+
+  // {biblia: ...}  → rojo 18px, números de versículo en <sup> pequeño
+  t = t.replace(/\{biblia:\s*([\s\S]*?)\}/g, (m, inner) => {
+    const body = inner.replace(/(^|[\s(¿"'])(\d+)(?=\s)/g, "$1<sup>$2</sup>");
+    return '<span class="scripture">' + body + "</span>";
+  });
+
+  // {#hex: ...}
+  t = t.replace(/\{(#[0-9a-fA-F]{3,6}):\s*([\s\S]*?)\}/g,
+    (m, c, inner) => '<span style="color:' + c + '">' + inner + "</span>");
+
+  // {color: ...}
+  t = t.replace(/\{([a-zA-Záéíóú]+):\s*([\s\S]*?)\}/g, (m, name, inner) => {
+    const c = NAMED[name.toLowerCase()];
+    return c ? '<span style="color:' + c + '">' + inner + "</span>" : m;
+  });
+
+  // **negrita**
+  t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  // *cursiva*
+  t = t.replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>");
+  // [texto](url)
+  t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+  return t;
+}
+
+/* convierte un bloque de líneas en párrafos / listas */
+function blockToHtml(lines) {
+  const out = [];
+  let para = [], list = null;
+  const flushPara = () => { if (para.length) { out.push("<p>" + inline(para.join(" ")) + "</p>"); para = []; } };
+  const flushList = () => { if (list) { out.push("<ul>" + list.map(li => "<li>" + inline(li) + "</li>").join("") + "</ul>"); list = null; } };
+
+  for (const raw of lines) {
+    const line = raw.replace(/\s+$/, "");
+    if (/^\s*-\s+/.test(line)) { flushPara(); (list = list || []).push(line.replace(/^\s*-\s+/, "")); }
+    else if (line.trim() === "") { flushPara(); flushList(); }
+    else { flushList(); para.push(line.trim()); }
+  }
+  flushPara(); flushList();
+  return out.join("");
+}
+
+/* ============================================================
+   Parser de lecciones
+   ============================================================ */
+function parseLessons(text) {
+  const lines = text.split(/\r?\n/);
+  const pages = [];
+  let cur = null, acc = null, introLines = [];
+
+  const closeAcc = () => {
+    if (acc) { cur.items.push({ heading: acc.heading, body: blockToHtml(acc.body) }); acc = null; }
+  };
+  const closePage = () => {
+    if (cur) { closeAcc(); cur.purposeHtml = blockToHtml(introLines); pages.push(cur); }
+  };
+
+  for (const line of lines) {
+    const mh = line.match(/^#\s+(.+)/);
+    if (mh) { closePage(); cur = { title: mh[1].trim(), items: [] }; introLines = []; acc = null; continue; }
+    if (!cur) continue;
+    const ma = line.match(/^=\s*(?!=)(.+)/);   // "= Encabezado" (no "==")
+    if (ma) { closeAcc(); acc = { heading: ma[1].trim(), body: [] }; continue; }
+    if (/^==\s*$/.test(line)) { closeAcc(); continue; }
+    if (acc) acc.body.push(line);
+    else introLines.push(line);
+  }
+  closePage();
+
+  pages.forEach((p, i) => {
+    p.slug = "leccion-" + (i + 1);
+    p.published = (i === 0);   // primera visible, resto oculto
+  });
+  return pages;
+}
+
+/* ============================================================
+   Generar data.js
+   ============================================================ */
+function genDataJs(pages, opts) {
+  const q = s => JSON.stringify(s == null ? "" : String(s));
+  const L = [];
+  L.push("/* Generado con tools/lesson-builder.html */");
+  L.push("/* published:true muestra la lección; published:false la oculta. */");
+  L.push("window.STUDENT_SITE = {");
+  L.push("  title: " + q(opts.siteTitle) + ",");
+  L.push("  student: " + q(opts.student) + ",");
+  L.push("  footer: {");
+  L.push("    title: " + q(opts.footerTitle) + ",");
+  L.push("    text: " + q(opts.footerText));
+  L.push("  },");
+  L.push("  pages: [");
+  pages.forEach((p, idx) => {
+    L.push("    {");
+    L.push("      slug: " + q(p.slug) + ",");
+    L.push("      title: " + q(p.title) + ",");
+    L.push("      published: " + p.published + ",");
+    L.push('      type: "accordion",');
+    if (p.purposeHtml) L.push("      purposeHtml: " + q(p.purposeHtml) + ",");
+    L.push("      items: [");
+    p.items.forEach(it => {
+      L.push("        { heading: " + q(it.heading) + ", body: " + q(it.body) + " },");
+    });
+    L.push("      ]");
+    L.push("    }" + (idx < pages.length - 1 ? "," : ""));
+  });
+  L.push("  ]");
+  L.push("};");
+  return L.join("\n") + "\n";
+}
+
+/* ============================================================
+   Vista previa
+   ============================================================ */
+function renderPreview(pages) {
+  const pv = document.getElementById("preview");
+  if (!pages.length) { pv.innerHTML = '<p style="color:#999">Escribe o pega una lección…</p>'; return; }
+  pv.innerHTML = pages.map(p => {
+    const intro = p.purposeHtml ? '<div class="pv-intro">' + p.purposeHtml + "</div>" : "";
+    const items = p.items.map((it, i) =>
+      "<details" + (i === 0 ? " open" : "") + "><summary>" + escapeHtml(it.heading) + "</summary>" +
+      '<div class="pv-body">' + it.body + "</div></details>"
+    ).join("");
+    const flag = p.published ? "" : ' <span style="font-size:.7rem;color:#999">(oculta)</span>';
+    return '<article class="pv-lesson"><h3>' + escapeHtml(p.title) + flag + "</h3>" +
+           intro + '<div class="pv-acc">' + items + "</div></article>";
+  }).join("");
+}
+
+/* ============================================================
+   Eventos
+   ============================================================ */
+function build() {
+  const pages = parseLessons(document.getElementById("src").value);
+  renderPreview(pages);
+  const opts = {
+    siteTitle: document.getElementById("siteTitle").value.trim(),
+    student: document.getElementById("student").value.trim(),
+    footerTitle: document.getElementById("footerTitle").value.trim(),
+    footerText: document.getElementById("footerText").value.trim()
+  };
+  document.getElementById("out").value = genDataJs(pages, opts);
+  document.getElementById("msg").textContent = pages.length + " lección(es) generada(s).";
+}
+
+document.getElementById("genBtn").addEventListener("click", build);
+document.getElementById("src").addEventListener("input", () => renderPreview(parseLessons(document.getElementById("src").value)));
+document.getElementById("copyBtn").addEventListener("click", () => {
+  const out = document.getElementById("out");
+  if (!out.value) build();
+  navigator.clipboard.writeText(out.value)
+    .then(() => document.getElementById("msg").textContent = "✅ data.js copiado al portapapeles.")
+    .catch(() => { out.select(); document.getElementById("msg").textContent = "Usa Ctrl+C para copiar."; });
+});
+
+/* render inicial */
+build();
+</script>
+</body>
+</html>

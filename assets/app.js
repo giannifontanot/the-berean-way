@@ -136,9 +136,13 @@
   }
 
   function renderAccordion(page) {
-    const purpose = page.purpose
-      ? `<h2>Propósito:</h2><p class="lead">${esc(page.purpose)}</p>`
-      : "";
+    // purposeHtml: intro con formato (HTML ya generado, p.ej. desde lesson-builder).
+    // purpose: intro en texto plano (se escapa). Solo uno de los dos.
+    const purpose = page.purposeHtml
+      ? `<div class="lead">${page.purposeHtml}</div>`
+      : page.purpose
+        ? `<h2>Propósito:</h2><p class="lead">${esc(page.purpose)}</p>`
+        : "";
     const items = (page.items || []).map(it => `
       <div class="accordion__item">
         <button class="accordion__header">
