@@ -109,8 +109,9 @@ Escribe en el formato sencillo (abajo está la guía), míralo en la vista previ
   <summary>📖 Guía rápida del formato</summary>
   <table>
     <tr><td>texto suelto</td><td>Lo que escribas arriba (antes del primer <code>=</code>) es la introducción, fuera del acordeón.</td></tr>
-    <tr><td>=</td><td><strong>Abre</strong> un acordeón. El encabezado puede ir en la misma línea (<code>= Juan 1:1</code>) o en la línea siguiente (p.ej. <code>### Juan 1:1</code>).</td></tr>
-    <tr><td>==</td><td><strong>Cierra</strong> el acordeón.</td></tr>
+    <tr><td>## / ### Juan 1:1</td><td><strong>Abre un acordeón</strong> con ese encabezado (lo más sencillo). Cada <code>##</code>/<code>###</code> empieza un acordeón nuevo.</td></tr>
+    <tr><td>=</td><td>Otra forma de <strong>abrir</strong> un acordeón. El encabezado puede ir en la misma línea (<code>= Juan 1:1</code>) o en la línea siguiente.</td></tr>
+    <tr><td>==</td><td><strong>Cierra</strong> el acordeón (opcional; el siguiente <code>##</code> o <code>=</code> también lo cierra).</td></tr>
     <tr><td>- punto</td><td>Lista de viñetas (•).</td></tr>
     <tr><td>A. / B. / C.</td><td>Lista ordenada con <strong>letras</strong> (A, B, C…). Pueden tener líneas en blanco entre cada punto.</td></tr>
     <tr><td>1. / 2. / 3.</td><td>Lista ordenada con <strong>números</strong>.</td></tr>
@@ -303,14 +304,23 @@ function parseLessonBody(text) {
     if (acc) { items.push({ heading: acc.heading || "(sin título)", body: blockToHtml(acc.body) }); acc = null; }
   };
   for (const line of lines) {
+    // Cierre explícito de acordeón
     if (/^==\s*$/.test(line)) { closeAcc(); continue; }
+    // Apertura explícita de acordeón con '='
     const mo = line.match(/^=(?!=)\s*(.*)$/);
     if (mo) { closeAcc(); acc = { heading: mo[1].trim(), body: [] }; continue; }
+    // Encabezado markdown (#, ##, ###…): abre un acordeón nuevo por sí solo,
+    // o completa el encabezado de un '=' que aún no lo tenía.
+    const hm = line.match(/^#{1,6}\s+(.+)/);
+    if (hm) {
+      if (acc && !acc.heading) acc.heading = hm[1].trim();
+      else { closeAcc(); acc = { heading: hm[1].trim(), body: [] }; }
+      continue;
+    }
     if (acc) {
       if (!acc.heading) {
         if (line.trim() === "") continue;
-        const hm = line.match(/^#{1,6}\s*(.+)/);
-        acc.heading = (hm ? hm[1] : line).trim();
+        acc.heading = line.trim();
         continue;
       }
       acc.body.push(line);
