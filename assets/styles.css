@@ -157,7 +157,7 @@ body {
   transition: transform 0.25s ease; color: var(--color-muted);
 }
 .accordion__item.open .accordion__chevron { transform: rotate(180deg); }
-.accordion__panel { overflow: hidden; max-height: 0; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+.accordion__panel { overflow: hidden; max-height: 0; transition: max-height 0.55s cubic-bezier(0.4, 0, 0.2, 1); }
 .accordion__panel-inner { padding: 2px 4px 20px; color: var(--color-text); }
 .accordion__panel-inner p:last-child { margin-bottom: 0; }
 .accordion__panel-inner ul, .accordion__panel-inner ol { margin: 0 0 14px; padding-left: 24px; }
