@@ -35,6 +35,13 @@
   .row { display:flex; gap:18px; flex-wrap:wrap; }
   .col { flex:1 1 420px; min-width:0; }
   .btns { display:flex; gap:10px; flex-wrap:wrap; margin:16px 0; align-items:center; }
+  .tip { position:relative; display:inline-flex; align-items:center; justify-content:center;
+    width:18px; height:18px; border-radius:50%; background:#b0a090; color:#fff;
+    font-size:11px; font-weight:700; cursor:default; flex-shrink:0; }
+  .tip::after { content:attr(data-tip); position:absolute; bottom:calc(100% + 6px); left:50%;
+    transform:translateX(-50%); background:#333; color:#fff; font-size:0.78rem; white-space:nowrap;
+    padding:5px 10px; border-radius:7px; pointer-events:none; opacity:0; transition:opacity .2s; }
+  .tip:hover::after { opacity:1; }
   button { font-family:inherit; font-size:.92rem; padding:10px 17px; border-radius:10px; border:1px solid transparent; cursor:pointer; transition:background .15s, border-color .15s; }
   .primary { background:var(--accent); color:#fff; }
   .primary:hover { background:var(--accent-dark); }
@@ -130,13 +137,9 @@
     <div id="lessons"></div>
     <div class="btns">
       <button class="ghost" id="addBtn">➕ Agregar lección</button>
-    </div>
-
-    <div class="btns">
       <button class="ghost" id="loadBtn">📂 Abrir</button>
-
       <button class="ghost" id="saveBtn">💾 Guardar</button>
-      <small style="color:#666;">→ luego: git add · commit · push</small>
+      <span class="tip" data-tip="→ luego: git add · commit · push">i</span>
       <input type="file" id="loadFile" accept=".js,text/javascript" style="display:none">
     </div>
     <p class="ok" id="msg"></p>
