@@ -131,8 +131,9 @@
     <tr><td>1. / 2. / 3.</td><td>Lista ordenada con <strong>números</strong>.</td></tr>
     <tr><td>**negrita**</td><td>Texto en <strong>negrita</strong>.</td></tr>
     <tr><td>*cursiva*</td><td>Texto en <em>cursiva</em>.</td></tr>
+    <tr><td>__subrayado__</td><td>Texto <u>subrayado</u> (solo dentro de <code>{biblia:}</code>).</td></tr>
     <tr><td>{rojo: texto}</td><td>Color. Nombres: rojo, azul, verde, dorado, gris, naranja, morado. O hex: <code>{#ff8800: texto}</code>.</td></tr>
-    <tr><td>{biblia: 1 En el principio...}</td><td>Escritura en rojo 18px; los números de versículo salen pequeños (10px). Puede abarcar varias líneas.</td></tr>
+    <tr><td>{biblia: 1 En el principio...}</td><td>Escritura en rojo 18px; los números de versículo salen pequeños (10px). Puede abarcar varias líneas — se respetan los saltos. Admite <code>**negrita**</code>, <code>*cursiva*</code> y <code>__subrayado__</code> dentro.</td></tr>
   </table>
   <p class="muted" style="font-size:.85rem">El <strong>título de cada lección</strong> se escribe en el campo de la tarjeta (es el texto del encabezado).
   La <strong>imagen del header</strong> y la del <strong>footer</strong> se suben en cada tarjeta. El footer no lleva texto.</p>
@@ -191,7 +192,15 @@ function inline(text) {
 
   // {biblia: ...}  → rojo 18px, números de versículo en <sup> pequeño
   t = t.replace(/\{biblia:\s*([\s\S]*?)\}/g, (m, inner) => {
-    const body = inner.replace(/(^|[\s(¿"'])(\d+)(?=\s)/g, "$1<sup>$2</sup>");
+    let body = inner;
+    // formato dentro de biblia: **negrita**, *cursiva*, __subrayado__
+    body = body.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    body = body.replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>");
+    body = body.replace(/__([^_]+)__/g, "<u>$1</u>");
+    // números de versículo en superíndice
+    body = body.replace(/(^|[\s(¿"'])(\d+)(?=\s)/g, "$1<sup>$2</sup>");
+    // saltos de línea
+    body = body.replace(/\n/g, "<br>");
     return '<span class="scripture">' + body + "</span>";
   });
 
@@ -216,19 +225,20 @@ function inline(text) {
   return t;
 }
 
-/* une líneas de un bloque {marca: ...} que abarca varias líneas en una sola. */
+/* une líneas de un bloque {marca: ...} que abarca varias líneas en una sola.
+   Para {biblia:} preserva los saltos de línea originales (\n). */
 function mergeBraces(lines) {
   const out = [];
-  let buf = null;
+  let buf = null, isBiblia = false;
   for (const line of lines) {
     if (buf !== null) {
-      buf += " " + line.trim();
-      if (buf.indexOf("}") > -1) { out.push(buf); buf = null; }
+      buf += (isBiblia ? "\n" : " ") + (isBiblia ? line : line.trim());
+      if (buf.indexOf("}") > -1) { out.push(buf); buf = null; isBiblia = false; }
       continue;
     }
     const op = (line.match(/\{/g) || []).length;
     const cl = (line.match(/\}/g) || []).length;
-    if (op > cl) buf = line;
+    if (op > cl) { buf = line; isBiblia = /\{biblia:/i.test(line); }
     else out.push(line);
   }
   if (buf !== null) out.push(buf);
