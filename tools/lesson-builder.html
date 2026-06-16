@@ -457,7 +457,7 @@ function renderCards() {
     });
     const titleInput = head.querySelector(".lesson-card__title input");
     titleInput.value = ls.title;
-    titleInput.addEventListener("input", () => { ls.title = titleInput.value; build(); });
+    titleInput.addEventListener("input", () => { ls.title = titleInput.value; debouncedBuild(); });
     const pub = head.querySelector(".pub input");
     pub.checked = ls.published !== false;
     pub.addEventListener("change", () => { ls.published = pub.checked; build(); });
@@ -473,7 +473,7 @@ function renderCards() {
     ta.className = "src";
     ta.spellcheck = false;
     ta.value = ls.src;
-    ta.addEventListener("input", () => { ls.src = ta.value; build(); });
+    ta.addEventListener("input", () => { ls.src = ta.value; debouncedBuild(); });
     body.appendChild(ta);
 
     const imgrow = document.createElement("div");
@@ -605,7 +605,13 @@ function renderPreview(pages) {
 /* ============================================================
    build(): refresca páginas, preview y data.js
    ============================================================ */
+let _buildTimer = null;
+function debouncedBuild() {
+  clearTimeout(_buildTimer);
+  _buildTimer = setTimeout(build, 2000);
+}
 function build() {
+  clearTimeout(_buildTimer); _buildTimer = null;
   const pages = buildPages();
   renderPreview(pages);
   const opts = {
