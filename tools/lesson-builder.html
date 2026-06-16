@@ -133,8 +133,8 @@
     </div>
 
     <div class="btns">
-      <button class="ghost" id="loadBtn">📂 Cargar data.js…</button>
-      <button class="ghost" id="zipBtn">⬇ Descargar .zip</button>
+      <button class="ghost" id="loadBtn">📂 Cargar template…</button>
+
       <button class="ghost" id="saveBtn">💾 Guardar en carpeta…</button>
       <small style="color:#666;">→ luego: git add · commit · push</small>
       <input type="file" id="loadFile" accept=".js,text/javascript" style="display:none">
@@ -627,49 +627,6 @@ function extOf(file) {
   return t ? t.replace("jpeg", "jpg").replace("svg+xml", "svg") : "png";
 }
 
-/* CRC32 + ZIP (método STORE, sin dependencias) */
-const CRC_TABLE = (() => {
-  const t = new Uint32Array(256);
-  for (let n = 0; n < 256; n++) { let c = n;
-    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
-    t[n] = c >>> 0; }
-  return t;
-})();
-function crc32(bytes) {
-  let c = 0xFFFFFFFF;
-  for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
-  return (c ^ 0xFFFFFFFF) >>> 0;
-}
-function buildZip(files) {
-  const enc = new TextEncoder();
-  const parts = [], central = [];
-  let offset = 0, centralSize = 0;
-  for (const f of files) {
-    const nameBytes = enc.encode(f.name), data = f.data;
-    const crc = crc32(data), size = data.length;
-    const lh = new DataView(new ArrayBuffer(30));
-    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true);
-    lh.setUint32(14, crc, true); lh.setUint32(18, size, true); lh.setUint32(22, size, true);
-    lh.setUint16(26, nameBytes.length, true);
-    parts.push(new Uint8Array(lh.buffer), nameBytes, data);
-    const cd = new DataView(new ArrayBuffer(46));
-    cd.setUint32(0, 0x02014b50, true); cd.setUint16(4, 20, true); cd.setUint16(6, 20, true);
-    cd.setUint32(16, crc, true); cd.setUint32(20, size, true); cd.setUint32(24, size, true);
-    cd.setUint16(28, nameBytes.length, true); cd.setUint32(42, offset, true);
-    central.push(new Uint8Array(cd.buffer), nameBytes);
-    offset += 30 + nameBytes.length + size;
-    centralSize += 46 + nameBytes.length;
-  }
-  const eo = new DataView(new ArrayBuffer(22));
-  eo.setUint32(0, 0x06054b50, true); eo.setUint16(8, files.length, true);
-  eo.setUint16(10, files.length, true); eo.setUint32(12, centralSize, true);
-  eo.setUint32(16, offset, true);
-  const all = [...parts, ...central, new Uint8Array(eo.buffer)];
-  let total = 0; all.forEach(a => total += a.length);
-  const out = new Uint8Array(total); let p = 0;
-  for (const a of all) { out.set(a, p); p += a.length; }
-  return out;
-}
 
 /* Reúne data.js + todas las imágenes subidas (con sus nombres por lección) */
 async function collectFiles() {
@@ -715,19 +672,6 @@ document.getElementById("loadFile").addEventListener("change", e => {
   e.target.value = "";
 });
 
-document.getElementById("zipBtn").addEventListener("click", async () => {
-  try {
-    const files = await collectFiles();
-    const zip = buildZip(files);
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([zip], { type: "application/zip" }));
-    a.download = "contenido.zip";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-    document.getElementById("msg").textContent =
-      "✅ contenido.zip descargado (" + files.length + " archivo(s)). Descomprímelo dentro de la carpeta de la serie/alumno.";
-  } catch (e) { document.getElementById("msg").textContent = e.message; }
-});
 
 document.getElementById("saveBtn").addEventListener("click", async () => {
   if (!window.showDirectoryPicker) {
