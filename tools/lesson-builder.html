@@ -92,8 +92,19 @@
 
   /* ---- vista previa (imita el sitio real) ---- */
   .preview { border:1px solid var(--line); border-radius:14px; padding:16px 18px; background:var(--card); min-height:240px; box-shadow:0 1px 2px rgba(52,48,43,.04); }
-  .pv-lesson { margin-bottom:26px; }
-  .pv-lesson > h3 { font-weight:600; font-size:1.5rem; margin:0 0 8px; color:var(--ink); }
+  .pv-lesson { margin-bottom:14px; border-bottom:1px solid var(--line); }
+  .pv-lesson-head {
+    cursor:pointer; display:flex; align-items:center; justify-content:space-between;
+    gap:12px; padding:10px 2px;
+  }
+  .pv-lesson-head h3 { font-weight:600; font-size:1.35rem; margin:0; color:var(--ink); }
+  .pv-lesson-head:hover h3 { color:var(--accent-dark); }
+  .pv-lesson-chev { flex:0 0 auto; transition:transform .3s ease; color:var(--muted); font-size:.9rem; }
+  .pv-lesson.open .pv-lesson-chev { transform:rotate(180deg); }
+  /* truco grid 0fr→1fr: anima sin px fijos y crece con los acordeones internos */
+  .pv-lesson-panel { display:grid; grid-template-rows:0fr; transition:grid-template-rows .38s ease; }
+  .pv-lesson.open .pv-lesson-panel { grid-template-rows:1fr; }
+  .pv-lesson-panel-inner { overflow:hidden; min-height:0; padding-bottom:8px; }
   .pv-intro { color:#56504a; margin-bottom:10px; }
   .pv-acc { border-top:1px solid var(--line); margin-top:8px; }
   .pv-item { border-bottom:1px solid var(--line); }
@@ -354,6 +365,9 @@ function parseLessonBody(text) {
 /* Cada lección: { title, src, headerFile, headerExt, headerImage, headerManual,
                                 footerFile, footerExt, footerImage, footerManual } */
 let LESSONS = [];
+// Índice de la lección abierta (solo una a la vez). -1 = todas cerradas.
+// El editor y la vista previa comparten este estado.
+let OPEN_LESSON = 0;
 // Título y student se toman del data.js cargado; no son editables en lesson-builder.
 let SITE_META = { siteTitle: "Los estudios de NOMBRE", student: "NOMBRE" };
 
@@ -443,8 +457,8 @@ function renderCards() {
     const card = document.createElement("div");
     card.className = "lesson-card";
 
-    // Start collapsed; first card open if only one lesson
-    if (LESSONS.length > 1) card.classList.add("collapsed");
+    // Solo la lección OPEN_LESSON queda abierta; las demás colapsadas.
+    if (i !== OPEN_LESSON) card.classList.add("collapsed");
 
     const head = document.createElement("div");
     head.className = "lesson-card__head";
@@ -458,12 +472,12 @@ function renderCards() {
       '<button class="del" title="Eliminar">🗑</button>';
     head.addEventListener("click", e => {
       if (e.target.closest("input,button,label")) return;
-      const wasCollapsed = card.classList.toggle("collapsed");
-      if (!wasCollapsed) {
-        // Opened — scroll preview to this lesson's section
-        const pv = document.getElementById("preview");
-        const pvItems = pv ? pv.querySelectorAll(".accordion__item, section") : [];
-        if (pvItems[i]) pvItems[i].scrollIntoView({ behavior: "smooth", block: "start" });
+      const opening = OPEN_LESSON !== i;
+      setOpenLesson(opening ? i : -1);
+      if (opening) {
+        // Al abrir, desplaza la vista previa al acordeón de esta lección.
+        const art = document.querySelector('#preview .pv-lesson[data-idx="' + i + '"]');
+        if (art) art.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
     const titleInput = head.querySelector(".lesson-card__title input");
@@ -475,7 +489,13 @@ function renderCards() {
     head.querySelector(".up").addEventListener("click", () => moveLesson(i, -1));
     head.querySelector(".down").addEventListener("click", () => moveLesson(i, +1));
     head.querySelector(".del").addEventListener("click", () => {
-      if (LESSONS.length === 1 || confirm("¿Eliminar esta lección?")) { LESSONS.splice(i, 1); if (!LESSONS.length) LESSONS.push(newLesson()); renderCards(); build(); }
+      if (LESSONS.length === 1 || confirm("¿Eliminar esta lección?")) {
+        LESSONS.splice(i, 1);
+        if (!LESSONS.length) LESSONS.push(newLesson());
+        if (OPEN_LESSON > i) OPEN_LESSON--;
+        else if (OPEN_LESSON === i) OPEN_LESSON = Math.min(i, LESSONS.length - 1);
+        renderCards(); build();
+      }
     });
 
     const body = document.createElement("div");
@@ -503,6 +523,8 @@ function moveLesson(i, dir) {
   const j = i + dir;
   if (j < 0 || j >= LESSONS.length) return;
   [LESSONS[i], LESSONS[j]] = [LESSONS[j], LESSONS[i]];
+  if (OPEN_LESSON === i) OPEN_LESSON = j;
+  else if (OPEN_LESSON === j) OPEN_LESSON = i;
   renderCards(); build();
 }
 
@@ -587,7 +609,7 @@ function genDataJs(pages, opts) {
 function renderPreview(pages) {
   const pv = document.getElementById("preview");
   if (!pages.length) { pv.innerHTML = '<p style="color:#999">Escribe o pega una lección…</p>'; return; }
-  pv.innerHTML = pages.map(p => {
+  pv.innerHTML = pages.map((p, li) => {
     const intro = p.purposeHtml ? '<div class="pv-intro">' + p.purposeHtml + "</div>" : "";
     const items = p.items.map((it, i) =>
       '<div class="pv-item' + (i === 0 ? " open" : "") + '">' +
@@ -596,10 +618,24 @@ function renderPreview(pages) {
       "</div>"
     ).join("");
     const flag = p.published ? "" : ' <span style="font-size:.7rem;color:#999">(oculta)</span>';
-    return '<article class="pv-lesson"><h3>' + escapeHtml(p.title) + flag + "</h3>" +
-           intro + '<div class="pv-acc">' + items + "</div></article>";
+    const openCls = li === OPEN_LESSON ? " open" : "";
+    return '<article class="pv-lesson' + openCls + '" data-idx="' + li + '">' +
+             '<div class="pv-lesson-head"><h3>' + escapeHtml(p.title) + flag + "</h3>" +
+             '<span class="pv-lesson-chev">▼</span></div>' +
+             '<div class="pv-lesson-panel"><div class="pv-lesson-panel-inner">' +
+               intro + '<div class="pv-acc">' + items + "</div>" +
+             "</div></div></article>";
   }).join("");
 
+  // Acordeón a nivel de lección (solo uno abierto; sincroniza con el editor).
+  pv.querySelectorAll(".pv-lesson-head").forEach(head => {
+    head.addEventListener("click", () => {
+      const idx = +head.parentElement.dataset.idx;
+      setOpenLesson(OPEN_LESSON === idx ? -1 : idx);
+    });
+  });
+
+  // Acordeones internos (cada bloque de la lección).
   pv.querySelectorAll(".pv-head").forEach(head => {
     head.addEventListener("click", () => {
       const item = head.parentElement;
@@ -611,6 +647,16 @@ function renderPreview(pages) {
   pv.querySelectorAll(".pv-item.open .pv-panel").forEach(panel => {
     panel.style.maxHeight = panel.scrollHeight + "px";
   });
+}
+
+/* Abre exclusivamente la lección idx (o ninguna si idx = -1) y sincroniza
+   las tarjetas del editor con los acordeones de la vista previa. */
+function setOpenLesson(idx) {
+  OPEN_LESSON = idx;
+  document.querySelectorAll("#lessons .lesson-card").forEach((c, j) =>
+    c.classList.toggle("collapsed", j !== idx));
+  document.querySelectorAll("#preview .pv-lesson").forEach((a, j) =>
+    a.classList.toggle("open", j === idx));
 }
 
 /* ============================================================
@@ -657,6 +703,7 @@ function loadFromText(text) {
     footerImage: l.footerImage || "", footerManual: !!l.footerImage
   }));
   if (!LESSONS.length) LESSONS.push(newLesson({ src: DEMO_SRC, title: "" }));
+  OPEN_LESSON = 0;
   renderCards(); build();
   document.getElementById("msg").textContent = "✅ Cargado. Recuerda volver a subir las imágenes si quieres cambiarlas.";
 }
@@ -694,7 +741,7 @@ async function collectFiles() {
    Eventos de los botones
    ============================================================ */
 document.getElementById("addBtn").addEventListener("click", () => {
-  LESSONS.push(newLesson()); renderCards(); build();
+  LESSONS.push(newLesson()); OPEN_LESSON = LESSONS.length - 1; renderCards(); build();
 });
 document.getElementById("genBtn").addEventListener("click", build);
 
