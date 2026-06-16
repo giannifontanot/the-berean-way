@@ -35,13 +35,17 @@
   .row { display:flex; gap:18px; flex-wrap:wrap; }
   .col { flex:1 1 420px; min-width:0; }
   .btns { display:flex; gap:10px; flex-wrap:wrap; margin:16px 0; align-items:center; }
-  .tip { position:relative; display:inline-flex; align-items:center; justify-content:center;
-    width:18px; height:18px; border-radius:50%; background:#b0a090; color:#fff;
-    font-size:11px; font-weight:700; cursor:default; flex-shrink:0; }
-  .tip::after { content:attr(data-tip); position:absolute; bottom:calc(100% + 6px); left:50%;
-    transform:translateX(-50%); background:#333; color:#fff; font-size:0.78rem; white-space:nowrap;
-    padding:5px 10px; border-radius:7px; pointer-events:none; opacity:0; transition:opacity .2s; }
-  .tip:hover::after { opacity:1; }
+  .btn-sep { width:1px; height:28px; background:var(--line); margin:0 4px; flex-shrink:0; }
+  /* Botón Guardar con badge (i) superpuesto */
+  .save-wrap { position:relative; display:inline-flex; }
+  .save-wrap .tip { position:absolute; top:-7px; right:-7px;
+    display:inline-flex; align-items:center; justify-content:center;
+    width:16px; height:16px; border-radius:50%; background:#b0a090; color:#fff;
+    font-size:10px; font-weight:700; cursor:default; }
+  .save-wrap .tip::after { content:attr(data-tip); position:absolute; bottom:calc(100% + 8px);
+    right:0; transform:none; background:#333; color:#fff; font-size:0.78rem; white-space:nowrap;
+    padding:5px 10px; border-radius:7px; pointer-events:none; opacity:0; transition:opacity .2s; z-index:10; }
+  .save-wrap .tip:hover::after { opacity:1; }
   button { font-family:inherit; font-size:.92rem; padding:10px 17px; border-radius:10px; border:1px solid transparent; cursor:pointer; transition:background .15s, border-color .15s; }
   .primary { background:var(--accent); color:#fff; }
   .primary:hover { background:var(--accent-dark); }
@@ -137,9 +141,12 @@
     <div id="lessons"></div>
     <div class="btns">
       <button class="ghost" id="addBtn">➕ Agregar lección</button>
+      <div class="btn-sep"></div>
       <button class="ghost" id="loadBtn">📂 Abrir</button>
-      <button class="ghost" id="saveBtn">💾 Guardar</button>
-      <span class="tip" data-tip="→ luego: git add · commit · push">i</span>
+      <div class="save-wrap">
+        <button class="primary" id="saveBtn">💾 Guardar</button>
+        <span class="tip" data-tip="→ luego: git add · commit · push">i</span>
+      </div>
       <input type="file" id="loadFile" accept=".js,text/javascript" style="display:none">
     </div>
     <p class="ok" id="msg"></p>
