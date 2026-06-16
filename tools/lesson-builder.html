@@ -62,7 +62,10 @@
   /* ---- tarjeta de lección ---- */
   .lesson-card { border:1px solid var(--line); border-radius:14px; margin:16px 0; background:var(--card); overflow:hidden; box-shadow:0 1px 2px rgba(52,48,43,.04); }
   .lesson-card__head {
-    display:flex; align-items:center; gap:8px; padding:11px 14px; background:var(--accent-soft); border-bottom:1px solid var(--line); }
+    display:flex; align-items:center; gap:8px; padding:11px 14px; background:var(--accent-soft); border-bottom:1px solid var(--line); cursor:pointer; }
+  .lesson-card__head input, .lesson-card__head button, .lesson-card__head label { cursor:auto; }
+  .lesson-card__chevron { font-size:.75rem; color:var(--accent-dark); flex-shrink:0; transition:transform .2s; }
+  .lesson-card:not(.collapsed) .lesson-card__chevron { transform:rotate(90deg); }
   .lesson-card__num { font-weight:700; font-size:.82rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-dark); white-space:nowrap; }
   .lesson-card__title { flex:1; min-width:0; }
   .lesson-card__title input { font-weight:600; }
@@ -429,15 +432,29 @@ function renderCards() {
     const card = document.createElement("div");
     card.className = "lesson-card";
 
+    // Start collapsed; first card open if only one lesson
+    if (LESSONS.length > 1) card.classList.add("collapsed");
+
     const head = document.createElement("div");
     head.className = "lesson-card__head";
     head.innerHTML =
+      '<span class="lesson-card__chevron">▶</span>' +
       '<span class="lesson-card__num">Lección ' + (i + 1) + '</span>' +
       '<span class="lesson-card__title"><input type="text" placeholder="Título de la lección (ej. Buscando a Dios)"></span>' +
       '<label class="pub" title="Si está marcada, la lección aparece en el menú del alumno"><input type="checkbox"> visible</label>' +
       '<button class="up" title="Subir">↑</button>' +
       '<button class="down" title="Bajar">↓</button>' +
       '<button class="del" title="Eliminar">🗑</button>';
+    head.addEventListener("click", e => {
+      if (e.target.closest("input,button,label")) return;
+      const wasCollapsed = card.classList.toggle("collapsed");
+      if (!wasCollapsed) {
+        // Opened — scroll preview to this lesson's section
+        const pv = document.getElementById("preview");
+        const pvItems = pv ? pv.querySelectorAll(".accordion__item, section") : [];
+        if (pvItems[i]) pvItems[i].scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
     const titleInput = head.querySelector(".lesson-card__title input");
     titleInput.value = ls.title;
     titleInput.addEventListener("input", () => { ls.title = titleInput.value; build(); });
