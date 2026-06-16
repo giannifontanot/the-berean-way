@@ -131,8 +131,9 @@
     <tr><td>1. / 2. / 3.</td><td>Lista ordenada con <strong>números</strong>.</td></tr>
     <tr><td>**negrita**</td><td>Texto en <strong>negrita</strong>.</td></tr>
     <tr><td>*cursiva*</td><td>Texto en <em>cursiva</em>.</td></tr>
+    <tr><td>__subrayado__</td><td>Texto <u>subrayado</u>.</td></tr>
     <tr><td>{rojo: texto}</td><td>Color. Nombres: rojo, azul, verde, dorado, gris, naranja, morado. O hex: <code>{#ff8800: texto}</code>.</td></tr>
-    <tr><td>{biblia: 1 En el principio...}</td><td>Escritura en rojo 18px; los números de versículo salen pequeños (10px). Puede abarcar varias líneas.</td></tr>
+    <tr><td>{biblia: 1 En el principio...}</td><td>Escritura en rojo 18px; los números de versículo salen pequeños (10px). Puede abarcar varias líneas y <strong>se respetan los saltos de línea</strong> del pasaje.</td></tr>
   </table>
   <p class="muted" style="font-size:.85rem">El <strong>título de cada lección</strong> se escribe en el campo de la tarjeta (es el texto del encabezado).
   La <strong>imagen del header</strong> y la del <strong>footer</strong> se suben en cada tarjeta. El footer no lleva texto.</p>
@@ -189,9 +190,14 @@ function escapeHtml(s) {
 function inline(text) {
   let t = escapeHtml(text);
 
-  // {biblia: ...}  → rojo 18px, números de versículo en <sup> pequeño
+  // {biblia: ...}  → rojo 18px, números de versículo en <sup> pequeño.
+  // Las marcas **negrita** / *cursiva* / __subrayado__ se aplican después,
+  // de forma global (más abajo), por lo que también funcionan aquí dentro.
   t = t.replace(/\{biblia:\s*([\s\S]*?)\}/g, (m, inner) => {
-    const body = inner.replace(/(^|[\s(¿"'])(\d+)(?=\s)/g, "$1<sup>$2</sup>");
+    // números de versículo en superíndice (antes de tocar los saltos de línea)
+    let body = inner.replace(/(^|[\s(¿"'])(\d+)(?=\s)/g, "$1<sup>$2</sup>");
+    // conserva los saltos de línea originales del pasaje
+    body = body.replace(/\n/g, "<br>");
     return '<span class="scripture">' + body + "</span>";
   });
 
@@ -209,6 +215,8 @@ function inline(text) {
   t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   // *cursiva*
   t = t.replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>");
+  // __subrayado__
+  t = t.replace(/__([^_]+)__/g, "<u>$1</u>");
   // [texto](url)
   t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g,
     '<a href="$2" target="_blank" rel="noopener">$1</a>');
@@ -216,31 +224,34 @@ function inline(text) {
   return t;
 }
 
-/* une líneas de un bloque {marca: ...} que abarca varias líneas en una sola. */
+/* une líneas de un bloque {marca: ...} que abarca varias líneas en una sola.
+   Para {biblia:} preserva los saltos de línea originales (\n). */
 function mergeBraces(lines) {
   const out = [];
-  let buf = null;
+  let buf = null, isBiblia = false;
   for (const line of lines) {
     if (buf !== null) {
-      buf += " " + line.trim();
-      if (buf.indexOf("}") > -1) { out.push(buf); buf = null; }
+      buf += (isBiblia ? "\n" : " ") + (isBiblia ? line : line.trim());
+      if (buf.indexOf("}") > -1) { out.push(buf); buf = null; isBiblia = false; }
       continue;
     }
     const op = (line.match(/\{/g) || []).length;
     const cl = (line.match(/\}/g) || []).length;
-    if (op > cl) buf = line;
+    if (op > cl) { buf = line; isBiblia = /\{biblia:/i.test(line); }
     else out.push(line);
   }
   if (buf !== null) out.push(buf);
   return out;
 }
 
-/* clasifica una línea como elemento de lista, o null si no lo es */
+/* clasifica una línea como elemento de lista, o null si no lo es.
+   Usa [\s\S]* (no .*) para no romperse si la línea trae saltos internos
+   por un bloque {biblia:} multilínea que se fusionó conservando los \n. */
 function classifyListItem(line) {
   let m;
-  if (m = line.match(/^\s*-\s+(.*)$/))          return { type: "ul",       text: m[1] };
-  if (m = line.match(/^\s*([0-9]+)[.)]\s+(.*)$/)) return { type: "ol-num",   text: m[2] };
-  if (m = line.match(/^\s*([A-Z])[.)]\s+(.*)$/))  return { type: "ol-alpha", text: m[2] };
+  if (m = line.match(/^\s*-\s+([\s\S]*)$/))          return { type: "ul",       text: m[1] };
+  if (m = line.match(/^\s*([0-9]+)[.)]\s+([\s\S]*)$/)) return { type: "ol-num",   text: m[2] };
+  if (m = line.match(/^\s*([A-Z])[.)]\s+([\s\S]*)$/))  return { type: "ol-alpha", text: m[2] };
   return null;
 }
 
