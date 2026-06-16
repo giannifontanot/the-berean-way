@@ -2,12 +2,12 @@
 /* Generado con tools/lesson-builder.html — no edites la línea de arriba. */
 /* published:true muestra la lección; published:false la oculta. */
 window.STUDENT_SITE = {
-  title: "Los estudios de NOMBRE",
-  student: "NOMBRE",
+  title: "Los estudios de Paquita",
+  student: "Paquita",
   pages: [
     {
       slug: "leccion-1",
-      title: "Los estudios de NOMBRE",
+      title: "Los estudios de Paquita",
       published: true,
       type: "accordion",
       headerImage: "img/leccion-1-header.png",
