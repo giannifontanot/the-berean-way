@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clase: Introducción a la Programación</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f0f1a;
+      color: #e8e8f0;
+      min-height: 100vh;
+    }
+
+    /* ── Barra superior "Guardar / Abrir carpeta" ── */
+    .save-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #1a1a2e;
+      border-bottom: 2px solid #2a2a3e;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .save-bar .page-label {
+      font-size: 0.8rem;
+      color: #888;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #save-btn {
+      flex-shrink: 0;
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #save-btn:active { transform: scale(0.96); }
+
+    #save-btn.unsaved {
+      background: #e63946;
+      color: #fff;
+    }
+
+    #save-btn.unsaved:hover { background: #c1121f; }
+
+    #save-btn.saved {
+      background: #2a9d8f;
+      color: #fff;
+    }
+
+    #save-btn.saved:hover { background: #21867a; }
+
+    /* ── Contenido de la clase ── */
+    .class-content {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+    }
+
+    .class-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      background: #1a1a2e;
+      border: 1px solid #2a2a3e;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      color: #aaa;
+    }
+
+    .tag.accent {
+      border-color: #e63946;
+      color: #e63946;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #aaa;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #2a2a3e;
+      margin: 24px 0;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #e8e8f0;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: #bbb;
+      margin-bottom: 16px;
+    }
+
+    pre {
+      background: #1a1a2e;
+      border: 1px solid #2a2a3e;
+      border-radius: 10px;
+      padding: 18px;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: #a8d8ea;
+      margin-bottom: 20px;
+    }
+
+    .info-box {
+      background: #1a1a2e;
+      border-left: 3px solid #e63946;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      color: #ccc;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Barra sticky de guardar -->
+<div class="save-bar">
+  <span class="page-label" id="page-label">Intro a la Programación · Clase 1</span>
+  <button id="save-btn" class="unsaved" onclick="toggleSave()">
+    <span id="btn-icon">💾</span>
+    <span id="btn-text">Guardar en carpeta</span>
+  </button>
+</div>
+
+<!-- Contenido de ejemplo -->
+<div class="class-content">
+  <div class="class-meta">
+    <span class="tag accent">Clase 1</span>
+    <span class="tag">Programación</span>
+    <span class="tag">Principiantes</span>
+  </div>
+
+  <h1>Introducción a la Programación</h1>
+  <p class="subtitle">¿Qué es un programa? ¿Cómo le habla una persona a una computadora? En esta clase exploraremos los conceptos fundamentales.</p>
+
+  <hr class="divider" />
+
+  <h2>¿Qué es la programación?</h2>
+  <p>Programar es darle instrucciones a una computadora paso a paso para que realice una tarea. La computadora hace exactamente lo que le decimos — ni más, ni menos.</p>
+
+  <div class="info-box">
+    💡 <strong>Analogía:</strong> Programar es como escribir una receta de cocina. Cada instrucción debe ser clara y en el orden correcto, o el resultado no será el esperado.
+  </div>
+
+  <h2>Tu primer programa</h2>
+  <p>El programa más clásico para empezar muestra un mensaje en pantalla:</p>
+
+  <pre><code>print("¡Hola, mundo!")</code></pre>
+
+  <p>Este código le dice a la computadora: <em>"muestra el texto ¡Hola, mundo! en la pantalla"</em>. Así de simple es el inicio.</p>
+
+  <h2>Variables</h2>
+  <p>Una variable es como una caja con nombre donde guardamos información:</p>
+
+  <pre><code>nombre = "María"
+edad = 25
+print("Hola,", nombre, "tienes", edad, "años")</code></pre>
+
+  <p>Cuando ejecutamos este código, la computadora guarda "María" en la caja llamada <code>nombre</code> y 25 en la caja llamada <code>edad</code>, luego los muestra juntos.</p>
+
+  <hr class="divider" />
+
+  <p style="color:#555; font-size:0.78rem;">Clase de ejemplo · The Berean Way</p>
+</div>
+
+<script>
+  const STORAGE_KEY = 'tbw-carpeta';
+  const FOLDER_URL = 'carpeta.html';
+
+  const THIS_PAGE = {
+    url: window.location.href,
+    title: document.title,
+    savedAt: new Date().toISOString()
+  };
+
+  function getLinks() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+    catch { return []; }
+  }
+
+  function isAlreadySaved() {
+    return getLinks().some(l => l.url === THIS_PAGE.url);
+  }
+
+  function updateButton(saved) {
+    const btn = document.getElementById('save-btn');
+    const icon = document.getElementById('btn-icon');
+    const text = document.getElementById('btn-text');
+
+    if (saved) {
+      btn.className = 'saved';
+      icon.textContent = '📁';
+      text.textContent = 'Abrir carpeta';
+    } else {
+      btn.className = 'unsaved';
+      icon.textContent = '💾';
+      text.textContent = 'Guardar en carpeta';
+    }
+  }
+
+  function toggleSave() {
+    if (isAlreadySaved()) {
+      window.location.href = FOLDER_URL;
+      return;
+    }
+
+    const links = getLinks();
+    links.unshift({ ...THIS_PAGE, savedAt: new Date().toISOString() });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+
+    updateButton(true);
+
+    const text = document.getElementById('btn-text');
+    text.textContent = '¡Guardado!';
+    setTimeout(() => { text.textContent = 'Abrir carpeta'; }, 1500);
+  }
+
+  updateButton(isAlreadySaved());
+</script>
+</body>
+</html>
