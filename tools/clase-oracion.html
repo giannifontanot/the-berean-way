@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Oración: Hablar con Dios</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f0f1a; color: #e8e8f0; min-height: 100vh; }
+    .save-bar { position: sticky; top: 0; z-index: 100; background: #1a1a2e; border-bottom: 2px solid #2a2a3e; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .save-bar .page-label { font-size: 0.8rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #save-btn { flex-shrink: 0; padding: 9px 18px; border-radius: 8px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; gap: 6px; }
+    #save-btn:active { transform: scale(0.96); }
+    #save-btn.unsaved { background: #e63946; color: #fff; }
+    #save-btn.unsaved:hover { background: #c1121f; }
+    #save-btn.saved { background: #2a9d8f; color: #fff; }
+    #save-btn.saved:hover { background: #21867a; }
+    .class-content { max-width: 720px; margin: 0 auto; padding: 32px 24px 60px; }
+    .class-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .tag { background: #1a1a2e; border: 1px solid #2a2a3e; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; color: #aaa; }
+    .tag.accent { border-color: #e63946; color: #e63946; }
+    h1 { font-size: 1.6rem; font-weight: 800; line-height: 1.25; margin-bottom: 10px; color: #fff; }
+    .subtitle { font-size: 1rem; color: #aaa; margin-bottom: 28px; line-height: 1.5; }
+    .divider { border: none; border-top: 1px solid #2a2a3e; margin: 24px 0; }
+    h2 { font-size: 1.1rem; font-weight: 700; color: #e8e8f0; margin-bottom: 12px; }
+    p { font-size: 0.9rem; line-height: 1.7; color: #bbb; margin-bottom: 16px; }
+    .verse { background: #1a1a2e; border-left: 3px solid #e63946; border-radius: 0 8px 8px 0; padding: 14px 16px; margin-bottom: 20px; font-size: 0.9rem; color: #ddd; line-height: 1.7; font-style: italic; }
+    .verse cite { display: block; margin-top: 6px; font-style: normal; font-size: 0.78rem; color: #e63946; font-weight: 700; }
+    .info-box { background: #1a1a2e; border-left: 3px solid #4a9eff; border-radius: 0 8px 8px 0; padding: 14px 16px; margin-bottom: 20px; font-size: 0.85rem; color: #ccc; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<div class="save-bar">
+  <span class="page-label" id="page-label">Nuestra relación con Dios · Clase 1</span>
+  <button id="save-btn" class="unsaved" onclick="toggleSave()">
+    <span id="btn-icon">💾</span>
+    <span id="btn-text">Guardar en carpeta</span>
+  </button>
+</div>
+
+<div class="class-content">
+  <div class="class-meta">
+    <span class="tag accent">Clase 1</span>
+    <span class="tag">Oración</span>
+    <span class="tag">Relación con Dios</span>
+  </div>
+
+  <h1>La Oración: Hablar con Dios</h1>
+  <p class="subtitle">La oración no es un ritual — es una conversación. En esta clase exploramos qué significa realmente hablar con nuestro Padre.</p>
+
+  <hr class="divider" />
+
+  <h2>¿Qué es la oración?</h2>
+  <p>La oración es la forma en que nos comunicamos con Dios. No necesita palabras perfectas ni fórmulas especiales. Es simplemente la apertura de nuestro corazón ante Él, confiando en que nos escucha.</p>
+
+  <div class="verse">
+    "No se inquieten por nada; más bien, en toda ocasión, con oración y ruego, presenten sus peticiones a Dios y denle gracias."
+    <cite>Filipenses 4:6</cite>
+  </div>
+
+  <h2>¿Por qué orar si Dios ya sabe todo?</h2>
+  <p>Dios no necesita información — nosotros necesitamos la conexión. La oración nos transforma a nosotros, no a Dios. Cuando oramos, reconocemos nuestra dependencia de Él y alineamos nuestra voluntad con la suya.</p>
+
+  <div class="info-box">
+    💡 <strong>Reflexión:</strong> ¿Le hablarías a alguien que ya sabe lo que vas a decir? Sí — si lo amas. La oración es intimidad, no información.
+  </div>
+
+  <h2>El modelo de Jesús</h2>
+  <p>Jesús, siendo el Hijo de Dios, oraba constantemente. Se levantaba de madrugada para orar, pasaba noches enteras en oración, y en los momentos más difíciles de su vida, su respuesta fue orar.</p>
+
+  <div class="verse">
+    "Pero Jesús se apartaba con frecuencia a lugares solitarios para orar."
+    <cite>Lucas 5:16</cite>
+  </div>
+
+  <h2>Elementos de una oración</h2>
+  <p>Jesús enseñó a sus discípulos a orar con el Padre Nuestro (Mateo 6:9-13). En esa oración hay alabanza, petición, confesión y rendición. No es una fórmula sino una estructura del corazón.</p>
+
+  <hr class="divider" />
+
+  <p style="color:#555; font-size:0.78rem;">The Berean Way · Nuestra relación con Dios</p>
+</div>
+
+<script>
+  const STORAGE_KEY = 'tbw-carpeta';
+  const FOLDER_URL = (function () {
+    const parts = location.pathname.split('/');
+    const anchor = parts.findIndex(p => p === 'tools' || p === 'sites');
+    const base = anchor > 0 ? parts.slice(0, anchor).join('/') : '';
+    return location.origin + base + '/tools/carpeta.html';
+  })();
+
+  const THIS_PAGE = { url: window.location.href, title: document.title, savedAt: new Date().toISOString() };
+
+  function getLinks() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; } }
+  function isAlreadySaved() { return getLinks().some(l => l.url === THIS_PAGE.url); }
+
+  function updateButton(saved) {
+    const btn = document.getElementById('save-btn');
+    document.getElementById('btn-icon').textContent = saved ? '📁' : '💾';
+    document.getElementById('btn-text').textContent = saved ? 'Abrir carpeta' : 'Guardar en carpeta';
+    btn.className = saved ? 'saved' : 'unsaved';
+  }
+
+  function toggleSave() {
+    if (isAlreadySaved()) { window.location.href = FOLDER_URL; return; }
+    const links = getLinks();
+    links.unshift({ ...THIS_PAGE, savedAt: new Date().toISOString() });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+    updateButton(true);
+    document.getElementById('btn-text').textContent = '¡Guardado!';
+    setTimeout(() => { document.getElementById('btn-text').textContent = 'Abrir carpeta'; }, 1500);
+  }
+
+  updateButton(isAlreadySaved());
+</script>
+</body>
+</html>

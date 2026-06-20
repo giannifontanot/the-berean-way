@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Adoración: Vivir para la Gloria de Dios</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f0f1a; color: #e8e8f0; min-height: 100vh; }
+    .save-bar { position: sticky; top: 0; z-index: 100; background: #1a1a2e; border-bottom: 2px solid #2a2a3e; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .save-bar .page-label { font-size: 0.8rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #save-btn { flex-shrink: 0; padding: 9px 18px; border-radius: 8px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; gap: 6px; }
+    #save-btn:active { transform: scale(0.96); }
+    #save-btn.unsaved { background: #e63946; color: #fff; }
+    #save-btn.unsaved:hover { background: #c1121f; }
+    #save-btn.saved { background: #2a9d8f; color: #fff; }
+    #save-btn.saved:hover { background: #21867a; }
+    .class-content { max-width: 720px; margin: 0 auto; padding: 32px 24px 60px; }
+    .class-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .tag { background: #1a1a2e; border: 1px solid #2a2a3e; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; color: #aaa; }
+    .tag.accent { border-color: #e63946; color: #e63946; }
+    h1 { font-size: 1.6rem; font-weight: 800; line-height: 1.25; margin-bottom: 10px; color: #fff; }
+    .subtitle { font-size: 1rem; color: #aaa; margin-bottom: 28px; line-height: 1.5; }
+    .divider { border: none; border-top: 1px solid #2a2a3e; margin: 24px 0; }
+    h2 { font-size: 1.1rem; font-weight: 700; color: #e8e8f0; margin-bottom: 12px; }
+    p { font-size: 0.9rem; line-height: 1.7; color: #bbb; margin-bottom: 16px; }
+    .verse { background: #1a1a2e; border-left: 3px solid #e63946; border-radius: 0 8px 8px 0; padding: 14px 16px; margin-bottom: 20px; font-size: 0.9rem; color: #ddd; line-height: 1.7; font-style: italic; }
+    .verse cite { display: block; margin-top: 6px; font-style: normal; font-size: 0.78rem; color: #e63946; font-weight: 700; }
+    .info-box { background: #1a1a2e; border-left: 3px solid #4a9eff; border-radius: 0 8px 8px 0; padding: 14px 16px; margin-bottom: 20px; font-size: 0.85rem; color: #ccc; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<div class="save-bar">
+  <span class="page-label" id="page-label">Nuestra relación con Dios · Clase 5</span>
+  <button id="save-btn" class="unsaved" onclick="toggleSave()">
+    <span id="btn-icon">💾</span>
+    <span id="btn-text">Guardar en carpeta</span>
+  </button>
+</div>
+
+<div class="class-content">
+  <div class="class-meta">
+    <span class="tag accent">Clase 5</span>
+    <span class="tag">Adoración</span>
+    <span class="tag">Relación con Dios</span>
+  </div>
+
+  <h1>La Adoración: Vivir para la Gloria de Dios</h1>
+  <p class="subtitle">La adoración no es un estilo musical ni un momento del domingo — es la orientación de toda una vida hacia Dios.</p>
+
+  <hr class="divider" />
+
+  <h2>¿Qué es la adoración?</h2>
+  <p>Adorar es atribuirle a Dios el valor que Él merece. Viene del anglosajón <em>worth-ship</em>: declarar el valor de alguien. Cuando adoramos a Dios, reconocemos que Él es supremamente valioso — más que cualquier otra cosa en nuestra vida.</p>
+
+  <div class="verse">
+    "Por lo tanto, hermanos, tomando en cuenta la misericordia de Dios, les ruego que cada uno de ustedes, en adoración espiritual, ofrezca su cuerpo como sacrificio vivo, santo y agradable a Dios."
+    <cite>Romanos 12:1</cite>
+  </div>
+
+  <h2>Adoración en espíritu y en verdad</h2>
+  <p>Jesús le dijo a la mujer samaritana que el Padre busca adoradores que adoren en espíritu y en verdad. No se trata de un lugar, un idioma ni un estilo. Se trata del corazón alineado con la realidad de quién es Dios.</p>
+
+  <div class="verse">
+    "Dios es espíritu, y quienes lo adoran deben hacerlo en espíritu y en verdad."
+    <cite>Juan 4:24</cite>
+  </div>
+
+  <h2>La adoración como estilo de vida</h2>
+  <p>Pablo no dice "asistan a la iglesia" en Romanos 12:1 — dice "ofrezcan su cuerpo". Trabajar, comer, criar hijos, hacer negocios, descansar — todo puede ser adoración si se hace para la gloria de Dios.</p>
+
+  <div class="info-box">
+    💡 <strong>Reflexión:</strong> ¿Qué cambiaría en tu semana si trataras cada actividad como una ofrenda a Dios? No solo las horas del domingo — cada hora.
+  </div>
+
+  <h2>Adoración en el sufrimiento</h2>
+  <p>Job adoró a Dios después de perderlo todo. Pablo y Silas cantaron en la cárcel a medianoche. La adoración en el sufrimiento es la más poderosa porque declara que Dios vale más que lo que hemos perdido.</p>
+
+  <div class="verse">
+    "El Señor ha dado; el Señor ha quitado. ¡Bendito sea el nombre del Señor!"
+    <cite>Job 1:21</cite>
+  </div>
+
+  <hr class="divider" />
+  <p style="color:#555; font-size:0.78rem;">The Berean Way · Nuestra relación con Dios</p>
+</div>
+
+<script>
+  const STORAGE_KEY = 'tbw-carpeta';
+  const FOLDER_URL = (function () {
+    const parts = location.pathname.split('/');
+    const anchor = parts.findIndex(p => p === 'tools' || p === 'sites');
+    const base = anchor > 0 ? parts.slice(0, anchor).join('/') : '';
+    return location.origin + base + '/tools/carpeta.html';
+  })();
+
+  const THIS_PAGE = { url: window.location.href, title: document.title, savedAt: new Date().toISOString() };
+
+  function getLinks() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; } }
+  function isAlreadySaved() { return getLinks().some(l => l.url === THIS_PAGE.url); }
+
+  function updateButton(saved) {
+    const btn = document.getElementById('save-btn');
+    document.getElementById('btn-icon').textContent = saved ? '📁' : '💾';
+    document.getElementById('btn-text').textContent = saved ? 'Abrir carpeta' : 'Guardar en carpeta';
+    btn.className = saved ? 'saved' : 'unsaved';
+  }
+
+  function toggleSave() {
+    if (isAlreadySaved()) { window.location.href = FOLDER_URL; return; }
+    const links = getLinks();
+    links.unshift({ ...THIS_PAGE, savedAt: new Date().toISOString() });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+    updateButton(true);
+    document.getElementById('btn-text').textContent = '¡Guardado!';
+    setTimeout(() => { document.getElementById('btn-text').textContent = 'Abrir carpeta'; }, 1500);
+  }
+
+  updateButton(isAlreadySaved());
+</script>
+</body>
+</html>
