@@ -118,6 +118,37 @@
     });
   });
 
+  /* ---- Carpeta (favoritos en localStorage) ---- */
+  const CARPETA_KEY = "tbw-carpeta";
+
+  function getCarpeta() {
+    try { return JSON.parse(localStorage.getItem(CARPETA_KEY) || "[]"); } catch (e) { return []; }
+  }
+  function saveCarpetaArr(arr) {
+    localStorage.setItem(CARPETA_KEY, JSON.stringify(arr));
+  }
+  function isInCarpeta(url) {
+    return getCarpeta().some(item => item.url === url);
+  }
+  function toggleCarpeta(url, title) {
+    const arr = getCarpeta();
+    const idx = arr.findIndex(item => item.url === url);
+    if (idx >= 0) arr.splice(idx, 1);
+    else arr.push({ url, title, savedAt: Date.now() });
+    saveCarpetaArr(arr);
+    updateCarpetaBtn(url);
+  }
+  function updateCarpetaBtn(url) {
+    const btn = document.getElementById("carpetaBtn");
+    if (!btn) return;
+    const saved = isInCarpeta(url);
+    btn.classList.toggle("saved", saved);
+    btn.setAttribute("aria-label", saved ? "Quitar de carpeta" : "Guardar en carpeta");
+  }
+  function carpetaHref() {
+    return root + "/carpeta.html";
+  }
+
   /* ---- Chrome: topbar + menú lateral agrupado por serie ---- */
   function renderChrome(SITE) {
     if (document.getElementById("navDrawer")) return; // ya renderizado
@@ -131,6 +162,12 @@
           <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <span class="topbar__title">${esc(SITE.title)}</span>
+      <button class="icon-btn" id="carpetaBtn" aria-label="Guardar en carpeta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+        </svg>
+      </button>
       <button class="icon-btn" id="searchBtn" aria-label="Buscar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
              stroke-linecap="round"><circle cx="11" cy="11" r="7"/>
@@ -169,13 +206,25 @@
 
     drawer.innerHTML = `
       <div class="nav-drawer__head">${esc(SITE.title)}${sub}</div>
-      <ul class="nav-drawer__list">${linksHtml}</ul>`;
+      <ul class="nav-drawer__list">${linksHtml}</ul>
+      <div class="nav-drawer__footer">
+        <a href="${esc(carpetaHref())}" class="nav-drawer__carpeta-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+          Mi carpeta
+        </a>
+      </div>`;
 
     document.body.prepend(overlay);
     document.body.prepend(drawer);
     document.body.prepend(topbar);
 
     document.getElementById("menuBtn").addEventListener("click", openDrawer);
+    document.getElementById("carpetaBtn").addEventListener("click", () => {
+      toggleCarpeta(location.href, document.title.split(" · ")[0]);
+    });
     overlay.addEventListener("click", closeDrawer);
     document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
 
@@ -238,6 +287,7 @@
       ${footer ? renderFooter(footer, resolveImg) : ""}`;
 
     markActiveLink(page.slug);
+    updateCarpetaBtn(location.href);
     wireAccordions();
     wireSearch();
     wireGallery();

@@ -262,6 +262,18 @@ body {
   border-top: 1px solid var(--color-line); margin-top: 6px;
 }
 .nav-drawer__section:first-child { border-top: none; margin-top: 0; }
+.nav-drawer__footer {
+  margin-top: auto; border-top: 1px solid var(--color-line); padding: 12px 0;
+}
+.nav-drawer__carpeta-link {
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 20px; color: var(--color-accent);
+  text-decoration: none; font-size: 0.95rem; font-weight: 600;
+}
+.nav-drawer__carpeta-link:hover { background: #f3f5f8; }
+
+/* Bookmark saved state */
+.icon-btn.saved svg { fill: currentColor; }
 
 /* Landscape en móvil: el svh ya es pequeño, bajamos el % para no cubrir demasiado. */
 @media (orientation: landscape) and (max-width: 900px) { :root { --header-height: 55vh; --header-height: 55svh; } }
