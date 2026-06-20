@@ -207,7 +207,14 @@ print("Hola,", nombre, "tienes", edad, "años")</code></pre>
 
 <script>
   const STORAGE_KEY = 'tbw-carpeta';
-  const FOLDER_URL = 'https://giannifontanot.github.io/the-berean-way/tools/carpeta.html';
+  // Deriva el root del repo dinámicamente para que funcione en cualquier origin
+  // (GitHub Pages, localhost, forks, dominios personalizados).
+  const FOLDER_URL = (function () {
+    const parts = location.pathname.split('/');
+    const anchor = parts.findIndex(p => p === 'tools' || p === 'sites');
+    const base = anchor > 0 ? parts.slice(0, anchor).join('/') : '';
+    return location.origin + base + '/tools/carpeta.html';
+  })();
 
   const THIS_PAGE = {
     url: window.location.href,
