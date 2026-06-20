@@ -1,29 +1,118 @@
 /* ============================================================
-   The Berean Way — motor compartido (igual para todos los alumnos)
+   The Berean Way — motor compartido
    ------------------------------------------------------------
-   NO se edita por alumno. Lee el contenido desde window.STUDENT_SITE
-   (definido en el data.js de cada carpeta) y lo dibuja.
-
-   Cada página puede ser de tipo:
-     - "accordion": lista de bloques que se expanden (con buscador)
-     - "gallery":   cuadrícula de imágenes con visor a pantalla completa
+   Lee la configuración del usuario desde window.ROSTER
+   (definido en roster.js), carga dinámicamente los data.js
+   de cada serie asignada, y renderiza el contenido.
    ============================================================ */
 
 (function () {
   "use strict";
 
-  const SITE = window.STUDENT_SITE || { title: "Estudios", student: "", pages: [] };
-  // Pages without a `published` field default to visible; set published:false to hide.
-  const PAGES = (Array.isArray(SITE.pages) ? SITE.pages : []).filter(p => p.published !== false);
+  /* ---- Detectar el código de usuario desde la URL ---- */
+  function getUserCode() {
+    const parts = location.pathname.split("/");
+    // La carpeta del usuario es el segmento que empieza con "s-"
+    return parts.find(p => /^s-[0-9a-f]+$/.test(p)) || null;
+  }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    renderChrome();
-    renderPage();
-    window.addEventListener("hashchange", () => { closeDrawer(); renderPage(); });
+  /* ---- Cargar un script dinámicamente (promesa) ---- */
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = () => reject(new Error("No se pudo cargar: " + src));
+      document.head.appendChild(s);
+    });
+  }
+
+  /* ---- Raíz del sitio (para construir rutas absolutas) ---- */
+  function siteRoot() {
+    // Funciona tanto en GitHub Pages (/the-berean-way/) como en localhost (/)
+    const parts = location.pathname.split("/");
+    const idx = parts.indexOf("sites");
+    return idx > 0 ? parts.slice(0, idx).join("/") : "";
+  }
+
+  /* ---- Nombres legibles de cada serie ---- */
+  const SERIES_NAMES = {
+    fundamentos:  "Fundamentos",
+    discipulado:  "Discipulado",
+    evangelismo:  "Evangelismo",
+  };
+
+  /* ---- Arranque ---- */
+  const code = getUserCode();
+  const roster = window.ROSTER || {};
+  const userConfig = code ? roster[code] : null;
+
+  if (!userConfig) {
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.innerHTML = `<section style="padding:40px 20px;font-family:sans-serif">
+        <h1>Sitio no encontrado</h1>
+        <p>No hay configuración para esta carpeta (<code>${code || "?"}</code>).</p></section>`;
+    });
+    return;
+  }
+
+  const root = siteRoot();
+  const seriesKeys = Object.keys(userConfig.series || {});
+
+  // Carga los data.js de todas las series asignadas en secuencia, luego arranca.
+  window.SITE_DATA = {};
+  const loads = seriesKeys.map(key =>
+    loadScript(root + "/sites/templates/" + key + "/data.js")
+  );
+
+  Promise.all(loads).then(() => {
+    // Construye la lista plana de páginas combinando todas las series.
+    // Cada página lleva el campo _series para poder agrupar en el menú.
+    const allPages = [];
+    seriesKeys.forEach(key => {
+      const data = (window.SITE_DATA || {})[key];
+      if (!data || !Array.isArray(data.pages)) return;
+      const published = userConfig.series[key] || [];
+      data.pages.forEach((page, i) => {
+        if (published[i] === false) return;  // oculta si explícitamente false
+        // Las imágenes del template se sirven desde su carpeta en GitHub Pages.
+        allPages.push(Object.assign({}, page, {
+          _series: key,
+          _seriesName: SERIES_NAMES[key] || key,
+        }));
+      });
+    });
+
+    const SITE = {
+      title: userConfig.title || "Mis estudios",
+      student: userConfig.student || "",
+      pages: allPages,
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderChrome(SITE);
+      renderPage(SITE);
+      window.addEventListener("hashchange", () => { closeDrawer(); renderPage(SITE); });
+    });
+
+    // Si el DOM ya cargó (scripts diferidos), ejecutar directamente.
+    if (document.readyState !== "loading") {
+      renderChrome(SITE);
+      renderPage(SITE);
+      window.addEventListener("hashchange", () => { closeDrawer(); renderPage(SITE); });
+    }
+
+  }).catch(err => {
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.innerHTML = `<section style="padding:40px 20px;font-family:sans-serif">
+        <h1>Error al cargar</h1><p>${esc(err.message)}</p></section>`;
+    });
   });
 
-  /* ---------- Barra superior + cajón de navegación (una vez) ---------- */
-  function renderChrome() {
+  /* ---- Chrome: topbar + menú lateral agrupado por serie ---- */
+  function renderChrome(SITE) {
+    if (document.getElementById("navDrawer")) return; // ya renderizado
+
     const topbar = document.createElement("header");
     topbar.className = "topbar";
     topbar.innerHTML = `
@@ -46,13 +135,32 @@
     const drawer = document.createElement("nav");
     drawer.className = "nav-drawer";
     drawer.id = "navDrawer";
-    const links = PAGES.map(p =>
-      `<li><a href="#${encodeURIComponent(p.slug)}" data-slug="${esc(p.slug)}">${esc(p.title)}</a></li>`
-    ).join("");
     const sub = SITE.student ? `<small>Para: ${esc(SITE.student)}</small>` : "";
+
+    // Agrupar páginas por serie para el menú.
+    const groups = {};
+    SITE.pages.forEach(p => {
+      const s = p._series || "_";
+      if (!groups[s]) groups[s] = { name: p._seriesName || s, pages: [] };
+      groups[s].pages.push(p);
+    });
+    const seriesList = Object.keys(groups);
+    const useSections = seriesList.length > 1;
+
+    let linksHtml = "";
+    seriesList.forEach(key => {
+      const g = groups[key];
+      if (useSections) {
+        linksHtml += `<li class="nav-drawer__section">${esc(g.name)}</li>`;
+      }
+      g.pages.forEach(p => {
+        linksHtml += `<li><a href="#${encodeURIComponent(p.slug)}" data-slug="${esc(p.slug)}">${esc(p.title)}</a></li>`;
+      });
+    });
+
     drawer.innerHTML = `
       <div class="nav-drawer__head">${esc(SITE.title)}${sub}</div>
-      <ul class="nav-drawer__list">${links}</ul>`;
+      <ul class="nav-drawer__list">${linksHtml}</ul>`;
 
     document.body.prepend(overlay);
     document.body.prepend(drawer);
@@ -62,7 +170,6 @@
     overlay.addEventListener("click", closeDrawer);
     document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
 
-    // contenedor donde se dibuja cada página
     if (!document.getElementById("app")) {
       const app = document.createElement("main");
       app.id = "app";
@@ -81,38 +188,36 @@
     if (o) o.classList.remove("open");
   }
 
-  /* ---------- Render de la página actual ---------- */
-  function currentPage() {
+  /* ---- Render de la página actual ---- */
+  function currentPage(SITE) {
     const slug = decodeURIComponent((location.hash || "").replace(/^#/, ""));
-    return PAGES.find(p => p.slug === slug) || PAGES[0] || null;
+    return SITE.pages.find(p => p.slug === slug) || SITE.pages[0] || null;
   }
 
-  function renderPage() {
+  function renderPage(SITE) {
     const app = document.getElementById("app");
-    const page = currentPage();
+    const page = currentPage(SITE);
     if (!app) return;
     if (!page) { app.innerHTML = `<section class="content"><p>No hay contenido todavía.</p></section>`; return; }
 
     document.title = `${page.title} · ${SITE.title}`;
 
-    // Imagen del header: la de la página manda; si no, la del alumno (SITE);
-    // si ninguna, queda el default compartido definido en el CSS.
-    const headerImg = page.headerImage || SITE.headerImage;
-    // Ruta absoluta: una url() dentro de una variable CSS se resuelve relativa a
-    // assets/styles.css, no a la carpeta del usuario; resolverla aquí lo evita.
-    const headerUrl = headerImg ? new URL(headerImg, location.href).href : "";
-    // El estilo va en la capa de fondo (.hero__bg), que app.js mueve con parallax.
-    const headerStyle = headerUrl ? ` style="--header-image:url('${esc(headerUrl)}')"` : "";
-
-    let body = "";
-    if (page.type === "gallery") {
-      body = renderGallery(page);
-    } else {
-      body = renderAccordion(page);
+    // Las imágenes del template usan rutas relativas (img/...).
+    // Las resolvemos absolutas desde la carpeta del template correspondiente.
+    const templateBase = root + "/sites/templates/" + (page._series || "") + "/";
+    function resolveImg(img) {
+      if (!img) return "";
+      if (/^https?:\/\//.test(img)) return img;
+      return new URL(img, location.origin + templateBase).href;
     }
 
-    // Pie de página: el de la página manda; si no, el del alumno (SITE).
-    const footer = page.footer || SITE.footer;
+    const headerImg = page.headerImage || "";
+    const headerUrl = resolveImg(headerImg);
+    const headerStyle = headerUrl ? ` style="--header-image:url('${esc(headerUrl)}')"` : "";
+
+    let body = page.type === "gallery" ? renderGallery(page, resolveImg) : renderAccordion(page);
+
+    const footer = page.footer || null;
 
     app.innerHTML = `
       <section class="hero">
@@ -121,7 +226,7 @@
       </section>
       ${page.type === "gallery" ? "" : searchBoxHtml()}
       ${body}
-      ${footer ? renderFooter(footer) : ""}`;
+      ${footer ? renderFooter(footer, resolveImg) : ""}`;
 
     markActiveLink(page.slug);
     wireAccordions();
@@ -129,7 +234,7 @@
     wireGallery();
     wireTopbarScroll();
     wireParallax();
-    try { window.scrollTo(0, 0); } catch (e) { /* entorno sin scroll */ }
+    try { window.scrollTo(0, 0); } catch (e) {}
   }
 
   function searchBoxHtml() {
@@ -139,8 +244,6 @@
   }
 
   function renderAccordion(page) {
-    // purposeHtml: intro con formato (HTML ya generado, p.ej. desde lesson-builder).
-    // purpose: intro en texto plano (se escapa). Solo uno de los dos.
     const purpose = page.purposeHtml
       ? `<div class="lead">${page.purposeHtml}</div>`
       : page.purpose
@@ -161,20 +264,18 @@
     return `<section class="content">${purpose}<div class="accordion">${items}</div></section>`;
   }
 
-  function renderGallery(page) {
+  function renderGallery(page, resolveImg) {
     const lead = page.lead ? `<p class="lead">${esc(page.lead)}</p>` : "";
     const figs = (page.images || []).map(img => `
       <figure>
-        <img src="${esc(img.src)}" alt="${esc(img.caption || "")}">
+        <img src="${esc(resolveImg(img.src))}" alt="${esc(img.caption || "")}">
         ${img.caption ? `<figcaption>${esc(img.caption)}</figcaption>` : ""}
       </figure>`).join("");
     return `<section class="content">${lead}<div class="gallery">${figs}</div></section>`;
   }
 
-  function renderFooter(footer) {
-    // footer.image se resuelve relativo a la carpeta del alumno; si falta,
-    // el CSS usa el footer-bg.svg compartido.
-    const footerUrl = footer.image ? new URL(footer.image, location.href).href : "";
+  function renderFooter(footer, resolveImg) {
+    const footerUrl = footer.image ? resolveImg(footer.image) : "";
     const style = footerUrl ? ` style="--footer-image:url('${esc(footerUrl)}')"` : "";
     const title = footer.title ? `<h2 class="site-footer__title">${esc(footer.title)}</h2>` : "";
     const text = footer.text ? `<p class="site-footer__text">${esc(footer.text)}</p>` : "";
@@ -187,7 +288,7 @@
     });
   }
 
-  /* ---------- Interacciones ---------- */
+  /* ---- Interacciones ---- */
   function wireAccordions() {
     document.querySelectorAll(".accordion__header").forEach(header => {
       header.addEventListener("click", () => {
@@ -238,8 +339,6 @@
     }));
   }
 
-  // Un solo listener global (no se apila en cada navegación); lee el header
-  // actual en cada scroll para no quedarse con uno viejo de altura 0.
   let topbarWired = false;
   function wireTopbarScroll() {
     if (!topbarWired) {
@@ -251,16 +350,10 @@
   function updateTopbar() {
     const topbar = document.querySelector(".topbar");
     if (!topbar) return;
-    // Transparente arriba del todo; oscura (.solid) en cuanto empiezas a bajar.
     const y = window.scrollY || window.pageYOffset || 0;
     topbar.classList.toggle("solid", y > 50);
   }
 
-  /* ---------- Parallax 3D del header/footer ----------
-     La imagen de fondo se desplaza a MENOS velocidad que el contenido,
-     así el título "se mueve más" que el fondo y se siente profundidad.
-     Un solo listener global que vuelve a leer los elementos en cada scroll
-     (sobreviven a los re-render de página). */
   let parallaxWired = false;
   function wireParallax() {
     if (!parallaxWired) {
@@ -273,19 +366,17 @@
   function updateParallax() {
     const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const y = window.scrollY || window.pageYOffset || 0;
-
     const heroBg = document.querySelector(".hero__bg");
     if (heroBg) {
-      // Fondo a ~0.65 de la velocidad del contenido (se desplaza 0.35·scroll).
       heroBg.style.transform = reduce ? "" : "translate3d(0," + (y * 0.35).toFixed(1) + "px,0)";
     }
-    // El footer es fijo (sin parallax) a propósito.
   }
 
-  /* ---------- util ---------- */
+  /* ---- util ---- */
   function esc(s) {
     return String(s == null ? "" : s)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
+
 })();

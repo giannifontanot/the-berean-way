@@ -255,6 +255,13 @@ body {
 }
 .nav-drawer__list a:hover { background: #f3f5f8; }
 .nav-drawer__list a.active { color: var(--color-accent); border-left-color: var(--color-accent); font-weight: 600; }
+.nav-drawer__section {
+  padding: 14px 20px 4px;
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--color-muted);
+  border-top: 1px solid var(--color-line); margin-top: 6px;
+}
+.nav-drawer__section:first-child { border-top: none; margin-top: 0; }
 
 /* Landscape en móvil: el svh ya es pequeño, bajamos el % para no cubrir demasiado. */
 @media (orientation: landscape) and (max-width: 900px) { :root { --header-height: 55vh; --header-height: 55svh; } }
