@@ -73,10 +73,19 @@
       const data = (window.SITE_DATA || {})[key];
       if (!data || !Array.isArray(data.pages)) return;
       const published = userConfig.series[key] || [];
+      const student = userConfig.student || "";
       data.pages.forEach((page, i) => {
-        if (published[i] === false) return;  // oculta si explícitamente false
-        // Las imágenes del template se sirven desde su carpeta en GitHub Pages.
+        // Oculta si no está explícitamente true en el roster (gating estricto).
+        if (published[i] !== true) return;
+        // Prefija el slug con la serie para evitar colisiones entre series.
+        const slug = key + "--" + page.slug;
+        // Sustituye el marcador NOMBRE por el nombre real del alumno.
+        const title = (page.title || "").replace(/NOMBRE/g, student);
+        const purposeHtml = page.purposeHtml ? page.purposeHtml.replace(/NOMBRE/g, student) : page.purposeHtml;
         allPages.push(Object.assign({}, page, {
+          slug,
+          title,
+          purposeHtml,
           _series: key,
           _seriesName: SERIES_NAMES[key] || key,
         }));
