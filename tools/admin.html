@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · The Berean Way</title>
+<style>
+  :root {
+    --bg:#f6f3ee;
+    --card:#fffdfa;
+    --ink:#34302b;
+    --muted:#8a8076;
+    --line:#e6ded3;
+    --accent:#9c6b46;
+    --accent-dark:#7c5235;
+    --accent-soft:#efe5da;
+    --green:#5a7a4f;
+    --red:#b00020;
+  }
+  * { box-sizing:border-box; }
+  body { font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;
+         font-size:18px; line-height:1.55;
+         max-width:1100px; margin:0 auto; padding:30px 20px 90px;
+         color:var(--ink); background:var(--bg); }
+  h1 { font-weight:600; letter-spacing:.2px; margin:0 0 4px; }
+  h2 { font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+       margin:24px 0 8px; padding-bottom:6px; border-bottom:1px solid var(--line); color:var(--accent-dark); }
+  p.muted { color:var(--muted); font-size:.95rem; margin:4px 0 20px; }
+  button { font-family:inherit; font-size:.92rem; padding:9px 16px; border-radius:10px;
+           border:1px solid transparent; cursor:pointer; transition:background .15s, border-color .15s; }
+  .primary { background:var(--accent); color:#fff; }
+  .primary:hover { background:var(--accent-dark); }
+  .ghost { background:var(--card); color:var(--accent-dark); border-color:var(--line); }
+  .ghost:hover { background:var(--accent-soft); border-color:var(--accent); }
+  .danger { background:var(--card); color:var(--red); border-color:#e6c5cc; }
+  .danger:hover { background:#fdf0f2; border-color:var(--red); }
+  .btns { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:16px 0; }
+  .ok  { color:var(--green); font-weight:600; }
+  .err { color:var(--red);   font-weight:600; }
+  code { background:var(--accent-soft); color:var(--accent-dark); padding:2px 6px;
+         border-radius:5px; font-size:.82rem; font-family:ui-monospace,Menlo,Consolas,monospace; }
+  input[type=text] { font-family:inherit; font-size:.95rem; padding:9px 13px;
+    border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); }
+  input[type=text]:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+
+  /* ── Layout dos columnas ── */
+  .layout { display:flex; gap:20px; align-items:flex-start; }
+  .sidebar { flex:0 0 240px; min-width:0; }
+  .main    { flex:1; min-width:0; }
+
+  /* ── Lista de usuarios ── */
+  .user-list { list-style:none; margin:0; padding:0; }
+  .user-list li { border-bottom:1px solid var(--line); }
+  .user-btn {
+    width:100%; text-align:left; background:none; border:none; border-radius:0;
+    padding:11px 14px; cursor:pointer; font-family:inherit; font-size:.95rem;
+    color:var(--ink); display:flex; flex-direction:column; gap:2px;
+  }
+  .user-btn:hover { background:var(--accent-soft); }
+  .user-btn.active { background:var(--accent-soft); border-left:3px solid var(--accent); }
+  .user-btn .ucode { font-size:.72rem; color:var(--muted); font-family:ui-monospace,Menlo,Consolas,monospace; }
+  .sidebar-box { border:1px solid var(--line); border-radius:14px; background:var(--card);
+                 overflow:hidden; }
+  .sidebar-head { padding:12px 14px; background:var(--accent-soft);
+                  border-bottom:1px solid var(--line); font-weight:700;
+                  font-size:.82rem; text-transform:uppercase; letter-spacing:.06em;
+                  color:var(--accent-dark); }
+  .sidebar-foot { padding:10px 14px; border-top:1px solid var(--line); }
+
+  /* ── Panel de usuario ── */
+  .user-panel { border:1px solid var(--line); border-radius:14px; background:var(--card);
+                padding:20px 22px; }
+  .user-panel h3 { margin:0 0 4px; font-size:1.25rem; font-weight:600; }
+  .user-panel .ucode2 { font-size:.8rem; color:var(--muted);
+                         font-family:ui-monospace,Menlo,Consolas,monospace; }
+
+  /* ── Tarjeta de serie ── */
+  .series-card { border:1px solid var(--line); border-radius:12px; margin:14px 0;
+                 background:var(--bg); overflow:hidden; }
+  .series-head { display:flex; align-items:center; justify-content:space-between;
+                 padding:10px 16px; background:var(--accent-soft);
+                 border-bottom:1px solid var(--line); }
+  .series-head span { font-weight:700; font-size:.9rem; color:var(--accent-dark); }
+  .series-lessons { padding:12px 16px; display:flex; flex-direction:column; gap:6px; }
+  .lesson-row { display:flex; align-items:center; gap:10px; }
+  .lesson-row label { font-size:.9rem; font-weight:400; color:var(--ink);
+                      cursor:pointer; margin:0; display:flex; align-items:center; gap:8px; }
+  .lesson-row input[type=checkbox] { accent-color:var(--accent); width:16px; height:16px;
+                                      flex-shrink:0; cursor:pointer; }
+  .lesson-num { font-size:.75rem; color:var(--muted); font-family:ui-monospace,Menlo,Consolas,monospace;
+                flex-shrink:0; width:2ch; text-align:right; }
+
+  /* ── Add series ── */
+  .add-series { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:10px; }
+  .add-series select { font-family:inherit; font-size:.9rem; padding:8px 12px;
+    border:1px solid var(--line); border-radius:10px; background:var(--card);
+    color:var(--ink); cursor:pointer; }
+  .add-series select:focus { outline:none; border-color:var(--accent); }
+
+  /* ── Nuevo usuario modal ── */
+  .modal-bg { position:fixed; inset:0; background:rgba(52,48,43,.45);
+              display:none; align-items:center; justify-content:center; z-index:50; }
+  .modal-bg.open { display:flex; }
+  .modal { background:var(--card); border-radius:16px; padding:28px 30px;
+           max-width:420px; width:90%; box-shadow:0 8px 32px rgba(52,48,43,.18); }
+  .modal h2 { margin:0 0 16px; border:none; padding:0; font-size:1.1rem; color:var(--ink); }
+  .modal label { display:block; font-weight:600; font-size:.9rem; margin:14px 0 5px; color:#5c544b; }
+  .modal input[type=text] { width:100%; }
+  .modal select { width:100%; font-family:inherit; font-size:.95rem; padding:9px 13px;
+    border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); }
+  .modal .btns { margin-top:20px; }
+  .modal-err { color:var(--red); font-size:.88rem; margin-top:8px; min-height:1.2em; }
+
+  /* ── Mensaje de estado ── */
+  #statusMsg { font-size:.9rem; min-height:1.4em; }
+
+  @media (max-width:640px) {
+    .layout { flex-direction:column; }
+    .sidebar { flex:none; width:100%; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Administrador de usuarios</h1>
+<p class="muted">Controla qué series y lecciones ve cada usuario. Haz cambios y guarda el <code>roster.js</code>.</p>
+
+<div id="loadingMsg" style="color:var(--muted)">Cargando datos…</div>
+
+<div id="ui" style="display:none">
+  <div class="btns">
+    <button class="primary" id="saveBtn">💾 Guardar roster.js</button>
+    <span id="statusMsg"></span>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar: lista de usuarios -->
+    <div class="sidebar">
+      <div class="sidebar-box">
+        <div class="sidebar-head">Usuarios</div>
+        <ul class="user-list" id="userList"></ul>
+        <div class="sidebar-foot">
+          <button class="ghost" id="addUserBtn" style="width:100%">➕ Nuevo usuario</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main: config del usuario seleccionado -->
+    <div class="main" id="mainPanel">
+      <div style="color:var(--muted);padding:20px 0">← Selecciona un usuario</div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: nuevo usuario -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h2>Nuevo usuario</h2>
+    <label>Nombre *</label>
+    <input type="text" id="newName" placeholder="Ej. María" autocomplete="off">
+    <label>Título del sitio</label>
+    <input type="text" id="newTitle" placeholder="Los estudios de María">
+    <label>Serie inicial *</label>
+    <select id="newSeries">
+      <option value="fundamentos">Fundamentos</option>
+      <option value="discipulado">Discipulado</option>
+      <option value="evangelismo">Evangelismo</option>
+    </select>
+    <div class="modal-err" id="modalErr"></div>
+    <div class="btns">
+      <button class="primary" id="modalOk">Crear usuario</button>
+      <button class="ghost" id="modalCancel">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ================================================================
+   Estado global
+   ================================================================ */
+const SERIES_LIST  = ["fundamentos", "discipulado", "evangelismo"];
+const SERIES_NAMES = { fundamentos:"Fundamentos", discipulado:"Discipulado", evangelismo:"Evangelismo" };
+
+let ROSTER    = {};   // copia mutable del roster
+let TEMPLATES = {};   // { fundamentos: [{title,slug}, ...], ... }
+let SEL       = null; // código del usuario seleccionado
+
+/* ================================================================
+   Carga inicial: roster.js + templates
+   ================================================================ */
+async function init() {
+  try {
+    // Cargar roster.js como script → window.ROSTER
+    await loadScript("../roster.js");
+    ROSTER = JSON.parse(JSON.stringify(window.ROSTER || {}));
+
+    // Cargar data.js de cada template → window.SITE_DATA
+    window.SITE_DATA = {};
+    await Promise.all(SERIES_LIST.map(k => loadScript("../sites/templates/" + k + "/data.js")));
+    SERIES_LIST.forEach(k => {
+      const data = (window.SITE_DATA || {})[k];
+      TEMPLATES[k] = data && Array.isArray(data.pages)
+        ? data.pages.map(p => ({ title: p.title, slug: p.slug }))
+        : [];
+    });
+
+    document.getElementById("loadingMsg").style.display = "none";
+    document.getElementById("ui").style.display = "block";
+    renderUserList();
+  } catch (e) {
+    document.getElementById("loadingMsg").textContent =
+      "⚠ Error al cargar: " + e.message +
+      ". Abre esta herramienta desde un servidor local (localhost:8000/tools/admin.html).";
+  }
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error("No se pudo cargar " + src));
+    document.head.appendChild(s);
+  });
+}
+
+/* ================================================================
+   Lista de usuarios (sidebar)
+   ================================================================ */
+function renderUserList() {
+  const ul = document.getElementById("userList");
+  ul.innerHTML = "";
+  Object.entries(ROSTER).forEach(([code, u]) => {
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.className = "user-btn" + (code === SEL ? " active" : "");
+    btn.innerHTML = `<span>${esc(u.student || "(sin nombre)")}</span>
+                     <span class="ucode">${esc(code)}</span>`;
+    btn.onclick = () => selectUser(code);
+    li.appendChild(btn);
+    ul.appendChild(li);
+  });
+}
+
+function selectUser(code) {
+  SEL = code;
+  renderUserList();
+  renderUserPanel(code);
+}
+
+/* ================================================================
+   Panel de usuario (main)
+   ================================================================ */
+function renderUserPanel(code) {
+  const u = ROSTER[code];
+  const panel = document.getElementById("mainPanel");
+  if (!u) { panel.innerHTML = ""; return; }
+
+  const series = u.series || {};
+  const assigned = Object.keys(series);
+  const available = SERIES_LIST.filter(k => !assigned.includes(k));
+
+  let seriesHtml = assigned.map(key => {
+    const lessons = TEMPLATES[key] || [];
+    const published = series[key] || [];
+    const rows = lessons.map((ls, i) => {
+      const checked = published[i] === true ? "checked" : "";
+      return `<div class="lesson-row">
+        <span class="lesson-num">${i+1}</span>
+        <label>
+          <input type="checkbox" data-series="${key}" data-idx="${i}" ${checked}>
+          ${esc(ls.title.replace(/NOMBRE/g, u.student || "NOMBRE"))}
+        </label>
+      </div>`;
+    }).join("");
+    return `<div class="series-card">
+      <div class="series-head">
+        <span>${esc(SERIES_NAMES[key] || key)}</span>
+        <button class="danger" style="padding:5px 11px;font-size:.82rem"
+          onclick="removeSeries('${code}','${key}')">✕ Quitar</button>
+      </div>
+      <div class="series-lessons">${rows || '<span style="color:var(--muted);font-size:.88rem">Este template no tiene lecciones todavía.</span>'}</div>
+    </div>`;
+  }).join("");
+
+  const addSeriesHtml = available.length ? `
+    <div class="add-series">
+      <select id="seriesPicker">
+        ${available.map(k => `<option value="${k}">${SERIES_NAMES[k]}</option>`).join("")}
+      </select>
+      <button class="ghost" onclick="addSeries('${code}')">➕ Agregar serie</button>
+    </div>` : `<p style="color:var(--muted);font-size:.88rem;margin:10px 0">Ya tiene todas las series asignadas.</p>`;
+
+  panel.innerHTML = `
+    <div class="user-panel">
+      <h3>${esc(u.student || "(sin nombre)")}</h3>
+      <div class="ucode2">${esc(code)}</div>
+      <h2>Series asignadas</h2>
+      ${seriesHtml || '<p style="color:var(--muted);font-size:.9rem">No tiene series asignadas.</p>'}
+      ${addSeriesHtml}
+      <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--line)">
+        <button class="danger" onclick="deleteUser('${code}')">🗑 Eliminar usuario del roster</button>
+      </div>
+    </div>`;
+
+  // Listeners de checkboxes
+  panel.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    cb.addEventListener("change", () => {
+      const key = cb.dataset.series;
+      const idx = +cb.dataset.idx;
+      if (!ROSTER[code].series[key]) ROSTER[code].series[key] = [];
+      ROSTER[code].series[key][idx] = cb.checked;
+      setDirty();
+    });
+  });
+}
+
+/* ================================================================
+   Acciones
+   ================================================================ */
+function addSeries(code) {
+  const key = document.getElementById("seriesPicker").value;
+  if (!key) return;
+  if (!ROSTER[code].series) ROSTER[code].series = {};
+  // Por defecto todas las lecciones ocultas (el admin las habilita)
+  ROSTER[code].series[key] = (TEMPLATES[key] || []).map(() => false);
+  setDirty();
+  renderUserPanel(code);
+}
+
+function removeSeries(code, key) {
+  if (!confirm(`¿Quitar la serie "${SERIES_NAMES[key]}" de ${ROSTER[code].student}?`)) return;
+  delete ROSTER[code].series[key];
+  setDirty();
+  renderUserPanel(code);
+}
+
+function deleteUser(code) {
+  if (!confirm(`¿Eliminar a ${ROSTER[code].student} del roster? Solo se borra de roster.js, la carpeta queda intacta.`)) return;
+  delete ROSTER[code];
+  SEL = null;
+  document.getElementById("mainPanel").innerHTML = '<div style="color:var(--muted);padding:20px 0">← Selecciona un usuario</div>';
+  renderUserList();
+  setDirty();
+}
+
+/* ================================================================
+   Nuevo usuario
+   ================================================================ */
+document.getElementById("addUserBtn").onclick = () => {
+  document.getElementById("newName").value = "";
+  document.getElementById("newTitle").value = "";
+  document.getElementById("modalErr").textContent = "";
+  document.getElementById("modalBg").classList.add("open");
+  document.getElementById("newName").focus();
+};
+document.getElementById("modalCancel").onclick = () =>
+  document.getElementById("modalBg").classList.remove("open");
+
+document.getElementById("modalOk").onclick = () => {
+  const name = document.getElementById("newName").value.trim();
+  if (!name) { document.getElementById("modalErr").textContent = "Escribe el nombre."; return; }
+  const seriesKey = document.getElementById("newSeries").value;
+  const title = document.getElementById("newTitle").value.trim() || "Los estudios de " + name;
+  const code = randomCode();
+  ROSTER[code] = {
+    student: name,
+    title,
+    series: { [seriesKey]: (TEMPLATES[seriesKey] || []).map(() => false) }
+  };
+  document.getElementById("modalBg").classList.remove("open");
+  setDirty();
+  renderUserList();
+  selectUser(code);
+  status("✅ Usuario creado. Habilita sus lecciones y guarda el roster.js.");
+};
+
+/* ================================================================
+   Guardar roster.js (File System Access API)
+   ================================================================ */
+document.getElementById("saveBtn").onclick = async () => {
+  if (!window.showSaveFilePicker) {
+    // Fallback: descargar
+    const blob = new Blob([genRoster()], { type: "text/javascript" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "roster.js";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    status("✅ Descargado roster.js. Reemplaza el archivo en la raíz del repo, luego git commit + push.");
+    return;
+  }
+  try {
+    const fh = await window.showSaveFilePicker({
+      suggestedName: "roster.js",
+      types: [{ description: "JavaScript", accept: { "text/javascript": [".js"] } }]
+    });
+    const w = await fh.createWritable();
+    await w.write(genRoster());
+    await w.close();
+    status("✅ Guardado. Haz git add roster.js && git commit && git push.");
+  } catch (e) {
+    if (e.name !== "AbortError") status("⚠ " + e.message, true);
+  }
+};
+
+/* ================================================================
+   Generar roster.js
+   ================================================================ */
+function genRoster() {
+  const lines = [
+    "/* ============================================================",
+    "   The Berean Way — ROSTER",
+    "   Controla qué series y lecciones ve cada usuario.",
+    "   Edita con tools/admin.html, luego haz commit + push.",
+    "   ============================================================ */",
+    "window.ROSTER = {"
+  ];
+  const entries = Object.entries(ROSTER);
+  entries.forEach(([code, u], i) => {
+    const comma = i < entries.length - 1 ? "," : "";
+    const seriesEntries = Object.entries(u.series || {});
+    const seriesLines = seriesEntries.map(([k, arr], j) => {
+      const sc = j < seriesEntries.length - 1 ? "," : "";
+      return `      ${k}: [${arr.map(v => v === true ? "true" : "false").join(", ")}]${sc}`;
+    });
+    lines.push(`  "${code}": {`);
+    lines.push(`    student: ${JSON.stringify(u.student || "")},`);
+    lines.push(`    title: ${JSON.stringify(u.title || "")},`);
+    lines.push(`    series: {`);
+    seriesLines.forEach(l => lines.push(l));
+    lines.push(`    }`);
+    lines.push(`  }${comma}`);
+  });
+  lines.push("};");
+  return lines.join("\n") + "\n";
+}
+
+/* ================================================================
+   Utils
+   ================================================================ */
+function randomCode() {
+  const a = new Uint8Array(4);
+  (self.crypto || window.crypto).getRandomValues(a);
+  return "s-" + [...a].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function esc(s) {
+  return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+let _dirty = false;
+function setDirty() {
+  _dirty = true;
+  document.getElementById("saveBtn").textContent = "💾 Guardar roster.js *";
+}
+
+function status(msg, isErr) {
+  const el = document.getElementById("statusMsg");
+  el.textContent = msg;
+  el.className = isErr ? "err" : "ok";
+}
+
+/* ── Arranque ── */
+init();
+</script>
+</body>
+</html>
