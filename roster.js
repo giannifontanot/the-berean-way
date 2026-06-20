@@ -8,7 +8,7 @@ window.ROSTER = {
     student: "Pedro",
     title: "Los estudios de Pedro",
     series: {
-      fundamentos: [true, true, true, false, false, false, false, false, false, false]
+      fundamentos: [true, true, true, true, true, true, true, true, true, true]
     }
   },
   "s-7f3a9c2e": {
