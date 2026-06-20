@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Fe: Confiar en lo que No se Ve</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f0f1a; color: #e8e8f0; min-height: 100vh; }
+    .save-bar { position: sticky; top: 0; z-index: 100; background: #1a1a2e; border-bottom: 2px solid #2a2a3e; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .save-bar .page-label { font-size: 0.8rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #save-btn { flex-shrink: 0; padding: 9px 18px; border-radius: 8px; border: none; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.1s; display: flex; align-items: center; gap: 6px; }
+    #save-btn:active { transform: scale(0.96); }
+    #save-btn.unsaved { background: #e63946; color: #fff; }
+    #save-btn.unsaved:hover { background: #c1121f; }
+    #save-btn.saved { background: #2a9d8f; color: #fff; }
+    #save-btn.saved:hover { background: #21867a; }
+    .class-content { max-width: 720px; margin: 0 auto; padding: 32px 24px 60px; }
+    .class-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .tag { background: #1a1a2e; border: 1px solid #2a2a3e; border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; color: #aaa; }
+    .tag.accent { border-color: #e63946; color: #e63946; }
+    h1 { font-size: 1.6rem; font-weight: 800; line-height: 1.25; margin-bottom: 10px; color: #fff; }
+    .subtitle { font-size: 1rem; color: #aaa; margin-bottom: 28px; line-height: 1.5; }
+    .divider { border: none; border-top: 1px solid #2a2a3e; margin: 24px 0; }
+    h2 { font-size: 1.1rem; font-weight: 700; color: #e8e8f0; margin-bottom: 12px; }
+    p { font-size: 0.9rem; line-height: 1.7; color: #bbb; margin-bottom: 16px; }
+    .verse { background: #1a1a2e; border-left: 3px solid #e63946; border-radius: 0 8px 8px 0; padding: 14px 16px; margin-bottom: 20px; font-size: 0.9rem; color: #ddd; line-height: 1.7; font-style: italic; }
+    .verse cite { display: block; margin-top: 6px; font-style: normal; font-size: 0.78rem; color: #e63946; font-weight: 700; }
+    .info-box { background: #1a1a2e; border-left: 3px solid #4a9eff; border-radius: 0 8px 8px 0; padding: 14px 16px; margin-bottom: 20px; font-size: 0.85rem; color: #ccc; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<div class="save-bar">
+  <span class="page-label" id="page-label">Nuestra relación con Dios · Clase 2</span>
+  <button id="save-btn" class="unsaved" onclick="toggleSave()">
+    <span id="btn-icon">💾</span>
+    <span id="btn-text">Guardar en carpeta</span>
+  </button>
+</div>
+
+<div class="class-content">
+  <div class="class-meta">
+    <span class="tag accent">Clase 2</span>
+    <span class="tag">Fe</span>
+    <span class="tag">Relación con Dios</span>
+  </div>
+
+  <h1>La Fe: Confiar en lo que No se Ve</h1>
+  <p class="subtitle">La fe no es ciega — es confianza basada en el carácter de Dios. Exploramos qué significa caminar por fe y no por vista.</p>
+
+  <hr class="divider" />
+
+  <h2>¿Qué es la fe?</h2>
+  <p>La Biblia define la fe de manera precisa: es la certeza de lo que se espera y la convicción de lo que no se ve. No es una corazonada ni un optimismo vago — es anclar nuestra confianza en quien Dios ha demostrado ser.</p>
+
+  <div class="verse">
+    "Ahora bien, la fe es la garantía de lo que se espera, la certeza de lo que no se ve."
+    <cite>Hebreos 11:1</cite>
+  </div>
+
+  <h2>Fe versus incredulidad</h2>
+  <p>La incredulidad no es ausencia de emociones religiosas — es confiar más en lo que vemos, sentimos o pensamos que en la Palabra de Dios. La fe elige creer a Dios aunque las circunstancias digan lo contrario.</p>
+
+  <div class="info-box">
+    💡 <strong>Ejemplo:</strong> Abraham creyó a Dios cuando prometió un hijo, aunque él tenía 100 años y Sara 90. No miró las circunstancias sino al que prometió (Romanos 4:19-21).
+  </div>
+
+  <h2>La fe crece</h2>
+  <p>La fe no es estática. Crece al escuchar la Palabra de Dios, al ver cómo actúa en nuestra vida y en la de otros, y al ejercitarla obedeciendo incluso cuando no entendemos completamente.</p>
+
+  <div class="verse">
+    "Así que la fe viene como resultado de oír el mensaje, y el mensaje que se oye es la palabra de Cristo."
+    <cite>Romanos 10:17</cite>
+  </div>
+
+  <h2>Fe sin obras</h2>
+  <p>Santiago nos recuerda que la fe genuina produce acciones. No para ganar la salvación, sino porque quien realmente cree en Dios actúa en consecuencia. La fe que no cambia nada probablemente no es fe bíblica.</p>
+
+  <div class="verse">
+    "Así también la fe por sí sola, si no tiene obras, está muerta."
+    <cite>Santiago 2:17</cite>
+  </div>
+
+  <hr class="divider" />
+  <p style="color:#555; font-size:0.78rem;">The Berean Way · Nuestra relación con Dios</p>
+</div>
+
+<script>
+  const STORAGE_KEY = 'tbw-carpeta';
+  const FOLDER_URL = (function () {
+    const parts = location.pathname.split('/');
+    const anchor = parts.findIndex(p => p === 'tools' || p === 'sites');
+    const base = anchor > 0 ? parts.slice(0, anchor).join('/') : '';
+    return location.origin + base + '/tools/carpeta.html';
+  })();
+
+  const THIS_PAGE = { url: window.location.href, title: document.title, savedAt: new Date().toISOString() };
+
+  function getLinks() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; } }
+  function isAlreadySaved() { return getLinks().some(l => l.url === THIS_PAGE.url); }
+
+  function updateButton(saved) {
+    const btn = document.getElementById('save-btn');
+    document.getElementById('btn-icon').textContent = saved ? '📁' : '💾';
+    document.getElementById('btn-text').textContent = saved ? 'Abrir carpeta' : 'Guardar en carpeta';
+    btn.className = saved ? 'saved' : 'unsaved';
+  }
+
+  function toggleSave() {
+    if (isAlreadySaved()) { window.location.href = FOLDER_URL; return; }
+    const links = getLinks();
+    links.unshift({ ...THIS_PAGE, savedAt: new Date().toISOString() });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+    updateButton(true);
+    document.getElementById('btn-text').textContent = '¡Guardado!';
+    setTimeout(() => { document.getElementById('btn-text').textContent = 'Abrir carpeta'; }, 1500);
+  }
+
+  updateButton(isAlreadySaved());
+</script>
+</body>
+</html>
