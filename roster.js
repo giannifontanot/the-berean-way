@@ -41,5 +41,21 @@ window.ROSTER = {
     series: {
       fundamentos: [true, true]
     }
+  },
+  "s-1e28bfb9": {
+    student: "Maria",
+    title: "Los estudios de Maria",
+    dedication: "Maria, esperamos este estudio te acerque a Dios,",
+    series: {
+      fundamentos: [false, false, true]
+    }
+  },
+  "s-13fec3b8": {
+    student: "Miguel",
+    title: "Los estudios de Miguel",
+    dedication: "espero este estudio te ayude a conocer mejor a Dios.",
+    series: {
+      fundamentos: [false, true, true]
+    }
   }
 };
