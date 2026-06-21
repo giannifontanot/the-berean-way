@@ -73,6 +73,12 @@ body {
   font-size: 0.95rem; font-weight: 500; letter-spacing: 0.2px; flex: 1;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+.topbar__student {
+  font-size: 0.88rem; font-weight: 600; letter-spacing: 0.3px;
+  white-space: nowrap; opacity: 0.92;
+  background: rgba(255,255,255,0.15); border-radius: 6px;
+  padding: 3px 10px;
+}
 
 /* ----------------------- Header (hero) ----------------------- */
 .hero {
@@ -271,4 +277,23 @@ body {
 /* Respeta a quien prefiere menos movimiento: sin parallax. */
 @media (prefers-reduced-motion: reduce) {
   .hero__bg, .site-footer__bg { transform: none !important; }
+}
+
+/* ----------------------- Home / Dedicatoria ----------------------- */
+.home-dedication {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  padding: 60px 20px;
+}
+.dedication-text {
+  font-family: var(--font-serif);
+  font-size: clamp(1.2rem, 4vw, 1.7rem);
+  line-height: 1.7;
+  color: var(--color-text);
+  text-align: center;
+  max-width: 50ch;
+  margin: 0;
+  white-space: pre-line;
 }
