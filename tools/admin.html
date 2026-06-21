@@ -369,7 +369,7 @@ document.getElementById("newName").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("modalOk").click();
 });
 
-document.getElementById("modalOk").onclick = () => {
+document.getElementById("modalOk").onclick = async () => {
   const name = document.getElementById("newName").value.trim();
   if (!name) { document.getElementById("modalErr").textContent = "Escribe el nombre."; return; }
   const code = randomCode();
