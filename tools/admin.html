@@ -156,16 +156,11 @@
 <div class="modal-bg" id="modalBg">
   <div class="modal">
     <h2>Nuevo usuario</h2>
-    <label>Nombre *</label>
+    <label for="newName">Nombre *</label>
     <input type="text" id="newName" placeholder="Ej. María" autocomplete="off">
-    <label>Título del sitio</label>
-    <input type="text" id="newTitle" placeholder="Los estudios de María">
-    <label>Serie inicial *</label>
-    <select id="newSeries">
-      <option value="fundamentos">Fundamentos</option>
-      <option value="discipulado">Discipulado</option>
-      <option value="evangelismo">Evangelismo</option>
-    </select>
+    <p style="color:var(--muted);font-size:.85rem;margin:6px 0 0">
+      El título será <em>«Los estudios de NOMBRE»</em>. Puedes asignar series desde el panel del usuario.
+    </p>
     <div class="modal-err" id="modalErr"></div>
     <div class="btns">
       <button class="primary" id="modalOk">Crear usuario</button>
@@ -363,7 +358,6 @@ function deleteUser(code) {
    ================================================================ */
 document.getElementById("addUserBtn").onclick = () => {
   document.getElementById("newName").value = "";
-  document.getElementById("newTitle").value = "";
   document.getElementById("modalErr").textContent = "";
   document.getElementById("modalBg").classList.add("open");
   document.getElementById("newName").focus();
@@ -371,22 +365,26 @@ document.getElementById("addUserBtn").onclick = () => {
 document.getElementById("modalCancel").onclick = () =>
   document.getElementById("modalBg").classList.remove("open");
 
+document.getElementById("newName").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("modalOk").click();
+});
+
 document.getElementById("modalOk").onclick = () => {
   const name = document.getElementById("newName").value.trim();
   if (!name) { document.getElementById("modalErr").textContent = "Escribe el nombre."; return; }
-  const seriesKey = document.getElementById("newSeries").value;
-  const title = document.getElementById("newTitle").value.trim() || "Los estudios de " + name;
   const code = randomCode();
-  ROSTER[code] = {
-    student: name,
-    title,
-    series: { [seriesKey]: (TEMPLATES[seriesKey] || []).map(() => false) }
-  };
+  const title = "Los estudios de " + name;
+  ROSTER[code] = { student: name, title, series: {} };
   document.getElementById("modalBg").classList.remove("open");
   setDirty();
   renderUserList();
   selectUser(code);
-  status("✅ Usuario creado. Habilita sus lecciones y guarda el roster.js.");
+  // Ofrecer descarga del index.html para la nueva carpeta
+  status(`✅ Usuario creado — <a href="#" id="dlIndexLink" style="color:var(--accent-dark);font-weight:600">Descargar index.html para <code>sites/${code}/</code></a>`);
+  document.getElementById("dlIndexLink").onclick = e => {
+    e.preventDefault();
+    download("index.html", indexHtmlContent(), "text/html");
+  };
 };
 
 /* ================================================================
@@ -473,8 +471,34 @@ function setDirty() {
 
 function status(msg, isErr) {
   const el = document.getElementById("statusMsg");
-  el.textContent = msg;
+  el.innerHTML = msg;
   el.className = isErr ? "err" : "ok";
+}
+
+function indexHtmlContent() {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Mis estudios · The Berean Way<\/title>
+  <link rel="stylesheet" href="../../assets/styles.css">
+<\/head>
+<body>
+  <script src="../../roster.js"><\/script>
+  <script src="../../assets/app.js"><\/script>
+<\/body>
+<\/html>
+`;
+}
+
+function download(filename, text, mime) {
+  const blob = new Blob([text], { type: mime });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
 
 /* ── Arranque ── */
