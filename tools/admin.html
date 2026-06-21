@@ -369,7 +369,7 @@ document.getElementById("newName").addEventListener("keydown", e => {
   if (e.key === "Enter") document.getElementById("modalOk").click();
 });
 
-document.getElementById("modalOk").onclick = () => {
+document.getElementById("modalOk").onclick = async () => {
   const name = document.getElementById("newName").value.trim();
   if (!name) { document.getElementById("modalErr").textContent = "Escribe el nombre."; return; }
   const code = randomCode();
@@ -379,12 +379,8 @@ document.getElementById("modalOk").onclick = () => {
   setDirty();
   renderUserList();
   selectUser(code);
-  // Ofrecer descarga del index.html para la nueva carpeta
-  status(`✅ Usuario creado — <a href="#" id="dlIndexLink" style="color:var(--accent-dark);font-weight:600">Descargar index.html para <code>sites/${code}/</code></a>`);
-  document.getElementById("dlIndexLink").onclick = e => {
-    e.preventDefault();
-    download("index.html", indexHtmlContent(), "text/html");
-  };
+  // Crear carpeta sites/s-XXXXXXXX/index.html directamente en el repo
+  await createUserFolder(code);
 };
 
 /* ================================================================
@@ -492,13 +488,24 @@ function indexHtmlContent() {
 `;
 }
 
-function download(filename, text, mime) {
-  const blob = new Blob([text], { type: mime });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+async function createUserFolder(code) {
+  if (!window.showDirectoryPicker) {
+    status(`✅ Usuario creado. Crea la carpeta <code>sites/${code}/</code> manualmente con un <code>index.html</code> igual al de otro usuario.`);
+    return;
+  }
+  try {
+    status(`Selecciona la carpeta <strong>sites/</strong> del repo para crear la carpeta del usuario…`);
+    const sitesDir = await window.showDirectoryPicker({ mode: "readwrite" });
+    const userDir  = await sitesDir.getDirectoryHandle(code, { create: true });
+    const fh       = await userDir.getFileHandle("index.html", { create: true });
+    const w        = await fh.createWritable();
+    await w.write(indexHtmlContent());
+    await w.close();
+    status(`✅ Carpeta <code>sites/${code}/</code> creada. Asigna series y guarda el roster.js.`);
+  } catch (e) {
+    if (e.name !== "AbortError") status("⚠ " + e.message, true);
+    else status("✅ Usuario creado en el roster. Crea la carpeta manualmente si es necesario.");
+  }
 }
 
 /* ── Arranque ── */

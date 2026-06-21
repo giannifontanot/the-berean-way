@@ -69,9 +69,6 @@
   .lesson-card__num { font-weight:700; font-size:.82rem; text-transform:uppercase; letter-spacing:.06em; color:var(--accent-dark); white-space:nowrap; }
   .lesson-card__title { flex:1; min-width:0; }
   .lesson-card__title input { font-weight:600; }
-  .lesson-card__head .pub { display:inline-flex; align-items:center; gap:5px; font-size:.82rem; font-weight:600;
-    color:var(--accent-dark); white-space:nowrap; cursor:pointer; user-select:none; }
-  .lesson-card__head .pub input { accent-color:var(--accent); width:15px; height:15px; }
   .lesson-card__head button { padding:6px 11px; font-size:.9rem; background:var(--card); color:var(--accent-dark); border:1px solid var(--line); }
   .lesson-card__head button:hover { background:#fff; border-color:var(--accent); }
   .lesson-card__head button.del:hover { background:#f1e1da; border-color:#b06a52; color:#9a3b22; }
@@ -394,7 +391,7 @@ Es una amistad en dos sentidos:
 
 function newLesson(data) {
   return Object.assign({
-    title: "", src: "", published: true,
+    title: "", src: "",
     headerFile: null, headerExt: "", headerImage: "", headerManual: false,
     footerFile: null, footerExt: "", footerImage: "", footerManual: false
   }, data || {});
@@ -466,7 +463,6 @@ function renderCards() {
       '<span class="lesson-card__chevron">▶</span>' +
       '<span class="lesson-card__num">Lección ' + (i + 1) + '</span>' +
       '<span class="lesson-card__title"><input type="text" placeholder="Título de la lección (ej. Buscando a Dios)"></span>' +
-      '<label class="pub" title="Si está marcada, la lección aparece en el menú del alumno"><input type="checkbox"> visible</label>' +
       '<button class="up" title="Subir">↑</button>' +
       '<button class="down" title="Bajar">↓</button>' +
       '<button class="del" title="Eliminar">🗑</button>';
@@ -483,9 +479,6 @@ function renderCards() {
     const titleInput = head.querySelector(".lesson-card__title input");
     titleInput.value = ls.title;
     titleInput.addEventListener("input", () => { ls.title = titleInput.value; debouncedBuild(); });
-    const pub = head.querySelector(".pub input");
-    pub.checked = ls.published !== false;
-    pub.addEventListener("change", () => { ls.published = pub.checked; build(); });
     head.querySelector(".up").addEventListener("click", () => moveLesson(i, -1));
     head.querySelector(".down").addEventListener("click", () => moveLesson(i, +1));
     head.querySelector(".del").addEventListener("click", () => {
@@ -546,7 +539,6 @@ function buildPages() {
     const parsed = parseLessonBody(ls.src);
     return {
       slug, title: ls.title.trim() || ("Lección " + (i + 1)),
-      published: ls.published !== false,
       headerImage: ls.headerImage || "",
       footerImage: ls.footerImage || "",
       purposeHtml: parsed.purposeHtml, items: parsed.items
@@ -563,7 +555,7 @@ function editorStateComment() {
     siteTitle: SITE_META.siteTitle,
     student:   SITE_META.student,
     lessons: LESSONS.map(ls => ({
-      title: ls.title, src: ls.src, published: ls.published !== false,
+      title: ls.title, src: ls.src,
       headerImage: ls.headerImage || "", footerImage: ls.footerImage || ""
     }))
   };
@@ -577,7 +569,6 @@ function genDataJs(pages, opts) {
   const L = [];
   L.push(editorStateComment());
   L.push("/* Generado con tools/lesson-builder.html — no edites la línea de arriba. */");
-  L.push("/* published:true muestra la lección; published:false la oculta. */");
   L.push("window.STUDENT_SITE = {");
   L.push("  title: " + q(opts.siteTitle) + ",");
   L.push("  student: " + q(opts.student) + ",");
@@ -586,7 +577,6 @@ function genDataJs(pages, opts) {
     L.push("    {");
     L.push("      slug: " + q(p.slug) + ",");
     L.push("      title: " + q(p.title) + ",");
-    L.push("      published: " + p.published + ",");
     L.push('      type: "accordion",');
     if (p.headerImage) L.push("      headerImage: " + q(p.headerImage) + ",");
     if (p.footerImage) L.push("      footer: { image: " + q(p.footerImage) + " },");
@@ -617,7 +607,7 @@ function renderPreview(pages) {
         '<div class="pv-panel"><div class="pv-panel-inner">' + it.body + "</div></div>" +
       "</div>"
     ).join("");
-    const flag = p.published ? "" : ' <span style="font-size:.7rem;color:#999">(oculta)</span>';
+    const flag = "";
     const openCls = li === OPEN_LESSON ? " open" : "";
     return '<article class="pv-lesson' + openCls + '" data-idx="' + li + '">' +
              '<div class="pv-lesson-head"><h3>' + escapeHtml(p.title) + flag + "</h3>" +
@@ -698,7 +688,6 @@ function loadFromText(text) {
   SITE_META.student   = state.student   || "NOMBRE";
   LESSONS = (state.lessons || []).map((l, i) => newLesson({
     title: l.title || "", src: l.src || "",
-    published: l.published !== undefined ? l.published !== false : (i === 0),
     headerImage: l.headerImage || "", headerManual: !!l.headerImage,
     footerImage: l.footerImage || "", footerManual: !!l.footerImage
   }));
