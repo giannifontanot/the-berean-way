@@ -7,6 +7,7 @@ window.ROSTER = {
   "s-122aef50": {
     student: "Pedro",
     title: "Los estudios de Pedro",
+    dedication: "NOMBRE,\nque la Palabra de Dios ilumine tu camino\ny guíe cada uno de tus pasos.",
     series: {
       fundamentos: [true, true, true, true, true, true, true, true, true, true],
       discipulado: [true, false, true, true, true, true, true, true, true, true],

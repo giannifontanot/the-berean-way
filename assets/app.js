@@ -69,6 +69,20 @@
     // Construye la lista plana de páginas combinando todas las series.
     // Cada página lleva el campo _series para poder agrupar en el menú.
     const allPages = [];
+
+    // Página Home con dedicatoria (siempre primera si existe).
+    if (userConfig.dedication) {
+      allPages.push({
+        slug: "home",
+        title: "Home",
+        type: "home",
+        dedication: userConfig.dedication.replace(/NOMBRE/g, userConfig.student || ""),
+        headerImage: userConfig.dedicationImage || "",
+        _series: "_home",
+        _seriesName: "",
+      });
+    }
+
     seriesKeys.forEach(key => {
       const data = (window.SITE_DATA || {})[key];
       if (!data || !Array.isArray(data.pages)) return;
@@ -130,6 +144,7 @@
              stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/>
           <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
+      ${SITE.student ? `<span class="topbar__student">${esc(SITE.student)}</span>` : ""}
       <span class="topbar__title">${esc(SITE.title)}</span>
       <button class="icon-btn" id="searchBtn" aria-label="Buscar">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -146,9 +161,10 @@
     drawer.id = "navDrawer";
     const sub = SITE.student ? `<small>Para: ${esc(SITE.student)}</small>` : "";
 
-    // Agrupar páginas por serie para el menú.
+    // Agrupar páginas por serie para el menú (Home va primero, fuera de grupos).
+    const homePages = SITE.pages.filter(p => p._series === "_home");
     const groups = {};
-    SITE.pages.forEach(p => {
+    SITE.pages.filter(p => p._series !== "_home").forEach(p => {
       const s = p._series || "_";
       if (!groups[s]) groups[s] = { name: p._seriesName || s, pages: [] };
       groups[s].pages.push(p);
@@ -157,6 +173,9 @@
     const useSections = seriesList.length > 1;
 
     let linksHtml = "";
+    homePages.forEach(p => {
+      linksHtml += `<li><a href="#${encodeURIComponent(p.slug)}" data-slug="${esc(p.slug)}">${esc(p.title)}</a></li>`;
+    });
     seriesList.forEach(key => {
       const g = groups[key];
       if (useSections) {
@@ -224,7 +243,9 @@
     const headerUrl = resolveImg(headerImg);
     const headerStyle = headerUrl ? ` style="--header-image:url('${esc(headerUrl)}')"` : "";
 
-    let body = page.type === "gallery" ? renderGallery(page, resolveImg) : renderAccordion(page);
+    let body = page.type === "home" ? renderHome(page)
+             : page.type === "gallery" ? renderGallery(page, resolveImg)
+             : renderAccordion(page);
 
     const footer = page.footer || null;
 
@@ -233,7 +254,7 @@
         <div class="hero__bg"${headerStyle}></div>
         <h1 class="hero__title">${esc(page.title)}</h1>
       </section>
-      ${page.type === "gallery" ? "" : searchBoxHtml()}
+      ${page.type === "gallery" || page.type === "home" ? "" : searchBoxHtml()}
       ${body}
       ${footer ? renderFooter(footer, resolveImg) : ""}`;
 
@@ -281,6 +302,13 @@
         ${img.caption ? `<figcaption>${esc(img.caption)}</figcaption>` : ""}
       </figure>`).join("");
     return `<section class="content">${lead}<div class="gallery">${figs}</div></section>`;
+  }
+
+  function renderHome(page) {
+    const text = page.dedication || "";
+    return `<section class="content home-dedication">
+      <p class="dedication-text">${esc(text)}</p>
+    </section>`;
   }
 
   function renderFooter(footer, resolveImg) {

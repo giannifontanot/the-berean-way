@@ -293,17 +293,29 @@ function renderUserPanel(code) {
       <button class="ghost" onclick="addSeries('${code}')">➕ Agregar serie</button>
     </div>` : `<p style="color:var(--muted);font-size:.88rem;margin:10px 0">Ya tiene todas las series asignadas.</p>`;
 
+  const dedicationVal = u.dedication || "";
   panel.innerHTML = `
     <div class="user-panel">
       <h3>${esc(u.student || "(sin nombre)")}</h3>
       <div class="ucode2">${esc(code)}</div>
-      <h2>Series asignadas</h2>
+      <h2>Página de inicio (dedicatoria)</h2>
+      <p style="color:var(--muted);font-size:.88rem;margin:0 0 8px">Se muestra como primera página antes de las series. Usa NOMBRE para incluir el nombre del alumno. Puedes usar saltos de línea.</p>
+      <textarea id="dedicationInput" rows="4"
+        style="width:100%;font-family:inherit;font-size:.95rem;padding:10px 12px;border:1px solid var(--line);border-radius:10px;resize:vertical;background:var(--card);color:var(--ink)"
+        placeholder="Ej: NOMBRE, que este estudio te acerque a Dios.">${esc(dedicationVal)}</textarea>
+      <h2 style="margin-top:20px">Series asignadas</h2>
       ${seriesHtml || '<p style="color:var(--muted);font-size:.9rem">No tiene series asignadas.</p>'}
       ${addSeriesHtml}
       <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--line)">
         <button class="danger" onclick="deleteUser('${code}')">🗑 Eliminar usuario del roster</button>
       </div>
     </div>`;
+
+  // Listener dedicatoria
+  panel.querySelector("#dedicationInput").addEventListener("input", e => {
+    ROSTER[code].dedication = e.target.value;
+    setDirty();
+  });
 
   // Listeners de checkboxes
   panel.querySelectorAll("input[type=checkbox]").forEach(cb => {
@@ -429,6 +441,7 @@ function genRoster() {
     lines.push(`  "${code}": {`);
     lines.push(`    student: ${JSON.stringify(u.student || "")},`);
     lines.push(`    title: ${JSON.stringify(u.title || "")},`);
+    if (u.dedication) lines.push(`    dedication: ${JSON.stringify(u.dedication)},`);
     lines.push(`    series: {`);
     seriesLines.forEach(l => lines.push(l));
     lines.push(`    }`);
