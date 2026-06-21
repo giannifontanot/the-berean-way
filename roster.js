@@ -55,7 +55,8 @@ window.ROSTER = {
     title: "Los estudios de Miguel",
     dedication: "espero este estudio te ayude a conocer mejor a Dios.",
     series: {
-      fundamentos: [false, true, true]
+      fundamentos: [false, true, true],
+      discipulado: [true, true, true, true, true, true, true, true, true, true]
     }
   }
 };
