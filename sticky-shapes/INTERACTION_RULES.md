@@ -1,4 +1,4 @@
-# Reglas de interacción — Sticky Shapes
+# Reglas de interacción — Sticky Shapes (Árbol de Ideas)
 
 > Responde a **¿qué ocurre cuando el usuario toca la pantalla?** Este documento
 > es la autoridad sobre el **comportamiento de los gestos**. Si algo aquí
@@ -8,92 +8,83 @@
 
 | Gesto | Objetivo | Resultado |
 |---|---|---|
-| Clic / toque simple | Nodo | Cambia la forma (avanza en `shapeSequence`). |
-| Doble clic / doble toque | Nodo | Entra en modo edición de texto. |
-| Arrastrar (*drag*) | Nodo | Mueve el nodo; al soltar, guarda la posición. |
-| Clic / toque | Botón `+` | Crea un nodo nuevo. |
-| Clic / toque | Acción archivar del nodo | Archiva el nodo. |
+| Clic / toque simple | Hoja | Cambia la **variante de hoja** (avanza en `leafShapes`). |
+| Doble clic / doble toque | Hoja | Entra en modo **edición de texto**. |
+| Arrastrar (*drag*) | Hoja | Mueve la hoja; al soltar, guarda posición y **recalcula el estado** según la zona. |
+| Clic / toque | Botón `+` | Crea una hoja nueva. |
 
-## Prioridad y desambiguación de gestos
+## Prioridad y desambiguación de gestos (por retardo)
 
-Este es el punto más delicado de la app, porque **clic simple** (cambiar forma) y
-**doble clic** (editar) comparten el mismo elemento y el doble clic empieza
-siempre con clics simples. Regla obligatoria:
+Clic simple (cambiar variante) y doble clic (editar) comparten el mismo elemento,
+y todo doble clic empieza con clics simples. Se usa **desambiguación por
+retardo**, que es la regla obligatoria de esta app:
 
 1. **Arrastre gana sobre clic.** Si el puntero se mueve más que `dragThreshold`
    px (de `config.js`) entre `pointerdown` y `pointerup`, el gesto es un
-   **arrastre**, no un clic. No cambies la forma ni edites.
+   **arrastre**, no un clic. No cambia variante ni edita.
 2. **Distinguir clic simple de doble clic con retardo.** Al detectar un clic que
    no fue arrastre, **espera** `doubleClickDelay` ms (de `config.js`):
-   - Si llega un segundo clic dentro de esa ventana → es **doble clic** →
-     entrar en edición. **No** se cambia la forma.
-   - Si no llega → es **clic simple** → cambiar la forma.
+   - Si llega un segundo clic dentro de esa ventana → **doble clic** →
+     entrar en edición. **No** se cambia la variante.
+   - Si no llega → **clic simple** → cambiar la variante de hoja.
 
-   Con esto, un doble clic **nunca** dispara cambios de forma antes de editar.
-3. **La acción de archivar es independiente.** El control de archivar (icono o
-   botón) captura su propio evento y **no** debe propagarlo al nodo (usar
-   `stopPropagation`), para no cambiar la forma sin querer.
-
-> Alternativa aceptable: si se prefiere evitar el retardo del punto 2, el LLM
-> puede implementar el cambio de forma en clic simple y la edición mediante un
-> control explícito (p. ej. botón "editar" o toque prolongado), **siempre que**
-> se documente y se respete la regla de que ningún gesto dispare dos acciones a
-> la vez. La opción por defecto es la del retardo.
+   Implementación típica: al primer clic, arranca un temporizador de
+   `doubleClickDelay` ms; si un segundo clic llega antes, cancela el temporizador
+   y edita; si expira, cicla la variante. Con esto, un doble clic **nunca**
+   dispara cambios de variante antes de editar.
 
 ## Detalle por gesto
 
 ### Crear (botón `+`)
 
-- Un solo toque crea el nodo con los valores por defecto de `config.js`.
-- El nodo aparece en el centro visible y queda seleccionado/listo.
+- Un solo toque crea la hoja con los valores por defecto de `config.js`
+  (`defaultText`, `defaultShape`, `defaultStatus`).
+- Aparece dentro de la zona de `defaultStatus` (por defecto, el **piso**).
 - Se persiste de inmediato.
 
-### Mover (arrastrar)
+### Mover (arrastrar) y cambiar de estado
 
-- Funciona con **Pointer Events** para unificar mouse y táctil (recomendado), o
-  con `mouse*` + `touch*` como alternativa.
-- Durante el arrastre el nodo sigue al puntero con movimiento **fluido**.
-- El nodo arrastrado se muestra por encima de los demás (mayor `z-index`).
-- Evitar el desplazamiento/scroll de la página durante el arrastre táctil
-  (p. ej. `touch-action: none` sobre el nodo).
-- **Guardado:** durante el movimiento se puede aplicar *debounce*; la posición
-  **final** (al `pointerup`) se guarda siempre e inmediatamente.
+- Usar **Pointer Events** para unificar mouse y táctil (recomendado).
+- Durante el arrastre la hoja sigue al puntero con movimiento **fluido** y se
+  muestra por encima de las demás (mayor `z-index`).
+- Evitar el scroll de la página durante el arrastre táctil
+  (`touch-action: none` sobre la hoja).
+- Se puede resaltar sutilmente la **zona bajo el puntero** para indicar a qué
+  estado caería la hoja (opcional, discreto).
+- **Al soltar (`pointerup`):**
+  1. Guardar la posición final `x/y`.
+  2. Determinar la zona que contiene el punto de soltado (usando
+     `statuses[].region` de `config.js`) y asignar ese `status`.
+  3. Persistir de inmediato.
+- Durante el movimiento se puede aplicar *debounce* al guardado; el estado final
+  siempre se persiste.
 
-### Cambiar forma (clic simple)
+### Cambiar variante de hoja (clic simple)
 
-- Avanza a la siguiente forma de `shapeSequence`; tras la última, vuelve a la
+- Avanza a la siguiente variante de `leafShapes`; tras la última, vuelve a la
   primera (cíclico).
-- Se persiste de inmediato.
+- Se persiste de inmediato. No cambia estado ni posición.
 
 ### Editar texto (doble clic)
 
-- Muestra un campo editable (input/textarea o `contenteditable`) con el texto
-  actual y el foco puesto.
-- **Terminar edición y guardar** cuando:
-  - el campo pierde el foco (*blur*), o
-  - se presiona **Enter** (en campo de una línea).
-- **Cancelar** (revertir al texto previo) al presionar **Escape**.
-- Al terminar, salir del modo edición y persistir el texto (si no se canceló).
-- Un nodo con texto vacío es válido; no obliga a escribir nada.
-
-### Archivar
-
-- Un toque en la acción de archivar pone `archived = true` y retira el nodo del
-  lienzo.
-- No pide confirmación (principio: guardado sin fricción), pero **no elimina**
-  el dato, de modo que la acción es recuperable en el futuro.
+- Muestra un campo editable con el texto actual y el foco puesto.
+- **Terminar y guardar** cuando: el campo pierde el foco (*blur*), o se presiona
+  **Enter**.
+- **Cancelar** (revertir) con **Escape**.
+- Al terminar, salir del modo edición y persistir (si no se canceló).
+- Una hoja con texto vacío es válida.
 
 ## Accesibilidad de la interacción
 
-- Todas las zonas interactivas miden al menos **44 × 44 px**.
-- No depender del *hover*: toda acción disponible con clic/hover debe estarlo
-  también al tacto.
+- Todas las zonas interactivas miden al menos **44 × 44 px** (`minTouchTarget`).
+- No depender del *hover*: toda acción con clic debe estar disponible al tacto.
 - Objetivos de toque suficientemente separados para evitar toques erróneos.
 
-## Resumen de valores que provienen de `config.js`
+## Valores que provienen de `config.js`
 
 - `dragThreshold` — px para considerar el gesto un arrastre.
 - `doubleClickDelay` — ms de la ventana para detectar doble clic.
-- `shapeSequence` — orden de las formas.
+- `leafShapes` — variantes de hoja y su orden de ciclo.
+- `statuses[].region` — geometría de cada zona/estado.
 
 Ver [`CONFIGURATION.md`](CONFIGURATION.md) para la lista completa.

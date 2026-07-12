@@ -30,13 +30,42 @@ arriba gana.
 6. **El código debe poder ampliarse sin reescribir la arquitectura.** Cada
    decisión debe dejar la puerta abierta al [ROADMAP](ROADMAP.md).
 
-## Minimalismo visual
+## Estética — Arcade Donkey Kong (años 80, neón)
 
-- Diseño limpio, con **mucho espacio en blanco**.
-- Botones **discretos**; nada compite con el contenido del usuario.
-- El lienzo es el protagonista; el resto de la interfaz casi desaparece.
-- Sin **animaciones exageradas**. Las transiciones, si existen, son sutiles y
-  rápidas (guía en `config.js`), y nunca retrasan una acción.
+La identidad visual es un **salón de arcade ochentero**: fondo oscuro y elementos
+delineados con **neón brillante**, como si estuvieran rodeados de tubos de luz.
+
+- **Fondo oscuro** (casi negro/violeta profundo), para que el neón resalte.
+- **Contornos de neón** en el árbol y las hojas (magenta, cian, amarillo,
+  naranja Donkey Kong) logrados con `drop-shadow`/`text-shadow` que crean
+  resplandor.
+- **Tipografía tipo pixel** (retro) cuando sea posible, con *fallback* a
+  `monospace` del sistema (no cargar fuentes por red).
+- **El árbol de dos ramas** es el escenario: dibujado en SVG con trazo de neón,
+  con dos ramas arriba y el piso abajo. Las **hojas** cuelgan sobre él.
+- Todos los colores del tema provienen de `theme` en `config.js` (una sola
+  fuente de verdad). El CSS los consume vía variables `:root`.
+
+Es minimalista **dentro** de esa estética: pocos elementos, mucho espacio
+negativo oscuro, el árbol y las hojas como protagonistas, botones discretos.
+
+## Modelo de estados como metáfora física
+
+El estado de una idea es **dónde está colgada**:
+
+- **Rama izquierda** y **Rama derecha** = dos grupos que el usuario define.
+- **Piso** = tercer estado (bandeja de entrada o "en reposo").
+
+Arrastrar una hoja de una rama a otra es una acción física e intuitiva: **mover =
+reclasificar**. No hay menús de estado; el estado es la posición. Cambiar de
+estado es siempre reversible (arrastrar de vuelta); nada se oculta ni se borra.
+
+## Animación
+
+- Sin **animaciones exageradas**. Transiciones sutiles y rápidas (guía en
+  `config.js`); nunca retrasan una acción.
+- Un **resplandor neón** sutil es parte de la estética, no un adorno que
+  distraiga. Puede reforzarse levemente al arrastrar o al soltar en una zona.
 
 ## Rendimiento
 
@@ -44,8 +73,8 @@ arriba gana.
 - El arrastre debe ser **fluido** (idealmente a 60 fps). Evitar recalcular o
   reescribir el almacenamiento en cada píxel del movimiento; persistir la
   posición al soltar (ver reglas de interacción).
-- La app debe abrir y restaurar el estado casi al instante, incluso con muchos
-  nodos.
+- La app debe abrir y restaurar el estado casi al instante, incluso con muchas
+  hojas.
 
 ## Experiencia del usuario
 

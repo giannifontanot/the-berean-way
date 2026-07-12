@@ -1,81 +1,89 @@
-# Configuración — Sticky Shapes
+# Configuración — Sticky Shapes (Árbol de Ideas)
 
-> Responde a **¿qué debe ser configurable?** Este documento define **las reglas**
-> de configuración, no los valores. Los **valores** viven en `config.js`.
+> Responde a **¿qué debe ser configurable?** Define **las reglas** de
+> configuración, no los valores. Los **valores** viven en `config.js`.
 
 ## Principio central
 
 **Ningún valor ajustable debe estar escrito directamente en `script.js`.** Toda
-constante que un humano pudiera querer cambiar (formas disponibles, texto
-inicial, tamaños, colores, tiempos, clave de almacenamiento) proviene de
-`config.js`. `config.js` es el **panel de control** de la aplicación.
-
-Esto cumple el principio de **una sola fuente de verdad**: cada valor existe en
-un único lugar.
+constante que un humano pudiera querer cambiar (variantes de hoja, texto inicial,
+tamaños, colores del tema neón, tiempos, zonas/estados, clave de almacenamiento)
+proviene de `config.js`. `config.js` es el **panel de control** de la aplicación
+y cumple el principio de **una sola fuente de verdad**.
 
 ## Reglas de configuración
 
-- Todas las **formas** provienen de `config.js` (`shapeSequence`). El orden del
-  ciclo de formas es el orden de ese arreglo.
-- La **forma inicial** de un nodo nuevo proviene de `config.js` (`defaultShape`)
-  y debe ser un elemento de `shapeSequence`.
-- El **texto inicial** proviene de `config.js` (`defaultText`).
-- El **tamaño inicial** del nodo proviene de `config.js` (`defaultWidth`,
-  `defaultHeight`).
-- El **color inicial** proviene de `config.js` (`colors`).
-- La **clave de Local Storage** proviene de `config.js` (`storageKey`).
-- Los **tiempos de interacción** (retardo de doble clic, umbral de arrastre,
+- Todas las **variantes de hoja** provienen de `config.js` (`leafShapes`). El
+  orden del ciclo es el orden de ese arreglo.
+- La **variante inicial** de una hoja nueva proviene de `defaultShape` (∈
+  `leafShapes`).
+- El **texto inicial** proviene de `defaultText`.
+- El **tamaño inicial** de la hoja proviene de `defaultWidth`, `defaultHeight`.
+- Los **estados/zonas** provienen de `statuses`. Cada estado define su `id`,
+  `label` y su `region` (rectángulo normalizado 0..1). Cambiar `statuses` cambia
+  cuántas zonas hay y dónde están, sin tocar la lógica.
+- El **estado inicial** de una hoja nueva proviene de `defaultStatus` (∈ los
+  `id` de `statuses`).
+- Los **colores del tema** (paleta neón Donkey Kong) provienen de `theme`.
+- Los **tiempos de interacción** (`doubleClickDelay`, `dragThreshold`,
   duración de animaciones) provienen de `config.js`.
-- Si se añade una forma nueva a `shapeSequence`, la aplicación debe manejarla sin
-  cambios en la lógica (el renderizado de formas debe ser genérico, guiado por el
-  valor de `shape`).
+- Si se añade una variante a `leafShapes` o un estado a `statuses`, la app debe
+  manejarlos sin cambios en la lógica (renderizado genérico guiado por datos).
 
 ## Claves esperadas en `config.js`
-
-`config.js` debe exportar (o exponer globalmente) un objeto de configuración con,
-al menos, estas claves:
 
 | Clave | Tipo | Descripción |
 |---|---|---|
 | `storageKey` | string | Clave usada en Local Storage. |
-| `shapeSequence` | string[] | Formas en orden de ciclo. Por defecto: `["square", "circle", "triangle"]`. |
-| `defaultShape` | string | Forma inicial de un nodo nuevo (∈ `shapeSequence`). |
-| `defaultText` | string | Texto inicial de un nodo nuevo (p. ej. `"Nueva nota"`). |
-| `defaultWidth` | number | Ancho inicial del nodo en px. |
-| `defaultHeight` | number | Alto inicial del nodo en px. |
-| `defaultPosition` | string \| object | Posición inicial (p. ej. `"center"` o `{x, y}`). |
-| `colors` | object | Paleta: p. ej. `{ node, text, accent, background }`. |
+| `schemaVersion` | number | Versión del esquema de datos para migraciones. |
+| `leafShapes` | string[] | Variantes de hoja en orden de ciclo. P. ej. `["leaf-oak","leaf-maple","leaf-simple"]`. |
+| `defaultShape` | string | Variante inicial de una hoja nueva (∈ `leafShapes`). |
+| `statuses` | object[] | Zonas/estados: `{ id, label, region }`. `region` es `{x,y,w,h}` normalizado 0..1. |
+| `defaultStatus` | string | Estado inicial de una hoja nueva (∈ ids de `statuses`). |
+| `defaultText` | string | Texto inicial de una hoja nueva. |
+| `defaultWidth` | number | Ancho inicial de la hoja en px. |
+| `defaultHeight` | number | Alto inicial de la hoja en px. |
+| `theme` | object | Paleta neón y estilo (ver abajo). |
 | `doubleClickDelay` | number | ms para distinguir clic simple de doble clic. |
 | `dragThreshold` | number | px de movimiento para considerar arrastre. |
-| `animations` | object | Duraciones/curvas de transición (o `{ enabled: false }`). |
 | `minTouchTarget` | number | Tamaño mínimo de área táctil (px). Por defecto `44`. |
-| `schemaVersion` | number | Versión del esquema de datos para migraciones. |
-
-> La tabla es la referencia mínima. Se pueden añadir claves siempre que sigan la
-> misma regla: valor en `config.js`, uso en `script.js`.
+| `animations` | object | Duraciones/curvas de transición (o `{ enabled: false }`). |
 
 ## Ejemplo de `config.js` (referencia, no normativo)
 
 ```js
-// config.js — Panel de control de Sticky Shapes.
+// config.js — Panel de control de Sticky Shapes (Árbol de Ideas).
 // Cambia estos valores para ajustar la app sin tocar la lógica.
 const CONFIG = {
-  storageKey: "sticky-shapes:v1",
-  schemaVersion: 1,
+  storageKey: "sticky-shapes:v2",
+  schemaVersion: 2,
 
-  shapeSequence: ["square", "circle", "triangle"],
-  defaultShape: "square",
+  // Variantes de hoja (ciclan con un clic simple).
+  leafShapes: ["leaf-oak", "leaf-maple", "leaf-simple"],
+  defaultShape: "leaf-oak",
 
-  defaultText: "Nueva nota",
-  defaultWidth: 120,
-  defaultHeight: 120,
-  defaultPosition: "center", // o { x: 100, y: 100 }
+  // Tres estados = dos ramas + piso. region: rectángulo normalizado (0..1).
+  statuses: [
+    { id: "rama-izquierda", label: "Rama izquierda", region: { x: 0.00, y: 0.00, w: 0.50, h: 0.70 } },
+    { id: "rama-derecha",   label: "Rama derecha",   region: { x: 0.50, y: 0.00, w: 0.50, h: 0.70 } },
+    { id: "piso",           label: "Piso",           region: { x: 0.00, y: 0.70, w: 1.00, h: 0.30 } },
+  ],
+  defaultStatus: "piso",
 
-  colors: {
-    background: "#ffffff",
-    node: "#fef3c7",
-    text: "#1f2937",
-    accent: "#3b82f6",
+  defaultText: "Nueva idea",
+  defaultWidth: 96,
+  defaultHeight: 96,
+
+  // Paleta arcade Donkey Kong 80s: fondo oscuro + contornos de neón.
+  theme: {
+    background: "#0a0018",     // casi negro/violeta profundo
+    treeStroke: "#ff2d95",     // neón magenta para el árbol
+    leafFill: "#12203a",       // relleno oscuro de la hoja
+    leafGlow: "#00f0ff",       // contorno neón cian de la hoja
+    text: "#f7ff00",           // amarillo arcade
+    accent: "#ff7a00",         // naranja Donkey Kong
+    glowBlur: 8,               // intensidad del resplandor neón (px)
+    fontFamily: "'Press Start 2P', monospace", // usar fuente del sistema si no hay pixel-font
   },
 
   doubleClickDelay: 250, // ms
@@ -84,12 +92,23 @@ const CONFIG = {
   animations: { enabled: true, durationMs: 120 },
 };
 
-// Exposición global (sin módulos) para una app estática simple:
 window.CONFIG = CONFIG;
 ```
 
+## Notas sobre el tema neón
+
+- El resplandor de neón se logra con `filter: drop-shadow(...)` o
+  `box-shadow`/`text-shadow` en CSS, usando los colores de `theme`.
+- No cargar fuentes externas por red (la app es offline y sin dependencias). Si
+  se desea una tipografía tipo pixel, incrustarla como `@font-face` con datos
+  embebidos **o** caer a `monospace` del sistema. El `fontFamily` de `theme`
+  debe incluir siempre un *fallback* seguro.
+- Los colores del CSS deben derivarse de `theme` (por ejemplo, escribiéndolos en
+  variables CSS `:root { --bg: ...; }` al iniciar) para mantener una sola fuente
+  de verdad.
+
 ## Qué NO va en `config.js`
 
-- Datos del usuario (los nodos): eso vive en Local Storage.
+- Datos del usuario (las hojas): eso vive en Local Storage.
 - Lógica o funciones: `config.js` solo contiene valores.
 - Estructura o estilos: eso es `index.html` y `style.css`.

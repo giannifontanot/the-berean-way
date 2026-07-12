@@ -1,8 +1,12 @@
 # Sticky Shapes
 
-Aplicación web de **una sola página** para capturar ideas rápidas como pequeños
-**nodos** que puedes mover libremente por un lienzo. Cada nodo recuerda su
-posición, su texto y su forma incluso después de cerrar el navegador.
+Aplicación web de **una sola página** para capturar ideas como **hojas** con
+texto que cuelgan de un **árbol de dos ramas**. Arrastras cada hoja de una rama a
+otra (o al piso) para **agrupar tus ideas en tres estados**. Cada hoja recuerda su
+texto, su posición, su variante y su estado incluso después de cerrar el
+navegador.
+
+Estética **arcade Donkey Kong de los 80**: fondo oscuro y contornos de neón.
 
 Pensada para funcionar **completamente en el navegador**, sin servidor ni base de
 datos, y hospedarse gratis en **GitHub Pages**.
@@ -11,13 +15,14 @@ datos, y hospedarse gratis en **GitHub Pages**.
 
 ## Qué es
 
-Un lienzo minimalista donde:
+Un árbol de neón donde:
 
-- Creas nodos con un botón `+`.
-- Los arrastras con el dedo o el mouse a donde quieras.
-- Cambias su forma con un clic (cuadrado → círculo → triángulo → cuadrado…).
+- Creas hojas con un botón `+`.
+- Las arrastras con el dedo o el mouse a donde quieras.
+- Al soltarlas en una zona **cambias su estado**: Rama izquierda · Rama derecha ·
+  Piso (tres grupos de ideas).
+- Cambias la **variante de hoja** con un clic simple.
 - Editas su texto con doble clic.
-- Los archivas cuando ya no los necesitas a la vista (sin borrarlos).
 
 Todo se guarda **automáticamente**. No existe botón de "Guardar".
 

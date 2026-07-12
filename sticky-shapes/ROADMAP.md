@@ -7,34 +7,36 @@
 ## Versión 1.0 — Base (alcance actual)
 
 - Crear nodos.
-- Mover nodos (arrastre con dedo o mouse).
-- Cambiar la forma con un clic (cuadrado → círculo → triángulo).
+- Mover hojas (arrastre con dedo o mouse).
+- Cambiar de estado soltando la hoja en una zona (Rama izquierda · Rama derecha ·
+  Piso).
+- Cambiar la variante de hoja con un clic.
 - Editar el texto con doble clic.
-- Archivar nodos (ocultar sin borrar).
+- Estética arcade Donkey Kong 80s (árbol de dos ramas, neón sobre fondo oscuro).
 - Persistencia completa con Local Storage.
 - Despliegue en GitHub Pages, funcionamiento offline.
 
-## Versión 1.1 — Archivados y colores
+## Versión 1.1 — Más ramas y archivado
 
-- **Pantalla / vista de archivados:** listar los nodos con `archived = true`,
-  con opción de **restaurarlos** al lienzo.
-- **Colores:** permitir asignar un color a cada nodo desde la paleta de
-  `config.js`.
+- **Más zonas/estados** configurables (p. ej. un tercer o cuarto grupo) sin
+  tocar la lógica, solo `statuses` en `config.js`.
+- **Archivar/ocultar** una hoja de verdad (fuera de las tres zonas) y una vista
+  para restaurarla. **Borrado real** con papelera.
 
 ## Versión 1.2 — Etiquetas y categorías
 
-- Añadir una o varias **etiquetas** por nodo.
-- Filtrar el lienzo por etiqueta.
+- Añadir una o varias **etiquetas** por hoja.
+- Filtrar el árbol por etiqueta.
 
 ## Versión 1.3 — Búsqueda
 
-- Campo de búsqueda que filtra nodos por texto y/o etiqueta en tiempo real.
+- Campo de búsqueda que filtra hojas por texto y/o etiqueta en tiempo real.
 
-## Versión 2.0 — Conexiones entre nodos
+## Versión 2.0 — Conexiones entre hojas
 
-- Dibujar **conexiones** (líneas/flechas) entre nodos: el lienzo se vuelve un
+- Dibujar **conexiones** (líneas/ramas) entre hojas: el árbol se vuelve un
   mapa mental / lienzo infinito.
-- Requiere que cada nodo tenga `id` estable (ya previsto en el modelo de datos).
+- Requiere que cada hoja tenga `id` estable (ya previsto en el modelo de datos).
 
 ## Versión 3.0 — Sincronización en la nube
 
