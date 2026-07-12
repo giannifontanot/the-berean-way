@@ -13,6 +13,7 @@
 - Cambiar la variante de hoja con un clic.
 - Editar el texto con doble clic.
 - Estética arcade Donkey Kong 80s (árbol de dos ramas, neón sobre fondo oscuro).
+- Borrar hojas arrastrándolas al basurero.
 - Persistencia completa con Local Storage.
 - Despliegue en GitHub Pages, funcionamiento offline.
 
@@ -21,7 +22,7 @@
 - **Más zonas/estados** configurables (p. ej. un tercer o cuarto grupo) sin
   tocar la lógica, solo `statuses` en `config.js`.
 - **Archivar/ocultar** una hoja de verdad (fuera de las tres zonas) y una vista
-  para restaurarla. **Borrado real** con papelera.
+  para restaurarla.
 
 ## Versión 1.2 — Etiquetas y categorías
 

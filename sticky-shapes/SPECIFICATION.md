@@ -174,7 +174,19 @@ estados**. El "Piso" puede usarse como bandeja de entrada o como "hecho/en
 reposo", según prefiera el usuario. Ninguna hoja se oculta ni se borra: cambiar
 de estado es siempre reversible arrastrando de vuelta.
 
-> El **borrado real** y una **vista de archivados oculta** quedan para el ROADMAP.
+### 8.6 Borrar hoja (basurero)
+
+En una esquina de la pantalla hay un **basurero** discreto. Mientras se arrastra
+una hoja, el basurero se hace visible; al **soltar la hoja sobre él**, la hoja se
+**elimina** definitivamente (del lienzo y de Local Storage).
+
+- El basurero permanece semitransparente cuando no se arrastra nada.
+- Se **enciende** (resplandor rojo neón) cuando la hoja arrastrada está encima,
+  para avisar que soltarla ahí la borrará.
+- No se pide confirmación: llevar la hoja hasta el basurero ya es una acción
+  deliberada.
+
+> Una **vista de archivados oculta** queda para el ROADMAP.
 
 ## 9. Compatibilidad
 
@@ -209,8 +221,9 @@ Solo cuatro archivos, sin generar ninguno adicional:
 - [ ] Recordar posición, variante y estado tras cerrar y reabrir el navegador.
 - [ ] Editar el texto con doble clic.
 - [ ] Cambiar la variante de hoja con un clic simple.
-- [ ] El fondo es un **árbol de dos ramas** con tres zonas (rama izq., rama der.,
-      piso).
+- [ ] El fondo es un **bonsái de dos ramas** con tres zonas (rama izq., rama
+      der., piso) y ramitas secundarias para acomodar muchas hojas.
+- [ ] Arrastrar una hoja al **basurero** la elimina, y el borrado persiste.
 - [ ] Estética **arcade Donkey Kong 80s** con contornos de neón sobre fondo
       oscuro.
 - [ ] Persistencia completa con Local Storage, sin botón de guardar.

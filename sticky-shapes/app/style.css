@@ -193,6 +193,40 @@ html, body {
   box-shadow: 0 0 8px var(--text, #f7ff00);
 }
 
+/* ---------- Basurero (arrastra una hoja aquí para borrarla) ---------- */
+
+#trash {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid var(--danger, #ff3355);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  z-index: 2000;
+  opacity: 0.35; /* discreto hasta que se arrastra una hoja */
+  transition: opacity var(--anim-ms, 120ms) ease, transform var(--anim-ms, 120ms) ease;
+  box-shadow: 0 0 calc(var(--glow, 8px) * 0.5) var(--danger, #ff3355);
+}
+
+/* Mientras se arrastra una hoja, el basurero se hace visible */
+body.leaf-dragging #trash {
+  opacity: 0.8;
+}
+
+/* Y se enciende cuando la hoja está encima */
+#trash.active {
+  opacity: 1;
+  transform: scale(1.15);
+  box-shadow:
+    0 0 var(--glow, 8px) var(--danger, #ff3355),
+    0 0 calc(var(--glow, 8px) * 2.5) var(--danger, #ff3355);
+}
+
 /* ---------- Botón flotante + ---------- */
 
 #add-btn {
