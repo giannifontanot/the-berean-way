@@ -39,6 +39,7 @@
     const root = document.documentElement.style;
     root.setProperty("--bg", t.background);
     root.setProperty("--tree", t.treeStroke);
+    root.setProperty("--tree-fill", t.treeFill);
     root.setProperty("--leaf-fill", t.leafFill);
     root.setProperty("--leaf-glow", t.leafGlow);
     root.setProperty("--text", t.text);

@@ -41,17 +41,33 @@ html, body {
   pointer-events: none;
 }
 
-.tree-lines path,
-.tree-lines line {
-  fill: none;
-  stroke: var(--tree, #ff2d95);
-  stroke-width: 1.1;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-  stroke-width: 4px;
+/* Bonsái: trazos sólidos café; el resplandor neón envuelve al grupo entero
+   (el filtro se aplica al conjunto ya compuesto → halo sin costuras) */
+.tree-solid {
   filter:
-    drop-shadow(0 0 calc(var(--glow, 8px) * 0.5) var(--tree, #ff2d95))
-    drop-shadow(0 0 var(--glow, 8px) var(--tree, #ff2d95));
+    drop-shadow(0 0 2px var(--tree, #e0862f))
+    drop-shadow(0 0 calc(var(--glow, 8px) * 0.75) var(--tree, #e0862f));
+}
+
+.tree-solid path {
+  fill: none;
+  stroke: var(--tree-fill, #3b2412);
+  stroke-linecap: round;
+}
+
+/* Piso: línea de neón naranja que cruza toda la pantalla */
+#floor {
+  position: absolute;
+  left: 2%;
+  right: 2%;
+  top: 90%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent, #ff7a00);
+  pointer-events: none;
+  box-shadow:
+    0 0 calc(var(--glow, 8px) * 0.75) var(--accent, #ff7a00),
+    0 0 calc(var(--glow, 8px) * 2) var(--accent, #ff7a00);
 }
 
 .tree-lines .floor {
