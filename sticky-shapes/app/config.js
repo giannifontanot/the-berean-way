@@ -30,6 +30,7 @@ const CONFIG = {
     leafGlow: "#00f0ff",     // contorno neón cian de la hoja
     text: "#f7ff00",         // amarillo arcade
     accent: "#ff7a00",       // naranja Donkey Kong
+    danger: "#ff3355",       // rojo neón: basurero / acciones destructivas
     glowBlur: 8,             // intensidad del resplandor neón (px)
     fontFamily: "'Press Start 2P', 'Courier New', monospace",
   },

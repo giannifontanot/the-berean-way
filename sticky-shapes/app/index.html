@@ -22,28 +22,35 @@
            halo sigue el contorno unificado del árbol, sin costuras. -->
       <g class="tree-solid">
         <!-- Tronco en S (moyogi); termina en la horqueta donde nacen las ramas -->
-        <path stroke-width="8"   d="M 49.5 91 C 49 85.5, 52.5 80.5, 51.5 73" />
-        <path stroke-width="6.5" d="M 51.5 74 C 50.5 67, 47.5 63, 48.5 56" />
-        <path stroke-width="5"   d="M 48.5 58 C 49 54, 50 52, 50.5 50.5" />
-        <!-- Rama izquierda: se extiende casi horizontal, con leve caída -->
-        <path stroke-width="3.8" d="M 50 51.5 C 43 49, 36 49.5, 29 47" />
-        <path stroke-width="2"   d="M 30 47.5 C 23 45, 17 43.5, 11 40" />
-        <path stroke-width="1"   d="M 12 40.3 C 8.5 38.5, 6.5 36.5, 5 34" />
-        <!-- Ramita secundaria izquierda (hacia arriba) -->
-        <path stroke-width="1"   d="M 26 46.5 C 25 43.5, 24.5 41, 25 38" />
-        <!-- Rama derecha: se extiende horizontal con suave ascenso -->
-        <path stroke-width="3.8" d="M 50.5 50.5 C 57 47.5, 63 46, 70 43.5" />
-        <path stroke-width="2"   d="M 69 44 C 76 41, 82 38.5, 88 34.5" />
-        <path stroke-width="1"   d="M 87 35 C 90.5 32.5, 92.5 30.5, 94 28" />
-        <!-- Ramita secundaria derecha (hacia arriba) -->
-        <path stroke-width="1"   d="M 74 40 C 74.5 37, 75.5 34.5, 77 32" />
+        <path stroke-width="9"   d="M 49.5 91 C 48.5 85, 53 80.5, 52 73" />
+        <path stroke-width="7.5" d="M 52 74 C 51 67, 47.5 63.5, 48.5 57" />
+        <path stroke-width="6"   d="M 48.5 59 C 49 54.5, 50 52.5, 50.5 50" />
+        <!-- Rama izquierda: larga, casi horizontal, con leve caída -->
+        <path stroke-width="4.5" d="M 50 51.5 C 43 48.5, 36 49, 28 45.5" />
+        <path stroke-width="2.8" d="M 29 46 C 21 42.5, 15 41, 9 37" />
+        <path stroke-width="1.4" d="M 10 37.5 C 7 35.5, 5 33.5, 3.5 30.5" />
+        <!-- Ramitas secundarias izquierdas (hacia arriba, para colgar hojas) -->
+        <path stroke-width="1.6" d="M 36 47.5 C 34.5 43.5, 34 40, 35 36" />
+        <path stroke-width="1.2" d="M 22 42.8 C 21 39, 21 36, 22.5 32.5" />
+        <path stroke-width="1"   d="M 15 40.8 C 13.5 38, 13 35.5, 13.5 32.5" />
+        <!-- Rama derecha: larga, horizontal con suave ascenso -->
+        <path stroke-width="4.5" d="M 50.5 50.5 C 57.5 47.5, 64 46, 72 42.5" />
+        <path stroke-width="2.8" d="M 71 43 C 79 39.5, 85 37, 91 32.5" />
+        <path stroke-width="1.4" d="M 90 33 C 93 30.8, 95 28.5, 96.5 25.5" />
+        <!-- Ramitas secundarias derechas (hacia arriba, para colgar hojas) -->
+        <path stroke-width="1.6" d="M 64 45 C 65 41, 66 38, 68 34.5" />
+        <path stroke-width="1.2" d="M 78 39.8 C 78.5 36, 79.5 33, 81.5 29.5" />
+        <path stroke-width="1"   d="M 86 36 C 86.5 33, 87.5 30.5, 89 27.5" />
         <!-- Base con raíces -->
-        <path stroke-width="3"   d="M 43 90.8 C 47 89, 52 89, 56 90.8" />
+        <path stroke-width="3.2" d="M 42.5 90.8 C 46.5 89, 52.5 89, 56.5 90.8" />
       </g>
     </svg>
 
     <!-- Piso: línea de neón que cruza toda la pantalla -->
     <div id="floor" aria-hidden="true"></div>
+
+    <!-- Basurero: arrastra una hoja aquí para borrarla -->
+    <div id="trash" aria-label="Basurero: suelta una hoja aquí para borrarla">🗑</div>
 
     <!-- Etiquetas de las zonas (texto arcade discreto) -->
     <div id="zone-labels" aria-hidden="true"></div>
