@@ -1,0 +1,221 @@
+/* style.css — Sticky Shapes (Árbol de Ideas)
+   Estética arcade Donkey Kong 80s: fondo oscuro, contornos de neón.
+   Los colores llegan desde config.js vía variables CSS en :root
+   (script.js las escribe al iniciar — una sola fuente de verdad). */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg, #0a0018);
+  font-family: var(--font, monospace);
+  /* Sutil textura de scanlines de arcade */
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.02) 0px,
+    rgba(255, 255, 255, 0.02) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* ---------- Lienzo y árbol ---------- */
+
+#canvas {
+  position: fixed;
+  inset: 0;
+  touch-action: none; /* el arrastre táctil no debe hacer scroll */
+}
+
+#tree {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Bonsái: trazos sólidos café; el resplandor neón envuelve al grupo entero
+   (el filtro se aplica al conjunto ya compuesto → halo sin costuras) */
+.tree-solid {
+  filter:
+    drop-shadow(0 0 2px var(--tree, #e0862f))
+    drop-shadow(0 0 calc(var(--glow, 8px) * 0.75) var(--tree, #e0862f));
+}
+
+.tree-solid path {
+  fill: none;
+  stroke: var(--tree-fill, #3b2412);
+  stroke-linecap: round;
+}
+
+/* Piso: línea de neón naranja que cruza toda la pantalla */
+#floor {
+  position: absolute;
+  left: 2%;
+  right: 2%;
+  top: 90%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent, #ff7a00);
+  pointer-events: none;
+  box-shadow:
+    0 0 calc(var(--glow, 8px) * 0.75) var(--accent, #ff7a00),
+    0 0 calc(var(--glow, 8px) * 2) var(--accent, #ff7a00);
+}
+
+.tree-lines .floor {
+  stroke: var(--accent, #ff7a00);
+  filter:
+    drop-shadow(0 0 calc(var(--glow, 8px) * 0.5) var(--accent, #ff7a00))
+    drop-shadow(0 0 var(--glow, 8px) var(--accent, #ff7a00));
+}
+
+/* Etiquetas de zona: discretas, texto arcade */
+#zone-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.zone-label {
+  position: absolute;
+  color: var(--tree, #ff2d95);
+  opacity: 0.35;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 0 6px var(--tree, #ff2d95);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* Zona resaltada mientras se arrastra una hoja sobre ella */
+.zone-label.active {
+  opacity: 0.9;
+  color: var(--text, #f7ff00);
+  text-shadow: 0 0 8px var(--text, #f7ff00);
+}
+
+/* ---------- Hojas ---------- */
+
+.leaf {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  min-width: 44px;  /* área táctil mínima (accesibilidad) */
+  min-height: 44px;
+}
+
+.leaf.dragging {
+  cursor: grabbing;
+  z-index: 1000; /* por encima de las demás mientras se arrastra */
+}
+
+/* El SVG de la hoja llena el elemento; contorno neón cian */
+.leaf svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.leaf svg .leaf-body {
+  fill: var(--leaf-fill, #12203a);
+  stroke: var(--leaf-glow, #00f0ff);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  filter:
+    drop-shadow(0 0 calc(var(--glow, 8px) * 0.5) var(--leaf-glow, #00f0ff))
+    drop-shadow(0 0 var(--glow, 8px) var(--leaf-glow, #00f0ff));
+}
+
+.leaf svg .leaf-vein {
+  fill: none;
+  stroke: var(--leaf-glow, #00f0ff);
+  stroke-width: 1.2;
+  opacity: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.leaf.dragging svg .leaf-body {
+  filter:
+    drop-shadow(0 0 var(--glow, 8px) var(--leaf-glow, #00f0ff))
+    drop-shadow(0 0 calc(var(--glow, 8px) * 2) var(--leaf-glow, #00f0ff));
+}
+
+/* Texto de la hoja */
+.leaf-text {
+  position: relative;
+  max-width: 82%;
+  color: var(--text, #f7ff00);
+  font-family: var(--font, monospace);
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: center;
+  text-shadow: 0 0 6px var(--text, #f7ff00);
+  word-break: break-word;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  pointer-events: none; /* los gestos los recibe la hoja completa */
+}
+
+/* Campo de edición (doble clic) */
+.leaf-editor {
+  position: relative;
+  width: 86%;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid var(--text, #f7ff00);
+  border-radius: 4px;
+  color: var(--text, #f7ff00);
+  font-family: var(--font, monospace);
+  font-size: 11px;
+  text-align: center;
+  padding: 4px;
+  outline: none;
+  resize: none;
+  box-shadow: 0 0 8px var(--text, #f7ff00);
+}
+
+/* ---------- Botón flotante + ---------- */
+
+#add-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid var(--accent, #ff7a00);
+  background: var(--bg, #0a0018);
+  color: var(--accent, #ff7a00);
+  font-size: 30px;
+  font-family: var(--font, monospace);
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2000;
+  box-shadow:
+    0 0 calc(var(--glow, 8px) * 0.75) var(--accent, #ff7a00),
+    inset 0 0 calc(var(--glow, 8px) * 0.5) rgba(255, 122, 0, 0.4);
+  transition: transform var(--anim-ms, 120ms) ease;
+}
+
+#add-btn:active {
+  transform: scale(0.92);
+}
