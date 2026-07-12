@@ -41,33 +41,68 @@ html, body {
   pointer-events: none;
 }
 
-/* Bonsái: trazos sólidos café; el resplandor neón envuelve al grupo entero
-   (el filtro se aplica al conjunto ya compuesto → halo sin costuras) */
-.tree-solid {
+/* Copas de nube: solo brilla el contorno verde neón; el interior es oscuro */
+.tree-canopy path {
+  fill: rgba(3, 20, 8, 0.85);
+  stroke: var(--canopy, #3fff2b);
+  stroke-width: 2.5px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.tree-canopy {
   filter:
-    drop-shadow(0 0 2px var(--tree, #e0862f))
-    drop-shadow(0 0 calc(var(--glow, 8px) * 0.75) var(--tree, #e0862f));
+    drop-shadow(0 0 2px var(--canopy, #3fff2b))
+    drop-shadow(0 0 var(--glow, 8px) var(--canopy, #3fff2b));
 }
 
-.tree-solid path {
+/* Tronco: madera café con vetas de corteza y un leve halo cálido */
+.tree-bark .trunk {
+  fill: var(--tree-fill, #7a4a22);
+  stroke: var(--tree, #9a6a3a);
+  stroke-width: 1px;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.tree-bark {
+  filter: drop-shadow(0 0 calc(var(--glow, 8px) * 0.5) var(--tree, #9a6a3a));
+}
+
+.tree-bark .bark-line {
   fill: none;
-  stroke: var(--tree-fill, #3b2412);
+  stroke: var(--bark-dark, #4a2a10);
+  stroke-width: 1.2px;
   stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
 }
 
-/* Piso: línea de neón naranja que cruza toda la pantalla */
+/* Pasto neón en la base */
+.tree-grass path {
+  fill: none;
+  stroke: var(--grass, #2fe515);
+  stroke-width: 1.4px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.tree-grass {
+  filter: drop-shadow(0 0 calc(var(--glow, 8px) * 0.6) var(--grass, #2fe515));
+}
+
+/* Piso: línea de pasto neón verde que cruza toda la pantalla */
 #floor {
   position: absolute;
   left: 2%;
   right: 2%;
-  top: 90%;
-  height: 4px;
+  top: 91%;
+  height: 3px;
   border-radius: 2px;
-  background: var(--accent, #ff7a00);
+  background: var(--grass, #2fe515);
   pointer-events: none;
   box-shadow:
-    0 0 calc(var(--glow, 8px) * 0.75) var(--accent, #ff7a00),
-    0 0 calc(var(--glow, 8px) * 2) var(--accent, #ff7a00);
+    0 0 calc(var(--glow, 8px) * 0.75) var(--grass, #2fe515),
+    0 0 calc(var(--glow, 8px) * 2) var(--grass, #2fe515);
 }
 
 .tree-lines .floor {
