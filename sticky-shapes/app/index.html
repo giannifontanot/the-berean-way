@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Sticky Shapes — Árbol de Ideas</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Lienzo: contiene el árbol de fondo y las hojas del usuario -->
+  <main id="canvas" aria-label="Árbol de ideas">
+
+    <!-- Árbol de dos ramas + piso, dibujado en SVG con trazo de neón.
+         viewBox normalizado 0..100 para escalar a cualquier pantalla. -->
+    <svg id="tree" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <g class="tree-lines">
+        <!-- Tronco -->
+        <path d="M 50 92 C 50 78, 49 66, 50 54" />
+        <!-- Rama izquierda -->
+        <path d="M 50 54 C 44 44, 32 38, 16 30" />
+        <path d="M 34 39 C 30 34, 27 30, 25 24" />
+        <path d="M 24 33 C 19 31, 14 30, 9 31" />
+        <!-- Rama derecha -->
+        <path d="M 50 54 C 56 44, 68 38, 84 30" />
+        <path d="M 66 39 C 70 34, 73 30, 75 24" />
+        <path d="M 76 33 C 81 31, 86 30, 91 31" />
+        <!-- Piso -->
+        <line class="floor" x1="2" y1="92" x2="98" y2="92" />
+      </g>
+    </svg>
+
+    <!-- Etiquetas de las zonas (texto arcade discreto) -->
+    <div id="zone-labels" aria-hidden="true"></div>
+
+    <!-- Las hojas se insertan aquí desde script.js -->
+
+  </main>
+
+  <!-- Botón flotante para crear hojas nuevas -->
+  <button id="add-btn" type="button" aria-label="Crear nueva hoja">+</button>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
