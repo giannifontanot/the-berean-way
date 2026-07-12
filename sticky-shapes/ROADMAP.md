@@ -6,7 +6,7 @@
 
 ## Versión 1.0 — Base (alcance actual)
 
-- Crear nodos.
+- Crear hojas.
 - Mover hojas (arrastre con dedo o mouse).
 - Cambiar de estado soltando la hoja en una zona (Rama izquierda · Rama derecha ·
   Piso).
