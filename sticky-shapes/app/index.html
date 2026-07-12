@@ -16,33 +16,52 @@
          afinan hacia la punta. preserveAspectRatio mantiene la proporción
          (el árbol no se deforma al cambiar el tamaño de pantalla). -->
     <svg id="tree" viewBox="0 0 100 100" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-      <!-- Bonsái como trazos sólidos café que se afinan por segmento
-           (tronco en S estilo moyogi, dos ramas, puntas finas).
-           El resplandor neón se aplica al grupo completo, de modo que el
-           halo sigue el contorno unificado del árbol, sin costuras. -->
-      <g class="tree-solid">
-        <!-- Tronco en S (moyogi); termina en la horqueta donde nacen las ramas -->
-        <path stroke-width="9"   d="M 49.5 91 C 48.5 85, 53 80.5, 52 73" />
-        <path stroke-width="7.5" d="M 52 74 C 51 67, 47.5 63.5, 48.5 57" />
-        <path stroke-width="6"   d="M 48.5 59 C 49 54.5, 50 52.5, 50.5 50" />
-        <!-- Rama izquierda: larga, casi horizontal, con leve caída -->
-        <path stroke-width="4.5" d="M 50 51.5 C 43 48.5, 36 49, 28 45.5" />
-        <path stroke-width="2.8" d="M 29 46 C 21 42.5, 15 41, 9 37" />
-        <path stroke-width="1.4" d="M 10 37.5 C 7 35.5, 5 33.5, 3.5 30.5" />
-        <!-- Ramitas secundarias izquierdas (hacia arriba, para colgar hojas) -->
-        <path stroke-width="1.6" d="M 36 47.5 C 34.5 43.5, 34 40, 35 36" />
-        <path stroke-width="1.2" d="M 22 42.8 C 21 39, 21 36, 22.5 32.5" />
-        <path stroke-width="1"   d="M 15 40.8 C 13.5 38, 13 35.5, 13.5 32.5" />
-        <!-- Rama derecha: larga, horizontal con suave ascenso -->
-        <path stroke-width="4.5" d="M 50.5 50.5 C 57.5 47.5, 64 46, 72 42.5" />
-        <path stroke-width="2.8" d="M 71 43 C 79 39.5, 85 37, 91 32.5" />
-        <path stroke-width="1.4" d="M 90 33 C 93 30.8, 95 28.5, 96.5 25.5" />
-        <!-- Ramitas secundarias derechas (hacia arriba, para colgar hojas) -->
-        <path stroke-width="1.6" d="M 64 45 C 65 41, 66 38, 68 34.5" />
-        <path stroke-width="1.2" d="M 78 39.8 C 78.5 36, 79.5 33, 81.5 29.5" />
-        <path stroke-width="1"   d="M 86 36 C 86.5 33, 87.5 30.5, 89 27.5" />
-        <!-- Base con raíces -->
-        <path stroke-width="3.2" d="M 42.5 90.8 C 46.5 89, 52.5 89, 56.5 90.8" />
+      <!-- Árbol estilo arcade pixel-art: tronco café con vetas de corteza y
+           raíces anchas, dos copas de nube delineadas en verde neón (huecas,
+           como tubos de luz) y pasto neón en la base. -->
+
+      <!-- Copas de nube: contornos ondulados generados alrededor de una
+           elipse; el interior queda oscuro, solo brilla el borde. -->
+      <g class="tree-canopy">
+        <path d="M 47.9 30.0 A 3.9 3.9 0 0 1 43.9 34.9 A 3.5 3.5 0 0 1 40.7 39.6 A 4.3 4.3 0 0 1 34.3 42.4 A 4.8 4.8 0 0 1 27.0 44.9 A 5.1 5.1 0 0 1 18.9 43.6 A 4.9 4.9 0 0 1 11.5 40.9 A 3.8 3.8 0 0 1 9.8 35.0 A 3.5 3.5 0 0 1 7.0 30.0 A 3.6 3.6 0 0 1 10.1 25.1 A 3.5 3.5 0 0 1 13.5 20.5 A 4.2 4.2 0 0 1 19.2 16.9 A 4.8 4.8 0 0 1 27.0 17.2 A 4.5 4.5 0 0 1 34.3 17.7 A 4.8 4.8 0 0 1 41.8 19.6 A 4.0 4.0 0 0 1 45.9 24.5 A 3.6 3.6 0 0 1 47.9 30.0 Z" />
+        <path d="M 93.1 26.0 A 3.7 3.7 0 0 1 93.1 31.9 A 4.2 4.2 0 0 1 89.0 37.5 A 5.5 5.5 0 0 1 80.3 38.6 A 5.0 5.0 0 0 1 73.0 42.2 A 5.4 5.4 0 0 1 64.5 40.6 A 4.6 4.6 0 0 1 58.4 36.4 A 3.9 3.9 0 0 1 54.7 31.4 A 4.6 4.6 0 0 1 49.7 26.0 A 4.4 4.4 0 0 1 54.0 20.4 A 4.2 4.2 0 0 1 59.2 16.1 A 4.3 4.3 0 0 1 65.5 13.1 A 5.1 5.1 0 0 1 73.0 9.7 A 5.3 5.3 0 0 1 81.3 11.6 A 5.1 5.1 0 0 1 89.0 14.6 A 4.4 4.4 0 0 1 93.6 19.9 A 3.8 3.8 0 0 1 93.1 26.0 Z" />
+      </g>
+
+      <!-- Tronco: silueta rellena con base ancha (raíces) y dos brazos
+           gruesos que suben hacia el interior de cada copa. -->
+      <g class="tree-bark">
+        <path class="trunk" d="
+          M 34 92
+          C 40 90, 43.5 83, 44.5 73
+          C 45 66, 45.5 60, 46.5 54
+          C 43 50, 37 46, 31.5 41
+          C 29.5 39.5, 30.5 36.5, 33 38
+          C 38 41.5, 43 45, 46.5 47
+          C 48 47.5, 49 46.5, 49.5 44.5
+          C 50 46, 50.5 46.8, 51.5 46.2
+          C 52.5 45.5, 53 44, 53.5 42.5
+          C 58 39.5, 64 36.5, 69.5 33.5
+          C 72 32, 73 34.5, 71 36.5
+          C 65 40.5, 59 44, 55 47.5
+          C 53.5 49, 53 51, 53.5 54
+          C 54.5 60, 55 66, 55.5 73
+          C 56.5 83, 60 90, 66 92
+          C 55 89.5, 45 89.5, 34 92
+          Z" />
+        <!-- Vetas de la corteza -->
+        <path class="bark-line" d="M 47 88 C 48 78, 47.5 68, 48.5 56" />
+        <path class="bark-line" d="M 52.5 88 C 52 78, 52.3 68, 51.8 56" />
+        <path class="bark-line" d="M 49.8 87 C 50.1 76, 49.9 66, 50.1 52" />
+        <path class="bark-line" d="M 45.5 86 C 46.2 79, 46 72, 46.8 63" />
+        <path class="bark-line" d="M 54.2 86 C 53.8 79, 54.1 72, 53.6 63" />
+      </g>
+
+      <!-- Pasto: mechones de neón verde a lo largo del piso -->
+      <g class="tree-grass">
+        <path d="M 10 91.5 C 9.5 90, 9 88.8, 8 88 M 11 91.5 C 11 89.8, 11.2 88.6, 11.5 87.4 M 12.2 91.5 C 12.8 90, 13.5 89, 14.4 88.3" />
+        <path d="M 24 91.5 C 23.5 90.2, 23 89, 22 88.2 M 25 91.5 C 25 89.9, 25.2 88.8, 25.6 87.6 M 26.2 91.5 C 26.8 90.2, 27.4 89.2, 28.3 88.5" />
+        <path d="M 71 91.5 C 70.5 90.2, 70 89, 69 88.2 M 72 91.5 C 72 89.9, 72.2 88.8, 72.6 87.6 M 73.2 91.5 C 73.8 90.2, 74.4 89.2, 75.3 88.5" />
+        <path d="M 85 91.5 C 84.5 90, 84 88.8, 83 88 M 86 91.5 C 86 89.8, 86.2 88.6, 86.5 87.4 M 87.2 91.5 C 87.8 90, 88.5 89, 89.4 88.3" />
       </g>
     </svg>
 
