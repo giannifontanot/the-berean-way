@@ -25,17 +25,18 @@ const CONFIG = {
   // Paleta arcade Donkey Kong 80s: fondo oscuro + contornos de neón.
   theme: {
     background: "#0a0018",   // casi negro / violeta profundo
-    treeFill: "#7a4a22",     // café: madera del tronco
-    treeStroke: "#9a6a3a",   // café claro: borde y halo cálido del tronco
+    treeFill: "#6b4423",     // café mate: madera del tronco (estilo DK, plano)
+    treeStroke: "#84582e",   // café claro sutil: borde del tronco
     barkDark: "#4a2a10",     // café oscuro: vetas de la corteza
-    canopy: "#3fff2b",       // verde neón: contorno de las copas de nube
-    grass: "#2fe515",        // verde: pasto del piso
+    canopy: "#2fbf2f",       // verde arcade mate: contorno de las copas
+    canopyFill: "#0e2c12",   // relleno sutil de las copas (verde muy oscuro)
+    grass: "#2aa818",        // verde pasto discreto
     leafFill: "#1d6b2a",     // relleno de hoja por defecto (si falta en leafStyles)
     leafGlow: "#7dff3a",     // contorno de hoja por defecto (si falta en leafStyles)
     text: "#f7ff00",         // amarillo arcade
     accent: "#ff7a00",       // naranja Donkey Kong
     treasure: "#ffd24a",     // dorado neón: cofre del tesoro (borrar hojas)
-    glowBlur: 6,             // intensidad del resplandor neón (px)
+    glowBlur: 4,             // intensidad del resplandor neón (px) — discreto, estilo DK
     fontFamily: "'Press Start 2P', 'Courier New', monospace",
     leafTextSize: 20,        // px — texto de las hojas
     zoneLabelSize: 16,       // px — etiquetas de las zonas

@@ -43,6 +43,7 @@
     root.setProperty("--tree-fill", t.treeFill);
     root.setProperty("--bark-dark", t.barkDark);
     root.setProperty("--canopy", t.canopy);
+    root.setProperty("--canopy-fill", t.canopyFill);
     root.setProperty("--grass", t.grass);
     root.setProperty("--leaf-fill", t.leafFill);
     root.setProperty("--leaf-glow", t.leafGlow);

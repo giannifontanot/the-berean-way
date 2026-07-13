@@ -43,15 +43,15 @@ html, body {
 
 /* Copas de nube: solo brilla el contorno verde neón; el interior es oscuro */
 .tree-canopy path {
-  fill: rgba(3, 20, 8, 0.85);
-  stroke: var(--canopy, #3fff2b);
-  stroke-width: 2.5px;
+  fill: var(--canopy-fill, #0e2c12);
+  stroke: var(--canopy, #2fbf2f);
+  stroke-width: 2px;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 
 .tree-canopy {
-  filter: drop-shadow(0 0 var(--glow, 6px) var(--canopy, #3fff2b));
+  filter: drop-shadow(0 0 var(--glow, 4px) var(--canopy, #2fbf2f));
 }
 
 /* Tronco: madera café con vetas de corteza y un leve halo cálido */
@@ -64,7 +64,7 @@ html, body {
 }
 
 .tree-bark {
-  filter: drop-shadow(0 0 calc(var(--glow, 8px) * 0.5) var(--tree, #9a6a3a));
+  filter: drop-shadow(0 0 calc(var(--glow, 4px) * 0.5) var(--tree, #84582e));
 }
 
 .tree-bark .bark-line {
@@ -85,7 +85,7 @@ html, body {
 }
 
 .tree-grass {
-  filter: drop-shadow(0 0 calc(var(--glow, 8px) * 0.6) var(--grass, #2fe515));
+  filter: drop-shadow(0 0 calc(var(--glow, 4px) * 0.6) var(--grass, #2aa818));
 }
 
 /* Etiquetas de zona: discretas, texto arcade */
