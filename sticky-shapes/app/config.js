@@ -25,9 +25,9 @@ const CONFIG = {
   // Paleta arcade Donkey Kong 80s: fondo oscuro + contornos de neón.
   theme: {
     background: "#0a0018",   // casi negro / violeta profundo
-    treeFill: "#6b4423",     // café mate: madera del tronco (estilo DK, plano)
+    treeFill: "rgba(107, 68, 35, 0.4)",  // café translúcido: madera del tronco
     treeStroke: "#84582e",   // café claro sutil: borde del tronco
-    barkDark: "#4a2a10",     // café oscuro: vetas de la corteza
+    barkDark: "rgba(74, 42, 16, 0.55)",  // café oscuro translúcido: vetas
     canopy: "#2fbf2f",       // verde arcade mate: contorno de las copas
     canopyFill: "#0e2c12",   // relleno sutil de las copas (verde muy oscuro)
     grass: "#2aa818",        // verde pasto discreto
