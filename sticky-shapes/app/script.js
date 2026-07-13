@@ -9,7 +9,7 @@
   const canvas = document.getElementById("canvas");
   const addBtn = document.getElementById("add-btn");
   const zoneLabels = document.getElementById("zone-labels");
-  const trash = document.getElementById("trash");
+  const treasure = document.getElementById("treasure");
 
   // ---------------------------------------------------------------
   // Formas de hoja (SVG). Registro genérico: para añadir una variante,
@@ -48,7 +48,9 @@
     root.setProperty("--leaf-glow", t.leafGlow);
     root.setProperty("--text", t.text);
     root.setProperty("--accent", t.accent);
-    root.setProperty("--danger", t.danger);
+    root.setProperty("--treasure", t.treasure);
+    root.setProperty("--leaf-text-size", t.leafTextSize + "px");
+    root.setProperty("--zone-label-size", t.zoneLabelSize + "px");
     root.setProperty("--glow", t.glowBlur + "px");
     root.setProperty("--font", t.fontFamily);
     root.setProperty(
@@ -231,13 +233,13 @@
       if (!dragging && Math.hypot(dx, dy) > CONFIG.dragThreshold) {
         dragging = true;
         el.classList.add("dragging");
-        document.body.classList.add("leaf-dragging"); // muestra el basurero
+        document.body.classList.add("leaf-dragging"); // muestra el cofre
       }
       if (dragging) {
         el.style.left = originX + dx + "px";
         el.style.top = originY + dy + "px";
         highlightZone(e.clientX, e.clientY);
-        trash.classList.toggle("active", overTrash(e.clientX, e.clientY));
+        treasure.classList.toggle("active", overTreasure(e.clientX, e.clientY));
       }
     });
 
@@ -270,27 +272,27 @@
         dragging = false;
         el.classList.remove("dragging");
         document.body.classList.remove("leaf-dragging");
-        trash.classList.remove("active");
+        treasure.classList.remove("active");
       }
     });
   }
 
-  // ¿El punto (px, py) está sobre el basurero?
-  function overTrash(px, py) {
-    const r = trash.getBoundingClientRect();
+  // ¿El punto (px, py) está sobre el cofre del tesoro?
+  function overTreasure(px, py) {
+    const r = treasure.getBoundingClientRect();
     return px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
   }
 
   function finishDrag(el, px, py) {
     el.classList.remove("dragging");
     document.body.classList.remove("leaf-dragging");
-    trash.classList.remove("active");
+    treasure.classList.remove("active");
     highlightZone(-1, -1); // apaga el resaltado
     const node = findNode(el.dataset.id);
     if (!node) return;
 
-    // Soltar sobre el basurero = borrar la hoja.
-    if (overTrash(px, py)) {
+    // Soltar sobre el cofre = borrar la hoja.
+    if (overTreasure(px, py)) {
       deleteNode(node, el);
       return;
     }

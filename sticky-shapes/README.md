@@ -1,8 +1,8 @@
 # Sticky Shapes
 
 Aplicación web de **una sola página** para capturar ideas como **hojas** con
-texto que cuelgan de un **árbol de dos ramas**. Arrastras cada hoja de una rama a
-otra (o al piso) para **agrupar tus ideas en tres estados**. Cada hoja recuerda su
+texto que cuelgan de un **árbol de tres copas**. Arrastras cada hoja de una copa a
+otra (o al piso) para **agrupar tus ideas en cuatro estados**. Cada hoja recuerda su
 texto, su posición, su variante y su estado incluso después de cerrar el
 navegador.
 
@@ -19,8 +19,8 @@ Un árbol de neón donde:
 
 - Creas hojas con un botón `+`.
 - Las arrastras con el dedo o el mouse a donde quieras.
-- Al soltarlas en una zona **cambias su estado**: Rama izquierda · Rama derecha ·
-  Piso (tres grupos de ideas).
+- Al soltarlas en una zona **cambias su estado**: Centro · Izquierda · Derecha ·
+  Piso (cuatro grupos de ideas).
 - Cambias la **variante de hoja** con un clic simple.
 - Editas su texto con doble clic.
 

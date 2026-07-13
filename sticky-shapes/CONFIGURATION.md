@@ -62,11 +62,12 @@ const CONFIG = {
   leafShapes: ["leaf-oak", "leaf-maple", "leaf-simple"],
   defaultShape: "leaf-oak",
 
-  // Tres estados = dos ramas + piso. region: rectángulo normalizado (0..1).
+  // Cuatro estados = tres copas + piso. region: rectángulo normalizado (0..1).
   statuses: [
-    { id: "rama-izquierda", label: "Rama izquierda", region: { x: 0.00, y: 0.00, w: 0.50, h: 0.70 } },
-    { id: "rama-derecha",   label: "Rama derecha",   region: { x: 0.50, y: 0.00, w: 0.50, h: 0.70 } },
-    { id: "piso",           label: "Piso",           region: { x: 0.00, y: 0.70, w: 1.00, h: 0.30 } },
+    { id: "rama-centro",    label: "Centro",    region: { x: 0.0, y: 0.0,  w: 1.0, h: 0.35 } },
+    { id: "rama-izquierda", label: "Izquierda", region: { x: 0.0, y: 0.35, w: 0.5, h: 0.35 } },
+    { id: "rama-derecha",   label: "Derecha",   region: { x: 0.5, y: 0.35, w: 0.5, h: 0.35 } },
+    { id: "piso",           label: "Piso",      region: { x: 0.0, y: 0.7,  w: 1.0, h: 0.3 } },
   ],
   defaultStatus: "piso",
 

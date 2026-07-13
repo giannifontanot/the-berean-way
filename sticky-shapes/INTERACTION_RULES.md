@@ -12,7 +12,7 @@
 | Doble clic / doble toque | Hoja | Entra en modo **edición de texto**. |
 | Arrastrar (*drag*) | Hoja | Mueve la hoja; al soltar, guarda posición y **recalcula el estado** según la zona. |
 | Clic / toque | Botón `+` | Crea una hoja nueva. |
-| Arrastrar y soltar sobre el basurero | Hoja | **Borra** la hoja definitivamente. |
+| Arrastrar y soltar sobre el cofre del tesoro | Hoja | **Borra** la hoja definitivamente. |
 
 ## Prioridad y desambiguación de gestos (por retardo)
 
@@ -60,14 +60,14 @@ retardo**, que es la regla obligatoria de esta app:
 - Durante el movimiento se puede aplicar *debounce* al guardado; el estado final
   siempre se persiste.
 
-### Borrar (arrastrar al basurero)
+### Borrar (arrastrar al cofre del tesoro)
 
-- El basurero vive en una esquina, semitransparente cuando no se usa.
+- El cofre del tesoro vive en una esquina, semitransparente cuando no se usa.
 - Al iniciar un arrastre se hace visible; cuando la hoja está encima, se
-  enciende con rojo neón (`theme.danger`).
+  enciende con dorado neón (`theme.treasure`).
 - Soltar la hoja sobre él la **elimina** del lienzo y de Local Storage.
 - No pide confirmación: el gesto es deliberado (hay que llevar la hoja hasta la
-  esquina). El resaltado rojo es el aviso.
+  esquina). El resaltado dorado es el aviso.
 
 ### Cambiar variante de hoja (clic simple)
 

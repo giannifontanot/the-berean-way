@@ -10,15 +10,16 @@ const CONFIG = {
 
   // Tres estados = dos ramas + piso. region: rectángulo normalizado (0..1).
   statuses: [
-    { id: "rama-izquierda", label: "Rama izquierda", region: { x: 0.0, y: 0.0, w: 0.5, h: 0.7 } },
-    { id: "rama-derecha",   label: "Rama derecha",   region: { x: 0.5, y: 0.0, w: 0.5, h: 0.7 } },
-    { id: "piso",           label: "Piso",           region: { x: 0.0, y: 0.7, w: 1.0, h: 0.3 } },
+    { id: "rama-centro",    label: "Centro",    region: { x: 0.0, y: 0.0,  w: 1.0, h: 0.35 } },
+    { id: "rama-izquierda", label: "Izquierda", region: { x: 0.0, y: 0.35, w: 0.5, h: 0.35 } },
+    { id: "rama-derecha",   label: "Derecha",   region: { x: 0.5, y: 0.35, w: 0.5, h: 0.35 } },
+    { id: "piso",           label: "Piso",      region: { x: 0.0,  y: 0.7,  w: 1.0,  h: 0.3 } },
   ],
   defaultStatus: "piso",
 
   defaultText: "Nueva idea",
-  defaultWidth: 110,
-  defaultHeight: 110,
+  defaultWidth: 150,
+  defaultHeight: 150,
   defaultPosition: "center", // "center" (de la zona defaultStatus) o { x, y }
 
   // Paleta arcade Donkey Kong 80s: fondo oscuro + contornos de neón.
@@ -29,13 +30,15 @@ const CONFIG = {
     barkDark: "#4a2a10",     // café oscuro: vetas de la corteza
     canopy: "#3fff2b",       // verde neón: contorno de las copas de nube
     grass: "#2fe515",        // verde: pasto del piso
-    leafFill: "#12203a",     // relleno oscuro de la hoja
-    leafGlow: "#00f0ff",     // contorno neón cian de la hoja
+    leafFill: "#0b2e12",     // relleno verde oscuro de la hoja
+    leafGlow: "#7dff3a",     // contorno neón verde-lima de la hoja
     text: "#f7ff00",         // amarillo arcade
     accent: "#ff7a00",       // naranja Donkey Kong
-    danger: "#ff3355",       // rojo neón: basurero / acciones destructivas
+    treasure: "#ffd24a",     // dorado neón: cofre del tesoro (borrar hojas)
     glowBlur: 8,             // intensidad del resplandor neón (px)
     fontFamily: "'Press Start 2P', 'Courier New', monospace",
+    leafTextSize: 30,        // px — texto de las hojas (grande y legible)
+    zoneLabelSize: 22,       // px — etiquetas de las zonas
   },
 
   doubleClickDelay: 250, // ms para distinguir clic simple de doble clic
