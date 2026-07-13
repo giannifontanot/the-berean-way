@@ -30,15 +30,22 @@ const CONFIG = {
     barkDark: "#4a2a10",     // café oscuro: vetas de la corteza
     canopy: "#3fff2b",       // verde neón: contorno de las copas de nube
     grass: "#2fe515",        // verde: pasto del piso
-    leafFill: "#0b2e12",     // relleno verde oscuro de la hoja
-    leafGlow: "#7dff3a",     // contorno neón verde-lima de la hoja
+    leafFill: "#1d6b2a",     // relleno de hoja por defecto (si falta en leafStyles)
+    leafGlow: "#7dff3a",     // contorno de hoja por defecto (si falta en leafStyles)
     text: "#f7ff00",         // amarillo arcade
     accent: "#ff7a00",       // naranja Donkey Kong
     treasure: "#ffd24a",     // dorado neón: cofre del tesoro (borrar hojas)
-    glowBlur: 8,             // intensidad del resplandor neón (px)
+    glowBlur: 6,             // intensidad del resplandor neón (px)
     fontFamily: "'Press Start 2P', 'Courier New', monospace",
-    leafTextSize: 30,        // px — texto de las hojas (grande y legible)
-    zoneLabelSize: 22,       // px — etiquetas de las zonas
+    leafTextSize: 20,        // px — texto de las hojas
+    zoneLabelSize: 16,       // px — etiquetas de las zonas
+  },
+
+  // Cada variante de hoja tiene su propio tono de verde (relleno + neón).
+  leafStyles: {
+    "leaf-oak":    { fill: "#1c5c28", glow: "#3dff57" }, // roble: verde bosque
+    "leaf-maple":  { fill: "#2e6b14", glow: "#b4ff3e" }, // arce: verde-lima
+    "leaf-simple": { fill: "#0f5c40", glow: "#2effc0" }, // simple: verde-menta
   },
 
   doubleClickDelay: 250, // ms para distinguir clic simple de doble clic
