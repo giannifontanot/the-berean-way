@@ -64,6 +64,10 @@
       "--anim-ms",
       (CONFIG.animations.enabled ? CONFIG.animations.durationMs : 0) + "ms"
     );
+    root.setProperty(
+      "--swallow-ms",
+      (CONFIG.animations.enabled ? CONFIG.animations.swallowMs : 0) + "ms"
+    );
   }
 
   // ---------------------------------------------------------------
@@ -329,9 +333,33 @@
   }
 
   function deleteNode(node, el) {
+    // El dato se elimina de inmediato; el DOM se queda solo para la animación.
     state.nodes = state.nodes.filter((n) => n.id !== node.id);
     saveState();
-    el.remove();
+
+    const ms = CONFIG.animations.enabled ? CONFIG.animations.swallowMs : 0;
+    if (!ms) {
+      el.remove();
+      return;
+    }
+
+    // El cofre se abre y la hoja "cae" adentro, encogiéndose.
+    treasure.classList.add("open");
+    const r = treasure.getBoundingClientRect();
+    const w = node.w || CONFIG.defaultWidth;
+    const h = node.h || CONFIG.defaultHeight;
+    el.classList.add("swallowed");
+    // Forzar reflow para que la transición arranque desde la posición actual.
+    void el.offsetWidth;
+    el.style.transform =
+      `translate(${r.left + r.width / 2 - w / 2}px, ${r.top + r.height / 2 - h / 2}px) scale(0.05)`;
+
+    setTimeout(() => {
+      el.remove();
+      treasure.classList.add("burst");   // chispas doradas
+      treasure.classList.remove("open"); // la tapa se cierra
+      setTimeout(() => treasure.classList.remove("burst"), 550);
+    }, ms);
   }
 
   function cycleShape(el) {
