@@ -66,7 +66,7 @@ const CONFIG = {
   doubleClickDelay: 250, // ms para distinguir clic simple de doble clic
   dragThreshold: 5,      // px de movimiento para considerar arrastre
   minTouchTarget: 44,    // px — área táctil mínima
-  animations: { enabled: true, durationMs: 120 },
+  animations: { enabled: true, durationMs: 120, swallowMs: 380 },
 };
 
 // Exposición global (sin módulos) para una app estática simple.
