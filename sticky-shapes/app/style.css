@@ -56,9 +56,9 @@ html, body {
 
 /* Tronco: madera café con vetas de corteza y un leve halo cálido */
 .tree-bark .trunk {
-  fill: var(--tree-fill, #7a4a22);
-  stroke: var(--tree, #9a6a3a);
-  stroke-width: 1px;
+  fill: var(--tree-fill, rgba(107, 68, 35, 0.16));
+  stroke: var(--tree, #a06a35);
+  stroke-width: 1.6px;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
