@@ -50,6 +50,13 @@ const CONFIG = {
     "leaf-maple-red": { fill: "#5c1010", glow: "#ff4545" }, // maple: rojo neón
   },
 
+  // Colores de borde alternativos (botón de color en modo edición).
+  // El ciclo es: normal (según la variante) → cada color en orden → normal.
+  borderColors: [
+    { id: "gold",   color: "#ffd24a" }, // dorado
+    { id: "silver", color: "#d9e2ec" }, // plateado
+  ],
+
   // Cambio de tamaño (botones +/− en modo edición)
   resizeStep: 25,    // px que crece/encoge por toque
   minLeafSize: 90,   // px — tamaño mínimo de hoja

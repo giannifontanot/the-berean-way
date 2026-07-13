@@ -182,11 +182,16 @@
     return svg;
   }
 
-  // Tono de verde propio de cada variante (desde CONFIG.leafStyles).
-  function applyLeafStyle(el, shape) {
-    const style = (CONFIG.leafStyles || {})[shape] || {};
+  // Tono propio de cada variante (desde CONFIG.leafStyles). Si la hoja
+  // tiene un borde personalizado (node.border), ese color manda en el contorno.
+  function applyLeafStyle(el, node) {
+    const style = (CONFIG.leafStyles || {})[node.shape] || {};
+    const custom = (CONFIG.borderColors || []).find((b) => b.id === node.border);
     el.style.setProperty("--leaf-fill", style.fill || CONFIG.theme.leafFill);
-    el.style.setProperty("--leaf-glow", style.glow || CONFIG.theme.leafGlow);
+    el.style.setProperty(
+      "--leaf-glow",
+      custom ? custom.color : style.glow || CONFIG.theme.leafGlow
+    );
   }
 
   function renderLeaf(node) {
@@ -198,7 +203,7 @@
     // Posicionar con transform (acelerado por GPU): el arrastre no fuerza
     // relayout de la página, solo composición — clave para la fluidez.
     el.style.transform = `translate(${node.x}px, ${node.y}px)`;
-    applyLeafStyle(el, node.shape);
+    applyLeafStyle(el, node);
 
     el.appendChild(leafSvg(node.shape));
 
@@ -335,7 +340,7 @@
     const next = (seq.indexOf(node.shape) + 1) % seq.length;
     node.shape = seq[next];
     updateLeafShape(el, node);
-    applyLeafStyle(el, node.shape);
+    applyLeafStyle(el, node);
     touchNode(node);
   }
 
@@ -390,6 +395,24 @@
     const plusBtn = makeSizeBtn("+", "plus", CONFIG.resizeStep);
     const minusBtn = makeSizeBtn("\u2212", "minus", -CONFIG.resizeStep);
 
+    // Botón de color (derecha): cicla el borde normal → dorado → plateado → normal.
+    const colorBtn = document.createElement("button");
+    colorBtn.type = "button";
+    colorBtn.className = "size-btn color";
+    colorBtn.textContent = "\u25D1";
+    colorBtn.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const ids = (CONFIG.borderColors || []).map((b) => b.id);
+      const cycle = [undefined, ...ids];
+      const next = cycle[(cycle.indexOf(node.border) + 1) % cycle.length];
+      if (next === undefined) delete node.border;
+      else node.border = next;
+      applyLeafStyle(el, node);
+      touchNode(node);
+    });
+    el.appendChild(colorBtn);
+
     let cancelled = false;
 
     function finish() {
@@ -402,6 +425,7 @@
       editor.remove();
       plusBtn.remove();
       minusBtn.remove();
+      colorBtn.remove();
     }
 
     editor.addEventListener("blur", finish);
