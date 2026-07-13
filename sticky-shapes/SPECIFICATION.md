@@ -1,4 +1,4 @@
-# Especificación — Sticky Shapes (Árbol de Ideas)
+# Especificación — Sticky Shapes (Árbol de Oración)
 
 > Documento principal del proyecto. Responde a **¿qué debe hacer?**
 >

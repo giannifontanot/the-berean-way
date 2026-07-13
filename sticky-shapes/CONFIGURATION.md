@@ -1,4 +1,4 @@
-# Configuración — Sticky Shapes (Árbol de Ideas)
+# Configuración — Sticky Shapes (Árbol de Oración)
 
 > Responde a **¿qué debe ser configurable?** Define **las reglas** de
 > configuración, no los valores. Los **valores** viven en `config.js`.
@@ -53,7 +53,7 @@ y cumple el principio de **una sola fuente de verdad**.
 ## Ejemplo de `config.js` (referencia, no normativo)
 
 ```js
-// config.js — Panel de control de Sticky Shapes (Árbol de Ideas).
+// config.js — Panel de control de Sticky Shapes (Árbol de Oración).
 // Cambia estos valores para ajustar la app sin tocar la lógica.
 const CONFIG = {
   storageKey: "sticky-shapes:v2",
@@ -72,7 +72,7 @@ const CONFIG = {
   ],
   defaultStatus: "piso",
 
-  defaultText: "Nueva idea",
+  defaultText: "Nueva",
   defaultWidth: 96,
   defaultHeight: 96,
 
