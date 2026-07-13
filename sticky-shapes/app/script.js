@@ -138,24 +138,25 @@
   }
 
   function createNode() {
-    const pos =
-      CONFIG.defaultPosition === "center"
-        ? regionCenter(CONFIG.defaultStatus)
-        : CONFIG.defaultPosition;
+    // Centro de la hoja a 2/3 de la pantalla (config newLeafPos); de ahí se
+    // deriva la posición de la esquina (x/y) y el estado según la zona.
+    const w = CONFIG.defaultWidth;
+    const h = CONFIG.defaultHeight;
+    const cx = CONFIG.newLeafPos.x * window.innerWidth;
+    const cy = CONFIG.newLeafPos.y * window.innerHeight;
     const node = {
       id: makeId(),
       text: CONFIG.defaultText,
-      x: pos.x,
-      y: pos.y,
+      x: cx - w / 2,
+      y: cy - h / 2,
       shape: CONFIG.defaultShape,
-      status: CONFIG.defaultStatus,
+      status: statusAtPoint(cx, cy),
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
     state.nodes.push(node);
     saveState();
-    const el = renderLeaf(node);
-    startEditing(el); // una hoja nueva nace para escribirse: edición inmediata
+    renderLeaf(node); // aparece en modo display; se edita con doble clic
   }
 
   // ---------------------------------------------------------------
@@ -509,16 +510,19 @@
     applyTree(state.tree);
   }
 
-  // Toque en la base del tronco (zona vacía del lienzo) = cambiar árbol
-  canvas.addEventListener("click", (e) => {
-    if (e.target !== canvas) return; // solo el fondo, no hojas ni botones
-    const r = CONFIG.treeBaseRegion;
-    const nx = e.clientX / window.innerWidth;
-    const ny = e.clientY / window.innerHeight;
-    if (nx >= r.x && nx <= r.x + r.w && ny >= r.y && ny <= r.y + r.h) {
-      cycleTree();
-    }
-  });
+  // Toque en la base del tronco = cambiar árbol (easter egg). Desactivado por
+  // ahora vía CONFIG.treeEasterEgg; se reactivará en una versión futura.
+  if (CONFIG.treeEasterEgg) {
+    canvas.addEventListener("click", (e) => {
+      if (e.target !== canvas) return; // solo el fondo, no hojas ni botones
+      const r = CONFIG.treeBaseRegion;
+      const nx = e.clientX / window.innerWidth;
+      const ny = e.clientY / window.innerHeight;
+      if (nx >= r.x && nx <= r.x + r.w && ny >= r.y && ny <= r.y + r.h) {
+        cycleTree();
+      }
+    });
+  }
 
   // ---------------------------------------------------------------
   // Arranque.

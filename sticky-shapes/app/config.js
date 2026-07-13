@@ -17,7 +17,9 @@ const CONFIG = {
   ],
   defaultStatus: "piso",
 
-  // EASTER EGG: árboles alternos. Se cambia tocando la base del tronco.
+  // EASTER EGG: árboles alternos. Desactivado por ahora (se mostrarán en una
+  // versión futura). Con treeEasterEgg:false, tocar la base NO cambia el árbol.
+  treeEasterEgg: false,
   treeCycle: ["oak", "acacia", "bonsai", "eucalyptus"],
   defaultTree: "oak",
   // Zona táctil de la base del árbol (rectángulo normalizado 0..1)
@@ -34,7 +36,9 @@ const CONFIG = {
   defaultText: "Nueva",
   defaultWidth: 150,
   defaultHeight: 150,
-  defaultPosition: "center", // "center" (de la zona defaultStatus) o { x, y }
+  // Posición del CENTRO de una hoja nueva, como fracción de la pantalla (0..1).
+  // y:0.667 = dos tercios de arriba hacia abajo (bajo el centro, sobre el borde).
+  newLeafPos: { x: 0.5, y: 0.667 },
 
   // Paleta arcade Donkey Kong 80s: fondo oscuro + contornos de neón.
   theme: {
