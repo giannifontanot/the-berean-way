@@ -11,6 +11,10 @@
   const zoneLabels = document.getElementById("zone-labels");
   const treasure = document.getElementById("treasure");
 
+  // Apilamiento: cada toque trae la hoja al frente. El orden se restaura al
+  // recargar usando updatedAt (la última tocada queda hasta arriba).
+  let zTop = 10;
+
   // ---------------------------------------------------------------
   // Formas de hoja (SVG). Registro genérico: para añadir una variante,
   // agrégala aquí y en CONFIG.leafShapes — la lógica no cambia.
@@ -208,6 +212,7 @@
     // Posicionar con transform (acelerado por GPU): el arrastre no fuerza
     // relayout de la página, solo composición — clave para la fluidez.
     el.style.transform = `translate(${node.x}px, ${node.y}px)`;
+    el.style.zIndex = ++zTop;
     applyLeafStyle(el, node);
 
     el.appendChild(leafSvg(node.shape));
@@ -226,7 +231,10 @@
   }
 
   function renderAll() {
-    for (const node of state.nodes) renderLeaf(node);
+    const byLastTouch = [...state.nodes].sort(
+      (a, b) => (a.updatedAt || 0) - (b.updatedAt || 0)
+    );
+    for (const node of byLastTouch) renderLeaf(node);
   }
 
   // ---------------------------------------------------------------
@@ -242,6 +250,7 @@
     let clickTimer = null;            // temporizador de desambiguación
 
     el.addEventListener("pointerdown", (e) => {
+      el.style.zIndex = ++zTop; // la última tocada queda al frente
       if (el.querySelector(".leaf-editor")) return; // en edición: no arrastrar
       pointerDown = true;
       dragging = false;
