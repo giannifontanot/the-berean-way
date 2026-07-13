@@ -12,8 +12,8 @@ Crear una aplicación web de **una sola página** (SPA) que se pueda hospedar
 completamente en **GitHub Pages**.
 
 El usuario captura ideas como **hojas** con texto que cuelgan de un **árbol de
-dos ramas**. Arrastrar una hoja de una rama a otra (o al piso) **cambia su
-estado**, agrupando las ideas en tres categorías.
+tres ramas**. Arrastrar una hoja de una copa a otra (o al piso) **cambia su
+estado**, agrupando las ideas en cuatro categorías.
 
 - No utiliza servidor.
 - No utiliza base de datos.
@@ -24,8 +24,8 @@ estado**, agrupando las ideas en tres categorías.
 
 - Crear hojas con texto.
 - Arrastrarlas libremente por el lienzo con dedo o mouse.
-- **Cambiar su estado** soltándolas en una de las tres zonas (Rama izquierda,
-  Rama derecha, Piso).
+- **Cambiar su estado** soltándolas en una de las cuatro zonas (Centro, Rama
+  izquierda, Rama derecha, Piso).
 - Cambiar la **variante de hoja** con un clic simple.
 - Editar el texto con doble clic.
 - Persistir todo automáticamente.
@@ -48,9 +48,9 @@ Todo lo demás pertenece al [ROADMAP](ROADMAP.md).
 - **Hoja (Leaf):** el elemento fundamental. Contiene texto y representa una idea.
   Internamente sigue siendo un "nodo": el nombre técnico del objeto es `node`,
   pero visualmente es una hoja. No usar la palabra "Nota".
-- **Árbol (Tree):** el fondo del lienzo. Tiene **dos ramas** y un **piso**.
+- **Árbol (Tree):** el fondo del lienzo. Tiene **tres ramas** (con una copa cada una) y un **piso**.
 - **Zona / Estado (Status):** región del lienzo que define el estado de una hoja.
-  Hay tres: `rama-izquierda`, `rama-derecha`, `piso`. Los nombres e IDs vienen de
+  Hay cuatro: `rama-centro`, `rama-izquierda`, `rama-derecha`, `piso`. Los nombres e IDs vienen de
   `config.js`.
 - **Variante de hoja (Leaf shape):** el estilo visual de la hoja (p. ej. hoja de
   roble, de arce, simple). Cicla con un clic simple.
@@ -116,8 +116,8 @@ Cada hoja es un objeto con estas propiedades:
 
 La pantalla contiene únicamente:
 
-- El **árbol de dos ramas** dibujado como fondo (SVG), con sus tres zonas
-  (rama izquierda, rama derecha, piso).
+- El **árbol de tres copas** dibujado como fondo (SVG), con sus cuatro zonas
+  (centro, rama izquierda, rama derecha, piso).
 - Las **hojas** del usuario, posicionadas sobre el árbol.
 - Un **botón flotante `+`** para crear nuevas hojas.
 
@@ -125,8 +125,8 @@ No hay menús, barras ni paneles. Interfaz minimalista y con estética arcade.
 
 ### Zonas
 
-- Las tres zonas cubren el lienzo (por defecto: rama izquierda arriba-izquierda,
-  rama derecha arriba-derecha, piso en la franja inferior).
+- Las cuatro zonas cubren el lienzo (por defecto: centro en la banda superior,
+  rama izquierda y derecha en la banda media, piso en la franja inferior).
 - La geometría de cada zona proviene de `config.js` (`statuses[].region`,
   coordenadas normalizadas 0..1) para que se adapte a cualquier tamaño de
   pantalla.
@@ -169,7 +169,7 @@ Enter) se guarda; con Escape se cancela. Ver reglas de interacción.
 
 ### 8.5 Estados (en lugar de "archivar")
 
-En esta versión, el antiguo "archivar" se sustituye por el **modelo de tres
+En esta versión, el antiguo "archivar" se sustituye por el **modelo de cuatro
 estados**. El "Piso" puede usarse como bandeja de entrada o como "hecho/en
 reposo", según prefiera el usuario. Ninguna hoja se oculta ni se borra: cambiar
 de estado es siempre reversible arrastrando de vuelta.
@@ -221,8 +221,8 @@ Solo cuatro archivos, sin generar ninguno adicional:
 - [ ] Recordar posición, variante y estado tras cerrar y reabrir el navegador.
 - [ ] Editar el texto con doble clic.
 - [ ] Cambiar la variante de hoja con un clic simple.
-- [ ] El fondo es un **bonsái de dos ramas** con tres zonas (rama izq., rama
-      der., piso) y ramitas secundarias para acomodar muchas hojas.
+- [ ] El fondo es un **árbol de tres copas** con cuatro zonas (centro, rama
+      izq., rama der., piso) con espacio para muchas hojas.
 - [ ] Arrastrar una hoja al **cofre del tesoro** la elimina, y el borrado persiste.
 - [ ] Estética **arcade Donkey Kong 80s** con contornos de neón sobre fondo
       oscuro.

@@ -10,9 +10,10 @@ const CONFIG = {
 
   // Tres estados = dos ramas + piso. region: rectángulo normalizado (0..1).
   statuses: [
-    { id: "rama-izquierda", label: "Izquierda", region: { x: 0.0, y: 0.0, w: 0.5, h: 0.7 } },
-    { id: "rama-derecha",   label: "Derecha",   region: { x: 0.5, y: 0.0, w: 0.5, h: 0.7 } },
-    { id: "piso",           label: "Piso",           region: { x: 0.0, y: 0.7, w: 1.0, h: 0.3 } },
+    { id: "rama-centro",    label: "Centro",    region: { x: 0.0, y: 0.0,  w: 1.0, h: 0.35 } },
+    { id: "rama-izquierda", label: "Izquierda", region: { x: 0.0, y: 0.35, w: 0.5, h: 0.35 } },
+    { id: "rama-derecha",   label: "Derecha",   region: { x: 0.5, y: 0.35, w: 0.5, h: 0.35 } },
+    { id: "piso",           label: "Piso",      region: { x: 0.0,  y: 0.7,  w: 1.0,  h: 0.3 } },
   ],
   defaultStatus: "piso",
 
