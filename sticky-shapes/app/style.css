@@ -299,6 +299,25 @@ html, body {
   fill: rgba(35, 22, 2, 0.95);
 }
 
+/* Monedas y joyas asomándose por la rendija */
+#treasure .coin {
+  fill: #ffd24a;
+  stroke: #b8860b;
+  stroke-width: 0.35;
+}
+
+#treasure .gem-red {
+  fill: #ff3b5c;
+  stroke: #ff9fb2;
+  stroke-width: 0.3;
+}
+
+#treasure .gem-green {
+  fill: #2eff8a;
+  stroke: #baffd9;
+  stroke-width: 0.3;
+}
+
 /* Tapa entreabierta: gira sobre la bisagra izquierda */
 #treasure .lid-g {
   transform-box: fill-box;
@@ -307,8 +326,9 @@ html, body {
   transition: transform 220ms ease;
 }
 
-#treasure.open .lid-g {
-  transform: rotate(-27deg);
+#treasure.open .lid-g,
+#treasure.active .lid-g {
+  transform: rotate(-30deg);
 }
 
 /* Luz del tesoro escapando por la rendija */
@@ -320,9 +340,10 @@ html, body {
   transition: transform 220ms ease, opacity 220ms ease;
 }
 
-#treasure.open .chest-light {
+#treasure.open .chest-light,
+#treasure.active .chest-light {
   opacity: 1;
-  transform: scale(1.3);
+  transform: scale(1.6);
 }
 
 /* Chispas doradas: estallan al guardar una hoja */
@@ -333,12 +354,24 @@ html, body {
 }
 
 #treasure.burst .spark {
-  animation: sparkfly 500ms ease-out forwards;
+  animation: sparkfly 750ms ease-out forwards;
 }
 
 @keyframes sparkfly {
-  0%   { opacity: 1; transform: translate(0, 0); }
-  100% { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -10px)); }
+  0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+  60%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx, 0), var(--dy, -10px)) scale(2.6); }
+}
+
+/* Destello de luz al tragar: la rendija explota de brillo */
+#treasure.burst .chest-light {
+  animation: lightflash 700ms ease-out;
+}
+
+@keyframes lightflash {
+  0%   { opacity: 1; transform: scale(1); }
+  30%  { opacity: 1; transform: scale(3.4); }
+  100% { opacity: 0.9; transform: scale(1); }
 }
 
 /* Mientras se arrastra una hoja, el cofre se hace visible */
@@ -346,16 +379,18 @@ body.leaf-dragging #treasure {
   opacity: 0.85;
 }
 
-/* Y se enciende cuando la hoja está encima */
+/* Cuando la hoja está encima: la tapa se abre (arriba) y el brillo se
+   vuelve inmenso — sin agrandar el cofre */
 #treasure.active {
   opacity: 1;
-  transform: scale(1.2);
 }
 
-#treasure.active svg {
+#treasure.active svg,
+#treasure.burst svg {
   filter:
-    drop-shadow(0 0 4px var(--treasure, #ffd24a))
-    drop-shadow(0 0 calc(var(--glow, 6px) * 3) var(--treasure, #ffd24a));
+    drop-shadow(0 0 6px var(--treasure, #ffd24a))
+    drop-shadow(0 0 18px var(--treasure, #ffd24a))
+    drop-shadow(0 0 36px var(--treasure, #ffd24a));
 }
 
 /* ---------- Botón flotante + ---------- */
