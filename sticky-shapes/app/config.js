@@ -16,6 +16,7 @@ const CONFIG = {
     { id: "piso",           label: "Piso",      region: { x: 0.0,  y: 0.7,  w: 1.0,  h: 0.3 } },
   ],
   defaultStatus: "piso",
+  showZoneLabels: false, // etiquetas de zona (Centro/Izquierda/Derecha/Piso) ocultas
 
   defaultText: "Nueva",
   defaultWidth: 150,

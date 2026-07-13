@@ -154,6 +154,7 @@
   // ---------------------------------------------------------------
   function renderZoneLabels() {
     zoneLabels.innerHTML = "";
+    if (!CONFIG.showZoneLabels) return; // etiquetas desactivadas
     for (const s of CONFIG.statuses) {
       const el = document.createElement("span");
       el.className = "zone-label";
