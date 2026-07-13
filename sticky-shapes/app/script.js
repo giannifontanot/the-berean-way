@@ -175,14 +175,23 @@
     return svg;
   }
 
+  // Tono de verde propio de cada variante (desde CONFIG.leafStyles).
+  function applyLeafStyle(el, shape) {
+    const style = (CONFIG.leafStyles || {})[shape] || {};
+    el.style.setProperty("--leaf-fill", style.fill || CONFIG.theme.leafFill);
+    el.style.setProperty("--leaf-glow", style.glow || CONFIG.theme.leafGlow);
+  }
+
   function renderLeaf(node) {
     const el = document.createElement("div");
     el.className = "leaf";
     el.dataset.id = node.id;
     el.style.width = CONFIG.defaultWidth + "px";
     el.style.height = CONFIG.defaultHeight + "px";
-    el.style.left = node.x + "px";
-    el.style.top = node.y + "px";
+    // Posicionar con transform (acelerado por GPU): el arrastre no fuerza
+    // relayout de la página, solo composición — clave para la fluidez.
+    el.style.transform = `translate(${node.x}px, ${node.y}px)`;
+    applyLeafStyle(el, node.shape);
 
     el.appendChild(leafSvg(node.shape));
 
@@ -210,6 +219,7 @@
   function attachGestures(el) {
     let startX = 0, startY = 0;       // posición del puntero al iniciar
     let originX = 0, originY = 0;     // posición de la hoja al iniciar
+    let lastX = 0, lastY = 0;         // última posición durante el arrastre
     let dragging = false;
     let pointerDown = false;
     let clickTimer = null;            // temporizador de desambiguación
@@ -220,8 +230,9 @@
       dragging = false;
       startX = e.clientX;
       startY = e.clientY;
-      originX = parseFloat(el.style.left);
-      originY = parseFloat(el.style.top);
+      const node = findNode(el.dataset.id);
+      originX = node ? node.x : 0;
+      originY = node ? node.y : 0;
       el.setPointerCapture(e.pointerId);
     });
 
@@ -236,8 +247,9 @@
         document.body.classList.add("leaf-dragging"); // muestra el cofre
       }
       if (dragging) {
-        el.style.left = originX + dx + "px";
-        el.style.top = originY + dy + "px";
+        el.style.transform = `translate(${originX + dx}px, ${originY + dy}px)`;
+        lastX = originX + dx;
+        lastY = originY + dy;
         highlightZone(e.clientX, e.clientY);
         treasure.classList.toggle("active", overTreasure(e.clientX, e.clientY));
       }
@@ -248,7 +260,7 @@
       pointerDown = false;
 
       if (dragging) {
-        finishDrag(el, e.clientX, e.clientY);
+        finishDrag(el, e.clientX, e.clientY, lastX, lastY);
         return;
       }
 
@@ -283,7 +295,7 @@
     return px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
   }
 
-  function finishDrag(el, px, py) {
+  function finishDrag(el, px, py, fx, fy) {
     el.classList.remove("dragging");
     document.body.classList.remove("leaf-dragging");
     treasure.classList.remove("active");
@@ -297,8 +309,8 @@
       return;
     }
 
-    node.x = parseFloat(el.style.left);
-    node.y = parseFloat(el.style.top);
+    node.x = fx;
+    node.y = fy;
     node.status = statusAtPoint(px, py); // mover = reclasificar
     touchNode(node);
   }
@@ -316,6 +328,7 @@
     const next = (seq.indexOf(node.shape) + 1) % seq.length;
     node.shape = seq[next];
     updateLeafShape(el, node);
+    applyLeafStyle(el, node.shape);
     touchNode(node);
   }
 

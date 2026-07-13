@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Sticky Shapes — Árbol de Ideas</title>
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -49,18 +49,19 @@
       </g>
     </svg>
 
-    <!-- Piso: línea de pasto neón que cruza toda la pantalla -->
-    <div id="floor" aria-hidden="true"></div>
-
-    <!-- Cofre del tesoro: arrastra una hoja aquí para borrarla -->
+    <!-- Cofre del tesoro neón: arrastra una hoja aquí para borrarla -->
     <div id="treasure" aria-label="Cofre: suelta una hoja aquí para borrarla">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <!-- Tapa abovedada -->
-        <path class="chest-lid" d="M 4 11 A 8 6 0 0 1 20 11 Z" />
+        <path class="chest-lid" d="M 3 11 A 9 7 0 0 1 21 11 Z" />
         <!-- Cuerpo del cofre -->
-        <path class="chest-body" d="M 4 11 H 20 V 19 A 1 1 0 0 1 19 20 H 5 A 1 1 0 0 1 4 19 Z" />
-        <!-- Cerradura -->
-        <rect class="chest-lock" x="10.6" y="10" width="2.8" height="4" rx="0.6" />
+        <path class="chest-body" d="M 3 11 H 21 V 19.4 A 1.6 1.6 0 0 1 19.4 21 H 4.6 A 1.6 1.6 0 0 1 3 19.4 Z" />
+        <!-- Bandas metálicas -->
+        <path class="chest-band" d="M 7.5 5.6 V 21 M 16.5 5.6 V 21 M 3 15.5 H 21" />
+        <!-- Cerradura con ojo de llave -->
+        <rect class="chest-lock" x="10.2" y="9.6" width="3.6" height="5" rx="0.8" />
+        <circle class="chest-keyhole" cx="12" cy="11.4" r="0.75" />
+        <path class="chest-keyhole" d="M 11.6 11.8 L 12.4 11.8 L 12.6 13.4 L 11.4 13.4 Z" />
       </svg>
     </div>
 
@@ -74,7 +75,7 @@
   <!-- Botón flotante para crear hojas nuevas -->
   <button id="add-btn" type="button" aria-label="Crear nueva hoja">+</button>
 
-  <script src="config.js?v=5"></script>
-  <script src="script.js?v=5"></script>
+  <script src="config.js?v=6"></script>
+  <script src="script.js?v=6"></script>
 </body>
 </html>
