@@ -1,4 +1,4 @@
-// script.js — Sticky Shapes (Árbol de Ideas)
+// script.js — Sticky Shapes (Árbol de Oración)
 // Toda la lógica de la aplicación. No contiene valores fijos:
 // todo lo configurable proviene de window.CONFIG (config.js).
 

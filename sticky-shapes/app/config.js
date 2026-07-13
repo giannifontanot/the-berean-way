@@ -1,4 +1,4 @@
-// config.js — Panel de control de Sticky Shapes (Árbol de Ideas).
+// config.js — Panel de control de Sticky Shapes (Árbol de Oración).
 // Cambia estos valores para ajustar la app sin tocar la lógica.
 const CONFIG = {
   storageKey: "sticky-shapes:v2",
@@ -17,7 +17,7 @@ const CONFIG = {
   ],
   defaultStatus: "piso",
 
-  defaultText: "Nueva idea",
+  defaultText: "Nueva",
   defaultWidth: 150,
   defaultHeight: 150,
   defaultPosition: "center", // "center" (de la zona defaultStatus) o { x, y }

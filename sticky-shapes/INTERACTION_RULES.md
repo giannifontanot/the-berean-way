@@ -1,4 +1,4 @@
-# Reglas de interacción — Sticky Shapes (Árbol de Ideas)
+# Reglas de interacción — Sticky Shapes (Árbol de Oración)
 
 > Responde a **¿qué ocurre cuando el usuario toca la pantalla?** Este documento
 > es la autoridad sobre el **comportamiento de los gestos**. Si algo aquí
