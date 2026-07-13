@@ -41,7 +41,34 @@ html, body {
   pointer-events: none;
 }
 
-/* Copas de nube: solo brilla el contorno verde neón; el interior es oscuro */
+/* Variantes de árbol (easter egg): solo se muestra la activa */
+.tree-variant {
+  display: none;
+}
+
+.tree-variant.active {
+  display: initial;
+}
+
+/* Troncos dibujados a trazo (acacia, bonsái, eucalipto) */
+.tree-bark .trunk-line {
+  fill: none;
+  stroke: var(--tree, #a06a35);
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Fleco colgante del eucalipto */
+.tree-droop path {
+  fill: none;
+  stroke: var(--canopy, #2fbf2f);
+  stroke-width: 1px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.8;
+}
+
+/* Copas de nube: solo brilla el contorno neón; el interior es oscuro */
 .tree-canopy path {
   fill: var(--canopy-fill, #0e2c12);
   stroke: var(--canopy, #2fbf2f);
@@ -275,6 +302,7 @@ html, body {
   filter:
     drop-shadow(0 0 3px var(--treasure, #ffd24a))
     drop-shadow(0 0 calc(var(--glow, 6px) * 1.5) var(--treasure, #ffd24a));
+  transition: filter 600ms ease-out; /* el resplandor se apaga suave */
 }
 
 #treasure .chest-lid,
