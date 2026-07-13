@@ -33,7 +33,7 @@ const CONFIG = {
   },
   showZoneLabels: false, // etiquetas de zona (Centro/Izquierda/Derecha/Piso) ocultas
 
-  defaultText: "...",
+  defaultText: "",
   defaultWidth: 150,
   defaultHeight: 150,
   // Posición del CENTRO de una hoja nueva, como fracción de la pantalla (0..1).
