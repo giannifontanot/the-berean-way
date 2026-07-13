@@ -192,8 +192,8 @@
     const el = document.createElement("div");
     el.className = "leaf";
     el.dataset.id = node.id;
-    el.style.width = CONFIG.defaultWidth + "px";
-    el.style.height = CONFIG.defaultHeight + "px";
+    el.style.width = (node.w || CONFIG.defaultWidth) + "px";
+    el.style.height = (node.h || CONFIG.defaultHeight) + "px";
     // Posicionar con transform (acelerado por GPU): el arrastre no fuerza
     // relayout de la página, solo composición — clave para la fluidez.
     el.style.transform = `translate(${node.x}px, ${node.y}px)`;
@@ -364,6 +364,31 @@
     editor.focus();
     editor.select();
 
+    // Botones de tamaño: + arriba de la hoja, − abajo. Solo en modo edición.
+    function makeSizeBtn(label, cls, delta) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "size-btn " + cls;
+      btn.textContent = label;
+      // pointerdown con preventDefault: cambia el tamaño SIN robarle el foco
+      // al editor (así la edición sigue abierta mientras se ajusta).
+      btn.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const size = (node.w || CONFIG.defaultWidth) + delta;
+        const clamped = Math.max(CONFIG.minLeafSize, Math.min(CONFIG.maxLeafSize, size));
+        node.w = clamped;
+        node.h = clamped;
+        el.style.width = clamped + "px";
+        el.style.height = clamped + "px";
+        touchNode(node);
+      });
+      el.appendChild(btn);
+      return btn;
+    }
+    const plusBtn = makeSizeBtn("+", "plus", CONFIG.resizeStep);
+    const minusBtn = makeSizeBtn("\u2212", "minus", -CONFIG.resizeStep);
+
     let cancelled = false;
 
     function finish() {
@@ -374,6 +399,8 @@
       textEl.textContent = node.text;
       textEl.style.display = "";
       editor.remove();
+      plusBtn.remove();
+      minusBtn.remove();
     }
 
     editor.addEventListener("blur", finish);

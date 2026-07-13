@@ -50,6 +50,11 @@ const CONFIG = {
     "leaf-maple-red": { fill: "#5c1010", glow: "#ff4545" }, // maple: rojo neón
   },
 
+  // Cambio de tamaño (botones +/− en modo edición)
+  resizeStep: 25,    // px que crece/encoge por toque
+  minLeafSize: 90,   // px — tamaño mínimo de hoja
+  maxLeafSize: 320,  // px — tamaño máximo de hoja
+
   doubleClickDelay: 250, // ms para distinguir clic simple de doble clic
   dragThreshold: 5,      // px de movimiento para considerar arrastre
   minTouchTarget: 44,    // px — área táctil mínima
