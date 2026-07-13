@@ -205,6 +205,33 @@ html, body {
   box-shadow: 0 0 8px var(--text, #f7ff00);
 }
 
+/* Botones de tamaño (+ arriba, − abajo) — visibles solo en modo edición */
+.size-btn {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--accent, #ff7a00);
+  background: rgba(10, 0, 24, 0.85);
+  color: var(--accent, #ff7a00);
+  font-size: 26px;
+  font-family: var(--font, monospace);
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1100;
+  box-shadow: 0 0 var(--glow, 4px) var(--accent, #ff7a00);
+}
+
+.size-btn.plus {
+  top: -52px;
+}
+
+.size-btn.minus {
+  bottom: -52px;
+}
+
 /* ---------- Cofre del tesoro (arrastra una hoja aquí para borrarla) ---------- */
 
 #treasure {

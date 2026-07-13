@@ -29,6 +29,11 @@
       body: "M50 4 C82 24 88 60 50 96 C12 60 18 24 50 4 Z",
       vein: "M50 10 L50 90 M50 34 L34 26 M50 34 L66 26 M50 56 L32 46 M50 56 L68 46 M50 76 L38 68 M50 76 L62 68",
     },
+    // Hoja de maple clásica (5 lóbulos con muescas y tallo). Roja vía leafStyles.
+    "leaf-maple-red": {
+      body: "M50 4 L56 18 L68 10 L66 25 L82 20 L75 35 L92 39 L79 49 L88 61 L71 60 L74 75 L59 67 L53 80 L52 80 L53 93 L47 93 L48 80 L47 80 L41 67 L26 75 L29 60 L12 61 L21 49 L8 39 L25 35 L18 20 L34 25 L32 10 L44 18 Z",
+      vein: "M50 12 L50 80 M50 42 L30 30 M50 42 L70 30 M50 58 L33 52 M50 58 L67 52",
+    },
   };
 
   // ---------------------------------------------------------------
@@ -187,8 +192,8 @@
     const el = document.createElement("div");
     el.className = "leaf";
     el.dataset.id = node.id;
-    el.style.width = CONFIG.defaultWidth + "px";
-    el.style.height = CONFIG.defaultHeight + "px";
+    el.style.width = (node.w || CONFIG.defaultWidth) + "px";
+    el.style.height = (node.h || CONFIG.defaultHeight) + "px";
     // Posicionar con transform (acelerado por GPU): el arrastre no fuerza
     // relayout de la página, solo composición — clave para la fluidez.
     el.style.transform = `translate(${node.x}px, ${node.y}px)`;
@@ -359,6 +364,31 @@
     editor.focus();
     editor.select();
 
+    // Botones de tamaño: + arriba de la hoja, − abajo. Solo en modo edición.
+    function makeSizeBtn(label, cls, delta) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "size-btn " + cls;
+      btn.textContent = label;
+      // pointerdown con preventDefault: cambia el tamaño SIN robarle el foco
+      // al editor (así la edición sigue abierta mientras se ajusta).
+      btn.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const size = (node.w || CONFIG.defaultWidth) + delta;
+        const clamped = Math.max(CONFIG.minLeafSize, Math.min(CONFIG.maxLeafSize, size));
+        node.w = clamped;
+        node.h = clamped;
+        el.style.width = clamped + "px";
+        el.style.height = clamped + "px";
+        touchNode(node);
+      });
+      el.appendChild(btn);
+      return btn;
+    }
+    const plusBtn = makeSizeBtn("+", "plus", CONFIG.resizeStep);
+    const minusBtn = makeSizeBtn("\u2212", "minus", -CONFIG.resizeStep);
+
     let cancelled = false;
 
     function finish() {
@@ -369,6 +399,8 @@
       textEl.textContent = node.text;
       textEl.style.display = "";
       editor.remove();
+      plusBtn.remove();
+      minusBtn.remove();
     }
 
     editor.addEventListener("blur", finish);

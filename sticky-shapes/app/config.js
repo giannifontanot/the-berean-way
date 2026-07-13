@@ -5,7 +5,7 @@ const CONFIG = {
   schemaVersion: 2,
 
   // Variantes de hoja (ciclan con un clic simple).
-  leafShapes: ["leaf-oak", "leaf-maple", "leaf-simple"],
+  leafShapes: ["leaf-oak", "leaf-maple", "leaf-simple", "leaf-maple-red"],
   defaultShape: "leaf-oak",
 
   // Tres estados = dos ramas + piso. region: rectángulo normalizado (0..1).
@@ -47,7 +47,13 @@ const CONFIG = {
     "leaf-oak":    { fill: "#1c5c28", glow: "#3dff57" }, // roble: verde bosque
     "leaf-maple":  { fill: "#2e6b14", glow: "#b4ff3e" }, // arce: verde-lima
     "leaf-simple": { fill: "#0f5c40", glow: "#2effc0" }, // simple: verde-menta
+    "leaf-maple-red": { fill: "#5c1010", glow: "#ff4545" }, // maple: rojo neón
   },
+
+  // Cambio de tamaño (botones +/− en modo edición)
+  resizeStep: 25,    // px que crece/encoge por toque
+  minLeafSize: 90,   // px — tamaño mínimo de hoja
+  maxLeafSize: 320,  // px — tamaño máximo de hoja
 
   doubleClickDelay: 250, // ms para distinguir clic simple de doble clic
   dragThreshold: 5,      // px de movimiento para considerar arrastre
