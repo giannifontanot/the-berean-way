@@ -232,6 +232,17 @@ html, body {
   bottom: -52px;
 }
 
+/* Botón de color: a la derecha de la hoja, dorado */
+.size-btn.color {
+  left: auto;
+  right: -52px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-color: var(--treasure, #ffd24a);
+  color: var(--treasure, #ffd24a);
+  box-shadow: 0 0 var(--glow, 4px) var(--treasure, #ffd24a);
+}
+
 /* ---------- Cofre del tesoro (arrastra una hoja aquí para borrarla) ---------- */
 
 #treasure {
