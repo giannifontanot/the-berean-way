@@ -154,7 +154,8 @@
     };
     state.nodes.push(node);
     saveState();
-    renderLeaf(node);
+    const el = renderLeaf(node);
+    startEditing(el); // una hoja nueva nace para escribirse: edición inmediata
   }
 
   // ---------------------------------------------------------------
@@ -224,6 +225,7 @@
 
     attachGestures(el);
     canvas.appendChild(el);
+    return el;
   }
 
   function updateLeafShape(el, node) {
@@ -367,7 +369,9 @@
       el.remove();
       treasure.classList.add("burst");   // chispas doradas
       treasure.classList.remove("open"); // la tapa se cierra
-      setTimeout(() => treasure.classList.remove("burst"), 550);
+      // Quitar "burst" solo cuando chispas y destello ya terminaron en
+      // opacidad 0: el resplandor regresa con transición (final suave).
+      setTimeout(() => treasure.classList.remove("burst"), 900);
     }, ms);
   }
 
@@ -481,10 +485,47 @@
   }
 
   // ---------------------------------------------------------------
+  // EASTER EGG: cuatro árboles (roble, acacia, bonsái, eucalipto).
+  // Tocar la base del tronco cambia al siguiente; se guarda en el estado.
+  // ---------------------------------------------------------------
+  const treeSvg = document.getElementById("tree");
+
+  function applyTree(id) {
+    const theme = CONFIG.treeThemes[id] || CONFIG.treeThemes[CONFIG.defaultTree];
+    treeSvg.querySelectorAll(".tree-variant").forEach((g) => {
+      g.classList.toggle("active", g.dataset.variant === id);
+    });
+    // Colores del árbol activo (pisan a los del tema global solo aquí)
+    treeSvg.style.setProperty("--canopy", theme.canopy);
+    treeSvg.style.setProperty("--canopy-fill", theme.canopyFill);
+    treeSvg.style.setProperty("--tree", theme.trunk);
+  }
+
+  function cycleTree() {
+    const cycle = CONFIG.treeCycle;
+    const current = state.tree || CONFIG.defaultTree;
+    state.tree = cycle[(cycle.indexOf(current) + 1) % cycle.length];
+    saveState();
+    applyTree(state.tree);
+  }
+
+  // Toque en la base del tronco (zona vacía del lienzo) = cambiar árbol
+  canvas.addEventListener("click", (e) => {
+    if (e.target !== canvas) return; // solo el fondo, no hojas ni botones
+    const r = CONFIG.treeBaseRegion;
+    const nx = e.clientX / window.innerWidth;
+    const ny = e.clientY / window.innerHeight;
+    if (nx >= r.x && nx <= r.x + r.w && ny >= r.y && ny <= r.y + r.h) {
+      cycleTree();
+    }
+  });
+
+  // ---------------------------------------------------------------
   // Arranque.
   // ---------------------------------------------------------------
   applyTheme();
   loadState();
+  applyTree(state.tree || CONFIG.defaultTree);
   renderZoneLabels();
   renderAll();
   addBtn.addEventListener("click", createNode);

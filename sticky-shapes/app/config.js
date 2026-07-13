@@ -16,6 +16,19 @@ const CONFIG = {
     { id: "piso",           label: "Piso",      region: { x: 0.0,  y: 0.7,  w: 1.0,  h: 0.3 } },
   ],
   defaultStatus: "piso",
+
+  // EASTER EGG: árboles alternos. Se cambia tocando la base del tronco.
+  treeCycle: ["oak", "acacia", "bonsai", "eucalyptus"],
+  defaultTree: "oak",
+  // Zona táctil de la base del árbol (rectángulo normalizado 0..1)
+  treeBaseRegion: { x: 0.32, y: 0.86, w: 0.36, h: 0.13 },
+  // Colores de cada árbol (contorno y relleno de copa, y tronco)
+  treeThemes: {
+    oak:        { canopy: "#2fbf2f", canopyFill: "rgba(30, 90, 40, 0.1)",   trunk: "#a06a35" },
+    acacia:     { canopy: "#ff9d2e", canopyFill: "rgba(255, 110, 20, 0.1)", trunk: "#c77b3a" },
+    bonsai:     { canopy: "#ff4fa0", canopyFill: "rgba(255, 47, 130, 0.1)", trunk: "#c9c2b8" },
+    eucalyptus: { canopy: "#8fe8cf", canopyFill: "rgba(120, 230, 200, 0.08)", trunk: "#cfd8d3" },
+  },
   showZoneLabels: false, // etiquetas de zona (Centro/Izquierda/Derecha/Piso) ocultas
 
   defaultText: "Nueva",
