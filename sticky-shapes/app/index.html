@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Sticky Shapes — Árbol de Oración</title>
-  <link rel="stylesheet" href="style.css?v=19">
+  <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
 
@@ -56,6 +56,14 @@
         <path class="chest-band" d="M 7.5 12 V 22 M 16.5 12 V 22 M 3 16.5 H 21" />
         <!-- Luz del tesoro escapando por la rendija -->
         <ellipse class="chest-light" cx="13" cy="11.8" rx="8.2" ry="1.7" />
+        <!-- Monedas y joyas asomándose -->
+        <g class="loot">
+          <circle class="coin" cx="7.6"  cy="11.2" r="1.35" />
+          <circle class="coin" cx="10.4" cy="10.7" r="1.45" />
+          <circle class="coin" cx="16.4" cy="11.1" r="1.35" />
+          <path class="gem gem-red"   d="M 13 9.2 L 14.7 10.5 L 13.9 12.2 L 12.1 12.2 L 11.3 10.5 Z" />
+          <path class="gem gem-green" d="M 18.7 9.8 L 19.9 10.9 L 19.3 12.2 L 18 12.2 L 17.5 10.9 Z" />
+        </g>
         <!-- Tapa abovedada, entreabierta (gira sobre la bisagra izquierda) -->
         <g class="lid-g">
           <path class="chest-lid" d="M 3 12 A 9 7 0 0 1 21 12 Z" />
@@ -65,14 +73,18 @@
         <rect class="chest-lock" x="10.2" y="13" width="3.6" height="5" rx="0.8" />
         <circle class="chest-keyhole" cx="12" cy="14.8" r="0.75" />
         <path class="chest-keyhole" d="M 11.6 15.2 L 12.4 15.2 L 12.6 16.8 L 11.4 16.8 Z" />
-        <!-- Chispas doradas (estallan al guardar una hoja) -->
+        <!-- Chispas doradas (estallido inmenso al guardar una hoja) -->
         <g class="sparks">
-          <circle class="spark" cx="12" cy="10" r="0.9" style="--dx:-7px;--dy:-9px" />
-          <circle class="spark" cx="12" cy="10" r="0.7" style="--dx:0px;--dy:-11px" />
-          <circle class="spark" cx="12" cy="10" r="0.9" style="--dx:7px;--dy:-9px" />
-          <circle class="spark" cx="12" cy="10" r="0.6" style="--dx:-10px;--dy:-4px" />
-          <circle class="spark" cx="12" cy="10" r="0.6" style="--dx:10px;--dy:-4px" />
-          <circle class="spark" cx="12" cy="10" r="0.7" style="--dx:3px;--dy:-13px" />
+          <circle class="spark" cx="12" cy="10" r="1.4" style="--dx:-14px;--dy:-18px" />
+          <circle class="spark" cx="12" cy="10" r="1.1" style="--dx:0px;--dy:-24px" />
+          <circle class="spark" cx="12" cy="10" r="1.4" style="--dx:14px;--dy:-18px" />
+          <circle class="spark" cx="12" cy="10" r="1.0" style="--dx:-22px;--dy:-8px" />
+          <circle class="spark" cx="12" cy="10" r="1.0" style="--dx:22px;--dy:-8px" />
+          <circle class="spark" cx="12" cy="10" r="1.2" style="--dx:6px;--dy:-26px" />
+          <circle class="spark" cx="12" cy="10" r="1.2" style="--dx:-6px;--dy:-26px" />
+          <circle class="spark" cx="12" cy="10" r="0.9" style="--dx:-18px;--dy:-14px" />
+          <circle class="spark" cx="12" cy="10" r="0.9" style="--dx:18px;--dy:-14px" />
+          <circle class="spark" cx="12" cy="10" r="0.8" style="--dx:0px;--dy:-15px" />
         </g>
       </svg>
     </div>
@@ -87,7 +99,7 @@
   <!-- Botón flotante para crear hojas nuevas -->
   <button id="add-btn" type="button" aria-label="Crear nueva hoja">+</button>
 
-  <script src="config.js?v=19"></script>
-  <script src="script.js?v=19"></script>
+  <script src="config.js?v=20"></script>
+  <script src="script.js?v=20"></script>
 </body>
 </html>
