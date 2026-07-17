@@ -496,17 +496,20 @@ body.leaf-dragging #treasure {
 .dot-visual {
   width: 10px;
   height: 10px;
+  box-sizing: border-box;
   border-radius: 50%;
   background: var(--accent, #ff7a00);
   opacity: 0.35;
   transition: opacity var(--anim-ms, 120ms) ease, transform var(--anim-ms, 120ms) ease;
 }
 
-/* El escritorio activo: más grande, más brillante, más opaco */
+/* El escritorio activo: discreto — mismo color y tamaño, pero solo el contorno
+   (anillo hueco) en vez de relleno. */
 .ws-dot.active .dot-visual {
+  background: transparent;
+  border: 1.5px solid var(--accent, #ff7a00);
   opacity: 1;
-  transform: scale(1.6);
-  box-shadow: 0 0 var(--glow, 6px) var(--accent, #ff7a00);
+  box-shadow: none;
 }
 
 /* Los puntos solo despiertan (crecen/brillan) cuando la hoja se acerca */
