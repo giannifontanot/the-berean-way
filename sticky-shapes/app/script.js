@@ -341,6 +341,8 @@
         lastY = originY + dy;
         highlightZone(e.clientX, e.clientY);
         treasure.classList.toggle("active", overTreasure(e.clientX, e.clientY));
+        // Los puntos solo "despiertan" cuando la hoja se acerca a ellos.
+        document.body.classList.toggle("dots-armed", dotsAreNear(el, e.clientY));
         highlightDotUnderPointer(el, e.clientX, e.clientY);
       }
     });
@@ -419,7 +421,16 @@
   }
 
   function clearDotHighlight() {
+    document.body.classList.remove("dots-armed");
     wsDots.querySelectorAll(".ws-dot").forEach((d) => d.classList.remove("drop-target"));
+  }
+
+  // ¿La hoja arrastrada (su punta) o el dedo están cerca de la fila de puntos?
+  function dotsAreNear(el, py) {
+    const lr = el.getBoundingClientRect();
+    const tipY = lr.top + 10;                  // la punta superior de la hoja
+    const nearBelow = wsDots.getBoundingClientRect().bottom + 140; // zona de cercanía
+    return tipY <= nearBelow || py <= nearBelow;
   }
 
   function finishDrag(el, px, py, fx, fy) {
