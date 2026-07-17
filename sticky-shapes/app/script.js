@@ -141,7 +141,8 @@
         activeWorkspaceId: null,
       };
     }
-    if (!activeWorkspace()) {
+    // activeWorkspaceId debe ser SIEMPRE un id real (no null); si no, el primero.
+    if (!state.workspaces.find((w) => w.id === state.activeWorkspaceId)) {
       state.activeWorkspaceId = state.workspaces[0].id;
     }
   }
@@ -340,6 +341,7 @@
         lastY = originY + dy;
         highlightZone(e.clientX, e.clientY);
         treasure.classList.toggle("active", overTreasure(e.clientX, e.clientY));
+        highlightDotUnderPointer(e.clientX, e.clientY);
       }
     });
 
@@ -373,6 +375,7 @@
         el.classList.remove("dragging");
         document.body.classList.remove("leaf-dragging");
         treasure.classList.remove("active");
+        clearDotHighlight();
       }
     });
   }
@@ -383,11 +386,37 @@
     return px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
   }
 
+  // Punto (dot) de escritorio bajo el puntero. El botón es un área táctil
+  // amplia, así que basta con detectar si el punto cae dentro de su rectángulo.
+  function dotAtPoint(px, py) {
+    for (const dot of wsDots.querySelectorAll(".ws-dot")) {
+      const r = dot.getBoundingClientRect();
+      if (px >= r.left && px <= r.right && py >= r.top && py <= r.bottom) return dot;
+    }
+    return null;
+  }
+
+  // Durante el arrastre: resalta el punto destino (si no es el actual).
+  function highlightDotUnderPointer(px, py) {
+    const dot = dotAtPoint(px, py);
+    wsDots.querySelectorAll(".ws-dot").forEach((d) => {
+      d.classList.toggle(
+        "drop-target",
+        d === dot && d.dataset.wsId !== state.activeWorkspaceId
+      );
+    });
+  }
+
+  function clearDotHighlight() {
+    wsDots.querySelectorAll(".ws-dot").forEach((d) => d.classList.remove("drop-target"));
+  }
+
   function finishDrag(el, px, py, fx, fy) {
     el.classList.remove("dragging");
     document.body.classList.remove("leaf-dragging");
     treasure.classList.remove("active");
     highlightZone(-1, -1); // apaga el resaltado
+    clearDotHighlight();
     const node = findNode(el.dataset.id);
     if (!node) return;
 
@@ -397,10 +426,47 @@
       return;
     }
 
+    // Soltar sobre el punto de OTRO escritorio = mover la hoja allá. Conserva
+    // su posición (node.x/y aún tienen la posición previa al arrastre).
+    const dot = dotAtPoint(px, py);
+    if (dot && dot.dataset.wsId !== state.activeWorkspaceId) {
+      moveNodeToWorkspace(node, el, dot);
+      return;
+    }
+
     node.x = fx;
     node.y = fy;
     node.status = statusAtPoint(px, py); // mover = reclasificar
     touchNode(node);
+  }
+
+  // Mueve una hoja al escritorio destino, conservando su posición y props.
+  // La hoja "vuela" hacia el punto y se encoge; el punto destino da un pulso.
+  function moveNodeToWorkspace(node, el, dot) {
+    const from = activeWorkspace();
+    const target = state.workspaces.find((w) => w.id === dot.dataset.wsId);
+    if (!target) { touchNode(node); return; }
+
+    from.nodes = from.nodes.filter((n) => n.id !== node.id);
+    node.updatedAt = Date.now();
+    target.nodes.push(node); // x/y intactos = misma posición en el destino
+    saveState();
+
+    // Pulso de confirmación en el punto destino.
+    dot.classList.add("received");
+    setTimeout(() => dot.classList.remove("received"), 450);
+
+    const ms = CONFIG.animations.enabled ? CONFIG.animations.swallowMs : 0;
+    if (!ms) { el.remove(); return; }
+
+    const r = dot.getBoundingClientRect();
+    const w = node.w || CONFIG.defaultWidth;
+    const h = node.h || CONFIG.defaultHeight;
+    el.classList.add("swallowed");
+    void el.offsetWidth; // reflow para arrancar la transición
+    el.style.transform =
+      `translate(${r.left + r.width / 2 - w / 2}px, ${r.top + r.height / 2 - h / 2}px) scale(0.05)`;
+    setTimeout(() => el.remove(), ms);
   }
 
   function deleteNode(node, el) {
@@ -590,17 +656,30 @@
   // Diseñada para extenderse: renombrar, eliminar, reordenar, import/export.
   // ---------------------------------------------------------------
 
-  // Indicador de puntos: uno por escritorio, el activo resaltado.
+  // Indicador de puntos: uno por escritorio, el activo resaltado. El botón es
+  // un área táctil amplia; el círculo visible va en un span interno pequeño.
   function renderDots() {
     wsDots.innerHTML = "";
     for (const ws of state.workspaces) {
       const dot = document.createElement("button");
       dot.type = "button";
       dot.className = "ws-dot" + (ws.id === state.activeWorkspaceId ? " active" : "");
+      dot.dataset.wsId = ws.id; // usado como blanco al arrastrar hojas
       dot.setAttribute("aria-label", "Ir al escritorio");
+      const visual = document.createElement("span");
+      visual.className = "dot-visual";
+      dot.appendChild(visual);
       dot.addEventListener("click", () => switchWorkspace(ws.id));
       wsDots.appendChild(dot);
     }
+    updateNewWsBtn();
+  }
+
+  // El botón "+" de escritorio nuevo solo aparece en el último escritorio.
+  function updateNewWsBtn() {
+    const last = state.workspaces[state.workspaces.length - 1];
+    const onLast = last && last.id === state.activeWorkspaceId;
+    newWsBtn.style.display = onLast ? "" : "none";
   }
 
   // Dibuja el escritorio activo (hojas + árbol) sin animación.
