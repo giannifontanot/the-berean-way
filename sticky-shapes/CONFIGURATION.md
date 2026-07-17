@@ -45,6 +45,7 @@ y cumple el principio de **una sola fuente de verdad**.
 | `defaultHeight` | number | Alto inicial de la hoja en px. |
 | `theme` | object | Paleta neón y estilo (ver abajo). |
 | `leafStyles` | object | Tono de verde propio de cada variante: `{ "<shape>": { fill, glow } }`. |
+| `animations.workspaceFadeMs` | number | ms de cada mitad del cross-fade al cambiar de escritorio (~2× = transición total). |
 | `doubleClickDelay` | number | ms para distinguir clic simple de doble clic. |
 | `dragThreshold` | number | px de movimiento para considerar arrastre. |
 | `minTouchTarget` | number | Tamaño mínimo de área táctil (px). Por defecto `44`. |

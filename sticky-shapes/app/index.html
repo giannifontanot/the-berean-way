@@ -154,14 +154,22 @@
     <!-- Etiquetas de las zonas (texto arcade discreto) -->
     <div id="zone-labels" aria-hidden="true"></div>
 
-    <!-- Las hojas se insertan aquí desde script.js -->
+    <!-- Capa de hojas del escritorio activo. Solo esta capa hace fade al
+         cambiar de escritorio; el árbol y el cofre quedan fijos. -->
+    <div id="leaf-layer"></div>
 
   </main>
+
+  <!-- Indicador de escritorios (puntos, arriba centro) -->
+  <nav id="ws-dots" aria-label="Escritorios"></nav>
+
+  <!-- Botón para crear un escritorio nuevo (gris, arriba derecha) -->
+  <button id="new-ws-btn" type="button" aria-label="Nuevo escritorio">+</button>
 
   <!-- Botón flotante para crear hojas nuevas -->
   <button id="add-btn" type="button" aria-label="Crear nueva hoja">+</button>
 
-  <script src="config.js?v=25"></script>
-  <script src="script.js?v=25"></script>
+  <script src="config.js?v=26"></script>
+  <script src="script.js?v=26"></script>
 </body>
 </html>
