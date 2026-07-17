@@ -755,6 +755,9 @@
   }
 
   function attachDotGestures(dot, wsId) {
+    // En Android el long-press dispara el menú contextual; lo evitamos.
+    dot.addEventListener("contextmenu", (e) => e.preventDefault());
+
     dot.addEventListener("pointerdown", (e) => {
       dotPointerId = e.pointerId;
       dotStartX = e.clientX;

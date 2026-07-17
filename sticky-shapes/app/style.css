@@ -490,6 +490,11 @@ body.leaf-dragging #treasure {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  touch-action: none;      /* sin esto, el navegador convierte el arrastre
+                              táctil en scroll y cancela el gesto */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none; /* evita el menú de long-press de iOS */
 }
 
 /* Círculo visible (pequeño) dentro del botón */
