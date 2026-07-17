@@ -1,8 +1,8 @@
 // config.js — Panel de control de Sticky Shapes (Árbol de Oración).
 // Cambia estos valores para ajustar la app sin tocar la lógica.
 const CONFIG = {
-  storageKey: "sticky-shapes:v2",
-  schemaVersion: 2,
+  storageKey: "sticky-shapes:v2", // se mantiene: la migración reescribe en sitio
+  schemaVersion: 3,               // v3: múltiples escritorios (workspaces)
 
   // Variantes de hoja (ciclan con un clic simple).
   leafShapes: ["leaf-oak", "leaf-maple", "leaf-simple", "leaf-maple-red"],
@@ -83,7 +83,9 @@ const CONFIG = {
   doubleClickDelay: 250, // ms para distinguir clic simple de doble clic
   dragThreshold: 5,      // px de movimiento para considerar arrastre
   minTouchTarget: 44,    // px — área táctil mínima
-  animations: { enabled: true, durationMs: 120, swallowMs: 380 },
+  // workspaceFadeMs: duración de cada mitad del cross-fade al cambiar de
+  // escritorio (fade-out + fade-in ≈ 2×, ~320ms en total).
+  animations: { enabled: true, durationMs: 120, swallowMs: 380, workspaceFadeMs: 160 },
 };
 
 // Exposición global (sin módulos) para una app estática simple.

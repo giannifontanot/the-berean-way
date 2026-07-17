@@ -7,7 +7,10 @@
 
   const CONFIG = window.CONFIG;
   const canvas = document.getElementById("canvas");
+  const leafLayer = document.getElementById("leaf-layer");
   const addBtn = document.getElementById("add-btn");
+  const newWsBtn = document.getElementById("new-ws-btn");
+  const wsDots = document.getElementById("ws-dots");
   const zoneLabels = document.getElementById("zone-labels");
   const treasure = document.getElementById("treasure");
 
@@ -72,23 +75,74 @@
       "--swallow-ms",
       (CONFIG.animations.enabled ? CONFIG.animations.swallowMs : 0) + "ms"
     );
+    root.setProperty(
+      "--ws-fade-ms",
+      (CONFIG.animations.enabled ? CONFIG.animations.workspaceFadeMs : 0) + "ms"
+    );
   }
 
   // ---------------------------------------------------------------
   // Persistencia en Local Storage (guardado automático, sin botón).
+  // Modelo v3: múltiples escritorios (workspaces). Cada workspace tiene su
+  // propia lista de hojas y su propio árbol. La estructura de cada hoja no
+  // cambia respecto a versiones anteriores.
   // ---------------------------------------------------------------
-  let state = { version: CONFIG.schemaVersion, nodes: [] };
+  let state = {
+    version: CONFIG.schemaVersion,
+    workspaces: [],
+    activeWorkspaceId: null,
+  };
+
+  function makeWorkspace() {
+    return {
+      id: "ws_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      nodes: [],
+      tree: CONFIG.defaultTree,
+    };
+  }
+
+  // Escritorio activo (siempre existe uno tras loadState).
+  function activeWorkspace() {
+    return (
+      state.workspaces.find((w) => w.id === state.activeWorkspaceId) ||
+      state.workspaces[0]
+    );
+  }
 
   function loadState() {
     try {
       const raw = localStorage.getItem(CONFIG.storageKey);
-      if (!raw) return;
-      const parsed = JSON.parse(raw);
-      if (parsed && Array.isArray(parsed.nodes)) {
-        state = parsed;
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.workspaces)) {
+          // Ya está en el formato nuevo (v3).
+          state = parsed;
+        } else if (parsed && Array.isArray(parsed.nodes)) {
+          // MIGRACIÓN del formato viejo (una sola lista de hojas) → un
+          // escritorio único que conserva todas las hojas existentes.
+          const ws = makeWorkspace();
+          ws.nodes = parsed.nodes;
+          ws.tree = parsed.tree || CONFIG.defaultTree;
+          state = {
+            version: CONFIG.schemaVersion,
+            workspaces: [ws],
+            activeWorkspaceId: ws.id,
+          };
+        }
       }
     } catch (_) {
-      // Dato corrupto: fallo elegante, se arranca con lienzo vacío.
+      // Dato corrupto: fallo elegante, se arranca vacío.
+    }
+    // Garantizar siempre al menos un escritorio y un activo válido.
+    if (!state.workspaces || state.workspaces.length === 0) {
+      state = {
+        version: CONFIG.schemaVersion,
+        workspaces: [makeWorkspace()],
+        activeWorkspaceId: null,
+      };
+    }
+    if (!activeWorkspace()) {
+      state.activeWorkspaceId = state.workspaces[0].id;
     }
   }
 
@@ -108,7 +162,7 @@
   }
 
   function findNode(id) {
-    return state.nodes.find((n) => n.id === id);
+    return activeWorkspace().nodes.find((n) => n.id === id);
   }
 
   function touchNode(node) {
@@ -154,7 +208,7 @@
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    state.nodes.push(node);
+    activeWorkspace().nodes.push(node);
     saveState();
     renderLeaf(node); // aparece en modo display; se edita con doble clic
   }
@@ -225,7 +279,7 @@
     el.appendChild(text);
 
     attachGestures(el);
-    canvas.appendChild(el);
+    leafLayer.appendChild(el);
     return el;
   }
 
@@ -234,10 +288,15 @@
   }
 
   function renderAll() {
-    const byLastTouch = [...state.nodes].sort(
+    const byLastTouch = [...activeWorkspace().nodes].sort(
       (a, b) => (a.updatedAt || 0) - (b.updatedAt || 0)
     );
     for (const node of byLastTouch) renderLeaf(node);
+  }
+
+  // Quita del DOM solo las hojas (no toca árbol ni cofre).
+  function clearLeaves() {
+    leafLayer.querySelectorAll(".leaf").forEach((el) => el.remove());
   }
 
   // ---------------------------------------------------------------
@@ -346,7 +405,8 @@
 
   function deleteNode(node, el) {
     // El dato se elimina de inmediato; el DOM se queda solo para la animación.
-    state.nodes = state.nodes.filter((n) => n.id !== node.id);
+    const ws = activeWorkspace();
+    ws.nodes = ws.nodes.filter((n) => n.id !== node.id);
     saveState();
 
     const ms = CONFIG.animations.enabled ? CONFIG.animations.swallowMs : 0;
@@ -503,11 +563,12 @@
   }
 
   function cycleTree() {
+    const ws = activeWorkspace();
     const cycle = CONFIG.treeCycle;
-    const current = state.tree || CONFIG.defaultTree;
-    state.tree = cycle[(cycle.indexOf(current) + 1) % cycle.length];
+    const current = ws.tree || CONFIG.defaultTree;
+    ws.tree = cycle[(cycle.indexOf(current) + 1) % cycle.length];
     saveState();
-    applyTree(state.tree);
+    applyTree(ws.tree);
   }
 
   // Toque en la base del tronco = cambiar árbol (easter egg). Desactivado por
@@ -525,12 +586,78 @@
   }
 
   // ---------------------------------------------------------------
+  // Navegación entre escritorios (separada de la lógica de las hojas).
+  // Diseñada para extenderse: renombrar, eliminar, reordenar, import/export.
+  // ---------------------------------------------------------------
+
+  // Indicador de puntos: uno por escritorio, el activo resaltado.
+  function renderDots() {
+    wsDots.innerHTML = "";
+    for (const ws of state.workspaces) {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "ws-dot" + (ws.id === state.activeWorkspaceId ? " active" : "");
+      dot.setAttribute("aria-label", "Ir al escritorio");
+      dot.addEventListener("click", () => switchWorkspace(ws.id));
+      wsDots.appendChild(dot);
+    }
+  }
+
+  // Dibuja el escritorio activo (hojas + árbol) sin animación.
+  function renderActiveWorkspace() {
+    clearLeaves();
+    renderAll();
+    applyTree(activeWorkspace().tree || CONFIG.defaultTree);
+    renderDots();
+  }
+
+  // Cambia de escritorio con cross-fade: fade-out → cambiar contenido →
+  // fade-in. Solo la capa de hojas hace fade; árbol y cofre quedan fijos.
+  let switching = false;
+  function switchWorkspace(id) {
+    if (switching || id === state.activeWorkspaceId) return;
+    if (!state.workspaces.find((w) => w.id === id)) return;
+
+    const fadeMs = CONFIG.animations.enabled ? CONFIG.animations.workspaceFadeMs : 0;
+    if (!fadeMs) {
+      state.activeWorkspaceId = id;
+      saveState();
+      renderActiveWorkspace();
+      return;
+    }
+
+    switching = true;
+    leafLayer.classList.add("fading"); // fade-out
+    setTimeout(() => {
+      state.activeWorkspaceId = id;
+      saveState();
+      renderActiveWorkspace(); // cambiar contenido (invisible)
+      void leafLayer.offsetWidth; // reflow para reiniciar la transición
+      leafLayer.classList.remove("fading"); // fade-in
+      switching = false;
+    }, fadeMs);
+  }
+
+  // Crea un escritorio nuevo, vacío, y navega hacia él. Los demás quedan
+  // exactamente igual.
+  function createWorkspace() {
+    const ws = makeWorkspace();
+    state.workspaces.push(ws);
+    saveState();
+    renderDots();          // el nuevo punto aparece de inmediato
+    switchWorkspace(ws.id); // navega con animación
+  }
+
+  // ---------------------------------------------------------------
   // Arranque.
   // ---------------------------------------------------------------
   applyTheme();
   loadState();
-  applyTree(state.tree || CONFIG.defaultTree);
+  saveState(); // deja el almacenamiento en el formato canónico (v3) tras migrar
+  applyTree(activeWorkspace().tree || CONFIG.defaultTree);
   renderZoneLabels();
+  renderDots();
   renderAll();
   addBtn.addEventListener("click", createNode);
+  newWsBtn.addEventListener("click", createWorkspace);
 })();

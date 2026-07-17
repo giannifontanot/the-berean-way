@@ -188,6 +188,29 @@ una hoja, el cofre del tesoro se hace visible; al **soltar la hoja sobre él**, 
 
 > Una **vista de archivados oculta** queda para el ROADMAP.
 
+## 8.7 Escritorios múltiples (workspaces) — v3
+
+La app pasa de un solo lienzo a **varios escritorios independientes**. Cada
+escritorio es un espacio separado ("jardín de oración") con sus propias hojas.
+
+- **Modelo:** `state = { version, workspaces: [{ id, nodes[], tree }], activeWorkspaceId }`.
+  El modelo de cada hoja **no cambia**. Existe siempre al menos un escritorio.
+- **Migración:** si al cargar se detecta el formato viejo (`{ nodes: [...] }`),
+  se envuelve automáticamente en un escritorio único, sin perder hojas, y se
+  reescribe el almacenamiento en el formato nuevo.
+- **Crear:** un botón gris "+" (esquina superior derecha) crea un escritorio
+  vacío y **navega** a él; los demás quedan intactos. Sin límite.
+- **Navegar:** un indicador de **puntos** (arriba, centrado) tipo paginación de
+  teléfono; un punto por escritorio, el activo resaltado (más grande/brillante).
+  Tocar un punto cambia el escritorio **sin recargar la página**.
+- **Aislamiento:** las hojas de un escritorio nunca aparecen en otro.
+- **Transición:** cross-fade suave (fade-out → cambiar contenido → fade-in,
+  ~250–350 ms). **Solo la capa de hojas** hace fade; el árbol y el cofre quedan
+  fijos (son el fondo estable del jardín).
+- **Persistencia:** cantidad de escritorios, escritorio activo, y las hojas de
+  cada uno se guardan en Local Storage y se restauran igual al reabrir.
+- **Extensible** a: renombrar, eliminar, reordenar, importar/exportar escritorios.
+
 ## 9. Compatibilidad
 
 - Escritorio, tableta y teléfono.

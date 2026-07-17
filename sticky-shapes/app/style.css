@@ -447,3 +447,77 @@ body.leaf-dragging #treasure {
 #add-btn:active {
   transform: scale(0.92);
 }
+
+/* ---------- Escritorios (workspaces) ---------- */
+
+/* Capa de hojas: solo esta hace fade al cambiar de escritorio. */
+#leaf-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* el vacío no captura; las hojas sí (ver .leaf) */
+  transition: opacity var(--ws-fade-ms, 160ms) ease;
+}
+
+#leaf-layer.fading {
+  opacity: 0;
+}
+
+.leaf {
+  pointer-events: auto; /* reactiva la interacción dentro de leaf-layer */
+}
+
+/* Indicador de escritorios: puntos tipo paginación, arriba centro */
+#ws-dots {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  z-index: 2000;
+  padding: 6px 4px;
+}
+
+.ws-dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent, #ff7a00);
+  opacity: 0.35;
+  cursor: pointer;
+  transition: opacity var(--anim-ms, 120ms) ease, transform var(--anim-ms, 120ms) ease;
+}
+
+/* El escritorio activo: más grande, más brillante, más opaco */
+.ws-dot.active {
+  opacity: 1;
+  transform: scale(1.6);
+  box-shadow: 0 0 var(--glow, 6px) var(--accent, #ff7a00);
+}
+
+/* Botón gris para crear un escritorio nuevo (arriba derecha) */
+#new-ws-btn {
+  position: fixed;
+  right: 20px;
+  top: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #8a8f98;
+  background: var(--bg, #0a0018);
+  color: #c3c8d0;
+  font-size: 24px;
+  font-family: var(--font, monospace);
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2000;
+  box-shadow: 0 0 6px rgba(138, 143, 152, 0.5);
+  transition: transform var(--anim-ms, 120ms) ease;
+}
+
+#new-ws-btn:active {
+  transform: scale(0.92);
+}

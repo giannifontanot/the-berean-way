@@ -17,6 +17,16 @@
 - Persistencia completa con Local Storage.
 - Despliegue en GitHub Pages, funcionamiento offline.
 
+## Versión 2.0 — Múltiples escritorios (workspaces) ✅ hecho
+
+- Varios escritorios independientes; cada uno es un "jardín de oración" con sus
+  propias hojas y su propio árbol.
+- Botón gris "+" (arriba derecha) crea un escritorio nuevo y navega a él.
+- Indicador de puntos (arriba centro) tipo paginación; el activo resaltado.
+- Cambio de escritorio con cross-fade suave (solo las hojas; árbol y cofre fijos).
+- Migración automática del formato v2 (lista única de hojas) a v3 (workspaces).
+- Preparado para: renombrar, eliminar, reordenar, importar/exportar escritorios.
+
 ## Versión 1.1 — Más ramas y archivado
 
 - **Más zonas/estados** configurables (p. ej. un tercer o cuarto grupo) sin
