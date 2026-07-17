@@ -199,7 +199,13 @@ escritorio es un espacio separado ("jardín de oración") con sus propias hojas.
   se envuelve automáticamente en un escritorio único, sin perder hojas, y se
   reescribe el almacenamiento en el formato nuevo.
 - **Crear:** un botón gris "+" (esquina superior derecha) crea un escritorio
-  vacío y **navega** a él; los demás quedan intactos. Sin límite.
+  vacío y **navega** a él; los demás quedan intactos. Sin límite. El botón solo
+  aparece cuando estás en el **último** escritorio (se crea "al final").
+- **Mover una hoja a otro escritorio:** se **arrastra la hoja hasta el punto**
+  del escritorio destino. Durante el arrastre los puntos se agrandan (blancos
+  fáciles de tocar) y el destino se resalta; al soltar, la hoja "vuela" al punto
+  y aparece en ese escritorio **en la misma posición** que tenía. Los puntos son
+  botones con área táctil amplia aunque el círculo visible sea pequeño.
 - **Navegar:** un indicador de **puntos** (arriba, centrado) tipo paginación de
   teléfono; un punto por escritorio, el activo resaltado (más grande/brillante).
   Tocar un punto cambia el escritorio **sin recargar la página**.

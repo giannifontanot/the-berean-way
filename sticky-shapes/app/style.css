@@ -466,36 +466,73 @@ body.leaf-dragging #treasure {
   pointer-events: auto; /* reactiva la interacción dentro de leaf-layer */
 }
 
-/* Indicador de escritorios: puntos tipo paginación, arriba centro */
+/* Indicador de escritorios: puntos tipo paginación, arriba centro.
+   Cada punto es un BOTÓN grande (área táctil cómoda) y el círculo visible
+   es un span interno pequeño — así se pueden tocar sin picar exacto. */
 #ws-dots {
   position: fixed;
-  top: 14px;
+  top: 6px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
+  gap: 2px;
   align-items: center;
   z-index: 2000;
-  padding: 6px 4px;
 }
 
 .ws-dot {
-  width: 9px;
-  height: 9px;
+  width: 40px;   /* área táctil amplia */
+  height: 40px;
   padding: 0;
   border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Círculo visible (pequeño) dentro del botón */
+.dot-visual {
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--accent, #ff7a00);
   opacity: 0.35;
-  cursor: pointer;
   transition: opacity var(--anim-ms, 120ms) ease, transform var(--anim-ms, 120ms) ease;
 }
 
 /* El escritorio activo: más grande, más brillante, más opaco */
-.ws-dot.active {
+.ws-dot.active .dot-visual {
   opacity: 1;
   transform: scale(1.6);
   box-shadow: 0 0 var(--glow, 6px) var(--accent, #ff7a00);
+}
+
+/* Al arrastrar una hoja, los puntos crecen para verse como blancos */
+body.leaf-dragging .ws-dot .dot-visual {
+  opacity: 0.85;
+  transform: scale(1.6);
+}
+
+/* El punto bajo el puntero (destino) se enciende fuerte */
+body.leaf-dragging .ws-dot.drop-target .dot-visual {
+  opacity: 1;
+  transform: scale(2.6);
+  box-shadow:
+    0 0 var(--glow, 6px) var(--accent, #ff7a00),
+    0 0 calc(var(--glow, 6px) * 2.5) var(--accent, #ff7a00);
+}
+
+/* Pulso de confirmación cuando el punto recibe una hoja */
+.ws-dot.received .dot-visual {
+  animation: dotpulse 450ms ease-out;
+}
+
+@keyframes dotpulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(2.4); box-shadow: 0 0 12px var(--accent, #ff7a00); }
+  100% { transform: scale(1); }
 }
 
 /* Botón gris para crear un escritorio nuevo (arriba derecha) */
