@@ -341,7 +341,7 @@
         lastY = originY + dy;
         highlightZone(e.clientX, e.clientY);
         treasure.classList.toggle("active", overTreasure(e.clientX, e.clientY));
-        highlightDotUnderPointer(e.clientX, e.clientY);
+        highlightDotUnderPointer(el, e.clientX, e.clientY);
       }
     });
 
@@ -386,19 +386,30 @@
     return px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
   }
 
-  // Punto (dot) de escritorio bajo el puntero. El botón es un área táctil
-  // amplia, así que basta con detectar si el punto cae dentro de su rectángulo.
-  function dotAtPoint(px, py) {
+  // Punto (dot) destino de una hoja arrastrada. Se acierta si el DEDO o la
+  // PUNTA SUPERIOR de la hoja llegan al punto — así funciona tanto si acercas
+  // el dedo como si acercas la hoja al punto (que es lo natural). Se usa un
+  // margen vertical generoso hacia abajo para que sea fácil de alcanzar.
+  function dotForLeaf(el, px, py) {
+    const lr = el.getBoundingClientRect();
+    const aim = [
+      [px, py],                              // el dedo / puntero
+      [lr.left + lr.width / 2, lr.top + 10], // la punta superior de la hoja
+    ];
     for (const dot of wsDots.querySelectorAll(".ws-dot")) {
       const r = dot.getBoundingClientRect();
-      if (px >= r.left && px <= r.right && py >= r.top && py <= r.bottom) return dot;
+      for (const [x, y] of aim) {
+        if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom + 30) {
+          return dot;
+        }
+      }
     }
     return null;
   }
 
   // Durante el arrastre: resalta el punto destino (si no es el actual).
-  function highlightDotUnderPointer(px, py) {
-    const dot = dotAtPoint(px, py);
+  function highlightDotUnderPointer(el, px, py) {
+    const dot = dotForLeaf(el, px, py);
     wsDots.querySelectorAll(".ws-dot").forEach((d) => {
       d.classList.toggle(
         "drop-target",
@@ -428,7 +439,7 @@
 
     // Soltar sobre el punto de OTRO escritorio = mover la hoja allá. Conserva
     // su posición (node.x/y aún tienen la posición previa al arrastre).
-    const dot = dotAtPoint(px, py);
+    const dot = dotForLeaf(el, px, py);
     if (dot && dot.dataset.wsId !== state.activeWorkspaceId) {
       moveNodeToWorkspace(node, el, dot);
       return;
