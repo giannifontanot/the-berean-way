@@ -509,14 +509,14 @@ body.leaf-dragging #treasure {
   box-shadow: 0 0 var(--glow, 6px) var(--accent, #ff7a00);
 }
 
-/* Al arrastrar una hoja, los puntos crecen para verse como blancos */
-body.leaf-dragging .ws-dot .dot-visual {
+/* Los puntos solo despiertan (crecen/brillan) cuando la hoja se acerca */
+body.dots-armed .ws-dot .dot-visual {
   opacity: 0.85;
   transform: scale(1.6);
 }
 
 /* El punto bajo el puntero (destino) se enciende fuerte */
-body.leaf-dragging .ws-dot.drop-target .dot-visual {
+body.dots-armed .ws-dot.drop-target .dot-visual {
   opacity: 1;
   transform: scale(2.6);
   box-shadow:
