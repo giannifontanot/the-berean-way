@@ -680,6 +680,7 @@
 
   // Indicador de puntos: uno por escritorio, el activo resaltado. El botón es
   // un área táctil amplia; el círculo visible va en un span interno pequeño.
+  // Gestos: toque = navegar; toque prolongado = modo reordenar ("temblorcito").
   function renderDots() {
     wsDots.innerHTML = "";
     for (const ws of state.workspaces) {
@@ -691,11 +692,130 @@
       const visual = document.createElement("span");
       visual.className = "dot-visual";
       dot.appendChild(visual);
-      dot.addEventListener("click", () => switchWorkspace(ws.id));
+      attachDotGestures(dot, ws.id);
       wsDots.appendChild(dot);
     }
     updateNewWsBtn();
   }
+
+  // ---------------------------------------------------------------
+  // Reordenar escritorios: toque prolongado en un punto entra al modo
+  // "temblorcito" (los puntos tiemblan); arrastrar un punto lo mueve; tocar
+  // fuera sale del modo. El escritorio activo no cambia al reordenar.
+  // ---------------------------------------------------------------
+  let reorderMode = false;
+  let longPressTimer = null;
+  let grabbedDot = null;      // punto que se está arrastrando
+  let grabbedId = null;
+  let grabHomeX = 0;          // centro X del punto al agarrarlo
+  let dotStartX = 0, dotStartY = 0, dotDragging = false, dotPointerId = null;
+
+  function enterReorder() {
+    reorderMode = true;
+    wsDots.classList.add("reordering");
+  }
+
+  function exitReorder() {
+    reorderMode = false;
+    wsDots.classList.remove("reordering");
+    if (grabbedDot) {
+      grabbedDot.style.transform = "";
+      grabbedDot.classList.remove("grabbing");
+    }
+    grabbedDot = null;
+  }
+
+  function grabDot(dot, wsId) {
+    grabbedDot = dot;
+    grabbedId = wsId;
+    const r = dot.getBoundingClientRect();
+    grabHomeX = r.left + r.width / 2;
+    dot.classList.add("grabbing");
+  }
+
+  // Índice destino en el arreglo según la X del dedo vs. los otros puntos.
+  function computeTargetIndex(px) {
+    let idx = 0;
+    for (const d of wsDots.querySelectorAll(".ws-dot")) {
+      if (d === grabbedDot) continue;
+      const r = d.getBoundingClientRect();
+      if (px > r.left + r.width / 2) idx++;
+      else break;
+    }
+    return idx;
+  }
+
+  function reorderWorkspace(id, targetIndex) {
+    const arr = state.workspaces;
+    const cur = arr.findIndex((w) => w.id === id);
+    if (cur < 0) return;
+    const [ws] = arr.splice(cur, 1);
+    arr.splice(Math.max(0, Math.min(targetIndex, arr.length)), 0, ws);
+    saveState(); // el activo no cambia; solo el orden
+  }
+
+  function attachDotGestures(dot, wsId) {
+    dot.addEventListener("pointerdown", (e) => {
+      dotPointerId = e.pointerId;
+      dotStartX = e.clientX;
+      dotStartY = e.clientY;
+      dotDragging = false;
+      dot.setPointerCapture(e.pointerId);
+      if (reorderMode) {
+        grabDot(dot, wsId); // ya en modo: agarra este punto de una vez
+      } else {
+        longPressTimer = setTimeout(() => {
+          longPressTimer = null;
+          enterReorder();
+          grabDot(dot, wsId); // long-press: entra al modo y agarra
+        }, 450);
+      }
+    });
+
+    dot.addEventListener("pointermove", (e) => {
+      if (e.pointerId !== dotPointerId) return;
+      const dx = e.clientX - dotStartX, dy = e.clientY - dotStartY;
+      if (!grabbedDot) {
+        // Movimiento antes del long-press → cancelar (fue un toque/roce).
+        if (longPressTimer && Math.hypot(dx, dy) > 8) {
+          clearTimeout(longPressTimer);
+          longPressTimer = null;
+        }
+        return;
+      }
+      // Agarrado: el punto sigue al dedo en horizontal.
+      dotDragging = true;
+      grabbedDot.style.transform = `translateX(${e.clientX - grabHomeX}px) scale(1.7)`;
+    });
+
+    dot.addEventListener("pointerup", (e) => {
+      if (e.pointerId !== dotPointerId) return;
+      if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+
+      if (grabbedDot && dotDragging) {
+        reorderWorkspace(grabbedId, computeTargetIndex(e.clientX));
+        grabbedDot = null;
+        dotDragging = false;
+        renderDots(); // re-dibuja en el nuevo orden (sigue en modo reordenar)
+        return;
+      }
+      if (grabbedDot) { grabbedDot.classList.remove("grabbing"); grabbedDot = null; }
+
+      // Toque sin arrastre: navegar solo si NO estamos reordenando.
+      if (!reorderMode) switchWorkspace(wsId);
+    });
+
+    dot.addEventListener("pointercancel", (e) => {
+      if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+      if (grabbedDot) { grabbedDot.style.transform = ""; grabbedDot.classList.remove("grabbing"); grabbedDot = null; }
+      dotDragging = false;
+    });
+  }
+
+  // Tocar fuera de los puntos sale del modo reordenar.
+  document.addEventListener("pointerdown", (e) => {
+    if (reorderMode && !wsDots.contains(e.target)) exitReorder();
+  }, true);
 
   // El botón "+" de escritorio nuevo solo aparece en el último escritorio.
   function updateNewWsBtn() {

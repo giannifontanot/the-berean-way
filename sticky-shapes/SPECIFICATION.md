@@ -215,7 +215,10 @@ escritorio es un espacio separado ("jardín de oración") con sus propias hojas.
   fijos (son el fondo estable del jardín).
 - **Persistencia:** cantidad de escritorios, escritorio activo, y las hojas de
   cada uno se guardan en Local Storage y se restauran igual al reabrir.
-- **Extensible** a: renombrar, eliminar, reordenar, importar/exportar escritorios.
+- **Reordenar:** un **toque prolongado** sobre un punto entra al modo
+  "temblorcito" (los puntos tiemblan); se **arrastra un punto** para moverlo de
+  lugar y se toca fuera para salir. El escritorio activo no cambia al reordenar.
+- **Extensible** a: renombrar, eliminar, importar/exportar escritorios.
 
 ## 9. Compatibilidad
 

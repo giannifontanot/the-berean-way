@@ -538,6 +538,31 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
   100% { transform: scale(1); }
 }
 
+/* Modo reordenar: los puntos "tiemblan" (temblorcito tipo iOS). Como los
+   círculos no muestran rotación, el temblor es un pequeño desplazamiento. */
+#ws-dots.reordering .ws-dot {
+  animation: jiggle 0.24s ease-in-out infinite;
+}
+
+#ws-dots.reordering .ws-dot:nth-child(even) {
+  animation-delay: -0.12s; /* desfasa el temblor entre puntos */
+}
+
+/* El punto que se está arrastrando no tiembla; sigue al dedo y se agranda */
+#ws-dots.reordering .ws-dot.grabbing {
+  animation: none;
+  z-index: 3;
+  position: relative;
+}
+
+@keyframes jiggle {
+  0%   { transform: translate(1px, -1px); }
+  25%  { transform: translate(-1px, 1px); }
+  50%  { transform: translate(1px, 1px); }
+  75%  { transform: translate(-1px, -1px); }
+  100% { transform: translate(1px, -1px); }
+}
+
 /* Botón gris para crear un escritorio nuevo (arriba derecha) */
 #new-ws-btn {
   position: fixed;
