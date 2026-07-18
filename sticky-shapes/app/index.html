@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Prayers</title>
-  <link rel="stylesheet" href="style.css?v=39">
+  <link rel="stylesheet" href="style.css?v=40">
 </head>
 <body>
 
@@ -181,10 +181,20 @@
   <!-- Botón para borrar el último escritorio (solo si está vacío) -->
   <button id="del-ws-btn" type="button" aria-label="Borrar escritorio vacío">&minus;</button>
 
-  <!-- Botón flotante para crear hojas nuevas -->
-  <button id="add-btn" type="button" aria-label="Crear nueva hoja">+</button>
+  <!-- Botón flotante para crear hojas nuevas: silueta de hoja con + al centro -->
+  <button id="add-btn" type="button" aria-label="Crear nueva hoja">
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <!-- Silueta de hoja (punta arriba, tallo abajo) -->
+      <path class="add-leaf-body"
+            d="M 32 4 C 47 15 52 34 43 47 C 39 53 36 55 32 57 C 28 55 25 53 21 47 C 12 34 17 15 32 4 Z" />
+      <!-- Tallo -->
+      <path class="add-leaf-stem" d="M 32 57 L 32 62" />
+      <!-- El + al centro -->
+      <path class="add-leaf-plus" d="M 32 24 L 32 40 M 24 32 L 40 32" />
+    </svg>
+  </button>
 
-  <script src="config.js?v=39"></script>
-  <script src="script.js?v=39"></script>
+  <script src="config.js?v=40"></script>
+  <script src="script.js?v=40"></script>
 </body>
 </html>
