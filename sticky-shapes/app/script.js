@@ -10,6 +10,7 @@
   const leafLayer = document.getElementById("leaf-layer");
   const addBtn = document.getElementById("add-btn");
   const newWsBtn = document.getElementById("new-ws-btn");
+  const delWsBtn = document.getElementById("del-ws-btn");
   const wsDots = document.getElementById("ws-dots");
   const zoneLabels = document.getElementById("zone-labels");
   const treasure = document.getElementById("treasure");
@@ -153,6 +154,9 @@
     } catch (_) {
       // Almacenamiento lleno o no disponible: la app sigue funcionando.
     }
+    // Cada mutación puede cambiar si el último escritorio es borrable
+    // (p. ej. al crear/borrar/mover hojas), así que se reevalúa aquí.
+    updateNewWsBtn();
   }
 
   // ---------------------------------------------------------------
@@ -830,10 +834,15 @@
   }, true);
 
   // El botón "+" de escritorio nuevo solo aparece en el último escritorio.
+  // El botón "−" borra ese último escritorio, y solo aparece cuando está
+  // completamente vacío y no es el único que existe.
   function updateNewWsBtn() {
     const last = state.workspaces[state.workspaces.length - 1];
     const onLast = last && last.id === state.activeWorkspaceId;
     newWsBtn.style.display = onLast ? "" : "none";
+    const canDelete =
+      onLast && state.workspaces.length > 1 && last.nodes.length === 0;
+    delWsBtn.style.display = canDelete ? "" : "none";
   }
 
   // Dibuja el escritorio activo (hojas + árbol) sin animación.
@@ -881,6 +890,18 @@
     switchWorkspace(ws.id); // navega con animación
   }
 
+  // Borra el último escritorio (solo si está vacío y hay más de uno) y
+  // navega con animación al que queda al final.
+  function deleteWorkspace() {
+    const last = state.workspaces[state.workspaces.length - 1];
+    if (!last || state.workspaces.length <= 1) return;
+    if (last.id !== state.activeWorkspaceId) return;
+    if (last.nodes.length > 0) return;
+    state.workspaces.pop();
+    const target = state.workspaces[state.workspaces.length - 1];
+    switchWorkspace(target.id); // guarda el estado y redibuja los puntos
+  }
+
   // ---------------------------------------------------------------
   // Arranque.
   // ---------------------------------------------------------------
@@ -893,4 +914,5 @@
   renderAll();
   addBtn.addEventListener("click", createNode);
   newWsBtn.addEventListener("click", createWorkspace);
+  delWsBtn.addEventListener("click", deleteWorkspace);
 })();

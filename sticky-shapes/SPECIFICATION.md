@@ -198,9 +198,13 @@ escritorio es un espacio separado ("jardín de oración") con sus propias hojas.
 - **Migración:** si al cargar se detecta el formato viejo (`{ nodes: [...] }`),
   se envuelve automáticamente en un escritorio único, sin perder hojas, y se
   reescribe el almacenamiento en el formato nuevo.
-- **Crear:** un botón gris "+" (esquina superior derecha) crea un escritorio
-  vacío y **navega** a él; los demás quedan intactos. Sin límite. El botón solo
-  aparece cuando estás en el **último** escritorio (se crea "al final").
+- **Crear:** un botón gris "+" (esquina superior derecha, debajo de la barra de
+  puntos) crea un escritorio vacío y **navega** a él; los demás quedan intactos.
+  Sin límite. El botón solo aparece cuando estás en el **último** escritorio
+  (se crea "al final").
+- **Borrar:** un botón gris "−" (debajo del "+") borra el **último** escritorio
+  y navega al anterior. Solo aparece cuando estás en el último escritorio, está
+  **completamente vacío** (cero hojas) y no es el único que existe.
 - **Mover una hoja a otro escritorio:** se **arrastra la hoja hasta el punto**
   del escritorio destino. Durante el arrastre los puntos se agrandan (blancos
   fáciles de tocar) y el destino se resalta; al soltar, la hoja "vuela" al punto
