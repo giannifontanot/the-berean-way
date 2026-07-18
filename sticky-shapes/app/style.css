@@ -436,7 +436,9 @@ body.leaf-dragging #treasure {
   touch-action: manipulation; /* iOS: sin zoom por doble toque */
   position: fixed;
   right: calc(16px + env(safe-area-inset-right, 0px));
-  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  /* Alineado con el cofre: mismo bottom (16px) + 2px para centrar las
+     alturas (cofre 76px vs hoja 72px). Nunca más grande que el cofre. */
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   width: 72px;
   height: 72px;
   padding: 4px;
