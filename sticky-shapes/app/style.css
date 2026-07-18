@@ -575,12 +575,14 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
   100% { transform: translate(1px, -1px); }
 }
 
-/* Botón gris para crear un escritorio nuevo (arriba derecha) */
-#new-ws-btn {
+/* Botones grises de escritorio (arriba derecha, debajo de los puntos):
+   "+" crea uno nuevo; "−" borra el último si está completamente vacío. */
+#new-ws-btn,
+#del-ws-btn {
   touch-action: manipulation; /* iOS: sin zoom por doble toque */
   position: fixed;
   right: calc(20px + env(safe-area-inset-right, 0px));
-  top: calc(16px + env(safe-area-inset-top, 0px));
+  top: calc(64px + env(safe-area-inset-top, 0px));
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -596,6 +598,11 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
   transition: transform var(--anim-ms, 120ms) ease;
 }
 
-#new-ws-btn:active {
+#del-ws-btn {
+  top: calc(118px + env(safe-area-inset-top, 0px));
+}
+
+#new-ws-btn:active,
+#del-ws-btn:active {
   transform: scale(0.92);
 }
