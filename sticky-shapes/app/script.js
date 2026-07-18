@@ -11,6 +11,8 @@
   const addBtn = document.getElementById("add-btn");
   const newWsBtn = document.getElementById("new-ws-btn");
   const delWsBtn = document.getElementById("del-ws-btn");
+  const fontBtn = document.getElementById("font-btn");
+  const fontColorBtn = document.getElementById("font-color-btn");
   const wsDots = document.getElementById("ws-dots");
   const zoneLabels = document.getElementById("zone-labels");
   const treasure = document.getElementById("treasure");
@@ -146,6 +148,26 @@
     if (!state.workspaces.find((w) => w.id === state.activeWorkspaceId)) {
       state.activeWorkspaceId = state.workspaces[0].id;
     }
+    // Ajustes globales de la letra de las hojas: defaults si faltan (estados
+    // guardados antes de esta versión no los traen).
+    if (!state.settings) state.settings = {};
+    const s = state.settings;
+    if (typeof s.textSize !== "number") s.textSize = CONFIG.theme.leafTextSize;
+    if (typeof s.fontIndex !== "number") s.fontIndex = 0;
+    if (typeof s.colorIndex !== "number") s.colorIndex = 0;
+  }
+
+  // Aplica los ajustes globales de letra (tamaño, fuente, color) como
+  // variables CSS, y pinta el botón de color con el color en uso.
+  function applyLeafFontSettings() {
+    const f = CONFIG.leafFont;
+    const s = state.settings;
+    const root = document.documentElement.style;
+    const color = f.colors[s.colorIndex % f.colors.length];
+    root.setProperty("--leaf-text-size", s.textSize + "px");
+    root.setProperty("--leaf-font", f.fonts[s.fontIndex % f.fonts.length]);
+    root.setProperty("--leaf-text-color", color);
+    fontColorBtn.querySelector("#font-color-swatch").style.background = color;
   }
 
   function saveState() {
@@ -590,6 +612,28 @@
     const plusBtn = makeSizeBtn("+", "plus", CONFIG.resizeStep);
     const minusBtn = makeSizeBtn("\u2212", "minus", -CONFIG.resizeStep);
 
+    // Botones de tama\u00f1o de LETRA (izquierda, en columna): cambian el tama\u00f1o
+    // del texto de TODAS las hojas de todos los escritorios (ajuste global).
+    function makeFontBtn(label, cls, delta) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "size-btn " + cls;
+      btn.textContent = label;
+      btn.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const f = CONFIG.leafFont;
+        const s = state.settings;
+        s.textSize = Math.max(f.sizeMin, Math.min(f.sizeMax, s.textSize + delta));
+        applyLeafFontSettings();
+        saveState();
+      });
+      el.appendChild(btn);
+      return btn;
+    }
+    const fontPlusBtn = makeFontBtn("+", "font-plus", CONFIG.leafFont.sizeStep);
+    const fontMinusBtn = makeFontBtn("\u2212", "font-minus", -CONFIG.leafFont.sizeStep);
+
     // Botón de color (derecha): cicla el borde normal → dorado → plateado → normal.
     const colorBtn = document.createElement("button");
     colorBtn.type = "button";
@@ -621,6 +665,8 @@
       plusBtn.remove();
       minusBtn.remove();
       colorBtn.remove();
+      fontPlusBtn.remove();
+      fontMinusBtn.remove();
     }
 
     editor.addEventListener("blur", finish);
@@ -861,6 +907,10 @@
     const showDel = onLast && state.workspaces.length > 1;
     delWsBtn.style.display = showDel ? "" : "none";
     delWsBtn.disabled = showDel && last.nodes.length > 0;
+    // Los botones de fuente (F) y color de letra también viven en la última
+    // página, arriba del "+" y el "−".
+    fontBtn.style.display = onLast ? "" : "none";
+    fontColorBtn.style.display = onLast ? "" : "none";
   }
 
   // Dibuja el escritorio activo (hojas + árbol) sin animación.
@@ -959,6 +1009,7 @@
   // ---------------------------------------------------------------
   applyTheme();
   loadState();
+  applyLeafFontSettings(); // pisa el tamaño/fuente/color del tema con lo guardado
   saveState(); // deja el almacenamiento en el formato canónico (v3) tras migrar
   applyTree(activeWorkspace().tree || CONFIG.defaultTree);
   renderZoneLabels();
@@ -967,6 +1018,19 @@
   addBtn.addEventListener("click", createNode);
   newWsBtn.addEventListener("click", createWorkspace);
   delWsBtn.addEventListener("click", deleteWorkspace);
+  // F: cicla la fuente de todas las hojas; color: cicla el color del texto.
+  fontBtn.addEventListener("click", () => {
+    state.settings.fontIndex =
+      (state.settings.fontIndex + 1) % CONFIG.leafFont.fonts.length;
+    applyLeafFontSettings();
+    saveState();
+  });
+  fontColorBtn.addEventListener("click", () => {
+    state.settings.colorIndex =
+      (state.settings.colorIndex + 1) % CONFIG.leafFont.colors.length;
+    applyLeafFontSettings();
+    saveState();
+  });
   window.addEventListener("resize", fitDots); // rotar el teléfono re-ajusta
 
 })();

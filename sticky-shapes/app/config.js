@@ -90,6 +90,30 @@ const CONFIG = {
   // Barra de puntos: siempre se ven TODOS los puntos. Con muchos escritorios
   // los puntos se encogen dinámicamente para caber en el ancho de la pantalla
   // (entre maxDotPx y minDotPx); el círculo visible se escala en proporción.
+  // Letra de las hojas: ajustes GLOBALES (aplican a todas las hojas de todos
+  // los escritorios y persisten en el estado). El tamaño se ajusta con los
+  // botones +/− del modo edición; la fuente y el color ciclan con los botones
+  // F y de color de la última página. Solo fuentes del sistema (app offline).
+  leafFont: {
+    sizeMin: 12,  // px mínimo del texto
+    sizeMax: 40,  // px máximo del texto
+    sizeStep: 2,  // px por toque de +/−
+    fonts: [
+      "'Press Start 2P', monospace",                  // pixel arcade (actual)
+      "Verdana, Geneva, sans-serif",                  // sans limpia y ancha
+      "Georgia, 'Times New Roman', serif",            // serif clásica
+      "'Comic Sans MS', 'Chalkboard SE', cursive",    // redondita amigable
+      "'Trebuchet MS', Tahoma, sans-serif",           // moderna ligera
+    ],
+    colors: [
+      "#f7ff00", // amarillo arcade (actual)
+      "#ffffff", // blanco
+      "#00f0ff", // cian neón
+      "#ff9f1a", // naranja
+      "#a8ff60", // verde lima
+    ],
+  },
+
   // Navegación por deslizamiento (swipe) horizontal sobre el fondo, como en
   // un iPhone: deslizar a la izquierda va a la página siguiente y viceversa.
   swipeNav: {
