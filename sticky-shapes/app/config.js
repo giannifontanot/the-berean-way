@@ -87,14 +87,13 @@ const CONFIG = {
   // escritorio (fade-out + fade-in ≈ 2×, ~320ms en total).
   animations: { enabled: true, durationMs: 120, swallowMs: 380, workspaceFadeMs: 160 },
 
-  // Barra de puntos: ventana deslizante estilo iOS/Instagram. Con muchos
-  // escritorios solo se ven maxVisible puntos; los de los bordes se dibujan
-  // pequeños para indicar que hay más, y la ventana se desliza al navegar o
-  // al sostener una hoja (o un punto en modo reordenar) sobre un borde.
-  dotWindow: {
-    maxVisible: 7,            // máximo de puntos visibles a la vez
-    slideMs: 200,             // duración del deslizamiento de la ventana
-    edgeSlideCooldownMs: 400, // pausa entre deslizamientos automáticos
+  // Barra de puntos: siempre se ven TODOS los puntos. Con muchos escritorios
+  // los puntos se encogen dinámicamente para caber en el ancho de la pantalla
+  // (entre maxDotPx y minDotPx); el círculo visible se escala en proporción.
+  dotFit: {
+    maxDotPx: 40,       // tamaño máximo del botón (pocos escritorios)
+    minDotPx: 18,       // tamaño mínimo al que puede encogerse
+    screenMarginPx: 24, // margen lateral total reservado en pantalla
   },
 };
 
