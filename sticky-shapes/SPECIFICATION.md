@@ -209,6 +209,15 @@ escritorio es un espacio separado ("jardín de oración") con sus propias hojas.
 - **Swipe:** deslizar el dedo en horizontal sobre el **fondo** (no sobre una
   hoja) cambia de escritorio como en un iPhone: izquierda = siguiente,
   derecha = anterior (config `swipeNav`). Los puntos siguen funcionando igual.
+- **Letra de las hojas (ajustes globales, config `leafFont`):** aplican a
+  TODAS las hojas de todos los escritorios y persisten en el estado.
+  - En modo edición, dos botones **+/− a la izquierda** de la hoja ajustan el
+    **tamaño** del texto (entre `sizeMin` y `sizeMax`, de `sizeStep` en
+    `sizeStep`).
+  - En la última página, arriba del "+": un botón **F** (F estilizada) cicla
+    la **fuente** entre 5 fuentes del sistema, y debajo un botón **de color**
+    (sin label; su relleno muestra el color en uso) cicla el **color** del
+    texto entre 5 colores. El orden de la columna es: F, color, +, −.
 - **Mover una hoja a otro escritorio:** se **arrastra la hoja hasta el punto**
   del escritorio destino. Durante el arrastre los puntos se agrandan (blancos
   fáciles de tocar) y el destino se resalta; al soltar, la hoja "vuela" al punto
