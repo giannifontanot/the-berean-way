@@ -47,6 +47,7 @@ y cumple el principio de **una sola fuente de verdad**.
 | `leafStyles` | object | Tono de verde propio de cada variante: `{ "<shape>": { fill, glow } }`. |
 | `animations.workspaceFadeMs` | number | ms de cada mitad del cross-fade al cambiar de escritorio (~2× = transición total). |
 | `dotFit` | object | Encogimiento dinámico de la barra de puntos: `{ maxDotPx, minDotPx, screenMarginPx }`. |
+| `swipeNav` | object | Navegación por deslizamiento sobre el fondo: `{ minDx, maxDyRatio }`. |
 | `doubleClickDelay` | number | ms para distinguir clic simple de doble clic. |
 | `dragThreshold` | number | px de movimiento para considerar arrastre. |
 | `minTouchTarget` | number | Tamaño mínimo de área táctil (px). Por defecto `44`. |

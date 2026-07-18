@@ -851,15 +851,16 @@
   }, true);
 
   // El botón "+" de escritorio nuevo solo aparece en el último escritorio.
-  // El botón "−" borra ese último escritorio, y solo aparece cuando está
-  // completamente vacío y no es el único que existe.
+  // El botón "−" borra ese último escritorio: se muestra siempre que no sea
+  // el único, pero queda DESHABILITADO (gris) mientras tenga hojas — se
+  // habilita en cuanto el usuario lo vacía, para no perder información.
   function updateNewWsBtn() {
     const last = state.workspaces[state.workspaces.length - 1];
     const onLast = last && last.id === state.activeWorkspaceId;
     newWsBtn.style.display = onLast ? "" : "none";
-    const canDelete =
-      onLast && state.workspaces.length > 1 && last.nodes.length === 0;
-    delWsBtn.style.display = canDelete ? "" : "none";
+    const showDel = onLast && state.workspaces.length > 1;
+    delWsBtn.style.display = showDel ? "" : "none";
+    delWsBtn.disabled = showDel && last.nodes.length > 0;
   }
 
   // Dibuja el escritorio activo (hojas + árbol) sin animación.
@@ -896,6 +897,40 @@
       switching = false;
     }, fadeMs);
   }
+
+  // ---------------------------------------------------------------
+  // Navegación por swipe: deslizar el dedo en horizontal sobre el FONDO
+  // (no sobre una hoja ni un botón) cambia de escritorio, como en un
+  // iPhone: izquierda = siguiente, derecha = anterior.
+  // ---------------------------------------------------------------
+  let swipeId = null, swipeStartX = 0, swipeStartY = 0;
+
+  canvas.addEventListener("pointerdown", (e) => {
+    // Solo el fondo: las hojas y botones tienen sus propios gestos.
+    if (e.target.closest(".leaf") || e.target.closest("button")) return;
+    swipeId = e.pointerId;
+    swipeStartX = e.clientX;
+    swipeStartY = e.clientY;
+  });
+
+  canvas.addEventListener("pointerup", (e) => {
+    if (e.pointerId !== swipeId) return;
+    swipeId = null;
+    const dx = e.clientX - swipeStartX;
+    const dy = e.clientY - swipeStartY;
+    const cfg = CONFIG.swipeNav;
+    if (Math.abs(dx) < cfg.minDx) return;                    // muy corto
+    if (Math.abs(dy) > Math.abs(dx) * cfg.maxDyRatio) return; // muy vertical
+    const idx = state.workspaces.findIndex((w) => w.id === state.activeWorkspaceId);
+    const next = dx < 0 ? idx + 1 : idx - 1;
+    if (next >= 0 && next < state.workspaces.length) {
+      switchWorkspace(state.workspaces[next].id);
+    }
+  });
+
+  canvas.addEventListener("pointercancel", (e) => {
+    if (e.pointerId === swipeId) swipeId = null;
+  });
 
   // Crea un escritorio nuevo, vacío, y navega hacia él. Los demás quedan
   // exactamente igual.
