@@ -90,6 +90,13 @@ const CONFIG = {
   // Barra de puntos: siempre se ven TODOS los puntos. Con muchos escritorios
   // los puntos se encogen dinámicamente para caber en el ancho de la pantalla
   // (entre maxDotPx y minDotPx); el círculo visible se escala en proporción.
+  // Navegación por deslizamiento (swipe) horizontal sobre el fondo, como en
+  // un iPhone: deslizar a la izquierda va a la página siguiente y viceversa.
+  swipeNav: {
+    minDx: 60,       // px horizontales mínimos para contar como swipe
+    maxDyRatio: 0.8, // tolerancia vertical (dy máximo = dx * ratio)
+  },
+
   dotFit: {
     maxDotPx: 40,       // tamaño máximo del botón (pocos escritorios)
     minDotPx: 18,       // tamaño mínimo al que puede encogerse

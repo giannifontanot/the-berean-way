@@ -605,6 +605,18 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
   top: calc(118px + env(safe-area-inset-top, 0px));
 }
 
+/* Mientras el último escritorio tenga hojas, el "−" se ve pero apagado:
+   se habilita en cuanto queda completamente vacío. */
+#del-ws-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+  box-shadow: none;
+}
+
+#del-ws-btn:disabled:active {
+  transform: none;
+}
+
 #new-ws-btn:active,
 #del-ws-btn:active {
   transform: scale(0.92);
