@@ -13,6 +13,8 @@
   const delWsBtn = document.getElementById("del-ws-btn");
   const fontBtn = document.getElementById("font-btn");
   const fontColorBtn = document.getElementById("font-color-btn");
+  const fontPlusBtn = document.getElementById("font-plus-btn");
+  const fontMinusBtn = document.getElementById("font-minus-btn");
   const wsDots = document.getElementById("ws-dots");
   const zoneLabels = document.getElementById("zone-labels");
   const treasure = document.getElementById("treasure");
@@ -612,28 +614,6 @@
     const plusBtn = makeSizeBtn("+", "plus", CONFIG.resizeStep);
     const minusBtn = makeSizeBtn("\u2212", "minus", -CONFIG.resizeStep);
 
-    // Botones de tama\u00f1o de LETRA (izquierda, en columna): cambian el tama\u00f1o
-    // del texto de TODAS las hojas de todos los escritorios (ajuste global).
-    function makeFontBtn(label, cls, delta) {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "size-btn " + cls;
-      btn.textContent = label;
-      btn.addEventListener("pointerdown", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const f = CONFIG.leafFont;
-        const s = state.settings;
-        s.textSize = Math.max(f.sizeMin, Math.min(f.sizeMax, s.textSize + delta));
-        applyLeafFontSettings();
-        saveState();
-      });
-      el.appendChild(btn);
-      return btn;
-    }
-    const fontPlusBtn = makeFontBtn("+", "font-plus", CONFIG.leafFont.sizeStep);
-    const fontMinusBtn = makeFontBtn("\u2212", "font-minus", -CONFIG.leafFont.sizeStep);
-
     // Botón de color (derecha): cicla el borde normal → dorado → plateado → normal.
     const colorBtn = document.createElement("button");
     colorBtn.type = "button";
@@ -665,8 +645,6 @@
       plusBtn.remove();
       minusBtn.remove();
       colorBtn.remove();
-      fontPlusBtn.remove();
-      fontMinusBtn.remove();
     }
 
     editor.addEventListener("blur", finish);
@@ -907,10 +885,12 @@
     const showDel = onLast && state.workspaces.length > 1;
     delWsBtn.style.display = showDel ? "" : "none";
     delWsBtn.disabled = showDel && last.nodes.length > 0;
-    // Los botones de fuente (F) y color de letra también viven en la última
-    // página, arriba del "+" y el "−".
+    // Los ajustes globales de letra (F, color, A+, A−) también viven en la
+    // última página, arriba del "+" y el "−".
     fontBtn.style.display = onLast ? "" : "none";
     fontColorBtn.style.display = onLast ? "" : "none";
+    fontPlusBtn.style.display = onLast ? "" : "none";
+    fontMinusBtn.style.display = onLast ? "" : "none";
   }
 
   // Dibuja el escritorio activo (hojas + árbol) sin animación.
@@ -1031,6 +1011,16 @@
     applyLeafFontSettings();
     saveState();
   });
+  // A+/A−: tamaño de letra global, con límites de config.
+  function nudgeFontSize(delta) {
+    const f = CONFIG.leafFont;
+    const s = state.settings;
+    s.textSize = Math.max(f.sizeMin, Math.min(f.sizeMax, s.textSize + delta));
+    applyLeafFontSettings();
+    saveState();
+  }
+  fontPlusBtn.addEventListener("click", () => nudgeFontSize(CONFIG.leafFont.sizeStep));
+  fontMinusBtn.addEventListener("click", () => nudgeFontSize(-CONFIG.leafFont.sizeStep));
   window.addEventListener("resize", fitDots); // rotar el teléfono re-ajusta
 
 })();

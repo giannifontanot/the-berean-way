@@ -274,22 +274,6 @@ html, body {
   bottom: -52px;
 }
 
-/* Botones de tamaño de LETRA: columna a la izquierda de la hoja (+ arriba,
-   − abajo). Cambian el texto de todas las hojas del sitio. */
-.size-btn.font-plus,
-.size-btn.font-minus {
-  left: -52px;
-  transform: none;
-}
-
-.size-btn.font-plus {
-  top: calc(50% - 48px);
-}
-
-.size-btn.font-minus {
-  top: calc(50% + 4px);
-}
-
 /* Botón de color: a la derecha de la hoja, dorado */
 .size-btn.color {
   left: auto;
@@ -595,10 +579,13 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
 }
 
 /* Columna de botones grises de la última página (arriba derecha, debajo de
-   los puntos), de arriba a abajo: F (fuente), color de letra, "+" (crear
-   escritorio) y "−" (borrar el último si está vacío). */
+   los puntos), de arriba a abajo: F (fuente), color de letra, A+ y A−
+   (tamaño de letra), "+" (crear escritorio) y "−" (borrar el último si está
+   vacío). */
 #font-btn,
 #font-color-btn,
+#font-plus-btn,
+#font-minus-btn,
 #new-ws-btn,
 #del-ws-btn {
   touch-action: manipulation; /* iOS: sin zoom por doble toque */
@@ -643,12 +630,26 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
   box-shadow: 0 0 6px var(--leaf-text-color, var(--text, #f7ff00));
 }
 
-#new-ws-btn {
+/* A+/A−: label más chico para que quepa el par de caracteres */
+#font-plus-btn,
+#font-minus-btn {
+  font-size: 16px;
+}
+
+#font-plus-btn {
   top: calc(172px + env(safe-area-inset-top, 0px));
 }
 
-#del-ws-btn {
+#font-minus-btn {
   top: calc(226px + env(safe-area-inset-top, 0px));
+}
+
+#new-ws-btn {
+  top: calc(280px + env(safe-area-inset-top, 0px));
+}
+
+#del-ws-btn {
+  top: calc(334px + env(safe-area-inset-top, 0px));
 }
 
 /* Mientras el último escritorio tenga hojas, el "−" se ve pero apagado:
@@ -665,6 +666,8 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
 
 #font-btn:active,
 #font-color-btn:active,
+#font-plus-btn:active,
+#font-minus-btn:active,
 #new-ws-btn:active,
 #del-ws-btn:active {
   transform: scale(0.92);
