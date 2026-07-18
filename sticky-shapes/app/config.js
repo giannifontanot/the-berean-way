@@ -86,6 +86,16 @@ const CONFIG = {
   // workspaceFadeMs: duración de cada mitad del cross-fade al cambiar de
   // escritorio (fade-out + fade-in ≈ 2×, ~320ms en total).
   animations: { enabled: true, durationMs: 120, swallowMs: 380, workspaceFadeMs: 160 },
+
+  // Barra de puntos: ventana deslizante estilo iOS/Instagram. Con muchos
+  // escritorios solo se ven maxVisible puntos; los de los bordes se dibujan
+  // pequeños para indicar que hay más, y la ventana se desliza al navegar o
+  // al sostener una hoja (o un punto en modo reordenar) sobre un borde.
+  dotWindow: {
+    maxVisible: 7,            // máximo de puntos visibles a la vez
+    slideMs: 200,             // duración del deslizamiento de la ventana
+    edgeSlideCooldownMs: 400, // pausa entre deslizamientos automáticos
+  },
 };
 
 // Exposición global (sin módulos) para una app estática simple.

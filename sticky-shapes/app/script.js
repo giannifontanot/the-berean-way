@@ -80,6 +80,10 @@
       "--ws-fade-ms",
       (CONFIG.animations.enabled ? CONFIG.animations.workspaceFadeMs : 0) + "ms"
     );
+    root.setProperty(
+      "--dot-slide-ms",
+      (CONFIG.animations.enabled ? CONFIG.dotWindow.slideMs : 0) + "ms"
+    );
   }
 
   // ---------------------------------------------------------------
@@ -403,6 +407,7 @@
       [lr.left + lr.width / 2, lr.top + 10], // la punta superior de la hoja
     ];
     for (const dot of wsDots.querySelectorAll(".ws-dot")) {
+      if (!dotIsVisible(dot)) continue; // recortado por la ventana deslizante
       const r = dot.getBoundingClientRect();
       for (const [x, y] of aim) {
         if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom + 30) {
@@ -414,8 +419,14 @@
   }
 
   // Durante el arrastre: resalta el punto destino (si no es el actual).
+  // Sostener la hoja sobre un punto "mini" del borde desliza la ventana para
+  // alcanzar los escritorios ocultos.
   function highlightDotUnderPointer(el, px, py) {
     const dot = dotForLeaf(el, px, py);
+    if (dot && dot.classList.contains("dot-mini")) {
+      const idx = Array.prototype.indexOf.call(dotsRow.children, dot);
+      slideDotWindow(idx === dotWinStart ? -1 : 1);
+    }
     wsDots.querySelectorAll(".ws-dot").forEach((d) => {
       d.classList.toggle(
         "drop-target",
@@ -687,6 +698,8 @@
   // Gestos: toque = navegar; toque prolongado = modo reordenar ("temblorcito").
   function renderDots() {
     wsDots.innerHTML = "";
+    dotsRow = document.createElement("div");
+    dotsRow.id = "ws-dots-row";
     for (const ws of state.workspaces) {
       const dot = document.createElement("button");
       dot.type = "button";
@@ -697,9 +710,81 @@
       visual.className = "dot-visual";
       dot.appendChild(visual);
       attachDotGestures(dot, ws.id);
-      wsDots.appendChild(dot);
+      dotsRow.appendChild(dot);
     }
+    wsDots.appendChild(dotsRow);
+    centerDotWindow();
     updateNewWsBtn();
+  }
+
+  // ---------------------------------------------------------------
+  // Ventana deslizante de puntos (config: dotWindow). Con muchos escritorios
+  // solo se ven maxVisible puntos; el activo siempre queda dentro de la
+  // ventana y los puntos de los bordes se ven pequeños ("hay más por allá").
+  // ---------------------------------------------------------------
+  let dotsRow = null;
+  let dotWinStart = 0;   // índice del primer punto visible
+  let dotSlot = 42;      // ancho de un punto + separación (se mide del DOM)
+  let lastDotSlide = 0;  // para el cooldown del deslizamiento automático
+
+  function dotWinMax() { return CONFIG.dotWindow.maxVisible; }
+  function dotWinLastStart() {
+    return Math.max(0, state.workspaces.length - dotWinMax());
+  }
+
+  // Aplica ancho de la ventana, desplazamiento de la fila y puntos "mini".
+  function layoutDotWindow() {
+    const dots = dotsRow.children;
+    const count = dots.length;
+    const visible = Math.min(count, dotWinMax());
+    dotWinStart = Math.max(0, Math.min(dotWinStart, dotWinLastStart()));
+    if (count > 1) dotSlot = dots[1].offsetLeft - dots[0].offsetLeft;
+    wsDots.style.width = (visible * dotSlot - (dotSlot - dots[0].offsetWidth)) + "px";
+    dotsRow.style.transform = `translateX(${-dotWinStart * dotSlot}px)`;
+    const moreLeft = dotWinStart > 0;
+    const moreRight = dotWinStart < dotWinLastStart();
+    for (let i = 0; i < count; i++) {
+      dots[i].classList.toggle(
+        "dot-mini",
+        (moreLeft && i === dotWinStart) ||
+          (moreRight && i === dotWinStart + visible - 1)
+      );
+    }
+  }
+
+  // Coloca la ventana de modo que el punto activo quede visible y, de ser
+  // posible, no pegado al borde (margen de un punto).
+  function centerDotWindow() {
+    const idx = state.workspaces.findIndex((w) => w.id === state.activeWorkspaceId);
+    if (idx >= 0) {
+      if (idx <= dotWinStart) dotWinStart = Math.max(0, idx - 1);
+      const lastVisible = dotWinStart + dotWinMax() - 1;
+      if (idx >= lastVisible) {
+        dotWinStart = Math.min(dotWinLastStart(), idx - dotWinMax() + 2);
+      }
+    }
+    layoutDotWindow();
+  }
+
+  // Desliza la ventana un paso (dir = -1 izquierda, +1 derecha), con cooldown
+  // para que el deslizamiento automático avance de punto en punto.
+  function slideDotWindow(dir) {
+    const now = Date.now();
+    if (now - lastDotSlide < CONFIG.dotWindow.edgeSlideCooldownMs) return false;
+    const next = Math.max(0, Math.min(dotWinStart + dir, dotWinLastStart()));
+    if (next === dotWinStart) return false;
+    lastDotSlide = now;
+    dotWinStart = next;
+    layoutDotWindow();
+    return true;
+  }
+
+  // ¿El punto está dentro de la ventana visible? (los recortados no cuentan
+  // como blanco al arrastrar hojas.)
+  function dotIsVisible(dot) {
+    const wr = wsDots.getBoundingClientRect();
+    const r = dot.getBoundingClientRect();
+    return r.left >= wr.left - 1 && r.right <= wr.right + 1;
   }
 
   // ---------------------------------------------------------------
@@ -790,8 +875,18 @@
         }
         return;
       }
-      // Agarrado: el punto sigue al dedo en horizontal.
+      // Agarrado: el punto sigue al dedo en horizontal. Llevarlo al borde de
+      // la ventana la desliza para alcanzar posiciones ocultas.
       dotDragging = true;
+      const wr = wsDots.getBoundingClientRect();
+      let dir = 0;
+      if (e.clientX < wr.left + 14) dir = -1;
+      else if (e.clientX > wr.right - 14) dir = 1;
+      if (dir && slideDotWindow(dir)) {
+        // La base del punto se movió un slot con la fila; se compensa para
+        // que siga exactamente bajo el dedo.
+        grabHomeX -= dir * dotSlot;
+      }
       grabbedDot.style.transform = `translateX(${e.clientX - grabHomeX}px) scale(1.7)`;
     });
 
