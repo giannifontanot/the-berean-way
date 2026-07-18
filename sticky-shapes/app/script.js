@@ -815,6 +815,15 @@
     });
   }
 
+  // iOS: mientras se reordena o se agarra un punto, bloquear el gesto táctil
+  // nativo (scroll/zoom) a nivel touchmove — Safari a veces lo dispara aunque
+  // el elemento tenga touch-action:none, y eso cancela el arrastre.
+  wsDots.addEventListener(
+    "touchmove",
+    (e) => { if (reorderMode || grabbedDot) e.preventDefault(); },
+    { passive: false }
+  );
+
   // Tocar fuera de los puntos sale del modo reordenar.
   document.addEventListener("pointerdown", (e) => {
     if (reorderMode && !wsDots.contains(e.target)) exitReorder();

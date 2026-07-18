@@ -13,6 +13,8 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;              /* iOS/Android: sin rebote */
+  -webkit-tap-highlight-color: transparent; /* iOS: sin flash gris al tocar */
   background: var(--bg, #0a0018);
   font-family: var(--font, monospace);
   /* Sutil textura de scanlines de arcade */
@@ -155,6 +157,7 @@ html, body {
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none; /* iOS: sin menú al mantener presionada la hoja */
   min-width: 44px;  /* área táctil mínima (accesibilidad) */
   min-height: 44px;
 }
@@ -226,6 +229,8 @@ html, body {
 
 /* Campo de edición (doble clic) */
 .leaf-editor {
+  user-select: text;          /* iOS: sin esto el caret/selección fallan */
+  -webkit-user-select: text;
   position: relative;
   width: 86%;
   background: rgba(0, 0, 0, 0.55);
@@ -243,6 +248,7 @@ html, body {
 
 /* Botones de tamaño (+ arriba, − abajo) — visibles solo en modo edición */
 .size-btn {
+  touch-action: manipulation; /* iOS: sin zoom por doble toque */
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -283,8 +289,8 @@ html, body {
 
 #treasure {
   position: fixed;
-  left: 16px;
-  bottom: 16px;
+  left: calc(16px + env(safe-area-inset-left, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   width: 76px;
   height: 76px;
   display: flex;
@@ -424,9 +430,10 @@ body.leaf-dragging #treasure {
 /* ---------- Botón flotante + ---------- */
 
 #add-btn {
+  touch-action: manipulation; /* iOS: sin zoom por doble toque */
   position: fixed;
-  right: 20px;
-  bottom: 20px;
+  right: calc(20px + env(safe-area-inset-right, 0px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   width: 56px;
   height: 56px;
   border-radius: 50%;
@@ -471,7 +478,7 @@ body.leaf-dragging #treasure {
    es un span interno pequeño — así se pueden tocar sin picar exacto. */
 #ws-dots {
   position: fixed;
-  top: 6px;
+  top: calc(6px + env(safe-area-inset-top, 0px));
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -570,9 +577,10 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
 
 /* Botón gris para crear un escritorio nuevo (arriba derecha) */
 #new-ws-btn {
+  touch-action: manipulation; /* iOS: sin zoom por doble toque */
   position: fixed;
-  right: 20px;
-  top: 16px;
+  right: calc(20px + env(safe-area-inset-right, 0px));
+  top: calc(16px + env(safe-area-inset-top, 0px));
   width: 44px;
   height: 44px;
   border-radius: 50%;
