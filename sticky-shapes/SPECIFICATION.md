@@ -213,11 +213,11 @@ escritorio es un espacio separado ("jardín de oración") con sus propias hojas.
 - **Navegar:** un indicador de **puntos** (arriba, centrado) tipo paginación de
   teléfono; un punto por escritorio, el activo resaltado (más grande/brillante).
   Tocar un punto cambia el escritorio **sin recargar la página**.
-- **Ventana deslizante:** con muchos escritorios solo se ven `maxVisible`
-  puntos (config `dotWindow`); los de los bordes se dibujan **pequeños** para
-  indicar que hay más. La ventana se desliza sola al navegar (el activo siempre
-  queda visible), al **sostener una hoja** sobre un punto pequeño del borde, o
-  al llevar un punto agarrado al borde en modo reordenar.
+- **Ajuste dinámico:** siempre se ven **todos** los puntos. Con muchos
+  escritorios los puntos se **encogen** (entre `maxDotPx` y `minDotPx`, config
+  `dotFit`) para caber en el ancho de la pantalla; el círculo visible se escala
+  en proporción y el alto táctil se mantiene generoso. Rotar el teléfono
+  recalcula el tamaño.
 - **Aislamiento:** las hojas de un escritorio nunca aparecen en otro.
 - **Transición:** cross-fade suave (fade-out → cambiar contenido → fade-in,
   ~250–350 ms). **Solo la capa de hojas** hace fade; el árbol y el cofre quedan

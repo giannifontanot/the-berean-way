@@ -476,30 +476,23 @@ body.leaf-dragging #treasure {
 /* Indicador de escritorios: puntos tipo paginación, arriba centro.
    Cada punto es un BOTÓN grande (área táctil cómoda) y el círculo visible
    es un span interno pequeño — así se pueden tocar sin picar exacto. */
-/* Ventana deslizante: #ws-dots recorta (overflow hidden) y la fila interna
-   #ws-dots-row se desliza con translateX cuando hay más puntos que los que
-   caben (ver dotWindow en config.js). */
+/* Barra de puntos: siempre se ven todos. Con muchos escritorios los botones
+   se encogen (--dot-btn / --dot-vis, calculados en JS según dotFit). */
 #ws-dots {
   position: fixed;
   top: calc(6px + env(safe-area-inset-top, 0px));
   left: 50%;
   transform: translateX(-50%);
-  overflow: hidden;
-  z-index: 2000;
-}
-
-#ws-dots-row {
   display: flex;
   gap: 2px;
   align-items: center;
-  width: max-content; /* la fila desborda la ventana; el recorte la limita */
-  transition: transform var(--dot-slide-ms, 200ms) ease;
+  z-index: 2000;
 }
 
 .ws-dot {
-  width: 40px;   /* área táctil amplia */
-  height: 40px;
-  flex-shrink: 0; /* nunca encoger para "caber": la ventana recorta */
+  width: var(--dot-btn, 40px);  /* área táctil; se encoge con muchos puntos */
+  height: 40px;                 /* alto fijo generoso para el dedo */
+  flex-shrink: 0;
   padding: 0;
   border: none;
   background: transparent;
@@ -516,20 +509,13 @@ body.leaf-dragging #treasure {
 
 /* Círculo visible (pequeño) dentro del botón */
 .dot-visual {
-  width: 10px;
-  height: 10px;
+  width: var(--dot-vis, 10px);
+  height: var(--dot-vis, 10px);
   box-sizing: border-box;
   border-radius: 50%;
   background: var(--accent, #ff7a00);
   opacity: 0.35;
   transition: opacity var(--anim-ms, 120ms) ease, transform var(--anim-ms, 120ms) ease;
-}
-
-/* Punto de borde: se dibuja pequeño para indicar que hay más escritorios
-   más allá de la ventana visible (estilo paginación de iOS/Instagram). */
-.ws-dot.dot-mini .dot-visual {
-  transform: scale(0.55);
-  opacity: 0.25;
 }
 
 /* El escritorio activo: discreto — mismo color y tamaño, pero solo el contorno
