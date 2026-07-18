@@ -429,26 +429,51 @@ body.leaf-dragging #treasure {
 
 /* ---------- Botón flotante + ---------- */
 
+/* Botón de nueva hoja: silueta de hoja verde neón (el verde es de las hojas;
+   el naranja queda reservado para las páginas) con un + amarillo al centro.
+   Nunca más grande que el cofre (76px). */
 #add-btn {
   touch-action: manipulation; /* iOS: sin zoom por doble toque */
   position: fixed;
-  right: calc(20px + env(safe-area-inset-right, 0px));
-  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  border: 3px solid var(--accent, #ff7a00);
-  background: var(--bg, #0a0018);
-  color: var(--accent, #ff7a00);
-  font-size: 30px;
-  font-family: var(--font, monospace);
-  line-height: 1;
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  width: 72px;
+  height: 72px;
+  padding: 4px;
+  border: none;
+  background: transparent;
   cursor: pointer;
   z-index: 2000;
-  box-shadow:
-    0 0 calc(var(--glow, 8px) * 0.75) var(--accent, #ff7a00),
-    inset 0 0 calc(var(--glow, 8px) * 0.5) rgba(255, 122, 0, 0.4);
   transition: transform var(--anim-ms, 120ms) ease;
+}
+
+#add-btn svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 calc(var(--glow, 8px) * 0.75) var(--canopy, #2ee65f));
+}
+
+#add-btn .add-leaf-body {
+  fill: var(--leaf-fill, #12203a);
+  stroke: var(--canopy, #2ee65f);
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+
+#add-btn .add-leaf-stem {
+  fill: none;
+  stroke: var(--canopy, #2ee65f);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+#add-btn .add-leaf-plus {
+  fill: none;
+  stroke: var(--text, #f7ff00);
+  stroke-width: 4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px var(--text, #f7ff00));
 }
 
 #add-btn:active {
@@ -642,6 +667,15 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
 
 #font-minus-btn {
   top: calc(226px + env(safe-area-inset-top, 0px));
+}
+
+/* Los botones de PÁGINA (+/−) llevan borde naranja —el color de los puntos
+   de las páginas— para distinguirse de los ajustes de letra (grises). */
+#new-ws-btn,
+#del-ws-btn {
+  border-color: var(--accent, #ff7a00);
+  color: var(--accent, #ff7a00);
+  box-shadow: 0 0 6px rgba(255, 122, 0, 0.5);
 }
 
 #new-ws-btn {
