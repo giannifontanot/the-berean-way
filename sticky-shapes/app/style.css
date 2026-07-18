@@ -447,33 +447,35 @@ body.leaf-dragging #treasure {
   transition: transform var(--anim-ms, 120ms) ease;
 }
 
+/* Mismo lenguaje sobrio que los botones de la última página: borde delgado,
+   sin brillo, símbolo discreto. */
 #add-btn svg {
   width: 100%;
   height: 100%;
   overflow: visible;
-  filter: drop-shadow(0 0 calc(var(--glow, 8px) * 0.75) var(--canopy, #2ee65f));
+  filter: drop-shadow(0 0 6px rgba(46, 230, 95, 0.4));
 }
 
 #add-btn .add-leaf-body {
-  fill: var(--leaf-fill, #12203a);
+  fill: var(--bg, #0a0018);
   stroke: var(--canopy, #2ee65f);
-  stroke-width: 3;
+  stroke-width: 2;
   stroke-linejoin: round;
 }
 
 #add-btn .add-leaf-stem {
   fill: none;
   stroke: var(--canopy, #2ee65f);
-  stroke-width: 3;
+  stroke-width: 2;
   stroke-linecap: round;
 }
 
 #add-btn .add-leaf-plus {
   fill: none;
-  stroke: var(--text, #f7ff00);
-  stroke-width: 4;
+  stroke: var(--canopy, #2ee65f);
+  stroke-width: 2.5;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 4px var(--text, #f7ff00));
+  opacity: 0.9;
 }
 
 #add-btn:active {
