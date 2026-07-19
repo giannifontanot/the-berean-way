@@ -211,13 +211,16 @@ escritorio es un espacio separado ("jardín de oración") con sus propias hojas.
   derecha = anterior (config `swipeNav`). Los puntos siguen funcionando igual.
 - **Letra de las hojas (ajustes globales, config `leafFont`):** aplican a
   TODAS las hojas de todos los escritorios y persisten en el estado. Viven
-  todos juntos en la columna de la **última página**, en este orden:
-  1. **F** (F estilizada): cicla la **fuente** entre 5 fuentes del sistema.
-  2. **Color** (sin label; su relleno muestra el color en uso): cicla el
+  todos juntos en la columna de la **última página**. La columna, de arriba
+  a abajo:
+  1. **+** (crear escritorio) y 2. **−** (borrar el último si está vacío) —
+     pegados a la barra de puntos, con borde naranja, pues también son de
+     páginas.
+  3. **F** (F estilizada): cicla la **fuente** entre 5 fuentes del sistema.
+  4. **Color** (sin label; su relleno muestra el color en uso): cicla el
      **color** del texto entre 5 colores.
-  3. **A+** y 4. **A−**: ajustan el **tamaño** del texto (entre `sizeMin` y
+  5. **A+** y 6. **A−**: ajustan el **tamaño** del texto (entre `sizeMin` y
      `sizeMax`, de `sizeStep` en `sizeStep`).
-  5. **+** (crear escritorio) y 6. **−** (borrar el último si está vacío).
 - **Mover una hoja a otro escritorio:** se **arrastra la hoja hasta el punto**
   del escritorio destino. Durante el arrastre los puntos se agrandan (blancos
   fáciles de tocar) y el destino se resalta; al soltar, la hoja "vuela" al punto
