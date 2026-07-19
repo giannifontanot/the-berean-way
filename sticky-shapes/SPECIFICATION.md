@@ -236,8 +236,9 @@ escritorio es un espacio separado ("jardín de oración") con sus propias hojas.
   recalcula el tamaño.
 - **Aislamiento:** las hojas de un escritorio nunca aparecen en otro.
 - **Transición:** cross-fade suave (fade-out → cambiar contenido → fade-in,
-  ~250–350 ms). **Solo la capa de hojas** hace fade; el árbol y el cofre quedan
-  fijos (son el fondo estable del jardín).
+  ~250–350 ms). **La capa de hojas y el árbol** se desvanecen juntos para un
+  cambio de escenario completo; **solo el cofre** queda fijo (es el borrador,
+  siempre presente).
 - **Persistencia:** cantidad de escritorios, escritorio activo, y las hojas de
   cada uno se guardan en Local Storage y se restauran igual al reabrir.
 - **Reordenar:** un **toque prolongado** sobre un punto entra al modo

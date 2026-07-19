@@ -902,7 +902,7 @@
   }
 
   // Cambia de escritorio con cross-fade: fade-out → cambiar contenido →
-  // fade-in. Solo la capa de hojas hace fade; árbol y cofre quedan fijos.
+  // fade-in. Hojas y árbol hacen fade juntos; el cofre queda fijo.
   let switching = false;
   function switchWorkspace(id) {
     if (switching || id === state.activeWorkspaceId) return;
@@ -918,12 +918,14 @@
 
     switching = true;
     leafLayer.classList.add("fading"); // fade-out
+    treeSvg.classList.add("fading");
     setTimeout(() => {
       state.activeWorkspaceId = id;
       saveState();
       renderActiveWorkspace(); // cambiar contenido (invisible)
       void leafLayer.offsetWidth; // reflow para reiniciar la transición
       leafLayer.classList.remove("fading"); // fade-in
+      treeSvg.classList.remove("fading");
       switching = false;
     }, fadeMs);
   }
