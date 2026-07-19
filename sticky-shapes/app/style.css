@@ -438,9 +438,9 @@ body.leaf-dragging #treasure {
   right: calc(16px + env(safe-area-inset-right, 0px));
   /* Alineado con el cofre: mismo bottom (16px) + 2px para centrar las
      alturas (cofre 76px vs hoja 72px). Nunca más grande que el cofre. */
-  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
-  width: 72px;
-  height: 72px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  width: 69px;
+  height: 69px;
   padding: 4px;
   border: none;
   background: transparent;
@@ -459,7 +459,7 @@ body.leaf-dragging #treasure {
 }
 
 #add-btn .add-leaf-body {
-  fill: var(--bg, #0a0018);
+  fill: var(--canopy-fill, rgba(30, 90, 40, 0.1));
   stroke: var(--canopy, #2ee65f);
   stroke-width: 2;
   stroke-linejoin: round;
@@ -608,9 +608,9 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
 }
 
 /* Columna de botones grises de la última página (arriba derecha, debajo de
-   los puntos), de arriba a abajo: F (fuente), color de letra, A+ y A−
-   (tamaño de letra), "+" (crear escritorio) y "−" (borrar el último si está
-   vacío). */
+   los puntos), de arriba a abajo: "+" (crear escritorio) y "−" (borrar el
+   último si está vacío) —pegados a la barra de puntos que también son de
+   páginas—, luego F (fuente), color de letra, A+ y A− (tamaño de letra). */
 #font-btn,
 #font-color-btn,
 #font-plus-btn,
@@ -642,10 +642,11 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
   font-style: italic;
   font-size: 26px;
   padding-bottom: 4px;
+  top: calc(172px + env(safe-area-inset-top, 0px));
 }
 
 #font-color-btn {
-  top: calc(118px + env(safe-area-inset-top, 0px));
+  top: calc(226px + env(safe-area-inset-top, 0px));
 }
 
 /* Muestra del color de letra en uso (relleno del botón de color) */
@@ -666,11 +667,11 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
 }
 
 #font-plus-btn {
-  top: calc(172px + env(safe-area-inset-top, 0px));
+  top: calc(280px + env(safe-area-inset-top, 0px));
 }
 
 #font-minus-btn {
-  top: calc(226px + env(safe-area-inset-top, 0px));
+  top: calc(334px + env(safe-area-inset-top, 0px));
 }
 
 /* Los botones de PÁGINA (+/−) llevan borde naranja —el color de los puntos
@@ -683,11 +684,11 @@ body.dots-armed .ws-dot.drop-target .dot-visual {
 }
 
 #new-ws-btn {
-  top: calc(280px + env(safe-area-inset-top, 0px));
+  top: calc(64px + env(safe-area-inset-top, 0px));
 }
 
 #del-ws-btn {
-  top: calc(334px + env(safe-area-inset-top, 0px));
+  top: calc(118px + env(safe-area-inset-top, 0px));
 }
 
 /* Mientras el último escritorio tenga hojas, el "−" se ve pero apagado:
