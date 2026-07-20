@@ -466,7 +466,9 @@ body.leaf-dragging #treasure {
 }
 
 #add-btn .add-leaf-body {
-  fill: var(--canopy-fill, rgba(30, 90, 40, 0.1));
+  /* Verde translúcido de las copas, pero más presente para que se note
+     sobre el fondo oscuro (la copa cubre más área y por eso se ve más). */
+  fill: rgba(46, 230, 95, 0.18);
   stroke: var(--canopy, #2ee65f);
   stroke-width: 2;
   stroke-linejoin: round;
@@ -482,9 +484,9 @@ body.leaf-dragging #treasure {
 #add-btn .add-leaf-plus {
   fill: none;
   stroke: var(--canopy, #2ee65f);
-  stroke-width: 2;
+  stroke-width: 3;      /* mismo grosor visual que el + de los botones */
   stroke-linecap: round;
-  opacity: 0.75;
+  opacity: 1;
 }
 
 #add-btn:active {
