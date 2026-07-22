@@ -4,9 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Prayers</title>
-  <link rel="stylesheet" href="style.css?v=46">
+  <link rel="stylesheet" href="style.css?v=47">
+  <link rel="stylesheet" href="extension.css?v=47">
 </head>
 <body>
+
+  <!-- El "mundo": envuelve TODO el escritorio. Su transform ancla a los
+       elementos fixed de adentro, así el escritorio completo se desliza
+       como un solo póster para revelar la extensión inferior. -->
+  <div id="world">
 
   <!-- Lienzo: contiene el árbol de fondo y las hojas del usuario -->
   <main id="canvas" aria-label="Árbol de oración">
@@ -194,7 +200,21 @@
     </svg>
   </button>
 
-  <script src="config.js?v=46"></script>
-  <script src="script.js?v=46"></script>
+  <!-- Extensión inferior del escritorio: continuación del mismo lienzo,
+       pegada al borde inferior. Zona del código QR e instrucciones. -->
+  <section id="lower-deck" aria-label="Código QR e instrucciones">
+    <div id="qr-container">
+      <img src="img/qr.png?v=47" alt="Código QR para abrir Prayers">
+    </div>
+    <div id="qr-instructions">
+      <!-- Imagen de instrucciones (se agrega aquí, sin texto) -->
+    </div>
+  </section>
+
+  </div><!-- /world -->
+
+  <script src="config.js?v=47"></script>
+  <script src="script.js?v=47"></script>
+  <script src="extension.js?v=47"></script>
 </body>
 </html>

@@ -1,0 +1,58 @@
+/* ================================================================
+   Extensión inferior del escritorio (módulo independiente).
+
+   #world envuelve TODO el escritorio (lienzo, puntos, botones, cofre).
+   Como #world tiene transform, sus descendientes position:fixed se
+   anclan a él: al trasladar #world, el escritorio completo se mueve
+   como un solo póster vertical y revela la extensión #lower-deck que
+   vive pegada a su borde inferior (top: 100%), sin costura.
+   ================================================================ */
+
+#world {
+  position: fixed;
+  inset: 0;
+  transform: translateY(var(--deck-shift, 0px));
+  will-change: transform;
+}
+
+/* El ajuste al soltar (asentarse abierto/cerrado) es la única transición;
+   durante el arrastre el escritorio sigue al dedo sin animación. */
+#world.deck-snapping {
+  transition: transform var(--deck-snap-ms, 280ms) ease;
+}
+
+/* Extensión inferior: continuación natural del escritorio. Fondo blanco,
+   limpio y minimalista; solo imágenes, sin texto. */
+#lower-deck {
+  position: absolute;
+  top: 100%; /* comienza exactamente donde termina el escritorio */
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+  padding: 56px 24px calc(56px + env(safe-area-inset-bottom, 0px));
+  touch-action: none;         /* el gesto de cierre no debe hacer scroll */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Área reservada para el código QR */
+#qr-container img {
+  display: block;
+  width: min(240px, 62vw);
+  height: auto;
+  image-rendering: pixelated; /* módulos del QR nítidos a cualquier escala */
+}
+
+/* Área reservada para las instrucciones (imagen, sin texto) */
+#qr-instructions img {
+  display: block;
+  width: min(300px, 76vw);
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.18);
+}

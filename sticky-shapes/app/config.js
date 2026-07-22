@@ -87,6 +87,14 @@ const CONFIG = {
   // escritorio (fade-out + fade-in ≈ 2×, ~320ms en total).
   animations: { enabled: true, durationMs: 120, swallowMs: 380, workspaceFadeMs: 160 },
 
+  // Extensión inferior del escritorio (zona del QR): se revela arrastrando
+  // hacia arriba con un gesto deliberado, tipo cajón con ligera resistencia.
+  lowerDeck: {
+    deadZonePx: 48,  // zona muerta antes de que el escritorio empiece a moverse
+    snapRatio: 0.25, // fracción del alto recorrida para asentarse al soltar
+    snapMs: 280,     // duración del ajuste (sin rebote) al soltar
+  },
+
   // Barra de puntos: siempre se ven TODOS los puntos. Con muchos escritorios
   // los puntos se encogen dinámicamente para caber en el ancho de la pantalla
   // (entre maxDotPx y minDotPx); el círculo visible se escala en proporción.
