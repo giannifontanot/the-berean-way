@@ -28,7 +28,8 @@
   top: 100%; /* comienza exactamente donde termina el escritorio */
   left: 0;
   right: 0;
-  background: #ffffff;
+  /* Gris suave: no deslumbra ni contrasta tan duro con el fondo oscuro */
+  background: #9aa0a8;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -40,10 +41,19 @@
   -webkit-touch-callout: none;
 }
 
-/* Área reservada para el código QR */
+/* Área reservada para el código QR: tarjeta blanca con borde, bien
+   presentada (y el fondo blanco garantiza que el QR escanee bien). */
+#qr-container {
+  background: #ffffff;
+  padding: 18px;
+  border: 2px solid #4a4f57;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
 #qr-container img {
   display: block;
-  width: min(240px, 62vw);
+  width: min(220px, 58vw);
   height: auto;
   image-rendering: pixelated; /* módulos del QR nítidos a cualquier escala */
 }
