@@ -73,6 +73,17 @@
   letter-spacing: 0.2px;
 }
 
+/* Subtítulos por plataforma (Android / iPhone) */
+#qr-instructions .deck-subtitle {
+  margin: 18px 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #3a3f46;
+  text-align: left;
+}
+
 #qr-instructions .deck-steps {
   margin: 0;
   padding: 0;
