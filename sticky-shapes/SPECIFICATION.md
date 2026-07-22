@@ -246,6 +246,28 @@ escritorio es un espacio separado ("jardín de oración") con sus propias hojas.
   lugar y se toca fuera para salir. El escritorio activo no cambia al reordenar.
 - **Extensible** a: renombrar, eliminar, importar/exportar escritorios.
 
+## 8.8 Extensión inferior del escritorio (zona del QR)
+
+El escritorio es un **póster vertical más alto que la pantalla**: el usuario
+normalmente ve solo la parte superior. Pegada al borde inferior (sin costura)
+vive una **extensión de fondo blanco, minimalista**, con el contenedor
+`#qr-container` (código QR que abre el app) y `#qr-instructions` (imagen de
+instrucciones, sin texto).
+
+- **Revelar:** arrastrar VERTICALMENTE hacia arriba sobre el fondo (no sobre
+  hojas, botones ni el cofre). Hay una **zona muerta** inicial
+  (`lowerDeck.deadZonePx`) que evita activaciones accidentales — como un cajón
+  con ligera resistencia; superada, el escritorio sigue al dedo 1:1.
+- **Asentar:** al soltar, si se recorrió más de `snapRatio` del alto de la
+  extensión, se asienta en el otro estado; si no, regresa (ajuste de `snapMs`,
+  sin rebotes). Con la extensión abierta, arrastrar hacia abajo la cierra.
+- **Arquitectura:** módulos independientes `extension.css` / `extension.js`.
+  Un contenedor `#world` con `transform` envuelve todo el escritorio; sus
+  descendientes `position: fixed` se anclan a él, así el escritorio completo
+  se desliza como una sola pieza. Ninguna funcionalidad existente cambia: el
+  swipe de páginas es un gesto mayormente horizontal y este es mayormente
+  vertical, por lo que nunca compiten.
+
 ## 9. Compatibilidad
 
 - Escritorio, tableta y teléfono.
