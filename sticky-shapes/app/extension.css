@@ -58,11 +58,52 @@
   image-rendering: pixelated; /* módulos del QR nítidos a cualquier escala */
 }
 
-/* Área reservada para las instrucciones (imagen, sin texto) */
-#qr-instructions img {
-  display: block;
-  width: min(300px, 76vw);
-  height: auto;
-  border-radius: 18px;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.18);
+/* Instrucciones para guardar la página: texto limpio sobre el gris */
+#qr-instructions {
+  max-width: 320px;
+  color: #23262b;
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  text-align: center;
+}
+
+#qr-instructions .deck-title {
+  margin: 0 0 14px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+#qr-instructions .deck-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: paso;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 16px;
+  line-height: 1.45;
+  text-align: left;
+}
+
+#qr-instructions .deck-steps li {
+  counter-increment: paso;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+/* Numerito en círculo, discreto */
+#qr-instructions .deck-steps li::before {
+  content: counter(paso);
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #4a4f57;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
 }
