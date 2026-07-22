@@ -90,8 +90,8 @@ const CONFIG = {
   // Extensión inferior del escritorio (zona del QR): se revela arrastrando
   // hacia arriba con un gesto deliberado, tipo cajón con ligera resistencia.
   lowerDeck: {
-    deadZonePx: 48,  // zona muerta antes de que el escritorio empiece a moverse
-    snapRatio: 0.25, // fracción del alto recorrida para asentarse al soltar
+    deadZonePx: 110, // zona muerta amplia: solo un gesto largo y decidido abre
+    snapRatio: 0.45, // hay que recorrer casi la mitad del alto para asentarse
     snapMs: 280,     // duración del ajuste (sin rebote) al soltar
   },
 
