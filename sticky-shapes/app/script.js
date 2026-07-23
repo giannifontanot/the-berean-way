@@ -51,11 +51,24 @@
       body: "M50 4 L57 20 L71 13 L66 30 L89 34 L74 47 L82 62 L63 58 L60 75 L53 66 L52 70 L53 92 L47 92 L48 70 L47 66 L40 75 L37 58 L18 62 L26 47 L11 34 L34 30 L29 13 L43 20 Z",
       vein: "M50 12 L50 70 M50 45 L30 30 M50 45 L70 30 M50 58 L36 52 M50 58 L64 52",
     },
-    // Pergamino horizontal para notas de una sola línea. Banda ancha y baja
-    // (mucho más ancha que alta) con los extremos ligeramente enrollados.
+    // Pergamino horizontal para notas de una sola línea: hoja central con
+    // bordes irregulares y dos rollos en espiral en los extremos. Mucho más
+    // ancho que alto. El body es compuesto (rollos + hoja); las venas dibujan
+    // las espirales y la costura de cada rollo.
     "leaf-scroll": {
-      body: "M22 36 L78 36 C86 37 86 63 78 64 L22 64 C14 63 14 37 22 36 Z",
-      vein: "M28 36 C24 45 24 55 28 64 M72 36 C76 45 76 55 72 64 M34 50 L66 50",
+      body:
+        // hoja central: banda ancha que cae suavemente en el centro (cinta)
+        "M22 32 Q50 37 78 32 L78 68 Q50 73 22 68 Z " +
+        // rollo izquierdo (barra vertical redondeada)
+        "M8 30 C8 25 12 24 15 24 C18 24 22 25 22 30 L22 70 C22 75 18 76 15 76 C12 76 8 75 8 70 Z " +
+        // rollo derecho
+        "M78 30 C78 25 82 24 85 24 C88 24 92 25 92 30 L92 70 C92 75 88 76 85 76 C82 76 78 75 78 70 Z",
+      vein:
+        // espiral en la parte alta de cada rollo (la cinta enrollada)
+        "M11 28 C16 28 17 34 12 34 C8 34 8 29 12 29 " +
+        "M89 28 C84 28 83 34 88 34 C92 34 92 29 88 29 " +
+        // línea de pliegue donde la hoja se une a cada rollo
+        "M25 33 L25 67 M75 33 L75 67",
     },
   };
 
