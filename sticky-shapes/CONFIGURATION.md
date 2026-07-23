@@ -36,8 +36,9 @@ y cumple el principio de **una sola fuente de verdad**.
 |---|---|---|
 | `storageKey` | string | Clave usada en Local Storage. |
 | `schemaVersion` | number | Versión del esquema de datos para migraciones. |
-| `leafShapes` | string[] | Variantes de hoja en orden de ciclo. P. ej. `["leaf-oak","leaf-maple","leaf-simple"]`. |
+| `leafShapes` | string[] | Variantes de hoja en orden de ciclo. Incluye `leaf-scroll` (pergamino horizontal). |
 | `defaultShape` | string | Variante inicial de una hoja nueva (∈ `leafShapes`). |
+| `rotationStep` | number | Grados que gira la hoja por cada clic del botón de rotar (p. ej. `30`). |
 | `statuses` | object[] | Zonas/estados: `{ id, label, region }`. `region` es `{x,y,w,h}` normalizado 0..1. |
 | `defaultStatus` | string | Estado inicial de una hoja nueva (∈ ids de `statuses`). |
 | `defaultText` | string | Texto inicial de una hoja nueva. |

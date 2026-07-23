@@ -183,6 +183,18 @@ html, body {
   z-index: 1500;
 }
 
+/* Contenido interno de la hoja (SVG + texto): es lo único que rota. Así el
+   .leaf conserva su marco (arrastre y controles de edición no giran). */
+.leaf-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
 /* El SVG de la hoja llena el elemento; contorno neón cian */
 .leaf svg {
   position: absolute;
@@ -290,6 +302,14 @@ html, body {
   border-color: var(--treasure, #ffd24a);
   color: var(--treasure, #ffd24a);
   box-shadow: 0 0 var(--glow, 4px) var(--treasure, #ffd24a);
+}
+
+/* Botón de rotación: a la izquierda de todos los controles */
+.size-btn.rotate {
+  left: -52px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
 }
 
 /* ---------- Cofre del tesoro (arrastra una hoja aquí para borrarla) ---------- */

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Prayers</title>
-  <link rel="stylesheet" href="style.css?v=50">
-  <link rel="stylesheet" href="extension.css?v=50">
+  <link rel="stylesheet" href="style.css?v=51">
+  <link rel="stylesheet" href="extension.css?v=51">
 </head>
 <body>
 
@@ -204,29 +204,55 @@
        pegada al borde inferior. Zona del código QR e instrucciones. -->
   <section id="lower-deck" aria-label="Código QR e instrucciones">
     <div id="qr-container">
-      <img src="img/qr.png?v=50" alt="Código QR para abrir Prayers">
+      <img src="img/qr.png?v=51" alt="Código QR para abrir Prayers">
     </div>
     <div id="qr-instructions">
-      <p class="deck-title">Para guardar la página</p>
+      <!-- Pestañas de idioma: Español (por defecto) / English -->
+      <div class="deck-tabs" role="tablist">
+        <button type="button" class="deck-tab is-active" data-lang="es">Espa&ntilde;ol</button>
+        <button type="button" class="deck-tab" data-lang="en">English</button>
+      </div>
 
-      <p class="deck-subtitle">Android</p>
-      <ol class="deck-steps">
-        <li>Click en los tres puntitos de arriba a la derecha</li>
-        <li>Click en &ldquo;Install and Create&rdquo;</li>
-      </ol>
+      <!-- Panel Español (contenido original, sin cambios) -->
+      <div class="deck-panel" data-lang="es">
+        <p class="deck-title">Para guardar la página</p>
 
-      <p class="deck-subtitle">iPhone</p>
-      <ol class="deck-steps">
-        <li>Click en el bot&oacute;n de compartir (el cuadrito con flecha)</li>
-        <li>Click en &ldquo;Agregar a pantalla de inicio&rdquo;</li>
-      </ol>
+        <p class="deck-subtitle">Android</p>
+        <ol class="deck-steps">
+          <li>Click en los tres puntitos de arriba a la derecha</li>
+          <li>Click en &ldquo;Install and Create&rdquo;</li>
+        </ol>
+
+        <p class="deck-subtitle">iPhone</p>
+        <ol class="deck-steps">
+          <li>Click en el bot&oacute;n de compartir (el cuadrito con flecha)</li>
+          <li>Click en &ldquo;Agregar a pantalla de inicio&rdquo;</li>
+        </ol>
+      </div>
+
+      <!-- Panel English (misma estructura, traducido) -->
+      <div class="deck-panel" data-lang="en" hidden>
+        <p class="deck-title">To save the page</p>
+
+        <p class="deck-subtitle">Android</p>
+        <ol class="deck-steps">
+          <li>Tap the three dots at the top right</li>
+          <li>Tap &ldquo;Install and Create&rdquo;</li>
+        </ol>
+
+        <p class="deck-subtitle">iPhone</p>
+        <ol class="deck-steps">
+          <li>Tap the Share button (the square with an arrow)</li>
+          <li>Tap &ldquo;Add to Home Screen&rdquo;</li>
+        </ol>
+      </div>
     </div>
   </section>
 
   </div><!-- /world -->
 
-  <script src="config.js?v=50"></script>
-  <script src="script.js?v=50"></script>
-  <script src="extension.js?v=50"></script>
+  <script src="config.js?v=51"></script>
+  <script src="script.js?v=51"></script>
+  <script src="extension.js?v=51"></script>
 </body>
 </html>
