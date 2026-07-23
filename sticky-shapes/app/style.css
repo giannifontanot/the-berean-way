@@ -183,19 +183,18 @@ html, body {
   z-index: 1500;
 }
 
-/* Contenido interno de la hoja (SVG + texto): es lo único que rota. Así el
-   .leaf conserva su marco (arrastre y controles de edición no giran). */
+/* Contenedor interno de la hoja: centra el texto. No rota (así el texto
+   se mantiene horizontal); solo el SVG gira con la rotación de la hoja. */
 .leaf-inner {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  transform-origin: 50% 50%;
-  will-change: transform;
 }
 
-/* El SVG de la hoja llena el elemento; contorno neón cian */
+/* El SVG de la hoja llena el elemento; contorno neón cian. Es lo único que
+   gira: transform-origin al centro para rotar la figura sin desplazarla. */
 .leaf svg {
   position: absolute;
   inset: 0;
@@ -203,6 +202,8 @@ html, body {
   height: 100%;
   overflow: visible;
   pointer-events: none;
+  transform-origin: 50% 50%;
+  will-change: transform;
 }
 
 .leaf svg .leaf-body {

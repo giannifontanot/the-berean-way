@@ -299,12 +299,12 @@
     );
   }
 
-  // Rotación de una hoja: se aplica al contenido interno (.leaf-inner), no al
-  // elemento .leaf. Así el arrastre (transform del .leaf) y los controles de
-  // edición (hijos del .leaf) quedan en un marco estable, sin girar con la hoja.
+  // Rotación de una hoja: se aplica SOLO al SVG (la figura), no al .leaf ni al
+  // texto. Así la hoja gira pero el texto se mantiene horizontal y legible, y
+  // el arrastre y los controles de edición quedan en un marco estable.
   function applyLeafRotation(el, node) {
-    const inner = el.querySelector(".leaf-inner");
-    if (inner) inner.style.transform = node.rotation ? `rotate(${node.rotation}deg)` : "";
+    const svg = el.querySelector("svg");
+    if (svg) svg.style.transform = node.rotation ? `rotate(${node.rotation}deg)` : "";
   }
 
   function renderLeaf(node) {
@@ -337,6 +337,7 @@
 
   function updateLeafShape(el, node) {
     el.querySelector("svg").replaceWith(leafSvg(node.shape));
+    applyLeafRotation(el, node); // el SVG nuevo debe conservar la rotación
   }
 
   function renderAll() {
