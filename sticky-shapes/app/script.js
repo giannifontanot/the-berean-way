@@ -47,6 +47,12 @@
       body: "M50 4 L57 20 L71 13 L66 30 L89 34 L74 47 L82 62 L63 58 L60 75 L53 66 L52 70 L53 92 L47 92 L48 70 L47 66 L40 75 L37 58 L18 62 L26 47 L11 34 L34 30 L29 13 L43 20 Z",
       vein: "M50 12 L50 70 M50 45 L30 30 M50 45 L70 30 M50 58 L36 52 M50 58 L64 52",
     },
+    // Pergamino horizontal para notas de una sola línea. Banda ancha y baja
+    // (mucho más ancha que alta) con los extremos ligeramente enrollados.
+    "leaf-scroll": {
+      body: "M22 36 L78 36 C86 37 86 63 78 64 L22 64 C14 63 14 37 22 36 Z",
+      vein: "M28 36 C24 45 24 55 28 64 M72 36 C76 45 76 55 72 64 M34 50 L66 50",
+    },
   };
 
   // ---------------------------------------------------------------
@@ -288,6 +294,14 @@
     );
   }
 
+  // Rotación de una hoja: se aplica al contenido interno (.leaf-inner), no al
+  // elemento .leaf. Así el arrastre (transform del .leaf) y los controles de
+  // edición (hijos del .leaf) quedan en un marco estable, sin girar con la hoja.
+  function applyLeafRotation(el, node) {
+    const inner = el.querySelector(".leaf-inner");
+    if (inner) inner.style.transform = node.rotation ? `rotate(${node.rotation}deg)` : "";
+  }
+
   function renderLeaf(node) {
     const el = document.createElement("div");
     el.className = "leaf";
@@ -300,12 +314,16 @@
     el.style.zIndex = ++zTop;
     applyLeafStyle(el, node);
 
-    el.appendChild(leafSvg(node.shape));
-
+    // Contenido interno (gira con la rotación de la hoja): SVG + texto.
+    const inner = document.createElement("div");
+    inner.className = "leaf-inner";
+    inner.appendChild(leafSvg(node.shape));
     const text = document.createElement("span");
     text.className = "leaf-text";
     text.textContent = node.text;
-    el.appendChild(text);
+    inner.appendChild(text);
+    el.appendChild(inner);
+    applyLeafRotation(el, node);
 
     attachGestures(el);
     leafLayer.appendChild(el);
@@ -632,6 +650,21 @@
     });
     el.appendChild(colorBtn);
 
+    // Botón de rotación (izquierda de todos los controles): cada clic gira la
+    // hoja rotationStep grados en sentido horario, acumulativo y persistente.
+    const rotateBtn = document.createElement("button");
+    rotateBtn.type = "button";
+    rotateBtn.className = "size-btn rotate";
+    rotateBtn.textContent = "↻"; // ↻ flecha circular horaria
+    rotateBtn.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      node.rotation = ((node.rotation || 0) + CONFIG.rotationStep) % 360;
+      applyLeafRotation(el, node);
+      touchNode(node);
+    });
+    el.appendChild(rotateBtn);
+
     let cancelled = false;
 
     function finish() {
@@ -645,6 +678,7 @@
       plusBtn.remove();
       minusBtn.remove();
       colorBtn.remove();
+      rotateBtn.remove();
     }
 
     editor.addEventListener("blur", finish);

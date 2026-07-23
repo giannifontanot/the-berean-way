@@ -93,4 +93,17 @@
   window.addEventListener("resize", () => {
     setShift(open ? -deckHeight() : 0, false);
   });
+
+  // ----------------------------------------------------------------
+  // Pestañas de idioma de las instrucciones (Español por defecto).
+  // ----------------------------------------------------------------
+  const tabs = deck.querySelectorAll(".deck-tab");
+  const panels = deck.querySelectorAll(".deck-panel");
+  function showLang(lang) {
+    tabs.forEach((t) => t.classList.toggle("is-active", t.dataset.lang === lang));
+    panels.forEach((p) => { p.hidden = p.dataset.lang !== lang; });
+  }
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => showLang(tab.dataset.lang));
+  });
 })();

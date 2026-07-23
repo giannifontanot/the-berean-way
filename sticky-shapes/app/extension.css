@@ -66,6 +66,40 @@
   text-align: center;
 }
 
+/* Pestañas de idioma (Español / English): discretas, tipo segmento */
+.deck-tabs {
+  display: inline-flex;
+  gap: 3px;
+  margin-bottom: 18px;
+  padding: 3px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 999px;
+}
+
+.deck-tab {
+  touch-action: manipulation;
+  border: none;
+  background: transparent;
+  color: #3a3f46;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.deck-tab.is-active {
+  background: #ffffff;
+  color: #1c1f24;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.deck-panel[hidden] {
+  display: none;
+}
+
 #qr-instructions .deck-title {
   margin: 0 0 14px;
   font-size: 19px;

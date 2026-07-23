@@ -5,8 +5,11 @@ const CONFIG = {
   schemaVersion: 3,               // v3: múltiples escritorios (workspaces)
 
   // Variantes de hoja (ciclan con un clic simple).
-  leafShapes: ["leaf-oak", "leaf-maple", "leaf-simple", "leaf-maple-red"],
+  leafShapes: ["leaf-oak", "leaf-maple", "leaf-simple", "leaf-maple-red", "leaf-scroll"],
   defaultShape: "leaf-oak",
+
+  // Cada clic del botón de rotación gira la hoja este ángulo (grados).
+  rotationStep: 30,
 
   // Tres estados = dos ramas + piso. region: rectángulo normalizado (0..1).
   statuses: [
@@ -66,6 +69,7 @@ const CONFIG = {
     "leaf-maple":  { fill: "#2e6b14", glow: "#b4ff3e" }, // arce: verde-lima
     "leaf-simple": { fill: "#0f5c40", glow: "#2effc0" }, // simple: verde-menta
     "leaf-maple-red": { fill: "#5c1010", glow: "#ff4545" }, // maple: rojo neón
+    "leaf-scroll": { fill: "rgba(255, 216, 110, 0.14)", glow: "#ffd24a" }, // pergamino: amarillo tenue
   },
 
   // Colores de borde alternativos (botón de color en modo edición).

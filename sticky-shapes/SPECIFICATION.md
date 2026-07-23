@@ -67,8 +67,9 @@ Cada hoja es un objeto con estas propiedades:
 | `text` | string | Contenido textual de la hoja. |
 | `x` | number | Posición horizontal (px) respecto al lienzo. |
 | `y` | number | Posición vertical (px) respecto al lienzo. |
-| `shape` | string | Variante de hoja. Uno de los valores de `leafShapes` en `config.js`. |
+| `shape` | string | Variante de hoja. Uno de los valores de `leafShapes` en `config.js` (incluye `leaf-scroll`, un pergamino horizontal para notas de una línea). |
 | `status` | string | Estado/zona actual. Uno de los IDs de `statuses` en `config.js`. |
+| `rotation` | number | Ángulo de la hoja en grados (opcional, por defecto 0). Se ajusta en incrementos de `rotationStep` con el botón de rotar del modo edición. |
 | `createdAt` | number | Timestamp de creación. |
 | `updatedAt` | number | Timestamp de la última modificación. |
 
@@ -164,8 +165,13 @@ Se persiste de inmediato. **No** cambia el estado ni la posición.
 
 ### 8.4 Editar texto (doble clic)
 
-Un doble clic entra en modo edición con un campo editable. Al terminar (blur o
-Enter) se guarda; con Escape se cancela. Ver reglas de interacción.
+Un doble clic entra en modo edición con un campo editable y cuatro controles
+alrededor de la hoja: **rotar** (izquierda), **tamaño de letra +** (arriba),
+**tamaño de letra −** (abajo) y **color de borde** (derecha). Cada clic en
+rotar gira la hoja `rotationStep` grados en sentido horario (acumulativo,
+persistente). La rotación se aplica solo al contenido de la hoja (SVG + texto);
+el marco de arrastre y los controles no giran. Al terminar (blur o Enter) se
+guarda; con Escape se cancela. Ver reglas de interacción.
 
 ### 8.5 Estados (en lugar de "archivar")
 
@@ -267,6 +273,9 @@ instrucciones, sin texto).
   se desliza como una sola pieza. Ninguna funcionalidad existente cambia: el
   swipe de páginas es un gesto mayormente horizontal y este es mayormente
   vertical, por lo que nunca compiten.
+- **Bilingüe:** las instrucciones tienen pestañas **Español** (por defecto) y
+  **English**; al tocar una, el contenido cambia al instante sin recargar. Cada
+  idioma es un `.deck-panel`; misma estructura y formato en ambos.
 
 ## 9. Compatibilidad
 
