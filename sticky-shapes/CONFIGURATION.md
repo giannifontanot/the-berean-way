@@ -39,6 +39,8 @@ y cumple el principio de **una sola fuente de verdad**.
 | `leafShapes` | string[] | Variantes de hoja en orden de ciclo. Incluye `leaf-scroll` (pergamino horizontal). |
 | `defaultShape` | string | Variante inicial de una hoja nueva (∈ `leafShapes`). |
 | `rotationStep` | number | Grados que gira la hoja por cada clic del botón de rotar (p. ej. `30`). |
+| `dotArmDelayMs` | number | Retardo (ms) antes de que los puntos se "enciendan" al arrastrar una hoja cerca — evita transferencias accidentales. |
+| `theme.editControl` | color | Color de los controles de edición (rotar, tamaño +/−); distinto del naranja (páginas). |
 | `statuses` | object[] | Zonas/estados: `{ id, label, region }`. `region` es `{x,y,w,h}` normalizado 0..1. |
 | `defaultStatus` | string | Estado inicial de una hoja nueva (∈ ids de `statuses`). |
 | `defaultText` | string | Texto inicial de una hoja nueva. |

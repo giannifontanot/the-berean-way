@@ -23,6 +23,10 @@
   // recargar usando updatedAt (la última tocada queda hasta arriba).
   let zTop = 10;
 
+  // Temporizador del retardo para "armar" los puntos de escritorio al
+  // arrastrar una hoja cerca de ellos (ver CONFIG.dotArmDelayMs).
+  let dotArmTimer = null;
+
   // ---------------------------------------------------------------
   // Formas de hoja (SVG). Registro genérico: para añadir una variante,
   // agrégala aquí y en CONFIG.leafShapes — la lógica no cambia.
@@ -74,6 +78,7 @@
     root.setProperty("--text", t.text);
     root.setProperty("--accent", t.accent);
     root.setProperty("--treasure", t.treasure);
+    root.setProperty("--edit-ctrl", t.editControl || t.accent);
     root.setProperty("--leaf-text-size", t.leafTextSize + "px");
     root.setProperty("--zone-label-size", t.zoneLabelSize + "px");
     root.setProperty("--glow", t.glowBlur + "px");
@@ -387,9 +392,21 @@
         lastY = originY + dy;
         highlightZone(e.clientX, e.clientY);
         treasure.classList.toggle("active", overTreasure(e.clientX, e.clientY));
-        // Los puntos solo "despiertan" cuando la hoja se acerca a ellos.
-        document.body.classList.toggle("dots-armed", dotsAreNear(el, e.clientY));
-        highlightDotUnderPointer(el, e.clientX, e.clientY);
+        // Los puntos solo "despiertan" tras sostener la hoja cerca dotArmDelayMs
+        // (evita transferir sin querer al mover hojas hacia arriba).
+        if (dotsAreNear(el, e.clientY)) {
+          if (!document.body.classList.contains("dots-armed") && !dotArmTimer) {
+            dotArmTimer = setTimeout(() => {
+              dotArmTimer = null;
+              document.body.classList.add("dots-armed");
+            }, CONFIG.dotArmDelayMs);
+          }
+          if (document.body.classList.contains("dots-armed")) {
+            highlightDotUnderPointer(el, e.clientX, e.clientY);
+          }
+        } else {
+          clearDotHighlight(); // se alejó: cancela el retardo y apaga los puntos
+        }
       }
     });
 
@@ -467,6 +484,7 @@
   }
 
   function clearDotHighlight() {
+    if (dotArmTimer) { clearTimeout(dotArmTimer); dotArmTimer = null; }
     document.body.classList.remove("dots-armed");
     wsDots.querySelectorAll(".ws-dot").forEach((d) => d.classList.remove("drop-target"));
   }
@@ -480,6 +498,9 @@
   }
 
   function finishDrag(el, px, py, fx, fy) {
+    // ¿Alcanzaron a "encenderse" los puntos? Solo entonces se permite la
+    // transferencia (evita mover la hoja a otro escritorio sin querer).
+    const dotsWereArmed = document.body.classList.contains("dots-armed");
     el.classList.remove("dragging");
     document.body.classList.remove("leaf-dragging");
     treasure.classList.remove("active");
@@ -495,8 +516,9 @@
     }
 
     // Soltar sobre el punto de OTRO escritorio = mover la hoja allá. Conserva
-    // su posición (node.x/y aún tienen la posición previa al arrastre).
-    const dot = dotForLeaf(el, px, py);
+    // su posición (node.x/y aún tienen la posición previa al arrastre). Solo si
+    // los puntos estaban armados (se sostuvo la hoja cerca el tiempo requerido).
+    const dot = dotsWereArmed ? dotForLeaf(el, px, py) : null;
     if (dot && dot.dataset.wsId !== state.activeWorkspaceId) {
       moveNodeToWorkspace(node, el, dot);
       return;
