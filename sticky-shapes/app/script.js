@@ -57,18 +57,18 @@
     // las espirales y la costura de cada rollo.
     "leaf-scroll": {
       body:
-        // hoja central: banda ancha que cae suavemente en el centro (cinta)
-        "M22 32 Q50 37 78 32 L78 68 Q50 73 22 68 Z " +
-        // rollo izquierdo (barra vertical redondeada)
-        "M8 30 C8 25 12 24 15 24 C18 24 22 25 22 30 L22 70 C22 75 18 76 15 76 C12 76 8 75 8 70 Z " +
+        // hoja central: el doble de larga (desborda la caja) y 30% más delgada
+        "M-6 38 Q50 42 106 38 L106 62 Q50 66 -6 62 Z " +
+        // rollo izquierdo (barra vertical redondeada, más delgada)
+        "M-16 36 C-16 32 -12 31 -11 31 C-10 31 -6 32 -6 36 L-6 64 C-6 68 -10 69 -11 69 C-12 69 -16 68 -16 64 Z " +
         // rollo derecho
-        "M78 30 C78 25 82 24 85 24 C88 24 92 25 92 30 L92 70 C92 75 88 76 85 76 C82 76 78 75 78 70 Z",
+        "M106 36 C106 32 110 31 111 31 C112 31 116 32 116 36 L116 64 C116 68 112 69 111 69 C110 69 106 68 106 64 Z",
       vein:
         // espiral en la parte alta de cada rollo (la cinta enrollada)
-        "M11 28 C16 28 17 34 12 34 C8 34 8 29 12 29 " +
-        "M89 28 C84 28 83 34 88 34 C92 34 92 29 88 29 " +
+        "M-15 34 C-10 34 -9 39 -14 39 C-18 39 -18 34 -14 34 " +
+        "M115 34 C110 34 109 39 114 39 C118 39 118 34 114 34 " +
         // línea de pliegue donde la hoja se une a cada rollo
-        "M25 33 L25 67 M75 33 L75 67",
+        "M-2 40 L-2 60 M102 40 L102 60",
     },
   };
 
