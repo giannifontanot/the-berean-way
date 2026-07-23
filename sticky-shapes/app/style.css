@@ -44,7 +44,7 @@ html, body {
   height: 100%;
   pointer-events: none;
   /* Sube un poco (con árbol y pasto) para dejar espacio abajo a los puntos. */
-  transform: translateY(-56px);
+  transform: translateY(-28px);
   transition: opacity var(--ws-fade-ms, 160ms) ease;
 }
 
@@ -332,7 +332,7 @@ html, body {
 #treasure {
   position: fixed;
   left: calc(16px + env(safe-area-inset-left, 0px));
-  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(44px + env(safe-area-inset-bottom, 0px));
   width: 76px;
   height: 76px;
   display: flex;
@@ -480,7 +480,7 @@ body.leaf-dragging #treasure {
   right: calc(16px + env(safe-area-inset-right, 0px));
   /* Alineado con el cofre: mismo bottom + 2px para centrar las alturas
      (cofre 76px vs hoja 72px). Nunca más grande que el cofre. */
-  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(46px + env(safe-area-inset-bottom, 0px));
   width: 69px;
   height: 69px;
   padding: 4px;
@@ -558,7 +558,7 @@ body.leaf-dragging #treasure {
    se encogen (--dot-btn / --dot-vis, calculados en JS según dotFit). */
 #ws-dots {
   position: fixed;
-  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(4px + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%);
   display: flex;
