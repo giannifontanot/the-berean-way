@@ -504,11 +504,14 @@
   }
 
   // ¿La hoja arrastrada (su punta) o el dedo están cerca de la fila de puntos?
+  // Simétrico: funciona con los puntos arriba o abajo (banda alrededor de la fila).
   function dotsAreNear(el, py) {
     const lr = el.getBoundingClientRect();
-    const tipY = lr.top + 10;                  // la punta superior de la hoja
-    const nearBelow = wsDots.getBoundingClientRect().bottom + 140; // zona de cercanía
-    return tipY <= nearBelow || py <= nearBelow;
+    const dr = wsDots.getBoundingClientRect();
+    const tipY = lr.top + 10;      // la punta superior de la hoja
+    const margin = 140;            // zona de cercanía
+    const near = (y) => y >= dr.top - margin && y <= dr.bottom + margin;
+    return near(tipY) || near(py);
   }
 
   function finishDrag(el, px, py, fx, fy) {
