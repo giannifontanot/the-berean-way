@@ -30,7 +30,9 @@ html, body {
 /* ---------- Lienzo y árbol ---------- */
 
 #canvas {
-  position: fixed;
+  /* absolute (no fixed) para NO crear un contexto de apilamiento propio: así
+     #leaf-layer puede subir por encima de los puntos (#ws-dots) con z-index. */
+  position: absolute;
   inset: 0;
   touch-action: none; /* el arrastre táctil no debe hacer scroll */
 }
@@ -530,6 +532,11 @@ body.leaf-dragging #treasure {
 #leaf-layer {
   position: absolute;
   inset: 0;
+  /* Por encima de los puntos (#ws-dots, z 2000) y de los botones: una hoja
+     que quede sobre un punto gana el toque/arrastre. El vacío no captura
+     (pointer-events:none), así los puntos y botones descubiertos siguen
+     recibiendo clics. */
+  z-index: 2500;
   pointer-events: none; /* el vacío no captura; las hojas sí (ver .leaf) */
   transition: opacity var(--ws-fade-ms, 160ms) ease;
 }
