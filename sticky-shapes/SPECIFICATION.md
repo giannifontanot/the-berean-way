@@ -231,7 +231,10 @@ escritorio es un espacio separado ("jardín de oración") con sus propias hojas.
   del escritorio destino. Durante el arrastre los puntos se agrandan (blancos
   fáciles de tocar) y el destino se resalta; al soltar, la hoja "vuela" al punto
   y aparece en ese escritorio **en la misma posición** que tenía. Los puntos son
-  botones con área táctil amplia aunque el círculo visible sea pequeño.
+  botones con área táctil amplia aunque el círculo visible sea pequeño. Los
+  puntos solo se **encienden tras sostener** la hoja cerca `dotArmDelayMs` (~1s);
+  si no se armaron, soltar no transfiere — así se pueden mover hojas hacia
+  arriba sin transferirlas sin querer.
 - **Navegar:** un indicador de **puntos** (arriba, centrado) tipo paginación de
   teléfono; un punto por escritorio, el activo resaltado (más grande/brillante).
   Tocar un punto cambia el escritorio **sin recargar la página**.

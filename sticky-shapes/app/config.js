@@ -55,8 +55,9 @@ const CONFIG = {
     leafFill: "#1d6b2a",     // relleno de hoja por defecto (si falta en leafStyles)
     leafGlow: "#7dff3a",     // contorno de hoja por defecto (si falta en leafStyles)
     text: "#f7ff00",         // amarillo arcade
-    accent: "#ff7a00",       // naranja Donkey Kong
+    accent: "#ff7a00",       // naranja Donkey Kong (reservado: páginas/escritorios)
     treasure: "#ffd24a",     // dorado neón: cofre del tesoro (borrar hojas)
+    editControl: "#38d6ff",  // cian neón: controles de edición (rotar, tamaño +/−)
     glowBlur: 4,             // intensidad del resplandor neón (px) — discreto, estilo DK
     fontFamily: "'Press Start 2P', 'Courier New', monospace",
     leafTextSize: 20,        // px — texto de las hojas
@@ -87,6 +88,10 @@ const CONFIG = {
   doubleClickDelay: 250, // ms para distinguir clic simple de doble clic
   dragThreshold: 5,      // px de movimiento para considerar arrastre
   minTouchTarget: 44,    // px — área táctil mínima
+  // Retardo antes de que los puntos de escritorio se "enciendan" al arrastrar
+  // una hoja cerca de ellos. Evita transferencias accidentales al mover hojas
+  // hacia arriba: hay que sostener la hoja cerca este tiempo para armarlos.
+  dotArmDelayMs: 1000,
   // workspaceFadeMs: duración de cada mitad del cross-fade al cambiar de
   // escritorio (fade-out + fade-in ≈ 2×, ~320ms en total).
   animations: { enabled: true, durationMs: 120, swallowMs: 380, workspaceFadeMs: 160 },
