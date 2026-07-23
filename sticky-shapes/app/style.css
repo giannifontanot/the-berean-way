@@ -287,6 +287,15 @@ html, body {
   box-shadow: 0 0 var(--glow, 4px) var(--edit-ctrl, #38d6ff);
 }
 
+/* + y − de tamaño: mismo gris que los A+/A− de la última página (el naranja
+   es de páginas; el cian queda para rotar). */
+.size-btn.plus,
+.size-btn.minus {
+  border-color: #8a8f98;
+  color: #c3c8d0;
+  box-shadow: 0 0 6px rgba(138, 143, 152, 0.5);
+}
+
 .size-btn.plus {
   top: -52px;
 }
