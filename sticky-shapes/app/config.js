@@ -91,7 +91,7 @@ const CONFIG = {
   // Retardo antes de que los puntos de escritorio se "enciendan" al arrastrar
   // una hoja cerca de ellos. Evita transferencias accidentales al mover hojas
   // hacia arriba: hay que sostener la hoja cerca este tiempo para armarlos.
-  dotArmDelayMs: 1000,
+  dotArmDelayMs: 2000,
   // workspaceFadeMs: duración de cada mitad del cross-fade al cambiar de
   // escritorio (fade-out + fade-in ≈ 2×, ~320ms en total).
   animations: { enabled: true, durationMs: 120, swallowMs: 380, workspaceFadeMs: 160 },
