@@ -114,8 +114,10 @@ notas, y se recuerda en ese teléfono.
 **✎** sobre la foto en **Ordenar**. Sirve también para las fotos del repo: la
 nueva se guarda en Firebase y reemplaza a la original en todos los teléfonos.
 
-**⇅ Ordenar** cambia a la cuadrícula: arrastra para mover, casilla ✓ para
-ocultar, y 📝 / ✎ / 🗑 en cada tarjeta. **Listo** guarda y regresa.
+**⇅ Ordenar** se hace en la misma tira: arrastra las láminas para moverlas,
+desmarca la casilla ✓ para ocultarlas (Siguiente las salta) y usa 📝 notas,
+✎ editar (o cambiar foto) y 🗑 borrar en cada una. Las ocultas aparecen
+atenuadas solo mientras ordenas. **Listo** guarda.
 
 ### Notas
 
