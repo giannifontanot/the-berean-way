@@ -8,7 +8,7 @@
   <title>Fotos de la clase</title>
   <link rel="stylesheet" href="revelar.css">
 </head>
-<body>
+<body class="sala">
   <!-- Sin barra superior: solo el contenido. Si se pierde la conexión, aparece un aviso discreto. -->
   <div id="sinRed" class="sin-red" hidden>Sin conexión… reconectando</div>
   <div id="aviso" class="aviso" hidden></div>
@@ -129,7 +129,7 @@
         document.querySelectorAll(".foto.nueva").forEach((f) => f.classList.remove("nueva"));
         nueva.classList.add("nueva");
         setTimeout(() => nueva.classList.remove("nueva"), 2600);
-        setTimeout(() => nueva.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+        setTimeout(() => nueva.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
         if (navigator.vibrate) navigator.vibrate(30);
       }
       primeraCarga = false;
