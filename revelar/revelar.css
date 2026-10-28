@@ -2,7 +2,9 @@
    Revelar fotos — estilos compartidos (presentador y participantes)
    Oscuro a propósito: las fotos resaltan y no deslumbra en un salón.
    ============================================================ */
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap");
+/* Atkinson Hyperlegible (Braille Institute): diseñada para distinguir cada letra
+   con claridad. "Next" es la versión nueva; la original queda de respaldo. */
+@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap");
 
 :root {
   --bg: #11152b;
@@ -17,8 +19,8 @@
   --danger: #e57373;
   --ok: #7ccf9a;
   --radius: 14px;
-  --font-serif: Georgia, "Times New Roman", serif;
-  --font-sans: "Lato", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: var(--font-sans); /* todo el sitio usa la misma fuente legible */
   color-scheme: dark;
 }
 
@@ -500,3 +502,15 @@ mark {
 .vista-previa p { margin: 0; font-family: var(--font-serif); font-size: 18px; line-height: 1.5; }
 .vista-previa cite { display: block; margin-top: 8px; font-style: normal; font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
 .vista-previa .apagado { color: var(--muted); font-size: 14px; font-family: var(--font-sans); }
+
+/* Números de versículo: pequeños y apagados para no estorbar la lectura. */
+.vnum {
+  font-size: 0.55em;
+  font-weight: 700;
+  vertical-align: 0.55em;
+  line-height: 0;
+  margin: 0 0.18em 0 0.08em;
+  color: #6b7299;
+  letter-spacing: 0;
+}
+.rojo .vnum, mark .vnum { color: #6b7299; }
