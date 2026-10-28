@@ -317,11 +317,7 @@
       });
       for (const item of items.values()) if (!vistos.has(item.id)) nueva.push(item); // lo nuevo va al final
       lista = nueva;
-      lista.forEach((item, i) => {
-        const b = tarjetas.get(item.id);
-        b.querySelector(".num").textContent = "#" + (i + 1);
-        $("cuadricula").append(b);
-      });
+      lista.forEach((item) => $("cuadricula").append(tarjetas.get(item.id)));
       pintarSaltadas();
       pintarResumen();
       pintarDock();
@@ -332,6 +328,15 @@
         const s = saltadas.has(id);
         b.classList.toggle("saltada", s);
         b.querySelector(".chk-saltar input").checked = !s;
+      });
+      numerar();
+    }
+
+    // Numera solo las láminas visibles (las ocultas no cuentan), en el orden en pantalla.
+    function numerar() {
+      let n = 0;
+      [...$("cuadricula").children].forEach((b) => {
+        b.querySelector(".num").textContent = saltadas.has(b.dataset.id) ? "—" : "#" + (++n);
       });
     }
 
@@ -388,7 +393,7 @@
 
     function pintarDock() {
       const sig = siguiente();
-      const i = sig ? lista.indexOf(sig) : -1;
+      const i = sig ? lista.filter((it) => !saltadas.has(it.id)).indexOf(sig) : -1;
       const hayDesvio = temporales().length > 0;
       $("btnSiguiente").disabled = (!sig && !hayDesvio) || enCurso;
       const cual = sig ? `#${i + 1}` + (etiqueta(sig) ? ` · ${etiqueta(sig)}` : "") : "";
@@ -601,9 +606,7 @@
           filter: ".chk-saltar",       // tocar la casilla no inicia el arrastre
           preventOnFilter: false,
           onChoose: () => { if (navigator.vibrate) navigator.vibrate(15); },
-          onSort: () => {
-            [...$("cuadricula").children].forEach((b, i) => { b.querySelector(".num").textContent = "#" + (i + 1); });
-          },
+          onSort: numerar,
         });
         return;
       }

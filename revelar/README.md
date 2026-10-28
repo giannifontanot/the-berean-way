@@ -83,9 +83,10 @@ Se guardan en la misma Realtime Database, por sesión.
 ### Ocultar una lámina para "Siguiente"
 
 En **Ordenar**, cada tarjeta tiene una casilla ✓. Desmárcala y **Siguiente** se
-salta esa lámina, como ocultar una diapositiva en PowerPoint. Sigue en tu
-cuadrícula (atenuada, con "Oculta") y puedes mostrarla tocándola. Se guarda al
-tocar **Listo**, junto con el orden.
+salta esa lámina, como ocultar una diapositiva en PowerPoint. Fuera de
+**Ordenar** desaparece de tu lista (y no cuenta en la numeración); para usarla
+otra vez, vuelve a **Ordenar** y márcala. Se guarda al tocar **Listo**, junto
+con el orden.
 
 ### Tocar una lámina
 

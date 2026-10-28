@@ -704,3 +704,6 @@ html:has(body.sala) { scroll-snap-type: y proximity; }
 /* La casilla solo aparece en "Ordenar" */
 .chk-saltar { display: none; }
 .panel.ordenando .chk-saltar { display: grid; top: 2px; right: 2px; }
+
+/* Las ocultas no aparecen en tu lista durante la clase; solo en "Ordenar". */
+.panel:not(.ordenando) .miniatura.saltada { display: none; }
