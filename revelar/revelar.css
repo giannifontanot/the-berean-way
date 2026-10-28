@@ -757,3 +757,13 @@ html:has(body.sala) { scroll-snap-type: y proximity; }
   cursor: pointer;
   font-size: 14px;
 }
+
+/* Íconos monocromáticos en los botones (toman el color del texto) */
+.btn .ico { width: 18px; height: 18px; flex: none; }
+#btnOrdenar .ico-listo { display: none; }
+#btnOrdenar.activo .ico-ordenar { display: none; }
+#btnOrdenar.activo .ico-listo { display: inline; }
+.herramientas { gap: 8px; }
+.herramientas .btn { padding: 0 12px; gap: 6px; }
+/* Los tres botones comparten una fila, mismo ancho */
+.herramientas .btn { flex: 1 1 0; min-width: 0; padding: 0 8px; font-size: 14.5px; }
