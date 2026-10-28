@@ -543,3 +543,18 @@ mark {
 }
 .foto.escritura mark, .verso-mini mark, .vista-previa mark { color: inherit; }
 .resaltar-btn, .ayuda mark { background: #fff07a; border-color: #fff07a; color: #111111; }
+
+/* Ajuste: papel gris muy claro y números de versículo del mismo tamaño que el texto
+   (en la línea, no elevados), solo más claros. */
+.foto.escritura, .verso-mini, .vista-previa { background: #f2f2f0; }
+.foto.escritura, .vista-previa { border-color: #e2e2df; }
+.foto.escritura .vnum, .verso-mini .vnum, .vista-previa .vnum,
+.foto.escritura .rojo .vnum, .foto.escritura mark .vnum,
+.vista-previa .rojo .vnum, .vista-previa mark .vnum,
+.verso-mini .rojo .vnum, .verso-mini mark .vnum {
+  font-size: 1em;
+  vertical-align: baseline;
+  line-height: inherit;
+  margin: 0 0.3em 0 0;
+  color: #a8a8a4;
+}
