@@ -650,3 +650,11 @@ html:has(body.sala) { scroll-snap-type: y proximity; }
 .btn.opcion span { font-size: 34px; line-height: 1; }
 .miniatura.es-subida .editar { display: inline-grid; place-items: center; }
 .panel.ordenando .miniatura.es-subida .editar { display: none; }
+
+/* Desvío: tocado fuera de orden (se quita con Siguiente) */
+.miniatura.temporal { border-color: var(--accent); border-style: solid; }
+.miniatura.temporal .insignia { display: inline-flex; background: var(--accent); color: var(--accent-ink); }
+.miniatura.temporal .ocultar { display: inline-block; }
+.miniatura.temporal .tocar { display: none; }
+/* Lámina a la que regresaste */
+.miniatura.enfocada { box-shadow: 0 0 0 3px var(--accent); }

@@ -80,6 +80,14 @@ galería. Se reducen solas (lado mayor 1600 px) y se agregan al final de tu
 lista, ocultas hasta que las reveles. Toca **🗑** en la tarjeta para borrarla.
 Se guardan en la misma Realtime Database, por sesión.
 
+### Tocar una lámina
+
+- **Una que aún no sale:** aparece de inmediato en los teléfonos, sin número
+  (es un desvío). Tócala otra vez para quitarla. **Siguiente** la quita y
+  continúa con la que tocaba en tu orden.
+- **Una que ya pasó:** los teléfonos simplemente regresan a ella. **Siguiente**
+  continúa desde donde ibas.
+
 ### Escrituras en letra roja
 
 Toca **+** → **📖 Escritura** para escribir una escritura:

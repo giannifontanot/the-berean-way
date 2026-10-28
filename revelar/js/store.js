@@ -33,6 +33,17 @@ export function ordenar(reveladas) {
     .map(([id]) => id);
 }
 
+// Desvío: una foto/escritura que tocaste fuera del orden. Se guarda en "reveladas"
+// con este prefijo (así no cambian las reglas) y "Siguiente" la quita.
+export const TEMP = "tmp__";
+export const esTemporal = (k) => String(k).startsWith(TEMP);
+export const idReal = (k) => (esTemporal(k) ? String(k).slice(TEMP.length) : String(k));
+
+// Regresar: al tocar una lámina que ya pasó, los teléfonos vuelven a ella.
+// También vive en "reveladas" con su prefijo; "Siguiente" lo limpia.
+export const FOCO = "ir__";
+export const esFoco = (k) => String(k).startsWith(FOCO);
+
 export function esPermisoDenegado(err) {
   return /PERMISSION_DENIED|permission/i.test(String(err?.code || "") + " " + String(err?.message || ""));
 }
@@ -89,6 +100,13 @@ async function storeFirebase(sesion) {
     revelar: (id) => db.set(db.ref(d, `${base}/reveladas/${id}`), db.serverTimestamp()),
     ocultar: (id) => db.remove(db.ref(d, `${base}/reveladas/${id}`)),
     reiniciar: () => db.remove(refReveladas),
+    // Quita los desvíos y revela el siguiente del orden, en un solo cambio.
+    avanzar(quitar, siguienteId) {
+      const cambios = {};
+      quitar.forEach((k) => { cambios[k] = null; });
+      if (siguienteId) cambios[siguienteId] = db.serverTimestamp();
+      return db.update(refReveladas, cambios);
+    },
     onOrden(cb) {
       return db.onValue(refOrden, (s) => cb(Array.isArray(s.val()) ? s.val() : null), () => cb(null));
     },
@@ -107,6 +125,7 @@ async function storeFirebase(sesion) {
     borrarEscritura: (id) => db.update(db.ref(d, base), {
       [`escrituras/${id}`]: null,
       [`reveladas/${id}`]: null,
+      [`reveladas/${TEMP}${id}`]: null,
     }),
     onSubidas(cb) {
       return db.onValue(refSubidas, (s) => cb(s.val() || {}), () => cb({}));
@@ -122,6 +141,7 @@ async function storeFirebase(sesion) {
     borrarSubida: (id) => db.update(db.ref(d, base), {
       [`subidas/${id}`]: null,
       [`reveladas/${id}`]: null,
+      [`reveladas/${TEMP}${id}`]: null,
     }),
     async onUsuario(cb) {
       const a = await getAuth();
@@ -177,6 +197,12 @@ function storeDemo(sesion) {
     async revelar(id) { const v = leer(); v[id] = Date.now(); escribir(v); },
     async ocultar(id) { const v = leer(); delete v[id]; escribir(v); },
     async reiniciar() { escribir({}); },
+    async avanzar(quitar, siguienteId) {
+      const v = leer();
+      quitar.forEach((k) => delete v[k]);
+      if (siguienteId) v[siguienteId] = Date.now();
+      escribir(v);
+    },
     onOrden(cb) {
       try { cb(JSON.parse(localStorage.getItem(clave + ":orden"))); } catch { cb(null); }
       return () => {};
@@ -195,7 +221,7 @@ function storeDemo(sesion) {
     },
     async borrarEscritura(id) {
       const v = leerEsc(); delete v[id]; escribirEsc(v);
-      const r = leer(); delete r[id]; escribir(r);
+      const r = leer(); delete r[id]; delete r[TEMP + id]; escribir(r);
     },
     onSubidas(cb) { oyentesSub.add(cb); cb(leerSub()); return () => oyentesSub.delete(cb); },
     onSubida(id, cb) {
@@ -210,7 +236,7 @@ function storeDemo(sesion) {
     },
     async borrarSubida(id) {
       const v = leerSub(); delete v[id]; escribirSub(v);
-      const r = leer(); delete r[id]; escribir(r);
+      const r = leer(); delete r[id]; delete r[TEMP + id]; escribir(r);
     },
     async onUsuario(cb) { cb({ uid: "demo", displayName: "Modo demo" }); return () => {}; },
     async entrar() {},

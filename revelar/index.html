@@ -25,7 +25,7 @@
 
   <script type="module">
     import { CONFIG } from "./config.js";
-    import { crearStore, sesionActual, ordenar } from "./js/store.js";
+    import { crearStore, sesionActual, ordenar, esTemporal, idReal, esFoco, FOCO } from "./js/store.js";
     import { textoAHtml, esEscritura, esSubida } from "./js/escritura.js";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
@@ -36,6 +36,7 @@
     const tarjetas = new Map();          // id → <figure>
     const bajas = new Map();             // id → función para dejar de escuchar una escritura
     let primeraCarga = true;
+    let ultimoFoco = null;
 
     document.title = CONFIG.titulo;
 
@@ -99,7 +100,14 @@
     }
 
     function pintar(reveladas) {
-      const ids = ordenar(reveladas).filter((id) => porId.has(id) || esEscritura(id) || esSubida(id));
+      // Lo revelado en orden lleva número; un desvío (tocado fuera de orden) no.
+      const ids = [], temporal = new Set();
+      ordenar(reveladas).forEach((k) => {
+        const id = idReal(k);
+        if (!(porId.has(id) || esEscritura(id) || esSubida(id)) || ids.includes(id)) return;
+        ids.push(id);
+        if (esTemporal(k)) temporal.add(id);
+      });
       const visibles = new Set(ids);
       const lista = $("lista");
 
@@ -119,8 +127,8 @@
       }
 
       // Agregar / ordenar las visibles.
-      let nueva = null;
-      ids.forEach((id, i) => {
+      let nueva = null, n = 0;
+      ids.forEach((id) => {
         let fig = tarjetas.get(id);
         if (!fig) {
           fig = esEscritura(id) ? crearTarjetaEscritura(id)
@@ -130,11 +138,26 @@
           nueva = fig;
           requestAnimationFrame(() => requestAnimationFrame(() => fig.classList.remove("entrando")));
         }
-        fig.querySelector(".orden").textContent = String(i + 1).padStart(2, "0");
+        fig.querySelector(".orden").textContent = temporal.has(id) ? "" : String(++n).padStart(2, "0");
         lista.append(fig); // append mueve el nodo: deja la lista en orden
       });
 
       $("vacio").hidden = ids.length > 0;
+
+      // El presentador tocó una lámina que ya pasó: regresar a ella.
+      const foco = Object.keys(reveladas || {}).filter(esFoco)
+        .sort((a, b) => reveladas[a] - reveladas[b]).pop();
+      const marcaFoco = foco ? foco + ":" + reveladas[foco] : null;
+      if (marcaFoco && marcaFoco !== ultimoFoco) {
+        ultimoFoco = marcaFoco;
+        const fig = tarjetas.get(foco.slice(FOCO.length));
+        if (fig) {
+          setTimeout(() => fig.scrollIntoView({ behavior: primeraCarga ? "auto" : "smooth", block: "start" }), 80);
+          primeraCarga = false;
+          return;
+        }
+      }
+      if (!marcaFoco) ultimoFoco = null;
 
       if (nueva && !primeraCarga) {
         document.querySelectorAll(".foto.nueva").forEach((f) => f.classList.remove("nueva"));

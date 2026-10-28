@@ -135,7 +135,7 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, sesionActual, ordenar, esPermisoDenegado } from "./js/store.js";
+    import { crearStore, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js";
     import { textoAHtml } from "./js/escritura.js";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
@@ -206,7 +206,7 @@
         <div class="pie">
           <span class="num"></span><span class="tit"></span>
           <button class="editar" type="button" aria-label="Editar">✎</button>
-          <span class="tocar">Revelar</span>
+          <span class="tocar">Mostrar</span>
           <button class="ocultar" type="button">Ocultar</button>
         </div>`;
       if (item.tipo === "foto") {
@@ -223,12 +223,24 @@
         b.querySelector(".marco").prepend(v);
       }
 
-      const revelar = () => { if (!ordenando && !reveladas[item.id]) accion(item.id, () => store.revelar(item.id)); };
+      // Tocar = mostrar ahora (desvío). Tocar otra vez lo quita. "Siguiente" también lo quita.
+      // Si ya pasó en el flujo, los teléfonos simplemente regresan a ella.
+      const revelar = () => {
+        if (ordenando) return;
+        if (reveladas[item.id]) {
+          const focos = Object.keys(reveladas).filter(esFoco);
+          accion(item.id, () => store.avanzar(focos, FOCO + item.id));
+          return;
+        }
+        const k = TEMP + item.id;
+        accion(item.id, () => (reveladas[k] ? store.ocultar(k) : store.revelar(k)));
+      };
       b.addEventListener("click", (e) => { if (!e.target.closest("button")) revelar(); });
       b.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); revelar(); } });
       b.querySelector(".ocultar").addEventListener("click", (e) => {
         e.stopPropagation();
-        accion(item.id, () => store.ocultar(item.id));
+        const k = reveladas[item.id] ? item.id : TEMP + item.id;
+        accion(item.id, () => store.ocultar(k));
       });
       if (item.subida) {
         b.querySelector(".editar").textContent = "🗑";
@@ -291,20 +303,30 @@
       pintarDock();
     }
 
+    function temporales() { return Object.keys(reveladas).filter(esTemporal); }
+    function focos() { return Object.keys(reveladas).filter(esFoco); }
+
     function pintarRevelado() {
-      const orden = ordenar(reveladas).filter((id) => tarjetas.has(id));
+      const orden = ordenar(reveladas).filter((k) => !esTemporal(k) && tarjetas.has(k));
+      const temp = new Set(temporales().map(idReal));
       tarjetas.forEach((b, id) => {
         const pos = orden.indexOf(id);
+        const esTemp = pos < 0 && temp.has(id);
         b.classList.toggle("revelada", pos >= 0);
-        b.querySelector(".insignia").textContent = pos >= 0 ? pos + 1 : "";
+        b.classList.toggle("temporal", esTemp);
+        b.querySelector(".insignia").textContent = pos >= 0 ? pos + 1 : esTemp ? "👁" : "";
+        b.querySelector(".ocultar").textContent = esTemp ? "Quitar" : "Ocultar";
       });
+      // Lámina a la que regresaste (la más reciente)
+      const f = focos().sort((a, z) => reveladas[a] - reveladas[z]).pop();
+      tarjetas.forEach((b, id) => b.classList.toggle("enfocada", !!f && f === FOCO + id));
       pintarResumen();
       pintarDock();
     }
 
     function pintarResumen() {
       if (ordenando) return;
-      const n = ordenar(reveladas).filter((id) => tarjetas.has(id)).length;
+      const n = ordenar(reveladas).filter((k) => !esTemporal(k) && tarjetas.has(k)).length;
       $("resumen").textContent = `${n} de ${lista.length} reveladas`;
     }
 
@@ -316,16 +338,21 @@
     sincronizar();
 
     // ---------- Siguiente / Deshacer ----------
-    // "Siguiente" revela el primer elemento de tu cuadrícula que aún no se ha revelado.
-    // "↶" oculta el último que revelaste (por si tocaste de más).
+    // "Siguiente" quita lo que mostraste fuera de orden y revela el primer elemento
+    // de tu cuadrícula que aún no se ha revelado.
+    // "↶" oculta lo último que apareció (por si tocaste de más).
     function siguiente() { return lista.find((it) => !reveladas[it.id]); }
-    function ultima() { return ordenar(reveladas).filter((id) => tarjetas.has(id)).pop(); }
+    function ultima() { return ordenar(reveladas).filter((k) => tarjetas.has(idReal(k))).pop(); }
 
     function pintarDock() {
       const sig = siguiente();
       const i = sig ? lista.indexOf(sig) : -1;
-      $("btnSiguiente").disabled = !sig || enCurso;
-      $("sigCual").textContent = sig ? `#${i + 1}` + (etiqueta(sig) ? ` · ${etiqueta(sig)}` : "") : "Todo revelado ✓";
+      const hayDesvio = temporales().length > 0;
+      $("btnSiguiente").disabled = (!sig && !hayDesvio) || enCurso;
+      const cual = sig ? `#${i + 1}` + (etiqueta(sig) ? ` · ${etiqueta(sig)}` : "") : "";
+      $("sigCual").textContent = hayDesvio
+        ? (sig ? `Quita la mostrada · sigue ${cual}` : "Quita la mostrada")
+        : (sig ? cual : "Todo revelado ✓");
       $("btnDeshacer").disabled = !ultima() || enCurso;
     }
 
@@ -339,9 +366,10 @@
 
     $("btnSiguiente").addEventListener("click", () => {
       const sig = siguiente();
-      if (!sig) return;
-      paso(() => store.revelar(sig.id));
-      tarjetas.get(sig.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
+      const quitar = [...temporales(), ...focos()];
+      if (!sig && !quitar.length) return;
+      paso(() => store.avanzar(quitar, sig?.id));
+      if (sig) tarjetas.get(sig.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
       if (navigator.vibrate) navigator.vibrate(20);
     });
     $("btnDeshacer").addEventListener("click", () => {
