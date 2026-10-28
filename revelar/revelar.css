@@ -1301,3 +1301,7 @@ body.modo-presentar > .franja { flex: none; }
 }
 .dock .deshacer .sig-label { font-size: 19px; }
 .dock .siguiente { flex: 1 1 0; }
+
+/* ▶ siempre; en vivo = círculo verde alrededor (sin pausa) */
+#btnModo.vivo { background: var(--bg-2); color: var(--ok); border: 2px solid var(--ok); box-shadow: 0 0 0 3px rgba(124, 207, 154, 0.25); }
+#btnModo.vivo .ico-play { display: inline; }

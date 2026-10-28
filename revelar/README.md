@@ -73,15 +73,15 @@ participantes solo leen y no necesitan cuenta.
 
 Si alguien llega tarde o recarga la página, ve todas las fotos ya reveladas.
 
-### Ensayo y En vivo (▶ / ⏸)
+### Ensayo y En vivo (▶)
 
 Junto al **+** hay un botón **▶**:
 
-- **▶ (ensayo)**: al abrir. Puedes tocar láminas, Siguiente y ↶ para practicar;
-  todo se mueve solo en tu pantalla. Los participantes ven “Esperando…”.
-- Toca **▶** → confirmas → **en vivo**: la clase empieza desde cero, el botón
-  se vuelve **⏸ rojo** y cada toque llega a los teléfonos.
-- Toca **⏸** para volver a ensayo; los participantes se quedan con lo que vieron.
+- **▶ sin círculo = ensayo** (al abrir): tocas láminas, Siguiente y Atrás para
+  practicar; todo se mueve solo en tu pantalla. Los participantes ven “Esperando…”.
+- Toca **▶** → **▶ con círculo verde = en vivo**: la clase empieza desde cero y
+  cada toque llega a los teléfonos.
+- Toca otra vez → vuelves a ensayo; los participantes se quedan con lo que vieron.
 - Si cierras el presentador a mitad de la clase, al abrirlo regresas en vivo
   (mismo teléfono, dentro de 8 horas).
 
@@ -89,7 +89,7 @@ Junto al **+** hay un botón **▶**:
 
 Una sola pantalla:
 
-- **Arriba**, 👥 participantes conectados y los botones: **▶/⏸**, **+** (agregar foto o escritura),
+- **Arriba**, 👥 participantes conectados y los botones: **▶**, **+** (agregar foto o escritura),
   **⇅ Ordenar**, **Compartir** (QR) y **↺ Reiniciar**.
 - **La tira** con todas las láminas visibles. La que está en los teléfonos
   tiene marco dorado y dice **En pantalla**; la que sigue, **Siguiente**.
