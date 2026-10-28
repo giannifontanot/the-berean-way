@@ -514,3 +514,32 @@ mark {
   letter-spacing: 0;
 }
 .rojo .vnum, mark .vnum { color: #6b7299; }
+
+/* ===== Escrituras en papel: fondo blanco, letra negra, rojo clásico =====
+   (Sobrescribe los colores de arriba solo dentro de las tarjetas de escritura.) */
+.foto.escritura, .verso-mini, .vista-previa {
+  --rojo: #c4161c;                 /* rojo de Biblia de letra roja */
+  --resaltado: #fff07a;            /* marcatextos amarillo claro */
+  background: #ffffff;
+  color: #111111;
+}
+.foto.escritura { border-top: 1px solid #e6e6e6; border-bottom: 1px solid #e6e6e6; }
+.foto.escritura figcaption .orden { color: #9a9a9a; }
+.foto.escritura.nueva { outline-color: var(--accent); }
+.verso p, .verso-mini p, .vista-previa p { color: #111111; }
+.verso cite, .verso-mini cite, .vista-previa cite { color: #555555; }
+.verso-mini { background: #ffffff; }
+.vista-previa { border: 1px solid #dddddd; }
+.vista-previa .apagado { color: #888888; }
+
+/* Números de versículo: más chicos y más claros, para que no distraigan. */
+.foto.escritura .vnum, .verso-mini .vnum, .vista-previa .vnum,
+.foto.escritura .rojo .vnum, .foto.escritura mark .vnum,
+.vista-previa .rojo .vnum, .vista-previa mark .vnum,
+.verso-mini .rojo .vnum, .verso-mini mark .vnum {
+  font-size: 0.48em;
+  font-weight: 400;
+  color: #b8b8b8;
+}
+.foto.escritura mark, .verso-mini mark, .vista-previa mark { color: inherit; }
+.resaltar-btn, .ayuda mark { background: #fff07a; border-color: #fff07a; color: #111111; }
