@@ -106,7 +106,7 @@ Toca **+** → **📖 Escritura** para escribir una escritura:
 - **Guardar** la deja oculta en tu cuadrícula (para preparar la clase);
   **Guardar y revelar** la muestra al instante.
 - Usa **Ordenar** para ponerla entre las fotos; **Siguiente ▶** la revela en su turno.
-- Toca **✎** en la tarjeta para editarla o borrarla. Si ya está revelada, los
+- Toca **✎** en la tarjeta para editarla (o borrarla). En **Ordenar** también tiene **🗑**. Si ya está revelada, los
   cambios (por ejemplo, un resaltado nuevo en plena clase) se ven al instante.
 
 Las escrituras se guardan en Firebase por sesión. Las fotos, en cambio, viven

@@ -739,3 +739,21 @@ html:has(body.sala) { scroll-snap-type: y proximity; }
 .verso-mini .rojo .vnum, .verso-mini mark .vnum {
   color: #b9a37f;
 }
+
+/* 🗑 para fotos subidas y escrituras: solo en "Ordenar". El ✎ de escrituras queda para la clase. */
+.miniatura .borrar, .miniatura.es-subida .editar { display: none; }
+.panel.ordenando .miniatura.es-subida .editar { display: none; }
+.panel.ordenando .miniatura.es-subida .borrar,
+.panel.ordenando .miniatura.es-escritura .borrar {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  cursor: pointer;
+  font-size: 14px;
+}
