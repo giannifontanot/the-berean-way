@@ -73,26 +73,30 @@ participantes solo leen y no necesitan cuenta.
 
 Si alguien llega tarde o recarga la página, ve todas las fotos ya reveladas.
 
-### Preparar y Presentar
+### La pantalla del presentador
 
-Arriba hay dos pestañas:
+Una sola pantalla:
 
-- **Preparar**: la cuadrícula para armar la clase (**+**, **Ordenar**, ocultar,
-  borrar) y un **📝** en cada tarjeta para escribir sus notas.
-- **Presentar**: la vista para dar la clase.
-  - **Arriba**, una tira horizontal con todas las láminas visibles. La que está
-    en los teléfonos tiene marco dorado y dice **En pantalla**; la que sigue,
-    **Siguiente**. Desliza la tira para ver más; a los 4 segundos vuelve sola a
-    la actual. Tocar una lámina funciona igual que en Preparar (desvío o regresar).
-  - **En medio**, las notas de la lámina en pantalla (antes de empezar, las de
-    la primera). Toca **✎** para corregirlas al momento.
-  - **Abajo**, **↶** y **Siguiente ▶**.
+- **Arriba**, el estado y cuatro botones: **+** (agregar foto o escritura),
+  **⇅ Ordenar**, **Compartir** (QR) y **↺ Reiniciar**.
+- **La tira** con todas las láminas visibles. La que está en los teléfonos
+  tiene marco dorado y dice **En pantalla**; la que sigue, **Siguiente**.
+  Desliza para ver más; a los 4 segundos vuelve sola a la actual.
+  - **Tocar** una lámina la muestra (desvío) o regresa a ella si ya pasó.
+  - **⋯** o **mantenerla presionada** abre su menú **sin mostrarla**: Notas,
+    Editar (escrituras), Ocultar y Borrar.
+- **Las notas** de la lámina en pantalla (antes de empezar, las de la primera),
+  con **✎** para corregirlas.
+- **Abajo**, **↶** y **Siguiente ▶**.
+
+**⇅ Ordenar** cambia a la cuadrícula: arrastra para mover, casilla ✓ para
+ocultar, y 📝 / ✎ / 🗑 en cada tarjeta. **Listo** guarda y regresa.
 
 ### Notas
 
 Cada lámina puede tener notas: viñetas con `-`, `*rojo*` y `==resaltado==`.
-Al crear una escritura o subir **una** foto se te piden; si no, usa **📝** en
-Preparar o **✎** en Presentar. Se guardan en `revelar_privado/<sesión>/notas`,
+Al crear una escritura o subir **una** foto se te piden; si no, usa **⋯ → Notas**
+en la tira, **✎** en el cuadro de notas o **📝** en Ordenar. Se guardan en `revelar_privado/<sesión>/notas`,
 que **solo tu cuenta** puede leer: nunca llegan a los participantes.
 
 ### Agregar fotos desde el teléfono
