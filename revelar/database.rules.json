@@ -1,0 +1,24 @@
+{
+  "rules": {
+    "revelar": {
+      "$sesion": {
+        ".read": true,
+        "reveladas": {
+          ".write": "auth != null && auth.uid === 'PEGA_AQUI_TU_UID'",
+          "$foto": {
+            ".validate": "newData.isNumber()"
+          }
+        },
+        "presencia": {
+          "$conexion": {
+            ".write": true,
+            ".validate": "newData.val() === true"
+          }
+        },
+        "$otro": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}

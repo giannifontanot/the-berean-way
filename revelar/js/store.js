@@ -1,0 +1,124 @@
+// store.js — El "mensajero" en tiempo real.
+// Con Firebase configurado usa Realtime Database; si no, un MODO DEMO que
+// sincroniza pestañas del mismo navegador (localStorage), para probar.
+//
+// Datos en Firebase:
+//   revelar/<sesion>/reveladas/<fotoId> = marca de tiempo (orden de revelado)
+//   revelar/<sesion>/presencia/<conexion> = true (un participante conectado)
+import { CONFIG } from "../config.js";
+
+const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
+
+export const configurado = !String(CONFIG.firebase?.apiKey || "").startsWith("PEGA");
+
+export function limpiarSesion(s) {
+  return String(s || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40);
+}
+
+export function sesionActual() {
+  const s = new URLSearchParams(location.search).get("s");
+  return limpiarSesion(s) || limpiarSesion(CONFIG.sesionPorDefecto) || "clase";
+}
+
+/** Convierte { id: ts } en una lista de ids ordenada por momento de revelado. */
+export function ordenar(reveladas) {
+  return Object.entries(reveladas || {})
+    .sort((a, b) => (a[1] - b[1]) || a[0].localeCompare(b[0]))
+    .map(([id]) => id);
+}
+
+export function esPermisoDenegado(err) {
+  return /PERMISSION_DENIED|permission/i.test(String(err?.code || "") + " " + String(err?.message || ""));
+}
+
+export async function crearStore(sesion) {
+  return configurado ? storeFirebase(sesion) : storeDemo(sesion);
+}
+
+/* ----------------------------- Firebase ----------------------------- */
+async function storeFirebase(sesion) {
+  const [{ initializeApp }, db] = await Promise.all([
+    import(FB + "firebase-app.js"),
+    import(FB + "firebase-database.js"),
+  ]);
+  const app = initializeApp(CONFIG.firebase);
+  const d = db.getDatabase(app);
+  const base = `revelar/${sesion}`;
+  const refReveladas = db.ref(d, `${base}/reveladas`);
+  const refPresencia = db.ref(d, `${base}/presencia`);
+  const refConectado = db.ref(d, ".info/connected");
+
+  let authMod = null, auth = null;
+  async function getAuth() {
+    if (!auth) {
+      authMod = await import(FB + "firebase-auth.js");
+      auth = authMod.getAuth(app);
+    }
+    return auth;
+  }
+
+  return {
+    modo: "firebase",
+    onReveladas(cb, onError) {
+      return db.onValue(refReveladas, (s) => cb(s.val() || {}), onError);
+    },
+    onConexion(cb) {
+      return db.onValue(refConectado, (s) => cb(s.val() === true));
+    },
+    onPresencia(cb) {
+      return db.onValue(refPresencia, (s) => cb(s.size), () => cb(null));
+    },
+    registrarPresencia() {
+      const yo = db.push(refPresencia);
+      db.onValue(refConectado, (s) => {
+        if (s.val() !== true) return;
+        db.onDisconnect(yo).remove()
+          .then(() => db.set(yo, true))
+          .catch(() => {});
+      });
+    },
+    revelar: (id) => db.set(db.ref(d, `${base}/reveladas/${id}`), db.serverTimestamp()),
+    ocultar: (id) => db.remove(db.ref(d, `${base}/reveladas/${id}`)),
+    reiniciar: () => db.remove(refReveladas),
+    async onUsuario(cb) {
+      const a = await getAuth();
+      return authMod.onAuthStateChanged(a, cb);
+    },
+    async entrar() {
+      const a = await getAuth();
+      return authMod.signInWithPopup(a, new authMod.GoogleAuthProvider());
+    },
+    async salir() {
+      const a = await getAuth();
+      return authMod.signOut(a);
+    },
+  };
+}
+
+/* ------------------------------ Demo ------------------------------- */
+function storeDemo(sesion) {
+  const clave = `revelar-demo:${sesion}`;
+  const oyentes = new Set();
+  const leer = () => { try { return JSON.parse(localStorage.getItem(clave)) || {}; } catch { return {}; } };
+  const escribir = (v) => {
+    try { localStorage.setItem(clave, JSON.stringify(v)); } catch {}
+    oyentes.forEach((cb) => cb(v));
+  };
+  window.addEventListener("storage", (e) => {
+    if (e.key === clave) oyentes.forEach((cb) => cb(leer()));
+  });
+
+  return {
+    modo: "demo",
+    onReveladas(cb) { oyentes.add(cb); cb(leer()); return () => oyentes.delete(cb); },
+    onConexion(cb) { cb(true); return () => {}; },
+    onPresencia(cb) { cb(null); return () => {}; },
+    registrarPresencia() {},
+    async revelar(id) { const v = leer(); v[id] = Date.now(); escribir(v); },
+    async ocultar(id) { const v = leer(); delete v[id]; escribir(v); },
+    async reiniciar() { escribir({}); },
+    async onUsuario(cb) { cb({ uid: "demo", displayName: "Modo demo" }); return () => {}; },
+    async entrar() {},
+    async salir() {},
+  };
+}

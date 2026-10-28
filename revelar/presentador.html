@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#11152b">
+  <title>Presentador · Revelar fotos</title>
+  <link rel="stylesheet" href="revelar.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+</head>
+<body>
+  <header class="barra">
+    <h1><small id="sesionTxt">Sesión</small>Presentador</h1>
+    <span id="estado" class="estado">Conectando…</span>
+  </header>
+  <div id="aviso" class="aviso" hidden></div>
+
+  <!-- Entrar (solo con Firebase) -->
+  <section class="entrada" id="entrada" hidden>
+    <h2>Entra para presentar</h2>
+    <p>Solo tu cuenta puede revelar fotos. Los participantes no necesitan cuenta.</p>
+    <button class="btn primario" id="btnEntrar">Entrar con Google</button>
+  </section>
+
+  <!-- Panel -->
+  <main class="panel" id="panel" hidden>
+    <div class="herramientas">
+      <div class="resumen" id="resumen">0 reveladas</div>
+      <button class="btn primario" id="btnCompartir">Compartir</button>
+      <button class="btn peligro" id="btnReiniciar">Reiniciar</button>
+    </div>
+    <div class="cuadricula" id="cuadricula"></div>
+    <p style="text-align:center;margin-top:28px">
+      <button class="btn-texto" id="btnSalir">Salir</button>
+    </p>
+  </main>
+
+  <!-- Compartir -->
+  <dialog id="dlgCompartir">
+    <h2>Invita a los participantes</h2>
+    <p>Que escaneen este código o abran el enlace.</p>
+    <div class="qr" id="qr"></div>
+    <input class="enlace" id="enlace" readonly>
+    <div class="acciones">
+      <button class="btn" id="btnCopiar">Copiar enlace</button>
+      <button class="btn" id="btnEnviar" hidden>Enviar…</button>
+      <button class="btn primario" data-cerrar>Listo</button>
+    </div>
+  </dialog>
+
+  <!-- Reiniciar -->
+  <dialog id="dlgReiniciar">
+    <h2>¿Reiniciar la sesión?</h2>
+    <p>Se ocultarán todas las fotos en los teléfonos de los participantes. Ellos se quedan conectados, listos para empezar de nuevo.</p>
+    <div class="acciones">
+      <button class="btn" data-cerrar>Cancelar</button>
+      <button class="btn peligro lleno" id="btnConfirmarReinicio">Reiniciar</button>
+    </div>
+  </dialog>
+
+  <!-- Falta permiso -->
+  <dialog id="dlgPermiso">
+    <h2>Falta un paso</h2>
+    <p>Firebase rechazó el cambio porque tu cuenta aún no está autorizada. Copia este identificador y pégalo en las reglas de la base de datos (README, paso 4).</p>
+    <code class="uid" id="uid"></code>
+    <div class="acciones">
+      <button class="btn" id="btnCopiarUid">Copiar</button>
+      <button class="btn primario" data-cerrar>Entendido</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script type="module">
+    import { FOTOS } from "./fotos.js";
+    import { crearStore, sesionActual, ordenar, esPermisoDenegado } from "./js/store.js";
+
+    const $ = (id) => document.getElementById(id);
+    const sesion = sesionActual();
+    const store = await crearStore(sesion);
+    const tarjetas = new Map(); // id → <button>
+    let usuario = null;
+    let reveladas = {};
+
+    $("sesionTxt").textContent = "Sesión · " + sesion;
+
+    if (store.modo === "demo") {
+      $("aviso").hidden = false;
+      $("aviso").innerHTML = "Modo demo: Firebase aún no está configurado. Abre <a href=\"" +
+        enlaceParticipantes() + "\" target=\"_blank\" style=\"color:inherit\">la página de participantes</a> en otra pestaña para probar.";
+    }
+
+    // ---------- Conexión y participantes ----------
+    let conectado = false, gente = null;
+    function pintarEstado() {
+      const e = $("estado");
+      e.className = "estado " + (conectado ? "on" : "off");
+      if (!conectado) e.textContent = "Sin conexión";
+      else if (gente == null) e.textContent = "En vivo";
+      else e.textContent = gente === 1 ? "1 participante" : gente + " participantes";
+    }
+    store.onConexion((ok) => { conectado = ok; pintarEstado(); });
+    store.onPresencia((n) => { gente = n; pintarEstado(); });
+
+    // ---------- Sesión de usuario ----------
+    store.onUsuario((u) => {
+      usuario = u;
+      $("entrada").hidden = !!u;
+      $("panel").hidden = !u;
+    });
+    $("btnEntrar").addEventListener("click", async () => {
+      try { await store.entrar(); }
+      catch (e) { if (e?.code !== "auth/popup-closed-by-user") aviso("No se pudo entrar: " + (e?.code || e?.message)); }
+    });
+    $("btnSalir").addEventListener("click", () => store.salir());
+
+    // ---------- Cuadrícula ----------
+    FOTOS.forEach((foto, i) => {
+      const b = document.createElement("div");
+      b.className = "miniatura";
+      b.setAttribute("role", "button");
+      b.tabIndex = 0;
+      b.dataset.id = foto.id;
+      b.innerHTML = `
+        <div class="marco"><img loading="lazy" alt=""><span class="insignia"></span></div>
+        <div class="pie">
+          <span class="num"></span><span class="tit"></span>
+          <span class="tocar">Revelar</span>
+          <button class="ocultar" type="button">Ocultar</button>
+        </div>`;
+      b.querySelector("img").src = foto.src;
+      b.querySelector("img").alt = foto.titulo || "";
+      b.querySelector(".num").textContent = "#" + (i + 1);
+      b.querySelector(".tit").textContent = foto.titulo || foto.id;
+
+      const revelar = () => { if (!reveladas[foto.id]) accion(foto.id, () => store.revelar(foto.id)); };
+      b.addEventListener("click", (e) => { if (!e.target.closest(".ocultar")) revelar(); });
+      b.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); revelar(); } });
+      b.querySelector(".ocultar").addEventListener("click", (e) => {
+        e.stopPropagation();
+        accion(foto.id, () => store.ocultar(foto.id));
+      });
+      $("cuadricula").append(b);
+      tarjetas.set(foto.id, b);
+    });
+
+    store.onReveladas((r) => {
+      reveladas = r;
+      const orden = ordenar(r);
+      tarjetas.forEach((b, id) => {
+        const pos = orden.indexOf(id);
+        b.classList.toggle("revelada", pos >= 0);
+        b.querySelector(".insignia").textContent = pos >= 0 ? pos + 1 : "";
+      });
+      const n = orden.filter((id) => tarjetas.has(id)).length;
+      $("resumen").textContent = `${n} de ${FOTOS.length} reveladas`;
+    }, (e) => aviso("No se pudo leer la sesión: " + (e?.message || e)));
+
+    async function accion(id, fn) {
+      const b = tarjetas.get(id);
+      b.classList.add("ocupada");
+      try { await fn(); }
+      catch (e) { manejarError(e); }
+      finally { b.classList.remove("ocupada"); }
+    }
+
+    function manejarError(e) {
+      if (esPermisoDenegado(e) && usuario) {
+        $("uid").textContent = usuario.uid;
+        $("dlgPermiso").showModal();
+      } else {
+        aviso("No se pudo guardar: " + (e?.message || e));
+      }
+    }
+
+    // ---------- Reiniciar ----------
+    $("btnReiniciar").addEventListener("click", () => $("dlgReiniciar").showModal());
+    $("btnConfirmarReinicio").addEventListener("click", async () => {
+      $("dlgReiniciar").close();
+      try { await store.reiniciar(); aviso("Sesión reiniciada"); }
+      catch (e) { manejarError(e); }
+    });
+
+    // ---------- Compartir ----------
+    function enlaceParticipantes() {
+      const url = new URL("./", location.href);
+      url.search = "";
+      if (new URLSearchParams(location.search).has("s")) url.searchParams.set("s", sesion);
+      return url.href;
+    }
+    $("btnCompartir").addEventListener("click", () => {
+      const link = enlaceParticipantes();
+      $("enlace").value = link;
+      if (window.qrcode) {
+        const q = qrcode(0, "M");
+        q.addData(link);
+        q.make();
+        $("qr").innerHTML = q.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
+      } else {
+        $("qr").hidden = true;
+      }
+      $("btnEnviar").hidden = !navigator.share;
+      $("dlgCompartir").showModal();
+    });
+    $("btnCopiar").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText($("enlace").value); aviso("Enlace copiado"); }
+      catch { $("enlace").select(); }
+    });
+    $("btnEnviar").addEventListener("click", () => {
+      navigator.share?.({ title: "Fotos de la clase", url: $("enlace").value }).catch(() => {});
+    });
+    $("btnCopiarUid").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText($("uid").textContent); aviso("Copiado"); } catch {}
+    });
+
+    document.querySelectorAll("[data-cerrar]").forEach((b) =>
+      b.addEventListener("click", () => b.closest("dialog").close()));
+
+    // ---------- Aviso flotante ----------
+    let tAviso;
+    function aviso(msg) {
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("visible");
+      clearTimeout(tAviso);
+      tAviso = setTimeout(() => t.classList.remove("visible"), 2600);
+    }
+  </script>
+</body>
+</html>

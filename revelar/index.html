@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#11152b">
+  <title>Fotos de la clase</title>
+  <link rel="stylesheet" href="revelar.css">
+</head>
+<body>
+  <header class="barra">
+    <h1 id="titulo">Fotos de la clase</h1>
+    <span id="estado" class="estado">Conectando…</span>
+  </header>
+  <div id="aviso" class="aviso" hidden></div>
+
+  <main class="lista" id="lista" aria-live="polite">
+    <div class="vacio" id="vacio">
+      <div class="icono" aria-hidden="true">📷</div>
+      <p>Esperando la primera foto…</p>
+      <small>Deja esta página abierta. Las fotos aparecerán aquí solas.</small>
+    </div>
+  </main>
+
+  <div class="visor" id="visor" hidden><img id="visorImg" alt=""></div>
+
+  <script type="module">
+    import { CONFIG } from "./config.js";
+    import { FOTOS } from "./fotos.js";
+    import { crearStore, sesionActual, ordenar } from "./js/store.js";
+
+    const $ = (id) => document.getElementById(id);
+    const porId = new Map(FOTOS.map((f) => [f.id, f]));
+    const tarjetas = new Map();          // id → <figure>
+    let primeraCarga = true;
+
+    $("titulo").textContent = CONFIG.titulo;
+    document.title = CONFIG.titulo;
+
+    const store = await crearStore(sesionActual());
+    if (store.modo === "demo") {
+      $("aviso").hidden = false;
+      $("aviso").textContent = "Modo demo: Firebase aún no está configurado. Solo se sincroniza con otras pestañas de este navegador.";
+    }
+
+    store.onConexion((ok) => {
+      $("estado").className = "estado " + (ok ? "on" : "off");
+      $("estado").textContent = ok ? "En vivo" : "Sin conexión";
+    });
+    store.registrarPresencia();
+    store.onReveladas(pintar, () => {
+      $("aviso").hidden = false;
+      $("aviso").textContent = "No se pudo leer la sesión. Revisa las reglas de Firebase.";
+    });
+
+    function crearTarjeta(foto) {
+      const fig = document.createElement("figure");
+      fig.className = "foto entrando";
+      fig.dataset.id = foto.id;
+      const img = document.createElement("img");
+      img.src = foto.src;
+      img.alt = foto.titulo || "";
+      img.decoding = "async";
+      const cap = document.createElement("figcaption");
+      const orden = document.createElement("span");
+      orden.className = "orden";
+      cap.append(orden);
+      if (foto.titulo) cap.append(document.createTextNode(foto.titulo));
+      fig.append(img, cap);
+      fig.addEventListener("click", () => abrirVisor(foto));
+      return fig;
+    }
+
+    function pintar(reveladas) {
+      const ids = ordenar(reveladas).filter((id) => porId.has(id));
+      const visibles = new Set(ids);
+      const lista = $("lista");
+
+      // Quitar las que el presentador ocultó.
+      for (const [id, fig] of tarjetas) {
+        if (visibles.has(id)) continue;
+        tarjetas.delete(id);
+        fig.style.maxHeight = fig.offsetHeight + "px";
+        requestAnimationFrame(() => {
+          fig.classList.add("saliendo");
+          fig.style.maxHeight = "0px";
+          fig.style.marginBottom = "-18px";
+        });
+        setTimeout(() => fig.remove(), 480);
+      }
+
+      // Agregar / ordenar las visibles.
+      let nueva = null;
+      ids.forEach((id, i) => {
+        let fig = tarjetas.get(id);
+        if (!fig) {
+          fig = crearTarjeta(porId.get(id));
+          tarjetas.set(id, fig);
+          nueva = fig;
+          requestAnimationFrame(() => requestAnimationFrame(() => fig.classList.remove("entrando")));
+        }
+        fig.querySelector(".orden").textContent = String(i + 1).padStart(2, "0");
+        lista.append(fig); // append mueve el nodo: deja la lista en orden
+      });
+
+      $("vacio").hidden = ids.length > 0;
+
+      if (nueva && !primeraCarga) {
+        document.querySelectorAll(".foto.nueva").forEach((f) => f.classList.remove("nueva"));
+        nueva.classList.add("nueva");
+        setTimeout(() => nueva.classList.remove("nueva"), 2600);
+        setTimeout(() => nueva.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+        if (navigator.vibrate) navigator.vibrate(30);
+      }
+      primeraCarga = false;
+    }
+
+    function abrirVisor(foto) {
+      $("visorImg").src = foto.src;
+      $("visorImg").alt = foto.titulo || "";
+      $("visor").hidden = false;
+    }
+    $("visor").addEventListener("click", () => { $("visor").hidden = true; });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") $("visor").hidden = true; });
+
+    // Mantener la pantalla encendida durante la clase (si el navegador lo permite).
+    let candado = null;
+    async function mantenerDespierto() {
+      try { candado = await navigator.wakeLock?.request("screen"); } catch {}
+    }
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") mantenerDespierto();
+    });
+    mantenerDespierto();
+  </script>
+</body>
+</html>
