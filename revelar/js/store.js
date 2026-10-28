@@ -7,11 +7,13 @@
 //   revelar/<sesion>/presencia/<conexion> = true (un participante conectado)
 //   revelar/<sesion>/orden = [ids] (orden de TU cuadrícula; solo lo usa el presentador)
 //   revelar/<sesion>/escrituras/<id> = { cita, texto, todoRojo, creado }
+//   revelar_privado/<sesion>/notas/<id> = "texto" (notas del presentador: solo tu cuenta
+//     puede leerlas; fuera de "revelar/" porque ahí todo es de lectura pública)
 //   revelar/<sesion>/subidas/<id> = { src: "data:image/jpeg;base64,…", creado }
 //     Fotos que subes desde el presentador con "+". Guardadas en la misma base de
 //     datos (comprimidas), así no hace falta activar otro servicio de Firebase.
 //     Escrituras y subidas comparten "reveladas" y "orden" con las fotos del repo.
-import { CONFIG } from "../config.js?v=202610281335";
+import { CONFIG } from "../config.js?v=202610281428";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -67,6 +69,8 @@ async function storeFirebase(sesion) {
   const refOrden = db.ref(d, `${base}/orden`);
   const refEscrituras = db.ref(d, `${base}/escrituras`);
   const refSubidas = db.ref(d, `${base}/subidas`);
+  const basePrivada = `revelar_privado/${sesion}`;
+  const refNotas = db.ref(d, `${basePrivada}/notas`);
 
   let authMod = null, auth = null;
   async function getAuth() {
@@ -122,11 +126,16 @@ async function storeFirebase(sesion) {
       await db.set(db.ref(d, `${base}/escrituras/${clave}`), datos);
       return clave;
     },
-    borrarEscritura: (id) => db.update(db.ref(d, base), {
-      [`escrituras/${id}`]: null,
-      [`reveladas/${id}`]: null,
-      [`reveladas/${TEMP}${id}`]: null,
+    borrarEscritura: (id) => db.update(db.ref(d), {
+      [`${base}/escrituras/${id}`]: null,
+      [`${base}/reveladas/${id}`]: null,
+      [`${base}/reveladas/${TEMP}${id}`]: null,
+      [`${basePrivada}/notas/${id}`]: null,
     }),
+    onNotas(cb) {
+      return db.onValue(refNotas, (s) => cb(s.val() || {}), () => cb({}));
+    },
+    guardarNota: (id, texto) => db.set(db.ref(d, `${basePrivada}/notas/${id}`), String(texto || "").trim() || null),
     onSubidas(cb) {
       return db.onValue(refSubidas, (s) => cb(s.val() || {}), () => cb({}));
     },
@@ -138,10 +147,11 @@ async function storeFirebase(sesion) {
       await db.set(db.ref(d, `${base}/subidas/${clave}`), datos);
       return clave;
     },
-    borrarSubida: (id) => db.update(db.ref(d, base), {
-      [`subidas/${id}`]: null,
-      [`reveladas/${id}`]: null,
-      [`reveladas/${TEMP}${id}`]: null,
+    borrarSubida: (id) => db.update(db.ref(d), {
+      [`${base}/subidas/${id}`]: null,
+      [`${base}/reveladas/${id}`]: null,
+      [`${base}/reveladas/${TEMP}${id}`]: null,
+      [`${basePrivada}/notas/${id}`]: null,
     }),
     async onUsuario(cb) {
       const a = await getAuth();
@@ -174,6 +184,13 @@ function storeDemo(sesion) {
     try { localStorage.setItem(claveEsc, JSON.stringify(v)); } catch {}
     oyentesEsc.forEach((cb) => cb(v));
   };
+  const claveNotas = clave + ":notas";
+  const oyentesNotas = new Set();
+  const leerNotas = () => { try { return JSON.parse(localStorage.getItem(claveNotas)) || {}; } catch { return {}; } };
+  const escribirNotas = (v) => {
+    try { localStorage.setItem(claveNotas, JSON.stringify(v)); } catch {}
+    oyentesNotas.forEach((cb) => cb(v));
+  };
   const claveSub = clave + ":subidas";
   const oyentesSub = new Set();
   const leerSub = () => { try { return JSON.parse(localStorage.getItem(claveSub)) || {}; } catch { return {}; } };
@@ -186,6 +203,7 @@ function storeDemo(sesion) {
     if (e.key === clave) oyentes.forEach((cb) => cb(leer()));
     if (e.key === claveEsc) oyentesEsc.forEach((cb) => cb(leerEsc()));
     if (e.key === claveSub) oyentesSub.forEach((cb) => cb(leerSub()));
+    if (e.key === claveNotas) oyentesNotas.forEach((cb) => cb(leerNotas()));
   });
 
   return {
@@ -222,6 +240,13 @@ function storeDemo(sesion) {
     async borrarEscritura(id) {
       const v = leerEsc(); delete v[id]; escribirEsc(v);
       const r = leer(); delete r[id]; delete r[TEMP + id]; escribir(r);
+    },
+    onNotas(cb) { oyentesNotas.add(cb); cb(leerNotas()); return () => oyentesNotas.delete(cb); },
+    async guardarNota(id, texto) {
+      const v = leerNotas();
+      const t = String(texto || "").trim();
+      if (t) v[id] = t; else delete v[id];
+      escribirNotas(v);
     },
     onSubidas(cb) { oyentesSub.add(cb); cb(leerSub()); return () => oyentesSub.delete(cb); },
     onSubida(id, cb) {

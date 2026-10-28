@@ -61,6 +61,20 @@
           ".validate": false
         }
       }
+    },
+    "revelar_privado": {
+      "$sesion": {
+        ".read": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+        ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+        "notas": {
+          "$n": {
+            ".validate": "newData.isString() && newData.val().length <= 4000"
+          }
+        },
+        "$otro": {
+          ".validate": false
+        }
+      }
     }
   }
 }

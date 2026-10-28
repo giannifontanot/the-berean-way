@@ -73,6 +73,28 @@ participantes solo leen y no necesitan cuenta.
 
 Si alguien llega tarde o recarga la página, ve todas las fotos ya reveladas.
 
+### Preparar y Presentar
+
+Arriba hay dos pestañas:
+
+- **Preparar**: la cuadrícula para armar la clase (**+**, **Ordenar**, ocultar,
+  borrar) y un **📝** en cada tarjeta para escribir sus notas.
+- **Presentar**: la vista para dar la clase.
+  - **Arriba**, una tira horizontal con todas las láminas visibles. La que está
+    en los teléfonos tiene marco dorado y dice **En pantalla**; la que sigue,
+    **Siguiente**. Desliza la tira para ver más; a los 4 segundos vuelve sola a
+    la actual. Tocar una lámina funciona igual que en Preparar (desvío o regresar).
+  - **En medio**, las notas de la lámina en pantalla (antes de empezar, las de
+    la primera). Toca **✎** para corregirlas al momento.
+  - **Abajo**, **↶** y **Siguiente ▶**.
+
+### Notas
+
+Cada lámina puede tener notas: viñetas con `-`, `*rojo*` y `==resaltado==`.
+Al crear una escritura o subir **una** foto se te piden; si no, usa **📝** en
+Preparar o **✎** en Presentar. Se guardan en `revelar_privado/<sesión>/notas`,
+que **solo tu cuenta** puede leer: nunca llegan a los participantes.
+
 ### Agregar fotos desde el teléfono
 
 Toca **+** (abajo a la derecha) → **📷 Foto** y elige una o varias fotos de tu

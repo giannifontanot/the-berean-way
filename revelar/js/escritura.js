@@ -34,5 +34,26 @@ export function textoAHtml(texto, todoRojo) {
   return h.replace(/\r?\n/g, "<br>");
 }
 
+// Notas del presentador: *rojo*, ==resaltado== y líneas con "- " como viñetas.
+export function notasAHtml(texto) {
+  const lineas = escapar(texto).trim().split(/\r?\n/);
+  let html = "", enLista = false;
+  const marcar = (l) => l
+    .replace(/==([^=]+?)==/g, "<mark>$1</mark>")
+    .replace(/\*([^*]+)\*/g, '<span class="rojo">$1</span>');
+  for (const l of lineas) {
+    const m = l.match(/^\s*[-•*]\s+(.*)$/);
+    if (m) {
+      if (!enLista) { html += "<ul>"; enLista = true; }
+      html += `<li>${marcar(m[1])}</li>`;
+    } else {
+      if (enLista) { html += "</ul>"; enLista = false; }
+      html += l.trim() ? `<p>${marcar(l)}</p>` : "";
+    }
+  }
+  if (enLista) html += "</ul>";
+  return html;
+}
+
 export const esEscritura = (id) => String(id).startsWith("esc_");
 export const esSubida = (id) => String(id).startsWith("sub_");
