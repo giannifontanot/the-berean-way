@@ -89,7 +89,7 @@ Junto al **+** hay un botón **▶**:
 
 Una sola pantalla:
 
-- **Arriba**, el punto de conexión, 👥 participantes y los botones: **▶/⏸**, **+** (agregar foto o escritura),
+- **Arriba**, 👥 participantes conectados y los botones: **▶/⏸**, **+** (agregar foto o escritura),
   **⇅ Ordenar**, **Compartir** (QR) y **↺ Reiniciar**.
 - **La tira** con todas las láminas visibles. La que está en los teléfonos
   tiene marco dorado y dice **En pantalla**; la que sigue, **Siguiente**.
