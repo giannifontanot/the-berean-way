@@ -1226,3 +1226,61 @@ body.modo-presentar > .franja { flex: none; }
 .barra .estado:empty::before { width: 12px; height: 12px; }
 .franja-gente { flex: none; font-size: 13px; opacity: 0.9; }
 .franja-gente:empty { display: none; }
+
+/* ===== Editor de escrituras sobre el papel sepia ===== */
+.papel-wrap {
+  --papel: #f1e4c8;
+  --tinta: #2a1f14;
+  --rojo: #a5161b;
+  --resaltado: rgba(247, 214, 92, 0.6);
+  position: relative;
+  max-height: 46svh;
+  overflow-y: auto;
+  margin: 4px 0 12px;
+  padding: 20px 18px 14px;
+  border-radius: 14px;
+  border: 1px solid #dcc9a3;
+  background-color: var(--papel);
+  background-image:
+    radial-gradient(ellipse at center, rgba(255, 248, 230, 0.55) 0%, rgba(255, 248, 230, 0) 60%, rgba(150, 105, 50, 0.22) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.32 0 0 0 0 0.16 0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  color: var(--tinta);
+}
+.papel-editor {
+  min-height: 140px;
+  outline: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--font-sans);
+  font-size: 21px;
+  line-height: 1.55;
+  color: var(--tinta);
+  caret-color: var(--rojo);
+  -webkit-user-select: text;
+  user-select: text;
+}
+.papel-editor:empty::before { content: attr(data-placeholder); color: #a8916b; pointer-events: none; }
+.papel-wrap:focus-within { box-shadow: 0 0 0 3px rgba(111, 179, 217, 0.55); }
+.papel-editor .rojo, .papel-wrap.todo-rojo .papel-editor { color: var(--rojo); }
+.papel-editor mark { background: var(--resaltado); color: inherit; border-radius: 0.2em; padding: 0.02em 0; }
+.papel-editor .vnum-ed { color: #b9a37f; }
+.papel-wrap cite {
+  display: block;
+  margin-top: 12px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a6343;
+}
+.papel-wrap cite:empty { display: none; }
+
+/* ▶ / ⏸ junto al + */
+#btnModo .ico-pausa { display: none; }
+#btnModo.vivo .ico-play { display: none; }
+#btnModo.vivo .ico-pausa { display: inline; }
+#btnModo.vivo { background: #e0473f; border-color: #e0473f; color: #fff; box-shadow: 0 0 0 3px rgba(224, 71, 63, 0.3); }
+.barra .estado { font-size: 13px; }
+.barra-acciones { gap: 6px; }
+.btn-barra { width: 40px; height: 40px; }

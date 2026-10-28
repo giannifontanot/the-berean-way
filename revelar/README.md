@@ -73,29 +73,23 @@ participantes solo leen y no necesitan cuenta.
 
 Si alguien llega tarde o recarga la página, ve todas las fotos ya reveladas.
 
-### Ensayo y En vivo
+### Ensayo y En vivo (▶ / ⏸)
 
-Debajo de los botones de arriba hay una franja:
+Junto al **+** hay un botón **▶**:
 
-- **ENSAYO · nadie ve nada** (al abrir): puedes tocar láminas, Siguiente y ↶
-  para practicar; todo se mueve **solo en tu pantalla**. Los participantes
-  siguen viendo “Esperando…”.
-- **▶ Ir en vivo**: después de confirmar, la clase empieza **desde cero** (los
-  participantes ven “Esperando…”) y la franja se pone roja: **● EN VIVO**.
-  Desde ahí cada toque llega a sus teléfonos.
-- **⏹ Terminar**: vuelves a ensayo; los participantes se quedan con lo que vieron.
-- Si cierras el presentador a mitad de la clase, al abrirlo regresas **en vivo**
-  (dentro de 8 horas, en ese mismo teléfono).
-- El punto verde de arriba solo indica que estás conectado. 👥 = participantes.
-
-Las notas, ⋯, Ordenar y agregar láminas nunca se muestran a nadie, estés en
-ensayo o en vivo.
+- **▶ (ensayo)**: al abrir. Puedes tocar láminas, Siguiente y ↶ para practicar;
+  todo se mueve solo en tu pantalla. Los participantes ven “Esperando…”.
+- Toca **▶** → confirmas → **en vivo**: la clase empieza desde cero, el botón
+  se vuelve **⏸ rojo** y cada toque llega a los teléfonos.
+- Toca **⏸** para volver a ensayo; los participantes se quedan con lo que vieron.
+- Si cierras el presentador a mitad de la clase, al abrirlo regresas en vivo
+  (mismo teléfono, dentro de 8 horas).
 
 ### La pantalla del presentador
 
 Una sola pantalla:
 
-- **Arriba**, el estado y cuatro botones: **+** (agregar foto o escritura),
+- **Arriba**, el punto de conexión, 👥 participantes y los botones: **▶/⏸**, **+** (agregar foto o escritura),
   **⇅ Ordenar**, **Compartir** (QR) y **↺ Reiniciar**.
 - **La tira** con todas las láminas visibles. La que está en los teléfonos
   tiene marco dorado y dice **En pantalla**; la que sigue, **Siguiente**.
@@ -154,6 +148,10 @@ con el orden.
   continúa desde donde ibas.
 
 ### Escrituras en letra roja
+
+La escritura se escribe **directamente sobre el papel sepia**, tal como la verán
+los participantes: selecciona palabras en la hoja y toca **Rojo** o **Resaltar**
+(otra vez para quitarlo).
 
 Toca **+** → **📖 Escritura** para escribir una escritura:
 

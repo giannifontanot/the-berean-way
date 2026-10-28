@@ -55,5 +55,15 @@ export function notasAHtml(texto) {
   return html;
 }
 
+/** Posiciones (índices de letra) de los números de versículo en un texto. */
+export function indicesVersiculos(texto) {
+  const s = new Set();
+  for (const m of String(texto || "").matchAll(VERSICULO)) {
+    const ini = m.index + m[1].length;
+    for (let i = 0; i < m[2].length; i++) s.add(ini + i);
+  }
+  return s;
+}
+
 export const esEscritura = (id) => String(id).startsWith("esc_");
 export const esSubida = (id) => String(id).startsWith("sub_");
