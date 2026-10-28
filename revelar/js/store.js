@@ -13,7 +13,7 @@
 //     Fotos que subes desde el presentador con "+". Guardadas en la misma base de
 //     datos (comprimidas), así no hace falta activar otro servicio de Firebase.
 //     Escrituras y subidas comparten "reveladas" y "orden" con las fotos del repo.
-import { CONFIG } from "../config.js?v=202610281505";
+import { CONFIG } from "../config.js?v=202610281508";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -132,8 +132,9 @@ async function storeFirebase(sesion) {
       [`${base}/reveladas/${TEMP}${id}`]: null,
       [`${basePrivada}/notas/${id}`]: null,
     }),
-    onNotas(cb) {
-      return db.onValue(refNotas, (s) => cb(s.val() || {}), () => cb({}));
+    // Las notas son privadas: solo se pueden leer con tu cuenta ya dentro.
+    onNotas(cb, onError) {
+      return db.onValue(refNotas, (s) => cb(s.val() || {}), (e) => { cb({}); onError?.(e); });
     },
     guardarNota: (id, texto) => db.set(db.ref(d, `${basePrivada}/notas/${id}`), String(texto || "").trim() || null),
     onSubidas(cb) {
