@@ -4,7 +4,7 @@
       "$sesion": {
         ".read": true,
         "reveladas": {
-          ".write": "auth != null && auth.uid === 'PEGA_AQUI_TU_UID'",
+          ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
           "$foto": {
             ".validate": "newData.isNumber()"
           }
