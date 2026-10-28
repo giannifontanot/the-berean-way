@@ -710,3 +710,32 @@ html:has(body.sala) { scroll-snap-type: y proximity; }
 /* 🗑 de fotos subidas: solo en "Ordenar" */
 .miniatura.es-subida .editar { display: none; }
 .panel.ordenando .miniatura.es-subida .editar { display: inline-grid; place-items: center; width: 30px; height: 30px; margin-left: auto; font-size: 14px; }
+
+/* ===== Escrituras en papel de Biblia: sepia, con textura y bordes envejecidos ===== */
+.foto.escritura, .verso-mini, .vista-previa, .sala .foto.escritura {
+  --papel: #f1e4c8;
+  --tinta: #2a1f14;
+  --rojo: #a5161b;
+  --resaltado: rgba(247, 214, 92, 0.6);
+  background-color: var(--papel);
+  background-image:
+    /* bordes más tostados, como hoja vieja */
+    radial-gradient(ellipse at center, rgba(255, 248, 230, 0.55) 0%, rgba(255, 248, 230, 0) 60%, rgba(150, 105, 50, 0.22) 100%),
+    /* grano fino del papel */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.32 0 0 0 0 0.16 0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  color: var(--tinta);
+}
+.foto.escritura, .vista-previa { border-color: #dcc9a3; }
+.verso p, .verso-mini p, .vista-previa p { color: var(--tinta); }
+.verso cite, .verso-mini cite, .vista-previa cite { color: #7a6343; }
+.foto.escritura figcaption .orden { color: #a8916b; }
+.vista-previa .apagado { color: #9a8566; }
+.foto.escritura mark, .verso-mini mark, .vista-previa mark { background: var(--resaltado); color: inherit; }
+
+/* Números de versículo: mismo tamaño, tono sepia claro para que no distraigan */
+.foto.escritura .vnum, .verso-mini .vnum, .vista-previa .vnum,
+.foto.escritura .rojo .vnum, .foto.escritura mark .vnum,
+.vista-previa .rojo .vnum, .vista-previa mark .vnum,
+.verso-mini .rojo .vnum, .verso-mini mark .vnum {
+  color: #b9a37f;
+}
