@@ -986,3 +986,15 @@ body.modo-presentar #btnAgregar { display: none; }
   border-color: #b4b9c8;
 }
 #notasTexto::placeholder, #escNotas::placeholder { color: #7a8096; }
+
+/* Notas: gris más oscuro (menos brillo) */
+.notas-panel { --papel-notas: #b9bdc9; color: #151824; }
+.notas-cab { color: #43485a; }
+.notas-cab .btn-icono { background: #a7acba; border-color: #9499a9; color: #151824; }
+.notas { color: #151824; }
+.notas .rojo { color: #9a1712; }
+.notas mark { background: rgba(240, 196, 50, 0.75); }
+.notas li::marker { color: #6e5214; }
+.notas .notas-vacio { color: #4f5468; }
+#notasTexto, #escNotas { background: #b9bdc9; color: #151824; border-color: #9499a9; }
+#notasTexto::placeholder, #escNotas::placeholder { color: #5c6175; }
