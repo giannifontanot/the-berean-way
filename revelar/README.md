@@ -87,14 +87,16 @@ Una sola pantalla:
     Editar (escrituras), Ocultar y Borrar.
 - **Las notas** de la lámina en pantalla (antes de empezar, las de la primera),
   con **✎** para corregirlas.
-- **Abajo**, **↶**, **Siguiente ▶** y **AAA**.
+- **Abajo**, **↶** y **Siguiente ▶**.
   - **↶ Anterior**: si hay un desvío, lo quita; si estás repasando una lámina
     pasada, retrocede una más; si no, quita la última y los teléfonos vuelven a
     la anterior.
   - **Siguiente**: quita el desvío o termina el repaso y sigue con la próxima
     (si ya no hay más, vuelve a la última).
-  - **AAA**: tamaño y espacio entre letras de las notas (siempre con la fuente
-    Atkinson Hyperlegible). Se recuerda en ese teléfono.
+
+**AAA** (dentro del editor de notas): tamaño y espacio entre letras de las notas,
+siempre con la fuente Atkinson Hyperlegible. Aplica al editor y al cuadro de
+notas, y se recuerda en ese teléfono.
 
 **Cambiar una foto**: **⋯ → 🖼 Cambiar foto** (o toca la foto en ese menú), o
 **✎** sobre la foto en **Ordenar**. Sirve también para las fotos del repo: la

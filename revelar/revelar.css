@@ -1128,3 +1128,28 @@ body.modo-presentar > .barra, body.modo-presentar > .aviso { flex: none; }
 .dock .letra .aaa span:nth-child(2) { font-size: 17px; }
 .dock .letra .aaa span:nth-child(3) { font-size: 22px; }
 .letra-prev p, .letra-prev li { color: #151824; margin: 0 0 0.5em; }
+
+/* ===== AAA dentro del editor de notas; el tamaño aplica a todo lo de notas ===== */
+.notas-titulo-fila { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.notas-titulo-fila h2 { margin: 0; }
+.btn.letra {
+  flex: none;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-weight: 700;
+}
+.btn.letra .aaa { display: inline; line-height: 1; white-space: nowrap; }
+.btn.letra .aaa span:nth-child(1) { font-size: 12px; }
+.btn.letra .aaa span:nth-child(2) { font-size: 16px; }
+.btn.letra .aaa span:nth-child(3) { font-size: 21px; }
+.notas, .notas p, .notas li { font-size: var(--notas-fs, 20px); letter-spacing: var(--notas-ls, 0); }
+.notas .notas-vacio { font-size: calc(var(--notas-fs, 20px) * 0.8); }
+#notasTexto, #escNotas, .letra-prev, .letra-prev p, .letra-prev li {
+  font-family: var(--font-sans);
+  font-size: var(--notas-fs, 20px);
+  letter-spacing: var(--notas-ls, 0);
+  line-height: 1.5;
+}
