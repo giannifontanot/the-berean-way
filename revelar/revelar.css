@@ -161,11 +161,11 @@ dialog p { margin: 0 0 14px; color: var(--muted); }
 .lista {
   max-width: 720px;
   margin: 0 auto;
-  padding: 16px 16px 40px;
+  padding: 0 0 40px;
   padding-bottom: max(40px, env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 6px;
 }
 .vacio {
   margin: 18vh auto 0;
@@ -181,10 +181,8 @@ dialog p { margin: 0 0 14px; color: var(--muted); }
 .foto {
   position: relative;
   margin: 0;
-  border-radius: var(--radius);
   overflow: hidden;
-  background: var(--card);
-  border: 1px solid var(--line);
+  background: var(--bg);
   cursor: zoom-in;
   transform-origin: top center;
   transition: opacity 0.45s ease, transform 0.45s ease, max-height 0.45s ease, margin 0.45s ease;
@@ -194,7 +192,7 @@ dialog p { margin: 0 0 14px; color: var(--muted); }
   display: flex;
   align-items: baseline;
   gap: 10px;
-  padding: 10px 14px 12px;
+  padding: 8px 16px 10px;
   font-family: var(--font-serif);
   font-size: 17px;
 }
@@ -206,7 +204,7 @@ dialog p { margin: 0 0 14px; color: var(--muted); }
   color: var(--gold);
 }
 .foto.entrando { opacity: 0; transform: translateY(18px) scale(0.98); }
-.foto.nueva { box-shadow: 0 0 0 2px var(--gold); }
+.foto.nueva { outline: 3px solid var(--gold); outline-offset: -3px; }
 .foto.saliendo { opacity: 0; transform: scale(0.96); }
 
 /* Vista ampliada */
@@ -236,15 +234,15 @@ dialog p { margin: 0 0 14px; color: var(--muted); }
   align-items: center;
   margin-bottom: 14px;
 }
-.herramientas .resumen { flex: 1; min-width: 0; color: var(--muted); font-size: 13px; }
+.herramientas .resumen { flex: 1 1 100%; color: var(--muted); font-size: 14px; }
 
 .cuadricula {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
-  max-width: 720px;
-  margin: 0 auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
+@media (min-width: 640px) { .cuadricula { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 960px) { .cuadricula { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 .miniatura {
   position: relative;
@@ -260,8 +258,8 @@ dialog p { margin: 0 0 14px; color: var(--muted); }
   transition: border-color 0.2s, transform 0.12s;
 }
 .miniatura:active { transform: scale(0.98); }
-.miniatura .marco { position: relative; background: #0b0e1f; }
-.miniatura img { width: 100%; height: auto; }
+.miniatura .marco { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: #0b0e1f; }
+.miniatura img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .miniatura .pie {
   display: flex;
   align-items: center;
@@ -373,8 +371,6 @@ code.uid { display: block; padding: 10px 12px; border-radius: 10px; background: 
 /* Miniaturas compactas para arrastrar con comodidad; vuelve a ancho completo al tocar Listo. */
 .panel.ordenando .cuadricula { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 @media (min-width: 640px) { .panel.ordenando .cuadricula { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
-.panel.ordenando .marco { aspect-ratio: 3 / 4; overflow: hidden; }
-.panel.ordenando .miniatura img { position: absolute; inset: 0; height: 100%; object-fit: cover; }
 .panel.ordenando .miniatura { cursor: grab; border-style: dashed; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 .panel.ordenando .miniatura .pie { min-height: 0; padding: 6px 8px; }
 .panel.ordenando .miniatura .tit,
