@@ -1168,3 +1168,35 @@ body.modo-presentar > .barra, body.modo-presentar > .aviso { flex: none; }
 .dlg-notas .notas-prev .verso-mini cite, .dlg-item .notas-prev .verso-mini cite { font-size: 12px; }
 .dlg-item .item-cab { flex-direction: column; text-align: center; gap: 0; }
 .dlg-item .notas-prev.cambiable::after { padding: 6px 0; font-size: 13px; }
+
+/* ===== Aviso: píldora corta que sube y se desvanece ===== */
+.toast {
+  bottom: calc(100px + env(safe-area-inset-bottom));
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100vw - 64px);
+  opacity: 0;
+  transform: translate(-50%, 0);
+  transition: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+.toast.subir { animation: avisoSube 1.6s cubic-bezier(0.25, 0.8, 0.3, 1) forwards; }
+.toast.fijo { animation: avisoEntra 0.25s ease-out forwards; }
+@keyframes avisoSube {
+  0%   { opacity: 0; transform: translate(-50%, 24px); }
+  14%  { opacity: 1; transform: translate(-50%, 0); }
+  55%  { opacity: 1; transform: translate(-50%, -28px); }
+  100% { opacity: 0; transform: translate(-50%, -90px); }
+}
+@keyframes avisoEntra {
+  from { opacity: 0; transform: translate(-50%, 24px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast.subir, .toast.fijo { opacity: 1; transform: translate(-50%, 0); }
+}
