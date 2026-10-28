@@ -9,6 +9,6 @@
 // Usa nombres de archivo no adivinables (p. ej. fotos/a7k2-jerusalen.jpg)
 // para que nadie encuentre las fotos antes de que las reveles.
 export const FOTOS = [
-  { id: "foto-01", src: "fotos/3b8511-jesus-ensena-templo.jpg" },
+  { id: "foto-01", src: "fotos/8b70b8-jesus-ensena-templo.jpg" },
   { id: "foto-02", src: "fotos/9e2c5b-templo-jerusalen.jpg" },
 ];
