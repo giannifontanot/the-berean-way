@@ -128,3 +128,10 @@ sesión. Cada sesión tiene su propia lista.
 > Las fotos viven en GitHub Pages, que es público. Usa nombres de archivo no
 > adivinables (p. ej. `fotos/a7k2-jerusalen.jpg`) para que nadie las encuentre
 > antes de que las reveles.
+
+## Al publicar cambios
+
+GitHub Pages deja que los teléfonos guarden los archivos hasta 10 minutos.
+Las páginas piden `revelar.css` y los `.js` con `?v=…`; al cambiar esos
+archivos, sube ese número (en `index.html`, `presentador.html` y
+`js/store.js`) para que todos reciban la versión nueva al recargar.
