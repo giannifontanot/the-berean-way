@@ -240,11 +240,11 @@ dialog p { margin: 0 0 14px; color: var(--muted); }
 
 .cuadricula {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  max-width: 720px;
+  margin: 0 auto;
 }
-@media (min-width: 640px) { .cuadricula { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 960px) { .cuadricula { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 .miniatura {
   position: relative;
@@ -260,8 +260,8 @@ dialog p { margin: 0 0 14px; color: var(--muted); }
   transition: border-color 0.2s, transform 0.12s;
 }
 .miniatura:active { transform: scale(0.98); }
-.miniatura .marco { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: #0b0e1f; }
-.miniatura img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.miniatura .marco { position: relative; background: #0b0e1f; }
+.miniatura img { width: 100%; height: auto; }
 .miniatura .pie {
   display: flex;
   align-items: center;
@@ -368,3 +368,20 @@ code.uid { display: block; padding: 10px 12px; border-radius: 10px; background: 
 }
 .dock .sig-label { font-size: 19px; }
 .dock .sig-cual { max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: 13px; font-weight: 400; opacity: 0.85; }
+
+/* ----------------------- Modo ordenar ----------------------- */
+/* Miniaturas compactas para arrastrar con comodidad; vuelve a ancho completo al tocar Listo. */
+.panel.ordenando .cuadricula { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (min-width: 640px) { .panel.ordenando .cuadricula { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.panel.ordenando .marco { aspect-ratio: 3 / 4; overflow: hidden; }
+.panel.ordenando .miniatura img { position: absolute; inset: 0; height: 100%; object-fit: cover; }
+.panel.ordenando .miniatura { cursor: grab; border-style: dashed; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.panel.ordenando .miniatura .pie { min-height: 0; padding: 6px 8px; }
+.panel.ordenando .miniatura .tit,
+.panel.ordenando .miniatura .tocar,
+.panel.ordenando .miniatura .ocultar { display: none; }
+.panel.ordenando .miniatura .insignia { min-width: 26px; height: 26px; font-size: 13px; top: 6px; left: 6px; }
+.panel.ordenando .dock { display: none; }
+.miniatura.arrastrando-fantasma { opacity: 0.35; }
+.miniatura.arrastrando-elegida { border-color: var(--accent); border-style: solid; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55); }
+.btn.activo { background: var(--gold); border-color: var(--gold); color: #2a1e05; font-weight: 700; }

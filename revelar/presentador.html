@@ -8,6 +8,7 @@
   <title>Presentador · Revelar fotos</title>
   <link rel="stylesheet" href="revelar.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
 </head>
 <body>
   <header class="barra">
@@ -27,6 +28,7 @@
   <main class="panel" id="panel" hidden>
     <div class="herramientas">
       <div class="resumen" id="resumen">0 reveladas</div>
+      <button class="btn" id="btnOrdenar">Ordenar</button>
       <button class="btn primario" id="btnCompartir">Compartir</button>
       <button class="btn peligro" id="btnReiniciar">Reiniciar</button>
     </div>
@@ -94,6 +96,8 @@
     let usuario = null;
     let reveladas = {};
     let enCurso = false;
+    let ordenando = false;
+    let lista = FOTOS.slice(); // orden de TU cuadrícula (puede venir guardado en Firebase)
 
     $("sesionTxt").textContent = "Sesión · " + sesion;
 
@@ -146,7 +150,7 @@
       b.querySelector(".num").textContent = "#" + (i + 1);
       b.querySelector(".tit").textContent = foto.titulo || "";
 
-      const revelar = () => { if (!reveladas[foto.id]) accion(foto.id, () => store.revelar(foto.id)); };
+      const revelar = () => { if (!ordenando && !reveladas[foto.id]) accion(foto.id, () => store.revelar(foto.id)); };
       b.addEventListener("click", (e) => { if (!e.target.closest(".ocultar")) revelar(); });
       b.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); revelar(); } });
       b.querySelector(".ocultar").addEventListener("click", (e) => {
@@ -165,20 +169,25 @@
         b.classList.toggle("revelada", pos >= 0);
         b.querySelector(".insignia").textContent = pos >= 0 ? pos + 1 : "";
       });
-      const n = orden.filter((id) => tarjetas.has(id)).length;
-      $("resumen").textContent = `${n} de ${FOTOS.length} reveladas`;
+      pintarResumen();
       pintarDock();
     }, (e) => aviso("No se pudo leer la sesión: " + (e?.message || e)));
 
+    function pintarResumen() {
+      if (ordenando) return;
+      const n = ordenar(reveladas).filter((id) => tarjetas.has(id)).length;
+      $("resumen").textContent = `${n} de ${FOTOS.length} reveladas`;
+    }
+
     // ---------- Siguiente / Deshacer ----------
-    // "Siguiente" revela la primera foto de fotos.js que aún no se ha revelado.
+    // "Siguiente" revela la primera foto de tu cuadrícula que aún no se ha revelado.
     // "↶" oculta la última que revelaste (por si tocaste de más).
-    function siguiente() { return FOTOS.find((f) => !reveladas[f.id]); }
+    function siguiente() { return lista.find((f) => !reveladas[f.id]); }
     function ultima() { return ordenar(reveladas).filter((id) => tarjetas.has(id)).pop(); }
 
     function pintarDock() {
       const sig = siguiente();
-      const i = sig ? FOTOS.indexOf(sig) : -1;
+      const i = sig ? lista.indexOf(sig) : -1;
       $("btnSiguiente").disabled = !sig || enCurso;
       $("sigCual").textContent = sig ? `#${i + 1}` + (sig.titulo ? ` · ${sig.titulo}` : "") : "Todas reveladas ✓";
       $("btnDeshacer").disabled = !ultima() || enCurso;
@@ -202,6 +211,63 @@
     $("btnDeshacer").addEventListener("click", () => {
       const id = ultima();
       if (id) paso(() => store.ocultar(id));
+    });
+
+    // ---------- Ordenar ----------
+    // "Ordenar" pasa a miniaturas compactas que se arrastran (mantén presionada en el
+    // teléfono). "Listo" guarda el orden en Firebase para esta sesión.
+    const porId = new Map(FOTOS.map((f) => [f.id, f]));
+
+    function aplicarOrden(ids) {
+      const vistos = new Set();
+      const nueva = [];
+      (ids || []).forEach((id) => { if (porId.has(id) && !vistos.has(id)) { vistos.add(id); nueva.push(porId.get(id)); } });
+      FOTOS.forEach((f) => { if (!vistos.has(f.id)) nueva.push(f); }); // fotos nuevas van al final
+      lista = nueva;
+      lista.forEach((f, i) => {
+        const b = tarjetas.get(f.id);
+        b.querySelector(".num").textContent = "#" + (i + 1);
+        $("cuadricula").append(b);
+      });
+      pintarDock();
+    }
+
+    store.onOrden((ids) => { if (!ordenando) aplicarOrden(ids); });
+
+    let sortable = null;
+    $("btnOrdenar").addEventListener("click", async () => {
+      if (!ordenando) {
+        if (!window.Sortable) { aviso("No se pudo cargar la herramienta para arrastrar. Revisa tu conexión."); return; }
+        ordenando = true;
+        $("panel").classList.add("ordenando");
+        $("btnOrdenar").textContent = "Listo ✓";
+        $("btnOrdenar").classList.add("activo");
+        $("btnCompartir").hidden = $("btnReiniciar").hidden = true;
+        $("resumen").textContent = "Arrastra las fotos";
+        sortable = Sortable.create($("cuadricula"), {
+          animation: 180,
+          delay: 120,
+          delayOnTouchOnly: true,
+          ghostClass: "arrastrando-fantasma",
+          chosenClass: "arrastrando-elegida",
+          onSort: () => {
+            [...$("cuadricula").children].forEach((b, i) => { b.querySelector(".num").textContent = "#" + (i + 1); });
+          },
+        });
+        return;
+      }
+      // Listo: guardar
+      const ids = [...$("cuadricula").children].map((b) => b.dataset.id);
+      sortable?.destroy(); sortable = null;
+      ordenando = false;
+      $("panel").classList.remove("ordenando");
+      $("btnOrdenar").textContent = "Ordenar";
+      $("btnOrdenar").classList.remove("activo");
+      $("btnCompartir").hidden = $("btnReiniciar").hidden = false;
+      aplicarOrden(ids);
+      pintarResumen();
+      try { await store.guardarOrden(ids); aviso("Orden guardado"); }
+      catch (e) { manejarError(e); }
     });
 
     async function accion(id, fn) {

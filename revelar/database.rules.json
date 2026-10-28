@@ -9,6 +9,12 @@
             ".validate": "newData.isNumber()"
           }
         },
+        "orden": {
+          ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+          "$i": {
+            ".validate": "newData.isString()"
+          }
+        },
         "presencia": {
           "$conexion": {
             ".write": true,

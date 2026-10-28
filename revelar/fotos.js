@@ -1,5 +1,5 @@
 // fotos.js — Las fotos de la presentación, en el orden en que las ves TÚ.
-// El botón "Siguiente ▶" las revela en este mismo orden.
+// "Ordenar" en el presentador cambia el orden sin tocar este archivo.
 //
 //   id     → identificador único (letras, números, - y _). No lo cambies
 //            durante una sesión: es lo que se guarda en Firebase.
@@ -11,4 +11,5 @@
 export const FOTOS = [
   { id: "foto-01", src: "fotos/8b70b8-jesus-ensena-templo.jpg" },
   { id: "foto-02", src: "fotos/9e2c5b-templo-jerusalen.jpg" },
+  { id: "foto-03", src: "fotos/500093-tabernaculo.jpg" },
 ];

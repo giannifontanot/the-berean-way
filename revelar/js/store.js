@@ -5,6 +5,7 @@
 // Datos en Firebase:
 //   revelar/<sesion>/reveladas/<fotoId> = marca de tiempo (orden de revelado)
 //   revelar/<sesion>/presencia/<conexion> = true (un participante conectado)
+//   revelar/<sesion>/orden = [ids] (orden de TU cuadrícula; solo lo usa el presentador)
 import { CONFIG } from "../config.js";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
@@ -47,6 +48,7 @@ async function storeFirebase(sesion) {
   const refReveladas = db.ref(d, `${base}/reveladas`);
   const refPresencia = db.ref(d, `${base}/presencia`);
   const refConectado = db.ref(d, ".info/connected");
+  const refOrden = db.ref(d, `${base}/orden`);
 
   let authMod = null, auth = null;
   async function getAuth() {
@@ -80,6 +82,10 @@ async function storeFirebase(sesion) {
     revelar: (id) => db.set(db.ref(d, `${base}/reveladas/${id}`), db.serverTimestamp()),
     ocultar: (id) => db.remove(db.ref(d, `${base}/reveladas/${id}`)),
     reiniciar: () => db.remove(refReveladas),
+    onOrden(cb) {
+      return db.onValue(refOrden, (s) => cb(Array.isArray(s.val()) ? s.val() : null), () => cb(null));
+    },
+    guardarOrden: (ids) => db.set(refOrden, ids),
     async onUsuario(cb) {
       const a = await getAuth();
       return authMod.onAuthStateChanged(a, cb);
@@ -117,6 +123,11 @@ function storeDemo(sesion) {
     async revelar(id) { const v = leer(); v[id] = Date.now(); escribir(v); },
     async ocultar(id) { const v = leer(); delete v[id]; escribir(v); },
     async reiniciar() { escribir({}); },
+    onOrden(cb) {
+      try { cb(JSON.parse(localStorage.getItem(clave + ":orden"))); } catch { cb(null); }
+      return () => {};
+    },
+    async guardarOrden(ids) { try { localStorage.setItem(clave + ":orden", JSON.stringify(ids)); } catch {} },
     async onUsuario(cb) { cb({ uid: "demo", displayName: "Modo demo" }); return () => {}; },
     async entrar() {},
     async salir() {},
