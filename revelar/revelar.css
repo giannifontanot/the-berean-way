@@ -1153,3 +1153,18 @@ body.modo-presentar > .barra, body.modo-presentar > .aviso { flex: none; }
   letter-spacing: var(--notas-ls, 0);
   line-height: 1.5;
 }
+
+/* La imagen al editar: del mismo tamaño que la lámina en pantalla de la tira */
+.dlg-notas .notas-prev,
+.dlg-item .item-cab .notas-prev {
+  width: auto;
+  height: var(--tira-h);
+  aspect-ratio: 3 / 4;
+  margin: 4px auto 14px;
+  border-radius: 14px;
+  border: 2px solid var(--gold);
+}
+.dlg-notas .notas-prev .verso-mini p, .dlg-item .notas-prev .verso-mini p { font-size: 13px; }
+.dlg-notas .notas-prev .verso-mini cite, .dlg-item .notas-prev .verso-mini cite { font-size: 12px; }
+.dlg-item .item-cab { flex-direction: column; text-align: center; gap: 0; }
+.dlg-item .notas-prev.cambiable::after { padding: 6px 0; font-size: 13px; }
