@@ -129,8 +129,8 @@ que **solo tu cuenta** puede leer: nunca llegan a los participantes.
 ### Agregar fotos desde el teléfono
 
 Toca **+** (abajo a la derecha) → **📷 Foto** y elige una o varias fotos de tu
-galería. Se reducen solas (lado mayor 1600 px) y se agregan al final de tu
-lista, ocultas hasta que las reveles. En **Ordenar**, toca **🗑** en la tarjeta para borrarla.
+galería. Se reducen solas (lado mayor 1600 px) y se agregan después de la lámina que tienes al frente en la tira,
+ocultas hasta que las reveles. En **Ordenar**, toca **🗑** en la tarjeta para borrarla.
 Se guardan en la misma Realtime Database, por sesión.
 
 ### Ocultar una lámina para "Siguiente"
