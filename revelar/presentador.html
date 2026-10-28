@@ -142,7 +142,7 @@
       b.querySelector("img").src = foto.src;
       b.querySelector("img").alt = foto.titulo || "";
       b.querySelector(".num").textContent = "#" + (i + 1);
-      b.querySelector(".tit").textContent = foto.titulo || foto.id;
+      b.querySelector(".tit").textContent = foto.titulo || "";
 
       const revelar = () => { if (!reveladas[foto.id]) accion(foto.id, () => store.revelar(foto.id)); };
       b.addEventListener("click", (e) => { if (!e.target.closest(".ocultar")) revelar(); });
@@ -178,7 +178,7 @@
       const sig = siguiente();
       const i = sig ? FOTOS.indexOf(sig) : -1;
       $("btnSiguiente").disabled = !sig || enCurso;
-      $("sigCual").textContent = sig ? `#${i + 1} · ${sig.titulo || sig.id}` : "Todas reveladas ✓";
+      $("sigCual").textContent = sig ? `#${i + 1}` + (sig.titulo ? ` · ${sig.titulo}` : "") : "Todas reveladas ✓";
       $("btnDeshacer").disabled = !ultima() || enCurso;
     }
 
