@@ -12,10 +12,10 @@ export const CONFIG = {
   // Mientras apiKey empiece con "PEGA", las páginas funcionan en MODO DEMO:
   // se sincronizan solo entre pestañas del mismo navegador, para probar.
   firebase: {
-    apiKey: "PEGA_AQUI_TU_API_KEY",
-    authDomain: "TU-PROYECTO.firebaseapp.com",
-    databaseURL: "https://TU-PROYECTO-default-rtdb.firebaseio.com",
-    projectId: "TU-PROYECTO",
-    appId: "PEGA_AQUI_TU_APP_ID",
+    apiKey: "AIzaSyD5niU5Ao5jtlvQZAxYgcYMRpvmfot_nMI",
+    authDomain: "berean-revelar.firebaseapp.com",
+    databaseURL: "https://berean-revelar-default-rtdb.firebaseio.com",
+    projectId: "berean-revelar",
+    appId: "1:920817188990:web:bdfd5116dfc71484fd582f",
   },
 };
