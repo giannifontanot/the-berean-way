@@ -1071,3 +1071,60 @@ body.modo-presentar .panel {
 .notas-panel { padding-bottom: 16px; margin-bottom: 0; border-radius: 16px; }
 body.modo-presentar { display: flex; flex-direction: column; }
 body.modo-presentar > .barra, body.modo-presentar > .aviso { flex: none; }
+
+/* ===== AAA: tamaño y espacio de la letra de las notas ===== */
+.notas { font-family: var(--font-sans); font-size: var(--notas-fs, 20px); letter-spacing: var(--notas-ls, 0); }
+.dock .letra {
+  flex: none;
+  width: 64px;
+  min-height: 64px;
+  padding: 0;
+  gap: 1px;
+  border-radius: 18px;
+  align-items: baseline;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  line-height: 1;
+}
+.dock .letra span:nth-child(1) { font-size: 13px; }
+.dock .letra span:nth-child(2) { font-size: 17px; }
+.dock .letra span:nth-child(3) { font-size: 22px; }
+.dlg-letra { width: min(460px, calc(100vw - 24px)); }
+.deslizador { display: block; margin: 6px 0 16px; font-size: 15px; color: var(--text); }
+.deslizador output { float: right; color: var(--gold); font-weight: 700; }
+.deslizador input[type="range"] { display: block; width: 100%; margin-top: 10px; accent-color: var(--accent); height: 28px; }
+.letra-prev {
+  max-height: 34svh;
+  overflow: auto;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #b9bdc9;
+  color: #151824;
+}
+.letra-prev mark { background: rgba(240, 196, 50, 0.75); color: inherit; }
+.letra-prev li::marker { color: #6e5214; }
+
+/* ✎ en Ordenar también para fotos (cambiar foto) */
+.panel.ordenando .miniatura .editar,
+.panel.ordenando .miniatura.es-subida .editar { display: inline-grid; place-items: center; width: 32px; height: 32px; }
+
+/* Foto del menú: tócala para cambiarla */
+.notas-prev.cambiable { cursor: pointer; }
+.notas-prev.cambiable::after {
+  content: "Cambiar";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 3px 0;
+  background: rgba(10, 12, 26, 0.7);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+.dock .letra { align-items: center; }
+.dock .letra .aaa { display: inline; line-height: 1; white-space: nowrap; }
+.dock .letra .aaa span { display: inline; }
+.dock .letra .aaa span:nth-child(1) { font-size: 13px; }
+.dock .letra .aaa span:nth-child(2) { font-size: 17px; }
+.dock .letra .aaa span:nth-child(3) { font-size: 22px; }
+.letra-prev p, .letra-prev li { color: #151824; margin: 0 0 0.5em; }

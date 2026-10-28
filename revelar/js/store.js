@@ -13,7 +13,7 @@
 //     Fotos que subes desde el presentador con "+". Guardadas en la misma base de
 //     datos (comprimidas), así no hace falta activar otro servicio de Firebase.
 //     Escrituras y subidas comparten "reveladas" y "orden" con las fotos del repo.
-import { CONFIG } from "../config.js?v=202610281444";
+import { CONFIG } from "../config.js?v=202610281456";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -147,6 +147,9 @@ async function storeFirebase(sesion) {
       await db.set(db.ref(d, `${base}/subidas/${clave}`), datos);
       return clave;
     },
+    // Cambiar la imagen de una foto (subida o del repo). Para las del repo se guarda
+    // en subidas/<id> con el mismo id y reemplaza a la original.
+    reemplazarFoto: (id, src, creado) => db.set(db.ref(d, `${base}/subidas/${id}`), { src, creado: creado || Date.now() }),
     borrarSubida: (id) => db.update(db.ref(d), {
       [`${base}/subidas/${id}`]: null,
       [`${base}/reveladas/${id}`]: null,
@@ -258,6 +261,9 @@ function storeDemo(sesion) {
       const id = "sub_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
       const v = leerSub(); v[id] = datos; escribirSub(v);
       return id;
+    },
+    async reemplazarFoto(id, src, creado) {
+      const v = leerSub(); v[id] = { src, creado: creado || Date.now() }; escribirSub(v);
     },
     async borrarSubida(id) {
       const v = leerSub(); delete v[id]; escribirSub(v);
