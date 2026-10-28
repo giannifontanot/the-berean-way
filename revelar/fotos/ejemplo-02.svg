@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
-<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8a5a2b"/><stop offset="1" stop-color="#1b1209"/></linearGradient></defs>
-<rect width="1200" height="800" fill="url(#g)"/>
-<circle cx="440" cy="380" r="160" fill="#ffffff" opacity="0.06"/>
-<text x="600" y="430" text-anchor="middle" font-family="Georgia, serif" font-size="180" fill="#ffffff" opacity="0.9">2</text>
-<text x="600" y="520" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" letter-spacing="6" fill="#ffffff" opacity="0.6">FOTO DE EJEMPLO</text>
-</svg>

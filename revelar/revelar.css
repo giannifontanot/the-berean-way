@@ -260,8 +260,8 @@ dialog p { margin: 0 0 14px; color: var(--muted); }
   transition: border-color 0.2s, transform 0.12s;
 }
 .miniatura:active { transform: scale(0.98); }
-.miniatura .marco { position: relative; aspect-ratio: 4 / 3; background: #0b0e1f; }
-.miniatura img { width: 100%; height: 100%; object-fit: cover; }
+.miniatura .marco { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: #0b0e1f; }
+.miniatura img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .miniatura .pie {
   display: flex;
   align-items: center;
@@ -339,3 +339,32 @@ code.uid { display: block; padding: 10px 12px; border-radius: 10px; background: 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+/* ----------------------- Siguiente (dock) ----------------------- */
+.panel { padding-bottom: 120px; }
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 25;
+  display: flex;
+  gap: 10px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--bg) 70%, rgba(17, 21, 43, 0));
+}
+.dock .deshacer { flex: none; width: 60px; min-height: 64px; padding: 0; font-size: 26px; border-radius: 18px; }
+.dock .siguiente {
+  flex: 1;
+  min-width: 0;
+  min-height: 64px;
+  flex-direction: column;
+  gap: 0;
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+.dock .sig-label { font-size: 19px; }
+.dock .sig-cual { max-width: 100%; overflow: hidden; text-overflow: ellipsis; font-size: 13px; font-weight: 400; opacity: 0.85; }

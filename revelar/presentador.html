@@ -34,6 +34,15 @@
     <p style="text-align:center;margin-top:28px">
       <button class="btn-texto" id="btnSalir">Salir</button>
     </p>
+
+    <!-- Avance en orden: siempre el mismo botón -->
+    <div class="dock">
+      <button class="btn deshacer" id="btnDeshacer" aria-label="Ocultar la última revelada">↶</button>
+      <button class="btn primario siguiente" id="btnSiguiente">
+        <span class="sig-label">Siguiente ▶</span>
+        <span class="sig-cual" id="sigCual"></span>
+      </button>
+    </div>
   </main>
 
   <!-- Compartir -->
@@ -82,6 +91,7 @@
     const tarjetas = new Map(); // id → <button>
     let usuario = null;
     let reveladas = {};
+    let enCurso = false;
 
     $("sesionTxt").textContent = "Sesión · " + sesion;
 
@@ -155,7 +165,42 @@
       });
       const n = orden.filter((id) => tarjetas.has(id)).length;
       $("resumen").textContent = `${n} de ${FOTOS.length} reveladas`;
+      pintarDock();
     }, (e) => aviso("No se pudo leer la sesión: " + (e?.message || e)));
+
+    // ---------- Siguiente / Deshacer ----------
+    // "Siguiente" revela la primera foto de fotos.js que aún no se ha revelado.
+    // "↶" oculta la última que revelaste (por si tocaste de más).
+    function siguiente() { return FOTOS.find((f) => !reveladas[f.id]); }
+    function ultima() { return ordenar(reveladas).filter((id) => tarjetas.has(id)).pop(); }
+
+    function pintarDock() {
+      const sig = siguiente();
+      const i = sig ? FOTOS.indexOf(sig) : -1;
+      $("btnSiguiente").disabled = !sig || enCurso;
+      $("sigCual").textContent = sig ? `#${i + 1} · ${sig.titulo || sig.id}` : "Todas reveladas ✓";
+      $("btnDeshacer").disabled = !ultima() || enCurso;
+    }
+
+    async function paso(fn) {
+      if (enCurso) return;
+      enCurso = true; pintarDock();
+      try { await fn(); }
+      catch (e) { manejarError(e); }
+      finally { enCurso = false; pintarDock(); }
+    }
+
+    $("btnSiguiente").addEventListener("click", () => {
+      const sig = siguiente();
+      if (!sig) return;
+      paso(() => store.revelar(sig.id));
+      tarjetas.get(sig.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (navigator.vibrate) navigator.vibrate(20);
+    });
+    $("btnDeshacer").addEventListener("click", () => {
+      const id = ultima();
+      if (id) paso(() => store.ocultar(id));
+    });
 
     async function accion(id, fn) {
       const b = tarjetas.get(id);
