@@ -562,7 +562,6 @@
 
     let borrandoFoto = null;
     function pedirBorrarFoto(id) {
-      if (ordenando) return;
       borrandoFoto = id;
       $("dlgBorrarFoto").showModal();
     }
@@ -603,7 +602,7 @@
           chosenClass: "arrastrando-elegida",
           dragClass: "arrastrando-dedo",
           fallbackClass: "arrastrando-dedo",
-          filter: ".chk-saltar",       // tocar la casilla no inicia el arrastre
+          filter: ".chk-saltar, .editar", // tocar la casilla o el 🗑 no inicia el arrastre
           preventOnFilter: false,
           onChoose: () => { if (navigator.vibrate) navigator.vibrate(15); },
           onSort: numerar,

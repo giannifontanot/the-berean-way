@@ -77,7 +77,7 @@ Si alguien llega tarde o recarga la página, ve todas las fotos ya reveladas.
 
 Toca **+** (abajo a la derecha) → **📷 Foto** y elige una o varias fotos de tu
 galería. Se reducen solas (lado mayor 1600 px) y se agregan al final de tu
-lista, ocultas hasta que las reveles. Toca **🗑** en la tarjeta para borrarla.
+lista, ocultas hasta que las reveles. En **Ordenar**, toca **🗑** en la tarjeta para borrarla.
 Se guardan en la misma Realtime Database, por sesión.
 
 ### Ocultar una lámina para "Siguiente"

@@ -649,7 +649,6 @@ html:has(body.sala) { scroll-snap-type: y proximity; }
 }
 .btn.opcion span { font-size: 34px; line-height: 1; }
 .miniatura.es-subida .editar { display: inline-grid; place-items: center; }
-.panel.ordenando .miniatura.es-subida .editar { display: none; }
 
 /* Desvío: tocado fuera de orden (se quita con Siguiente) */
 .miniatura.temporal { border-color: var(--accent); border-style: solid; }
@@ -707,3 +706,7 @@ html:has(body.sala) { scroll-snap-type: y proximity; }
 
 /* Las ocultas no aparecen en tu lista durante la clase; solo en "Ordenar". */
 .panel:not(.ordenando) .miniatura.saltada { display: none; }
+
+/* 🗑 de fotos subidas: solo en "Ordenar" */
+.miniatura.es-subida .editar { display: none; }
+.panel.ordenando .miniatura.es-subida .editar { display: inline-grid; place-items: center; width: 30px; height: 30px; margin-left: auto; font-size: 14px; }
