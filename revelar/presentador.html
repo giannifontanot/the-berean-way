@@ -82,8 +82,10 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { FOTOS } from "./fotos.js";
     import { crearStore, sesionActual, ordenar, esPermisoDenegado } from "./js/store.js";
+    // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
+    // sin esperar los 10 minutos de caché de GitHub Pages.
+    const { FOTOS } = await import("./fotos.js?v=" + Date.now());
 
     const $ = (id) => document.getElementById(id);
     const sesion = sesionActual();
