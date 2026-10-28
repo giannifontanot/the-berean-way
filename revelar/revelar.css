@@ -771,3 +771,8 @@ html:has(body.sala) { scroll-snap-type: y proximity; }
 /* Tarjeta cayendo a su lugar */
 .miniatura.aterrizando { position: relative; z-index: 5; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55); border-color: var(--accent); }
 .miniatura.aterrizando:not([style*="transform: translate"]) { box-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+
+/* En "Ordenar", sin transición propia: así la animación de abrir espacio
+   (la de Sortable) corre completa y suave en vez de brincar. */
+.panel.ordenando .miniatura { transition: none; }
+.panel.ordenando .miniatura:active { transform: none; }
