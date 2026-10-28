@@ -153,6 +153,10 @@
     let escrituras = {};
     let subidas = {};
     let ordenGuardado = null;
+    // Láminas ocultas para "Siguiente" (como ocultar diapositiva en PowerPoint).
+    // Se guardan dentro del orden con el prefijo "~": ["foto-01", "~foto-02", …]
+    const OCULTA = "~";
+    let saltadas = new Set();
     let usuario = null;
     let reveladas = {};
     let enCurso = false;
@@ -202,7 +206,11 @@
       b.tabIndex = 0;
       b.dataset.id = item.id;
       b.innerHTML = `
-        <div class="marco"><span class="insignia"></span></div>
+        <div class="marco"><span class="insignia"></span>
+          <label class="chk-saltar" title="Mostrar con Siguiente">
+            <input type="checkbox" checked aria-label="Mostrar con Siguiente"><span></span>
+          </label>
+        </div>
         <div class="pie">
           <span class="num"></span><span class="tit"></span>
           <button class="editar" type="button" aria-label="Editar">✎</button>
@@ -235,7 +243,14 @@
         const k = TEMP + item.id;
         accion(item.id, () => (reveladas[k] ? store.ocultar(k) : store.revelar(k)));
       };
-      b.addEventListener("click", (e) => { if (!e.target.closest("button")) revelar(); });
+      b.addEventListener("click", (e) => { if (!e.target.closest("button, label")) revelar(); });
+      b.querySelector(".chk-saltar input").addEventListener("change", (e) => {
+        e.stopPropagation();
+        if (e.target.checked) saltadas.delete(item.id); else saltadas.add(item.id);
+        pintarSaltadas();
+        pintarDock();
+        if (!ordenando) { pintarResumen(); guardarEstructura(); } // en "Ordenar" se guarda con Listo
+      });
       b.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); revelar(); } });
       b.querySelector(".ocultar").addEventListener("click", (e) => {
         e.stopPropagation();
@@ -291,7 +306,15 @@
     function aplicarOrden(ids) {
       const vistos = new Set();
       const nueva = [];
-      (ids || []).forEach((id) => { if (items.has(id) && !vistos.has(id)) { vistos.add(id); nueva.push(items.get(id)); } });
+      saltadas = new Set();
+      (ids || []).forEach((crudo) => {
+        const oculta = String(crudo).startsWith(OCULTA);
+        const id = oculta ? String(crudo).slice(OCULTA.length) : String(crudo);
+        if (!items.has(id) || vistos.has(id)) return;
+        vistos.add(id);
+        nueva.push(items.get(id));
+        if (oculta) saltadas.add(id);
+      });
       for (const item of items.values()) if (!vistos.has(item.id)) nueva.push(item); // lo nuevo va al final
       lista = nueva;
       lista.forEach((item, i) => {
@@ -299,8 +322,26 @@
         b.querySelector(".num").textContent = "#" + (i + 1);
         $("cuadricula").append(b);
       });
+      pintarSaltadas();
       pintarResumen();
       pintarDock();
+    }
+
+    function pintarSaltadas() {
+      tarjetas.forEach((b, id) => {
+        const s = saltadas.has(id);
+        b.classList.toggle("saltada", s);
+        b.querySelector(".chk-saltar input").checked = !s;
+      });
+    }
+
+    // Orden + ocultas, tal como se guarda en Firebase.
+    function estructura(ids) { return ids.map((id) => (saltadas.has(id) ? OCULTA : "") + id); }
+    async function guardarEstructura() {
+      const datos = estructura(lista.map((it) => it.id));
+      ordenGuardado = datos;
+      try { await store.guardarOrden(datos); }
+      catch (e) { manejarError(e); }
     }
 
     function temporales() { return Object.keys(reveladas).filter(esTemporal); }
@@ -327,7 +368,8 @@
     function pintarResumen() {
       if (ordenando) return;
       const n = ordenar(reveladas).filter((k) => !esTemporal(k) && tarjetas.has(k)).length;
-      $("resumen").textContent = `${n} de ${lista.length} reveladas`;
+      const total = lista.filter((it) => !saltadas.has(it.id)).length;
+      $("resumen").textContent = `${n} de ${total} reveladas` + (saltadas.size ? ` · ${saltadas.size} oculta${saltadas.size > 1 ? "s" : ""}` : "");
     }
 
     store.onReveladas((r) => { reveladas = r; pintarRevelado(); },
@@ -341,7 +383,7 @@
     // "Siguiente" quita lo que mostraste fuera de orden y revela el primer elemento
     // de tu cuadrícula que aún no se ha revelado.
     // "↶" oculta lo último que apareció (por si tocaste de más).
-    function siguiente() { return lista.find((it) => !reveladas[it.id]); }
+    function siguiente() { return lista.find((it) => !reveladas[it.id] && !saltadas.has(it.id)); }
     function ultima() { return ordenar(reveladas).filter((k) => tarjetas.has(idReal(k))).pop(); }
 
     function pintarDock() {
@@ -537,7 +579,7 @@
         $("btnOrdenar").textContent = "Listo ✓";
         $("btnOrdenar").classList.add("activo");
         $("btnCompartir").hidden = $("btnReiniciar").hidden = true;
-        $("resumen").textContent = "Arrastra las fotos y escrituras";
+        $("resumen").textContent = "Arrastra para mover · ✓ = sale con Siguiente";
         sortable = Sortable.create($("cuadricula"), {
           // La tarjeta sigue al dedo (forceFallback) y las demás se deslizan suavemente
           // para abrirle espacio; el hueco punteado marca dónde va a caer.
@@ -556,6 +598,8 @@
           chosenClass: "arrastrando-elegida",
           dragClass: "arrastrando-dedo",
           fallbackClass: "arrastrando-dedo",
+          filter: ".chk-saltar",       // tocar la casilla no inicia el arrastre
+          preventOnFilter: false,
           onChoose: () => { if (navigator.vibrate) navigator.vibrate(15); },
           onSort: () => {
             [...$("cuadricula").children].forEach((b, i) => { b.querySelector(".num").textContent = "#" + (i + 1); });
@@ -571,9 +615,9 @@
       $("btnOrdenar").textContent = "Ordenar";
       $("btnOrdenar").classList.remove("activo");
       $("btnCompartir").hidden = $("btnReiniciar").hidden = false;
-      ordenGuardado = ids;
+      ordenGuardado = estructura(ids);
       sincronizar();
-      try { await store.guardarOrden(ids); aviso("Orden guardado"); }
+      try { await store.guardarOrden(ordenGuardado); aviso("Orden guardado"); }
       catch (e) { manejarError(e); }
     });
 

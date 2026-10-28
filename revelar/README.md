@@ -80,6 +80,13 @@ galería. Se reducen solas (lado mayor 1600 px) y se agregan al final de tu
 lista, ocultas hasta que las reveles. Toca **🗑** en la tarjeta para borrarla.
 Se guardan en la misma Realtime Database, por sesión.
 
+### Ocultar una lámina para "Siguiente"
+
+En **Ordenar**, cada tarjeta tiene una casilla ✓. Desmárcala y **Siguiente** se
+salta esa lámina, como ocultar una diapositiva en PowerPoint. Sigue en tu
+cuadrícula (atenuada, con "Oculta") y puedes mostrarla tocándola. Se guarda al
+tocar **Listo**, junto con el orden.
+
 ### Tocar una lámina
 
 - **Una que aún no sale:** aparece de inmediato en los teléfonos, sin número
