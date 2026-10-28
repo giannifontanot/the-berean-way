@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#11152b">
   <title>Presentador · Revelar fotos</title>
-  <link rel="stylesheet" href="revelar.css?v=202610281508">
+  <link rel="stylesheet" href="revelar.css?v=202610281518">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
 </head>
@@ -30,6 +30,12 @@
       </button>
     </div>
   </header>
+  <!-- Ensayo / En vivo -->
+  <div id="franja" class="franja ensayo" hidden>
+    <span class="franja-txt" id="franjaTxt">ENSAYO · nadie ve nada</span>
+    <span class="franja-gente" id="franjaGente" title="Participantes conectados"></span>
+    <button class="btn franja-btn" id="btnModo">▶ Ir en vivo</button>
+  </div>
   <div id="aviso" class="aviso" hidden></div>
 
   <!-- Entrar (solo con Firebase) -->
@@ -87,10 +93,30 @@
     </div>
   </dialog>
 
+  <!-- Ir en vivo -->
+  <dialog id="dlgVivo">
+    <h2>▶ ¿Ir en vivo?</h2>
+    <p>La clase empieza <b>desde cero</b>: los participantes verán “Esperando…” y la primera lámina saldrá cuando toques <b>Siguiente</b>. Desde ese momento, cada toque llega a sus teléfonos.</p>
+    <div class="acciones">
+      <button class="btn" data-cerrar>Cancelar</button>
+      <button class="btn vivo-lleno" id="btnConfirmarVivo">▶ Ir en vivo</button>
+    </div>
+  </dialog>
+
+  <!-- Terminar en vivo -->
+  <dialog id="dlgTerminar">
+    <h2>⏹ ¿Terminar en vivo?</h2>
+    <p>Los participantes se quedan con lo que ya vieron. Tú vuelves a <b>ensayo</b>: lo que toques ya no les llega.</p>
+    <div class="acciones">
+      <button class="btn" data-cerrar>Seguir en vivo</button>
+      <button class="btn primario" id="btnConfirmarTerminar">⏹ Terminar</button>
+    </div>
+  </dialog>
+
   <!-- Reiniciar -->
   <dialog id="dlgReiniciar">
-    <h2>¿Reiniciar la sesión?</h2>
-    <p>Se ocultarán todas las fotos y escrituras en los teléfonos de los participantes. Ellos se quedan conectados, listos para empezar de nuevo.</p>
+    <h2 id="reiniciarTitulo">¿Reiniciar la sesión?</h2>
+    <p id="reiniciarTexto">Se ocultarán todas las fotos y escrituras en los teléfonos de los participantes. Ellos se quedan conectados, listos para empezar de nuevo.</p>
     <div class="acciones">
       <button class="btn" data-cerrar>Cancelar</button>
       <button class="btn peligro lleno" id="btnConfirmarReinicio">Reiniciar</button>
@@ -218,8 +244,8 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202610281508";
-    import { textoAHtml, notasAHtml } from "./js/escritura.js?v=202610281508";
+    import { crearStore, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202610281518";
+    import { textoAHtml, notasAHtml } from "./js/escritura.js?v=202610281518";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -242,6 +268,15 @@
     let tocandoTira = 0, timerTira = 0;
     let notasDe = null;
     let bajaNotas = null;        // escucha de notas (empieza al entrar con tu cuenta)
+    // Ensayo / En vivo: en ensayo, lo que revelas vive solo en esta pantalla.
+    const CLAVE_VIVO = "revelar:envivo:" + sesion;
+    let enVivo = false;
+    try {
+      const v = JSON.parse(localStorage.getItem(CLAVE_VIVO));
+      enVivo = !!v && Date.now() - v.desde < 8 * 3600 * 1000; // si cerraste a mitad de clase, regresas en vivo
+    } catch {}
+    let reveladasReal = {};      // lo que ven los participantes (Firebase)
+    let ensayo = {};             // lo que "revelas" en ensayo (solo aquí)
     let ordenGuardado = null;
     // Láminas ocultas para "Siguiente" (como ocultar diapositiva en PowerPoint).
     // Se guardan dentro del orden con el prefijo "~": ["foto-01", "~foto-02", …]
@@ -263,12 +298,22 @@
 
     // ---------- Conexión y participantes ----------
     let conectado = false, gente = null;
+    // Arriba solo un punto de conexión (verde = conectado). "En vivo" lo dice la franja.
     function pintarEstado() {
       const e = $("estado");
       e.className = "estado " + (conectado ? "on" : "off");
-      if (!conectado) e.textContent = "Sin conexión";
-      else if (gente == null) e.textContent = "En vivo";
-      else e.textContent = gente === 1 ? "1 participante" : gente + " participantes";
+      e.textContent = conectado ? "" : "Sin conexión";
+      e.title = conectado ? "Conectado" : "Sin conexión";
+      pintarFranja();
+    }
+    function pintarFranja() {
+      const f = $("franja");
+      if (!f) return;
+      f.className = "franja " + (enVivo ? "vivo" : "ensayo");
+      $("franjaTxt").textContent = enVivo ? "● EN VIVO" : "ENSAYO · nadie ve nada";
+      $("franjaGente").textContent = gente == null ? "" : "👥 " + gente;
+      $("btnModo").textContent = enVivo ? "⏹ Terminar" : "▶ Ir en vivo";
+      document.body.classList.toggle("en-vivo", enVivo);
     }
     store.onConexion((ok) => { conectado = ok; pintarEstado(); });
     store.onPresencia((n) => { gente = n; pintarEstado(); });
@@ -338,7 +383,7 @@
       b.querySelector(".ocultar").addEventListener("click", (e) => {
         e.stopPropagation();
         const k = reveladas[item.id] ? item.id : TEMP + item.id;
-        accion(item.id, () => store.ocultar(k));
+        accion(item.id, () => vivo.ocultar(k));
       });
       b.querySelector(".editar").addEventListener("click", (e) => {
         e.stopPropagation();
@@ -362,11 +407,11 @@
     function tocarItem(id) {
       if (ordenando) return;
       if (reveladas[id]) {
-        accion(id, () => store.avanzar(focos(), FOCO + id));
+        accion(id, () => vivo.avanzar(focos(), FOCO + id));
         return;
       }
       const k = TEMP + id;
-      accion(id, () => (reveladas[k] ? store.ocultar(k) : store.revelar(k)));
+      accion(id, () => (reveladas[k] ? vivo.ocultar(k) : vivo.revelar(k)));
     }
 
     function pintarContenido(item) {
@@ -485,7 +530,7 @@
       $("resumen").textContent = `${n} de ${total} reveladas` + (saltadas.size ? ` · ${saltadas.size} oculta${saltadas.size > 1 ? "s" : ""}` : "");
     }
 
-    store.onReveladas((r) => { reveladas = r; pintarRevelado(); },
+    store.onReveladas((r) => { reveladasReal = r || {}; if (enVivo) { reveladas = reveladasReal; pintarRevelado(); } },
       (e) => aviso("No se pudo leer la sesión: " + (e?.message || e)));
     store.onEscrituras((e) => { escrituras = e || {}; sincronizar(); });
     store.onSubidas((f) => { subidas = f || {}; sincronizar(); });
@@ -501,6 +546,54 @@
         });
     }
     sincronizar();
+
+    // ---------- Ensayo / En vivo ----------
+    // Todo lo que muestra u oculta láminas pasa por aquí: en vivo va a Firebase
+    // (lo ven los participantes); en ensayo cambia solo esta pantalla.
+    let reloj = 0;
+    const ahora = () => (reloj = Math.max(reloj + 1, Date.now()));
+    function cambiarEnsayo(cambios) {
+      const nuevo = { ...ensayo };
+      for (const [k, v] of Object.entries(cambios)) { if (v == null) delete nuevo[k]; else nuevo[k] = v; }
+      ensayo = nuevo;
+      if (!enVivo) { reveladas = ensayo; pintarRevelado(); }
+      return Promise.resolve();
+    }
+    const vivo = {
+      revelar: (k) => enVivo ? store.revelar(k) : cambiarEnsayo({ [k]: ahora() }),
+      ocultar: (k) => enVivo ? store.ocultar(k) : cambiarEnsayo({ [k]: null }),
+      avanzar: (quitar, id) => enVivo ? store.avanzar(quitar, id)
+        : cambiarEnsayo(Object.fromEntries([...quitar.map((k) => [k, null]), ...(id ? [[id, ahora()]] : [])])),
+      reiniciar: () => enVivo ? store.reiniciar() : (ensayo = {}, reveladas = ensayo, pintarRevelado(), Promise.resolve()),
+    };
+
+    function ponerVivo(si) {
+      enVivo = si;
+      try {
+        if (si) localStorage.setItem(CLAVE_VIVO, JSON.stringify({ desde: Date.now() }));
+        else localStorage.removeItem(CLAVE_VIVO);
+      } catch {}
+      reveladas = si ? reveladasReal : ensayo;
+      tocandoTira = 0;
+      pintarFranja();
+      pintarRevelado();
+    }
+    $("btnModo").addEventListener("click", () => $(enVivo ? "dlgTerminar" : "dlgVivo").showModal());
+    $("btnConfirmarVivo").addEventListener("click", async () => {
+      $("dlgVivo").close();
+      try {
+        await store.reiniciar();        // desde cero: los participantes ven "Esperando…"
+        reveladasReal = {};
+        ponerVivo(true);
+        aviso("● En vivo");
+      } catch (e) { manejarError(e); }
+    });
+    $("btnConfirmarTerminar").addEventListener("click", () => {
+      $("dlgTerminar").close();
+      ensayo = {};
+      ponerVivo(false);
+      aviso("Ensayo · nadie ve nada");
+    });
 
     // ---------- Siguiente / Deshacer ----------
     // "Siguiente" quita lo que mostraste fuera de orden y revela el primer elemento
@@ -536,7 +629,7 @@
       const quitar = [...temporales(), ...focos()];
       if (!sig && !quitar.length) return;
       tocandoTira = 0; clearTimeout(timerTira); // Siguiente siempre centra la tira
-      paso(() => store.avanzar(quitar, sig?.id));
+      paso(() => vivo.avanzar(quitar, sig?.id));
       if (sig && modo === "preparar") tarjetas.get(sig.id)?.scrollIntoView({ behavior: "smooth", block: "center" });
       if (navigator.vibrate) navigator.vibrate(20);
     });
@@ -548,18 +641,18 @@
       tocandoTira = 0; clearTimeout(timerTira);
       const porTiempo = (a, z) => reveladas[a] - reveladas[z];
       const temps = temporales().sort(porTiempo);
-      if (temps.length) { paso(() => store.ocultar(temps[temps.length - 1])); return; }
+      if (temps.length) { paso(() => vivo.ocultar(temps[temps.length - 1])); return; }
       const fs = focos().sort(porTiempo);
       if (fs.length) {
         const enFoco = fs[fs.length - 1].slice(FOCO.length);
         const flujo = ordenar(reveladas).filter((k) => !esTemporal(k) && !esFoco(k) && tarjetas.has(k));
         const i = flujo.indexOf(enFoco);
-        if (i > 0) paso(() => store.avanzar(fs, FOCO + flujo[i - 1]));
+        if (i > 0) paso(() => vivo.avanzar(fs, FOCO + flujo[i - 1]));
         else aviso("Ya estás en la primera");
         return;
       }
       const id = ultima();
-      if (id) paso(() => store.ocultar(id));
+      if (id) paso(() => vivo.ocultar(id));
     });
 
     // ---------- Escrituras: crear / editar / borrar ----------
@@ -635,7 +728,7 @@
       try {
         const id = await store.guardarEscritura(editando, datos);
         if (notaNueva !== (notas[id] || "")) await store.guardarNota(id, notaNueva);
-        if (revelarTambien) await store.revelar(id);
+        if (revelarTambien) await vivo.revelar(id);
         aviso(revelarTambien ? "Escritura revelada" : "Escritura guardada");
       } catch (e) { manejarError(e); }
     }
@@ -949,6 +1042,8 @@
 
     document.body.classList.add("modo-presentar");
     mostrarOrdenar(false);
+    $("franja").hidden = false;
+    ponerVivo(enVivo);
 
     // ---------- Ordenar ----------
     // "Ordenar" pasa a miniaturas compactas que se arrastran (mantén presionada en el
@@ -1067,10 +1162,16 @@
     }
 
     // ---------- Reiniciar ----------
-    $("btnReiniciar").addEventListener("click", () => $("dlgReiniciar").showModal());
+    $("btnReiniciar").addEventListener("click", () => {
+      $("reiniciarTitulo").textContent = enVivo ? "¿Reiniciar la sesión?" : "¿Reiniciar el ensayo?";
+      $("reiniciarTexto").textContent = enVivo
+        ? "Se ocultarán todas las fotos y escrituras en los teléfonos de los participantes. Ellos se quedan conectados, listos para empezar de nuevo."
+        : "Tu ensayo vuelve al principio. Los participantes no ven ningún cambio.";
+      $("dlgReiniciar").showModal();
+    });
     $("btnConfirmarReinicio").addEventListener("click", async () => {
       $("dlgReiniciar").close();
-      try { await store.reiniciar(); aviso("Sesión reiniciada"); }
+      try { await vivo.reiniciar(); aviso(enVivo ? "Sesión reiniciada" : "Ensayo reiniciado"); }
       catch (e) { manejarError(e); }
     });
 

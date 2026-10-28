@@ -73,6 +73,24 @@ participantes solo leen y no necesitan cuenta.
 
 Si alguien llega tarde o recarga la página, ve todas las fotos ya reveladas.
 
+### Ensayo y En vivo
+
+Debajo de los botones de arriba hay una franja:
+
+- **ENSAYO · nadie ve nada** (al abrir): puedes tocar láminas, Siguiente y ↶
+  para practicar; todo se mueve **solo en tu pantalla**. Los participantes
+  siguen viendo “Esperando…”.
+- **▶ Ir en vivo**: después de confirmar, la clase empieza **desde cero** (los
+  participantes ven “Esperando…”) y la franja se pone roja: **● EN VIVO**.
+  Desde ahí cada toque llega a sus teléfonos.
+- **⏹ Terminar**: vuelves a ensayo; los participantes se quedan con lo que vieron.
+- Si cierras el presentador a mitad de la clase, al abrirlo regresas **en vivo**
+  (dentro de 8 horas, en ese mismo teléfono).
+- El punto verde de arriba solo indica que estás conectado. 👥 = participantes.
+
+Las notas, ⋯, Ordenar y agregar láminas nunca se muestran a nadie, estés en
+ensayo o en vivo.
+
 ### La pantalla del presentador
 
 Una sola pantalla:
