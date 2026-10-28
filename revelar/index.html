@@ -9,10 +9,8 @@
   <link rel="stylesheet" href="revelar.css">
 </head>
 <body>
-  <header class="barra">
-    <h1 id="titulo">Fotos de la clase</h1>
-    <span id="estado" class="estado">Conectando…</span>
-  </header>
+  <!-- Sin barra superior: solo el contenido. Si se pierde la conexión, aparece un aviso discreto. -->
+  <div id="sinRed" class="sin-red" hidden>Sin conexión… reconectando</div>
   <div id="aviso" class="aviso" hidden></div>
 
   <main class="lista" id="lista" aria-live="polite">
@@ -39,7 +37,6 @@
     const bajas = new Map();             // id → función para dejar de escuchar una escritura
     let primeraCarga = true;
 
-    $("titulo").textContent = CONFIG.titulo;
     document.title = CONFIG.titulo;
 
     const store = await crearStore(sesionActual());
@@ -48,9 +45,10 @@
       $("aviso").textContent = "Modo demo: Firebase aún no está configurado. Solo se sincroniza con otras pestañas de este navegador.";
     }
 
+    let yaConecto = false;
     store.onConexion((ok) => {
-      $("estado").className = "estado " + (ok ? "on" : "off");
-      $("estado").textContent = ok ? "En vivo" : "Sin conexión";
+      if (ok) yaConecto = true;
+      $("sinRed").hidden = ok || !yaConecto; // solo avisa si se cayó después de conectar
     });
     store.registrarPresencia();
     store.onReveladas(pintar, () => {

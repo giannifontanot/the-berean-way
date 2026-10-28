@@ -558,3 +558,19 @@ mark {
   margin: 0 0.3em 0 0;
   color: #a8a8a4;
 }
+
+/* Participantes sin barra superior */
+.lista { padding-top: env(safe-area-inset-top); }
+.sin-red {
+  position: fixed;
+  top: max(10px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(229, 115, 115, 0.92);
+  color: #2a0c0c;
+  font-size: 13px;
+  font-weight: 700;
+}
