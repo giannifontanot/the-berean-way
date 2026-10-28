@@ -960,3 +960,29 @@ body.modo-presentar #btnAgregar { display: none; }
 .campo small { color: var(--muted); font-size: 12px; }
 .campo-notas { margin-top: 14px; }
 .campo-notas textarea, #notasTexto { font-family: var(--font-sans); }
+
+/* ===== Notas en cuadro gris claro (no blanco, para no deslumbrar) ===== */
+.notas-panel {
+  --papel-notas: #d7dae3;
+  margin: 10px 14px 0;
+  padding: 0 18px 110px;
+  border: 0;
+  border-radius: 16px 16px 0 0;
+  background: var(--papel-notas);
+  color: #1c2030;
+}
+.notas-cab { background: var(--papel-notas); color: #5a6075; }
+.notas-cab .btn-icono { background: #c6cad6; border-color: #b4b9c8; color: #1c2030; }
+.notas { color: #1c2030; }
+.notas .rojo { color: #b0201c; }
+.notas mark { background: rgba(240, 196, 50, 0.6); color: inherit; }
+.notas li::marker { color: #8a6a1f; }
+.notas .notas-vacio { color: #6a7086; }
+
+/* Al escribir notas, el mismo gris claro */
+#notasTexto, #escNotas {
+  background: #d7dae3;
+  color: #1c2030;
+  border-color: #b4b9c8;
+}
+#notasTexto::placeholder, #escNotas::placeholder { color: #7a8096; }
