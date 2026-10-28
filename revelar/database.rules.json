@@ -15,6 +15,27 @@
             ".validate": "newData.isString()"
           }
         },
+        "escrituras": {
+          ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+          "$e": {
+            ".validate": "newData.hasChildren(['texto'])",
+            "cita": {
+              ".validate": "newData.isString() && newData.val().length <= 120"
+            },
+            "texto": {
+              ".validate": "newData.isString() && newData.val().length <= 4000"
+            },
+            "todoRojo": {
+              ".validate": "newData.isBoolean()"
+            },
+            "creado": {
+              ".validate": "newData.isNumber()"
+            },
+            "$otro": {
+              ".validate": false
+            }
+          }
+        },
         "presencia": {
           "$conexion": {
             ".write": true,

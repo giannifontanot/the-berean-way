@@ -20,7 +20,7 @@
   <!-- Entrar (solo con Firebase) -->
   <section class="entrada" id="entrada" hidden>
     <h2>Entra para presentar</h2>
-    <p>Solo tu cuenta puede revelar fotos. Los participantes no necesitan cuenta.</p>
+    <p>Solo tu cuenta puede revelar fotos y escrituras. Los participantes no necesitan cuenta.</p>
     <button class="btn primario" id="btnEntrar">Entrar con Google</button>
   </section>
 
@@ -44,6 +44,7 @@
         <span class="sig-label">Siguiente ▶</span>
         <span class="sig-cual" id="sigCual"></span>
       </button>
+      <button class="btn nueva-esc" id="btnNuevaEscritura" aria-label="Nueva escritura">+📖</button>
     </div>
   </main>
 
@@ -63,7 +64,7 @@
   <!-- Reiniciar -->
   <dialog id="dlgReiniciar">
     <h2>¿Reiniciar la sesión?</h2>
-    <p>Se ocultarán todas las fotos en los teléfonos de los participantes. Ellos se quedan conectados, listos para empezar de nuevo.</p>
+    <p>Se ocultarán todas las fotos y escrituras en los teléfonos de los participantes. Ellos se quedan conectados, listos para empezar de nuevo.</p>
     <div class="acciones">
       <button class="btn" data-cerrar>Cancelar</button>
       <button class="btn peligro lleno" id="btnConfirmarReinicio">Reiniciar</button>
@@ -81,10 +82,39 @@
     </div>
   </dialog>
 
+  <!-- Escritura: crear / editar -->
+  <dialog id="dlgEscritura" class="dlg-escritura">
+    <h2 id="escTitulo">Nueva escritura</h2>
+    <label class="campo">Cita
+      <input id="escCita" maxlength="120" placeholder="Juan 2:19" autocomplete="off">
+    </label>
+    <div class="marcas">
+      <span>Selecciona palabras y toca:</span>
+      <button type="button" class="marca-btn rojo-btn" data-marca="*">Rojo</button>
+      <button type="button" class="marca-btn resaltar-btn" data-marca="==">Resaltar</button>
+    </div>
+    <label class="campo">Texto
+      <textarea id="escTexto" rows="5" maxlength="4000" placeholder="Jesús les contestó: *Destruyan este templo, y en tres días volveré a levantarlo.*"></textarea>
+    </label>
+    <label class="interruptor"><input type="checkbox" id="escTodoRojo"> Todo en letra roja</label>
+    <p class="ayuda">También puedes escribir <b>*así*</b> para <span class="rojo">rojo</span> y <b>==así==</b> para <mark>resaltar</mark>. Si la escritura ya está revelada, al guardar el cambio se ve al instante en los teléfonos.</p>
+    <div class="vista-previa" aria-label="Vista previa">
+      <p id="escVista"></p>
+      <cite id="escVistaCita"></cite>
+    </div>
+    <div class="acciones">
+      <button class="btn peligro" id="btnBorrarEsc" hidden>Borrar</button>
+      <button class="btn" data-cerrar>Cancelar</button>
+      <button class="btn" id="btnGuardarEsc">Guardar</button>
+      <button class="btn primario" id="btnGuardarRevelarEsc">Guardar y revelar</button>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
     import { crearStore, sesionActual, ordenar, esPermisoDenegado } from "./js/store.js";
+    import { textoAHtml } from "./js/escritura.js";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -92,12 +122,18 @@
     const $ = (id) => document.getElementById(id);
     const sesion = sesionActual();
     const store = await crearStore(sesion);
-    const tarjetas = new Map(); // id → <button>
+
+    // Cada elemento de la cuadrícula es una foto o una escritura:
+    //   { id, tipo: "foto", src }   |   { id, tipo: "escritura", cita, texto, todoRojo, creado }
+    const items = new Map();     // id → elemento
+    const tarjetas = new Map();  // id → tarjeta en la cuadrícula
+    let lista = [];              // elementos en el orden de TU cuadrícula
+    let escrituras = {};
+    let ordenGuardado = null;
     let usuario = null;
     let reveladas = {};
     let enCurso = false;
     let ordenando = false;
-    let lista = FOTOS.slice(); // orden de TU cuadrícula (puede venir guardado en Firebase)
 
     $("sesionTxt").textContent = "Sesión · " + sesion;
 
@@ -131,39 +167,100 @@
     });
     $("btnSalir").addEventListener("click", () => store.salir());
 
-    // ---------- Cuadrícula ----------
-    FOTOS.forEach((foto, i) => {
+    // ---------- Tarjetas ----------
+    function etiqueta(item) {
+      return item.tipo === "escritura" ? (item.cita || "Escritura") : "";
+    }
+
+    function crearTarjeta(item) {
       const b = document.createElement("div");
-      b.className = "miniatura";
+      b.className = "miniatura" + (item.tipo === "escritura" ? " es-escritura" : "");
       b.setAttribute("role", "button");
       b.tabIndex = 0;
-      b.dataset.id = foto.id;
+      b.dataset.id = item.id;
       b.innerHTML = `
-        <div class="marco"><img loading="lazy" alt=""><span class="insignia"></span></div>
+        <div class="marco"><span class="insignia"></span></div>
         <div class="pie">
           <span class="num"></span><span class="tit"></span>
+          <button class="editar" type="button" aria-label="Editar">✎</button>
           <span class="tocar">Revelar</span>
           <button class="ocultar" type="button">Ocultar</button>
         </div>`;
-      b.querySelector("img").src = foto.src;
-      b.querySelector("img").alt = foto.titulo || "";
-      b.querySelector(".num").textContent = "#" + (i + 1);
-      b.querySelector(".tit").textContent = foto.titulo || "";
+      if (item.tipo === "foto") {
+        const img = document.createElement("img");
+        img.loading = "lazy";
+        img.alt = "";
+        img.src = item.src;
+        b.querySelector(".marco").prepend(img);
+      } else {
+        const v = document.createElement("div");
+        v.className = "verso-mini";
+        v.innerHTML = `<cite></cite><p></p>`;
+        b.querySelector(".marco").prepend(v);
+      }
 
-      const revelar = () => { if (!ordenando && !reveladas[foto.id]) accion(foto.id, () => store.revelar(foto.id)); };
-      b.addEventListener("click", (e) => { if (!e.target.closest(".ocultar")) revelar(); });
+      const revelar = () => { if (!ordenando && !reveladas[item.id]) accion(item.id, () => store.revelar(item.id)); };
+      b.addEventListener("click", (e) => { if (!e.target.closest("button")) revelar(); });
       b.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); revelar(); } });
       b.querySelector(".ocultar").addEventListener("click", (e) => {
         e.stopPropagation();
-        accion(foto.id, () => store.ocultar(foto.id));
+        accion(item.id, () => store.ocultar(item.id));
       });
-      $("cuadricula").append(b);
-      tarjetas.set(foto.id, b);
-    });
+      b.querySelector(".editar").addEventListener("click", (e) => {
+        e.stopPropagation();
+        abrirEditor(items.get(item.id));
+      });
+      return b;
+    }
 
-    store.onReveladas((r) => {
-      reveladas = r;
-      const orden = ordenar(r);
+    function pintarContenido(item) {
+      const b = tarjetas.get(item.id);
+      if (item.tipo !== "escritura") return;
+      b.querySelector(".verso-mini cite").textContent = item.cita || "";
+      b.querySelector(".verso-mini p").innerHTML = textoAHtml(item.texto, item.todoRojo);
+      b.querySelector(".tit").textContent = item.cita || "";
+    }
+
+    // Reúne fotos + escrituras, crea/quita tarjetas y aplica el orden guardado.
+    function sincronizar() {
+      items.clear();
+      FOTOS.forEach((f) => items.set(f.id, { id: f.id, tipo: "foto", src: f.src }));
+      Object.entries(escrituras)
+        .sort((a, b) => (a[1].creado || 0) - (b[1].creado || 0))
+        .forEach(([id, e]) => items.set(id, { id, tipo: "escritura", ...e }));
+
+      for (const [id, b] of tarjetas) {
+        if (!items.has(id)) { b.remove(); tarjetas.delete(id); }
+      }
+      for (const item of items.values()) {
+        if (!tarjetas.has(item.id)) {
+          const b = crearTarjeta(item);
+          tarjetas.set(item.id, b);
+          $("cuadricula").append(b);
+        }
+        pintarContenido(item);
+      }
+      if (!ordenando) aplicarOrden(ordenGuardado);
+      pintarRevelado();
+    }
+
+    function aplicarOrden(ids) {
+      const vistos = new Set();
+      const nueva = [];
+      (ids || []).forEach((id) => { if (items.has(id) && !vistos.has(id)) { vistos.add(id); nueva.push(items.get(id)); } });
+      for (const item of items.values()) if (!vistos.has(item.id)) nueva.push(item); // lo nuevo va al final
+      lista = nueva;
+      lista.forEach((item, i) => {
+        const b = tarjetas.get(item.id);
+        b.querySelector(".num").textContent = "#" + (i + 1);
+        $("cuadricula").append(b);
+      });
+      pintarResumen();
+      pintarDock();
+    }
+
+    function pintarRevelado() {
+      const orden = ordenar(reveladas).filter((id) => tarjetas.has(id));
       tarjetas.forEach((b, id) => {
         const pos = orden.indexOf(id);
         b.classList.toggle("revelada", pos >= 0);
@@ -171,25 +268,31 @@
       });
       pintarResumen();
       pintarDock();
-    }, (e) => aviso("No se pudo leer la sesión: " + (e?.message || e)));
+    }
 
     function pintarResumen() {
       if (ordenando) return;
       const n = ordenar(reveladas).filter((id) => tarjetas.has(id)).length;
-      $("resumen").textContent = `${n} de ${FOTOS.length} reveladas`;
+      $("resumen").textContent = `${n} de ${lista.length} reveladas`;
     }
 
+    store.onReveladas((r) => { reveladas = r; pintarRevelado(); },
+      (e) => aviso("No se pudo leer la sesión: " + (e?.message || e)));
+    store.onEscrituras((e) => { escrituras = e || {}; sincronizar(); });
+    store.onOrden((ids) => { ordenGuardado = ids; if (!ordenando) aplicarOrden(ids); });
+    sincronizar();
+
     // ---------- Siguiente / Deshacer ----------
-    // "Siguiente" revela la primera foto de tu cuadrícula que aún no se ha revelado.
-    // "↶" oculta la última que revelaste (por si tocaste de más).
-    function siguiente() { return lista.find((f) => !reveladas[f.id]); }
+    // "Siguiente" revela el primer elemento de tu cuadrícula que aún no se ha revelado.
+    // "↶" oculta el último que revelaste (por si tocaste de más).
+    function siguiente() { return lista.find((it) => !reveladas[it.id]); }
     function ultima() { return ordenar(reveladas).filter((id) => tarjetas.has(id)).pop(); }
 
     function pintarDock() {
       const sig = siguiente();
       const i = sig ? lista.indexOf(sig) : -1;
       $("btnSiguiente").disabled = !sig || enCurso;
-      $("sigCual").textContent = sig ? `#${i + 1}` + (sig.titulo ? ` · ${sig.titulo}` : "") : "Todas reveladas ✓";
+      $("sigCual").textContent = sig ? `#${i + 1}` + (etiqueta(sig) ? ` · ${etiqueta(sig)}` : "") : "Todo revelado ✓";
       $("btnDeshacer").disabled = !ultima() || enCurso;
     }
 
@@ -213,27 +316,99 @@
       if (id) paso(() => store.ocultar(id));
     });
 
+    // ---------- Escrituras: crear / editar / borrar ----------
+    let editando = null; // id de la escritura que se edita, o null si es nueva
+    let confirmarBorrado = false;
+
+    function abrirEditor(item) {
+      if (ordenando) return;
+      editando = item ? item.id : null;
+      confirmarBorrado = false;
+      $("escTitulo").textContent = item ? "Editar escritura" : "Nueva escritura";
+      $("escCita").value = item?.cita || "";
+      $("escTexto").value = item?.texto || "";
+      $("escTodoRojo").checked = !!item?.todoRojo;
+      $("btnBorrarEsc").hidden = !item;
+      $("btnBorrarEsc").textContent = "Borrar";
+      $("btnGuardarRevelarEsc").hidden = !!(item && reveladas[item.id]);
+      vistaPrevia();
+      $("dlgEscritura").showModal();
+      if (!item) $("escCita").focus();
+    }
+
+    function vistaPrevia() {
+      $("escVista").innerHTML = textoAHtml($("escTexto").value, $("escTodoRojo").checked) ||
+        '<span class="apagado">Aquí verás cómo se ve en los teléfonos.</span>';
+      $("escVistaCita").textContent = $("escCita").value.trim();
+    }
+    ["escCita", "escTexto", "escTodoRojo"].forEach((id) => $(id).addEventListener("input", vistaPrevia));
+
+    // Botones Rojo / Resaltar: envuelven (o quitan) la marca alrededor de lo seleccionado.
+    document.querySelectorAll(".marca-btn").forEach((btn) => {
+      btn.addEventListener("pointerdown", (e) => e.preventDefault()); // no perder la selección
+      btn.addEventListener("click", () => {
+        const ta = $("escTexto");
+        const m = btn.dataset.marca;
+        let a = ta.selectionStart, z = ta.selectionEnd;
+        const v = ta.value;
+        if (a === z) { aviso("Primero selecciona las palabras"); ta.focus(); return; }
+        // recortar espacios de la selección
+        while (a < z && /\s/.test(v[a])) a++;
+        while (z > a && /\s/.test(v[z - 1])) z--;
+        const antes = v.slice(0, a), sel = v.slice(a, z), despues = v.slice(z);
+        let nuevo, ini, fin;
+        if (antes.endsWith(m) && despues.startsWith(m)) {        // ya marcado → quitar
+          nuevo = antes.slice(0, -m.length) + sel + despues.slice(m.length);
+          ini = a - m.length; fin = ini + sel.length;
+        } else if (sel.startsWith(m) && sel.endsWith(m) && sel.length > 2 * m.length) {
+          const dentro = sel.slice(m.length, -m.length);
+          nuevo = antes + dentro + despues; ini = a; fin = a + dentro.length;
+        } else {                                                  // marcar
+          nuevo = antes + m + sel + m + despues;
+          ini = a + m.length; fin = ini + sel.length;
+        }
+        ta.value = nuevo;
+        ta.focus();
+        ta.setSelectionRange(ini, fin);
+        vistaPrevia();
+      });
+    });
+
+    async function guardarEscritura(revelarTambien) {
+      const texto = $("escTexto").value.trim();
+      if (!texto) { aviso("Escribe el texto de la escritura"); $("escTexto").focus(); return; }
+      const previo = editando ? escrituras[editando] : null;
+      const datos = {
+        cita: $("escCita").value.trim(),
+        texto,
+        todoRojo: $("escTodoRojo").checked,
+        creado: previo?.creado || Date.now(),
+      };
+      $("dlgEscritura").close();
+      try {
+        const id = await store.guardarEscritura(editando, datos);
+        if (revelarTambien) await store.revelar(id);
+        aviso(revelarTambien ? "Escritura revelada" : "Escritura guardada");
+      } catch (e) { manejarError(e); }
+    }
+    $("btnGuardarEsc").addEventListener("click", () => guardarEscritura(false));
+    $("btnGuardarRevelarEsc").addEventListener("click", () => guardarEscritura(true));
+    $("btnBorrarEsc").addEventListener("click", async () => {
+      if (!confirmarBorrado) {
+        confirmarBorrado = true;
+        $("btnBorrarEsc").textContent = "¿Seguro? Toca otra vez";
+        return;
+      }
+      const id = editando;
+      $("dlgEscritura").close();
+      try { await store.borrarEscritura(id); aviso("Escritura borrada"); }
+      catch (e) { manejarError(e); }
+    });
+    $("btnNuevaEscritura").addEventListener("click", () => abrirEditor(null));
+
     // ---------- Ordenar ----------
     // "Ordenar" pasa a miniaturas compactas que se arrastran (mantén presionada en el
     // teléfono). "Listo" guarda el orden en Firebase para esta sesión.
-    const porId = new Map(FOTOS.map((f) => [f.id, f]));
-
-    function aplicarOrden(ids) {
-      const vistos = new Set();
-      const nueva = [];
-      (ids || []).forEach((id) => { if (porId.has(id) && !vistos.has(id)) { vistos.add(id); nueva.push(porId.get(id)); } });
-      FOTOS.forEach((f) => { if (!vistos.has(f.id)) nueva.push(f); }); // fotos nuevas van al final
-      lista = nueva;
-      lista.forEach((f, i) => {
-        const b = tarjetas.get(f.id);
-        b.querySelector(".num").textContent = "#" + (i + 1);
-        $("cuadricula").append(b);
-      });
-      pintarDock();
-    }
-
-    store.onOrden((ids) => { if (!ordenando) aplicarOrden(ids); });
-
     let sortable = null;
     $("btnOrdenar").addEventListener("click", async () => {
       if (!ordenando) {
@@ -243,7 +418,7 @@
         $("btnOrdenar").textContent = "Listo ✓";
         $("btnOrdenar").classList.add("activo");
         $("btnCompartir").hidden = $("btnReiniciar").hidden = true;
-        $("resumen").textContent = "Arrastra las fotos";
+        $("resumen").textContent = "Arrastra las fotos y escrituras";
         sortable = Sortable.create($("cuadricula"), {
           animation: 180,
           delay: 120,
@@ -264,18 +439,18 @@
       $("btnOrdenar").textContent = "Ordenar";
       $("btnOrdenar").classList.remove("activo");
       $("btnCompartir").hidden = $("btnReiniciar").hidden = false;
-      aplicarOrden(ids);
-      pintarResumen();
+      ordenGuardado = ids;
+      sincronizar();
       try { await store.guardarOrden(ids); aviso("Orden guardado"); }
       catch (e) { manejarError(e); }
     });
 
     async function accion(id, fn) {
       const b = tarjetas.get(id);
-      b.classList.add("ocupada");
+      b?.classList.add("ocupada");
       try { await fn(); }
       catch (e) { manejarError(e); }
-      finally { b.classList.remove("ocupada"); }
+      finally { b?.classList.remove("ocupada"); }
     }
 
     function manejarError(e) {

@@ -28,6 +28,7 @@
   <script type="module">
     import { CONFIG } from "./config.js";
     import { crearStore, sesionActual, ordenar } from "./js/store.js";
+    import { textoAHtml, esEscritura } from "./js/escritura.js";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -35,6 +36,7 @@
     const $ = (id) => document.getElementById(id);
     const porId = new Map(FOTOS.map((f) => [f.id, f]));
     const tarjetas = new Map();          // id → <figure>
+    const bajas = new Map();             // id → función para dejar de escuchar una escritura
     let primeraCarga = true;
 
     $("titulo").textContent = CONFIG.titulo;
@@ -56,6 +58,21 @@
       $("aviso").textContent = "No se pudo leer la sesión. Revisa las reglas de Firebase.";
     });
 
+    // Escritura: tarjeta de texto que se actualiza sola si el presentador la edita
+    // (por ejemplo, cuando resalta palabras en plena clase).
+    function crearTarjetaEscritura(id) {
+      const fig = document.createElement("figure");
+      fig.className = "foto escritura entrando";
+      fig.dataset.id = id;
+      fig.innerHTML = `<div class="verso"><p></p><cite></cite></div><figcaption><span class="orden"></span></figcaption>`;
+      bajas.set(id, store.onEscritura(id, (e) => {
+        if (!e) return;
+        fig.querySelector(".verso p").innerHTML = textoAHtml(e.texto, e.todoRojo);
+        fig.querySelector(".verso cite").textContent = e.cita || "";
+      }));
+      return fig;
+    }
+
     function crearTarjeta(foto) {
       const fig = document.createElement("figure");
       fig.className = "foto entrando";
@@ -75,7 +92,7 @@
     }
 
     function pintar(reveladas) {
-      const ids = ordenar(reveladas).filter((id) => porId.has(id));
+      const ids = ordenar(reveladas).filter((id) => porId.has(id) || esEscritura(id));
       const visibles = new Set(ids);
       const lista = $("lista");
 
@@ -83,6 +100,8 @@
       for (const [id, fig] of tarjetas) {
         if (visibles.has(id)) continue;
         tarjetas.delete(id);
+        const baja = bajas.get(id);
+        if (baja) { try { baja(); } catch {} bajas.delete(id); }
         fig.style.maxHeight = fig.offsetHeight + "px";
         requestAnimationFrame(() => {
           fig.classList.add("saliendo");
@@ -97,7 +116,7 @@
       ids.forEach((id, i) => {
         let fig = tarjetas.get(id);
         if (!fig) {
-          fig = crearTarjeta(porId.get(id));
+          fig = esEscritura(id) ? crearTarjetaEscritura(id) : crearTarjeta(porId.get(id));
           tarjetas.set(id, fig);
           nueva = fig;
           requestAnimationFrame(() => requestAnimationFrame(() => fig.classList.remove("entrando")));

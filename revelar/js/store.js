@@ -6,6 +6,8 @@
 //   revelar/<sesion>/reveladas/<fotoId> = marca de tiempo (orden de revelado)
 //   revelar/<sesion>/presencia/<conexion> = true (un participante conectado)
 //   revelar/<sesion>/orden = [ids] (orden de TU cuadrícula; solo lo usa el presentador)
+//   revelar/<sesion>/escrituras/<id> = { cita, texto, todoRojo, creado }
+//     Las escrituras comparten "reveladas" y "orden" con las fotos.
 import { CONFIG } from "../config.js";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
@@ -49,6 +51,7 @@ async function storeFirebase(sesion) {
   const refPresencia = db.ref(d, `${base}/presencia`);
   const refConectado = db.ref(d, ".info/connected");
   const refOrden = db.ref(d, `${base}/orden`);
+  const refEscrituras = db.ref(d, `${base}/escrituras`);
 
   let authMod = null, auth = null;
   async function getAuth() {
@@ -86,6 +89,21 @@ async function storeFirebase(sesion) {
       return db.onValue(refOrden, (s) => cb(Array.isArray(s.val()) ? s.val() : null), () => cb(null));
     },
     guardarOrden: (ids) => db.set(refOrden, ids),
+    onEscrituras(cb) {
+      return db.onValue(refEscrituras, (s) => cb(s.val() || {}), () => cb({}));
+    },
+    onEscritura(id, cb) {
+      return db.onValue(db.ref(d, `${base}/escrituras/${id}`), (s) => cb(s.val()), () => cb(null));
+    },
+    async guardarEscritura(id, datos) {
+      const clave = id || "esc_" + db.push(refEscrituras).key.replace(/^-/, "");
+      await db.set(db.ref(d, `${base}/escrituras/${clave}`), datos);
+      return clave;
+    },
+    borrarEscritura: (id) => db.update(db.ref(d, base), {
+      [`escrituras/${id}`]: null,
+      [`reveladas/${id}`]: null,
+    }),
     async onUsuario(cb) {
       const a = await getAuth();
       return authMod.onAuthStateChanged(a, cb);
@@ -110,8 +128,16 @@ function storeDemo(sesion) {
     try { localStorage.setItem(clave, JSON.stringify(v)); } catch {}
     oyentes.forEach((cb) => cb(v));
   };
+  const claveEsc = clave + ":escrituras";
+  const oyentesEsc = new Set();
+  const leerEsc = () => { try { return JSON.parse(localStorage.getItem(claveEsc)) || {}; } catch { return {}; } };
+  const escribirEsc = (v) => {
+    try { localStorage.setItem(claveEsc, JSON.stringify(v)); } catch {}
+    oyentesEsc.forEach((cb) => cb(v));
+  };
   window.addEventListener("storage", (e) => {
     if (e.key === clave) oyentes.forEach((cb) => cb(leer()));
+    if (e.key === claveEsc) oyentesEsc.forEach((cb) => cb(leerEsc()));
   });
 
   return {
@@ -128,6 +154,21 @@ function storeDemo(sesion) {
       return () => {};
     },
     async guardarOrden(ids) { try { localStorage.setItem(clave + ":orden", JSON.stringify(ids)); } catch {} },
+    onEscrituras(cb) { oyentesEsc.add(cb); cb(leerEsc()); return () => oyentesEsc.delete(cb); },
+    onEscritura(id, cb) {
+      const f = (v) => cb(v[id] || null);
+      oyentesEsc.add(f); f(leerEsc());
+      return () => oyentesEsc.delete(f);
+    },
+    async guardarEscritura(id, datos) {
+      const clave2 = id || "esc_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      const v = leerEsc(); v[clave2] = datos; escribirEsc(v);
+      return clave2;
+    },
+    async borrarEscritura(id) {
+      const v = leerEsc(); delete v[id]; escribirEsc(v);
+      const r = leer(); delete r[id]; escribir(r);
+    },
     async onUsuario(cb) { cb({ uid: "demo", displayName: "Modo demo" }); return () => {}; },
     async entrar() {},
     async salir() {},

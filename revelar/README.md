@@ -73,6 +73,22 @@ participantes solo leen y no necesitan cuenta.
 
 Si alguien llega tarde o recarga la página, ve todas las fotos ya reveladas.
 
+### Escrituras en letra roja
+
+Toca **+📖** (abajo, junto a Siguiente) para escribir una escritura:
+
+- **Cita** (p. ej. `Juan 2:19`) y **Texto**.
+- Selecciona palabras y toca **Rojo** o **Resaltar**. También puedes escribir
+  `*así*` (rojo) y `==así==` (resaltado). O marca **Todo en letra roja**.
+- **Guardar** la deja oculta en tu cuadrícula (para preparar la clase);
+  **Guardar y revelar** la muestra al instante.
+- Usa **Ordenar** para ponerla entre las fotos; **Siguiente ▶** la revela en su turno.
+- Toca **✎** en la tarjeta para editarla o borrarla. Si ya está revelada, los
+  cambios (por ejemplo, un resaltado nuevo en plena clase) se ven al instante.
+
+Las escrituras se guardan en Firebase por sesión. Las fotos, en cambio, viven
+en el repo.
+
 ### Varias sesiones
 
 Agrega `?s=nombre` a la URL del presentador (p. ej.
