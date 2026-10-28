@@ -1323,3 +1323,5 @@ body.modo-presentar > .franja { flex: none; }
 .vacio.espera { position: relative; overflow: hidden; background: #000; margin: 0; padding: 0; }
 .sala .vacio.espera { min-height: 100vh; min-height: 100svh; }
 .espera canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* En ensayo la lámina actual no está "en pantalla": etiqueta gris en lugar de dorada */
+body:not(.en-vivo) .tira-item.actual .tira-estado { background: #3a4166; color: #e7e7ef; border-color: #5a6290; }
