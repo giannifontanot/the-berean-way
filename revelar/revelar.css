@@ -1288,3 +1288,16 @@ body.modo-presentar > .franja { flex: none; }
 .barra .estado::before { display: none; }
 .barra .estado { font-size: 16px; font-weight: 700; color: var(--text); }
 .barra .estado.off { color: var(--danger); }
+
+/* Atrás y Siguiente: los dos grandes, Siguiente más ancho (≈ 35 / 65) */
+.dock .deshacer {
+  flex: 0 0 35%;
+  width: auto;
+  min-height: 64px;
+  padding: 0 8px;
+  border-radius: 18px;
+  font-size: 19px;
+  font-weight: 700;
+}
+.dock .deshacer .sig-label { font-size: 19px; }
+.dock .siguiente { flex: 1 1 0; }

@@ -99,8 +99,8 @@ Una sola pantalla:
     Editar (escrituras), Ocultar y Borrar.
 - **Las notas** de la lámina en pantalla (antes de empezar, las de la primera),
   con **✎** para corregirlas.
-- **Abajo**, **↶** y **Siguiente ▶**.
-  - **↶ Anterior**: si hay un desvío, lo quita; si estás repasando una lámina
+- **Abajo**, **◀ Atrás** y **Siguiente ▶** (más ancho).
+  - **◀ Atrás**: si hay un desvío, lo quita; si estás repasando una lámina
     pasada, retrocede una más; si no, quita la última y los teléfonos vuelven a
     la anterior.
   - **Siguiente**: quita el desvío o termina el repaso y sigue con la próxima
