@@ -1305,3 +1305,15 @@ body.modo-presentar > .franja { flex: none; }
 /* ▶ siempre; en vivo = círculo verde alrededor (sin pausa) */
 #btnModo.vivo { background: var(--bg-2); color: var(--ok); border: 2px solid var(--ok); box-shadow: 0 0 0 3px rgba(124, 207, 154, 0.25); }
 #btnModo.vivo .ico-play { display: inline; }
+/* Punto verde luminoso + "N participantes" */
+.barra .estado { font-size: 14px; font-weight: 700; color: var(--text); gap: 7px; }
+.barra .estado::before {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #3dff7a;
+  box-shadow: 0 0 6px 1px rgba(61, 255, 122, 0.85);
+}
+.barra .estado.off { color: var(--muted); }
+.barra .estado.off::before { background: #ff5a52; box-shadow: none; }
