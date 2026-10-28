@@ -7,7 +7,10 @@
 //   revelar/<sesion>/presencia/<conexion> = true (un participante conectado)
 //   revelar/<sesion>/orden = [ids] (orden de TU cuadrícula; solo lo usa el presentador)
 //   revelar/<sesion>/escrituras/<id> = { cita, texto, todoRojo, creado }
-//     Las escrituras comparten "reveladas" y "orden" con las fotos.
+//   revelar/<sesion>/subidas/<id> = { src: "data:image/jpeg;base64,…", creado }
+//     Fotos que subes desde el presentador con "+". Guardadas en la misma base de
+//     datos (comprimidas), así no hace falta activar otro servicio de Firebase.
+//     Escrituras y subidas comparten "reveladas" y "orden" con las fotos del repo.
 import { CONFIG } from "../config.js";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
@@ -52,6 +55,7 @@ async function storeFirebase(sesion) {
   const refConectado = db.ref(d, ".info/connected");
   const refOrden = db.ref(d, `${base}/orden`);
   const refEscrituras = db.ref(d, `${base}/escrituras`);
+  const refSubidas = db.ref(d, `${base}/subidas`);
 
   let authMod = null, auth = null;
   async function getAuth() {
@@ -104,6 +108,21 @@ async function storeFirebase(sesion) {
       [`escrituras/${id}`]: null,
       [`reveladas/${id}`]: null,
     }),
+    onSubidas(cb) {
+      return db.onValue(refSubidas, (s) => cb(s.val() || {}), () => cb({}));
+    },
+    onSubida(id, cb) {
+      return db.onValue(db.ref(d, `${base}/subidas/${id}`), (s) => cb(s.val()), () => cb(null));
+    },
+    async guardarSubida(datos) {
+      const clave = "sub_" + db.push(refSubidas).key.replace(/^-/, "");
+      await db.set(db.ref(d, `${base}/subidas/${clave}`), datos);
+      return clave;
+    },
+    borrarSubida: (id) => db.update(db.ref(d, base), {
+      [`subidas/${id}`]: null,
+      [`reveladas/${id}`]: null,
+    }),
     async onUsuario(cb) {
       const a = await getAuth();
       return authMod.onAuthStateChanged(a, cb);
@@ -135,9 +154,18 @@ function storeDemo(sesion) {
     try { localStorage.setItem(claveEsc, JSON.stringify(v)); } catch {}
     oyentesEsc.forEach((cb) => cb(v));
   };
+  const claveSub = clave + ":subidas";
+  const oyentesSub = new Set();
+  const leerSub = () => { try { return JSON.parse(localStorage.getItem(claveSub)) || {}; } catch { return {}; } };
+  const escribirSub = (v) => {
+    try { localStorage.setItem(claveSub, JSON.stringify(v)); }
+    catch { throw new Error("En modo demo no caben más fotos en este navegador."); }
+    oyentesSub.forEach((cb) => cb(v));
+  };
   window.addEventListener("storage", (e) => {
     if (e.key === clave) oyentes.forEach((cb) => cb(leer()));
     if (e.key === claveEsc) oyentesEsc.forEach((cb) => cb(leerEsc()));
+    if (e.key === claveSub) oyentesSub.forEach((cb) => cb(leerSub()));
   });
 
   return {
@@ -167,6 +195,21 @@ function storeDemo(sesion) {
     },
     async borrarEscritura(id) {
       const v = leerEsc(); delete v[id]; escribirEsc(v);
+      const r = leer(); delete r[id]; escribir(r);
+    },
+    onSubidas(cb) { oyentesSub.add(cb); cb(leerSub()); return () => oyentesSub.delete(cb); },
+    onSubida(id, cb) {
+      const f = (v) => cb(v[id] || null);
+      oyentesSub.add(f); f(leerSub());
+      return () => oyentesSub.delete(f);
+    },
+    async guardarSubida(datos) {
+      const id = "sub_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      const v = leerSub(); v[id] = datos; escribirSub(v);
+      return id;
+    },
+    async borrarSubida(id) {
+      const v = leerSub(); delete v[id]; escribirSub(v);
       const r = leer(); delete r[id]; escribir(r);
     },
     async onUsuario(cb) { cb({ uid: "demo", displayName: "Modo demo" }); return () => {}; },

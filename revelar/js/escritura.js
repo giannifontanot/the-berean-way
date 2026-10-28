@@ -35,3 +35,4 @@ export function textoAHtml(texto, todoRojo) {
 }
 
 export const esEscritura = (id) => String(id).startsWith("esc_");
+export const esSubida = (id) => String(id).startsWith("sub_");

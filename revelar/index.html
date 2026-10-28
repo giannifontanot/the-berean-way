@@ -26,7 +26,7 @@
   <script type="module">
     import { CONFIG } from "./config.js";
     import { crearStore, sesionActual, ordenar } from "./js/store.js";
-    import { textoAHtml, esEscritura } from "./js/escritura.js";
+    import { textoAHtml, esEscritura, esSubida } from "./js/escritura.js";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -85,12 +85,21 @@
       cap.append(orden);
       if (foto.titulo) cap.append(document.createTextNode(foto.titulo));
       fig.append(img, cap);
-      fig.addEventListener("click", () => abrirVisor(foto));
+      fig.addEventListener("click", () => abrirVisor({ src: img.src, titulo: foto.titulo }));
+      return fig;
+    }
+
+    // Foto subida desde el presentador con "+": la imagen viene de Firebase.
+    function crearTarjetaSubida(id) {
+      const fig = crearTarjeta({ id, src: "" });
+      const img = fig.querySelector("img");
+      img.removeAttribute("src");
+      bajas.set(id, store.onSubida(id, (f) => { if (f?.src && img.src !== f.src) img.src = f.src; }));
       return fig;
     }
 
     function pintar(reveladas) {
-      const ids = ordenar(reveladas).filter((id) => porId.has(id) || esEscritura(id));
+      const ids = ordenar(reveladas).filter((id) => porId.has(id) || esEscritura(id) || esSubida(id));
       const visibles = new Set(ids);
       const lista = $("lista");
 
@@ -114,7 +123,9 @@
       ids.forEach((id, i) => {
         let fig = tarjetas.get(id);
         if (!fig) {
-          fig = esEscritura(id) ? crearTarjetaEscritura(id) : crearTarjeta(porId.get(id));
+          fig = esEscritura(id) ? crearTarjetaEscritura(id)
+              : esSubida(id) ? crearTarjetaSubida(id)
+              : crearTarjeta(porId.get(id));
           tarjetas.set(id, fig);
           nueva = fig;
           requestAnimationFrame(() => requestAnimationFrame(() => fig.classList.remove("entrando")));

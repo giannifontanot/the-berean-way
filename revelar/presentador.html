@@ -44,7 +44,7 @@
         <span class="sig-label">Siguiente ▶</span>
         <span class="sig-cual" id="sigCual"></span>
       </button>
-      <button class="btn nueva-esc" id="btnNuevaEscritura" aria-label="Nueva escritura">+📖</button>
+      <button class="btn nueva-esc" id="btnAgregar" aria-label="Agregar foto o escritura">+</button>
     </div>
   </main>
 
@@ -79,6 +79,28 @@
     <div class="acciones">
       <button class="btn" id="btnCopiarUid">Copiar</button>
       <button class="btn primario" data-cerrar>Entendido</button>
+    </div>
+  </dialog>
+
+  <!-- "+": elegir qué agregar -->
+  <dialog id="dlgAgregar" class="dlg-agregar">
+    <h2>Agregar</h2>
+    <p>Se agrega al final de tu lista, oculto hasta que lo reveles.</p>
+    <div class="opciones-agregar">
+      <button class="btn opcion" id="btnAgregarFoto"><span>📷</span>Foto</button>
+      <button class="btn opcion" id="btnAgregarEscritura"><span>📖</span>Escritura</button>
+    </div>
+    <div class="acciones"><button class="btn" data-cerrar>Cancelar</button></div>
+  </dialog>
+  <input type="file" id="inputFotos" accept="image/*" multiple hidden>
+
+  <!-- Borrar una foto subida -->
+  <dialog id="dlgBorrarFoto">
+    <h2>¿Borrar esta foto?</h2>
+    <p>Se quita de tu lista y de los teléfonos de los participantes.</p>
+    <div class="acciones">
+      <button class="btn" data-cerrar>Cancelar</button>
+      <button class="btn peligro lleno" id="btnConfirmarBorrarFoto">Borrar</button>
     </div>
   </dialog>
 
@@ -129,6 +151,7 @@
     const tarjetas = new Map();  // id → tarjeta en la cuadrícula
     let lista = [];              // elementos en el orden de TU cuadrícula
     let escrituras = {};
+    let subidas = {};
     let ordenGuardado = null;
     let usuario = null;
     let reveladas = {};
@@ -174,7 +197,7 @@
 
     function crearTarjeta(item) {
       const b = document.createElement("div");
-      b.className = "miniatura" + (item.tipo === "escritura" ? " es-escritura" : "");
+      b.className = "miniatura" + (item.tipo === "escritura" ? " es-escritura" : "") + (item.subida ? " es-subida" : "");
       b.setAttribute("role", "button");
       b.tabIndex = 0;
       b.dataset.id = item.id;
@@ -190,6 +213,7 @@
         const img = document.createElement("img");
         img.loading = "lazy";
         img.alt = "";
+        img.draggable = false;
         img.src = item.src;
         b.querySelector(".marco").prepend(img);
       } else {
@@ -206,9 +230,14 @@
         e.stopPropagation();
         accion(item.id, () => store.ocultar(item.id));
       });
+      if (item.subida) {
+        b.querySelector(".editar").textContent = "🗑";
+        b.querySelector(".editar").setAttribute("aria-label", "Borrar foto");
+      }
       b.querySelector(".editar").addEventListener("click", (e) => {
         e.stopPropagation();
-        abrirEditor(items.get(item.id));
+        if (item.subida) pedirBorrarFoto(item.id);
+        else abrirEditor(items.get(item.id));
       });
       return b;
     }
@@ -225,9 +254,12 @@
     function sincronizar() {
       items.clear();
       FOTOS.forEach((f) => items.set(f.id, { id: f.id, tipo: "foto", src: f.src }));
-      Object.entries(escrituras)
-        .sort((a, b) => (a[1].creado || 0) - (b[1].creado || 0))
-        .forEach(([id, e]) => items.set(id, { id, tipo: "escritura", ...e }));
+      [
+        ...Object.entries(subidas).map(([id, f]) => ({ id, tipo: "foto", subida: true, src: f.src, creado: f.creado })),
+        ...Object.entries(escrituras).map(([id, e]) => ({ id, tipo: "escritura", ...e })),
+      ]
+        .sort((a, b) => (a.creado || 0) - (b.creado || 0))
+        .forEach((it) => items.set(it.id, it));
 
       for (const [id, b] of tarjetas) {
         if (!items.has(id)) { b.remove(); tarjetas.delete(id); }
@@ -279,6 +311,7 @@
     store.onReveladas((r) => { reveladas = r; pintarRevelado(); },
       (e) => aviso("No se pudo leer la sesión: " + (e?.message || e)));
     store.onEscrituras((e) => { escrituras = e || {}; sincronizar(); });
+    store.onSubidas((f) => { subidas = f || {}; sincronizar(); });
     store.onOrden((ids) => { ordenGuardado = ids; if (!ordenando) aplicarOrden(ids); });
     sincronizar();
 
@@ -404,7 +437,65 @@
       try { await store.borrarEscritura(id); aviso("Escritura borrada"); }
       catch (e) { manejarError(e); }
     });
-    $("btnNuevaEscritura").addEventListener("click", () => abrirEditor(null));
+    // ---------- "+": agregar foto o escritura ----------
+    $("btnAgregar").addEventListener("click", () => { if (!ordenando) $("dlgAgregar").showModal(); });
+    $("btnAgregarEscritura").addEventListener("click", () => { $("dlgAgregar").close(); abrirEditor(null); });
+    $("btnAgregarFoto").addEventListener("click", () => { $("dlgAgregar").close(); $("inputFotos").click(); });
+
+    $("inputFotos").addEventListener("change", async () => {
+      const archivos = [...$("inputFotos").files];
+      $("inputFotos").value = "";
+      if (!archivos.length) return;
+      let ultimaId = null;
+      for (let i = 0; i < archivos.length; i++) {
+        aviso(archivos.length > 1 ? `Subiendo foto ${i + 1} de ${archivos.length}…` : "Subiendo foto…", true);
+        try {
+          const src = await comprimir(archivos[i]);
+          ultimaId = await store.guardarSubida({ src, creado: Date.now() });
+        } catch (e) { manejarError(e); return; }
+      }
+      aviso(archivos.length > 1 ? `${archivos.length} fotos agregadas` : "Foto agregada");
+      setTimeout(() => tarjetas.get(ultimaId)?.scrollIntoView({ behavior: "smooth", block: "center" }), 150);
+    });
+
+    // Reduce la foto (lado mayor 1600 px, JPEG) para que suba y cargue rápido.
+    async function comprimir(archivo) {
+      let fuente;
+      try { fuente = await createImageBitmap(archivo, { imageOrientation: "from-image" }); }
+      catch { fuente = await cargarImagen(archivo); }
+      const w0 = fuente.width, h0 = fuente.height;
+      if (!w0 || !h0) throw new Error("No se pudo leer la foto");
+      const k = Math.min(1, 1600 / Math.max(w0, h0));
+      const c = document.createElement("canvas");
+      c.width = Math.round(w0 * k);
+      c.height = Math.round(h0 * k);
+      c.getContext("2d").drawImage(fuente, 0, 0, c.width, c.height);
+      for (const q of [0.82, 0.72, 0.62, 0.5]) {
+        const url = c.toDataURL("image/jpeg", q);
+        if (url.length < 1500000) return url;
+      }
+      throw new Error("La foto es demasiado grande");
+    }
+    function cargarImagen(archivo) {
+      return new Promise((ok, no) => {
+        const img = new Image();
+        img.onload = () => ok(img);
+        img.onerror = () => no(new Error("No se pudo leer la foto (¿formato no compatible?)"));
+        img.src = URL.createObjectURL(archivo);
+      });
+    }
+
+    let borrandoFoto = null;
+    function pedirBorrarFoto(id) {
+      if (ordenando) return;
+      borrandoFoto = id;
+      $("dlgBorrarFoto").showModal();
+    }
+    $("btnConfirmarBorrarFoto").addEventListener("click", async () => {
+      $("dlgBorrarFoto").close();
+      try { await store.borrarSubida(borrandoFoto); aviso("Foto borrada"); }
+      catch (e) { manejarError(e); }
+    });
 
     // ---------- Ordenar ----------
     // "Ordenar" pasa a miniaturas compactas que se arrastran (mantén presionada en el
@@ -420,11 +511,24 @@
         $("btnCompartir").hidden = $("btnReiniciar").hidden = true;
         $("resumen").textContent = "Arrastra las fotos y escrituras";
         sortable = Sortable.create($("cuadricula"), {
-          animation: 180,
-          delay: 120,
+          // La tarjeta sigue al dedo (forceFallback) y las demás se deslizan suavemente
+          // para abrirle espacio; el hueco punteado marca dónde va a caer.
+          forceFallback: true,
+          fallbackOnBody: false,
+          fallbackTolerance: 3,
+          animation: 220,
+          easing: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+          delay: 150,
           delayOnTouchOnly: true,
+          touchStartThreshold: 5,
+          scroll: true,
+          scrollSensitivity: 90,
+          scrollSpeed: 14,
           ghostClass: "arrastrando-fantasma",
           chosenClass: "arrastrando-elegida",
+          dragClass: "arrastrando-dedo",
+          fallbackClass: "arrastrando-dedo",
+          onChoose: () => { if (navigator.vibrate) navigator.vibrate(15); },
           onSort: () => {
             [...$("cuadricula").children].forEach((b, i) => { b.querySelector(".num").textContent = "#" + (i + 1); });
           },
@@ -507,12 +611,12 @@
 
     // ---------- Aviso flotante ----------
     let tAviso;
-    function aviso(msg) {
+    function aviso(msg, fijo) {
       const t = $("toast");
       t.textContent = msg;
       t.classList.add("visible");
       clearTimeout(tAviso);
-      tAviso = setTimeout(() => t.classList.remove("visible"), 2600);
+      if (!fijo) tAviso = setTimeout(() => t.classList.remove("visible"), 2600);
     }
   </script>
 </body>

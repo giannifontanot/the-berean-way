@@ -36,6 +36,21 @@
             }
           }
         },
+        "subidas": {
+          ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+          "$f": {
+            ".validate": "newData.hasChildren(['src'])",
+            "src": {
+              ".validate": "newData.isString() && newData.val().beginsWith('data:image/') && newData.val().length < 2000000"
+            },
+            "creado": {
+              ".validate": "newData.isNumber()"
+            },
+            "$otro": {
+              ".validate": false
+            }
+          }
+        },
         "presencia": {
           "$conexion": {
             ".write": true,

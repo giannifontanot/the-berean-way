@@ -73,9 +73,16 @@ participantes solo leen y no necesitan cuenta.
 
 Si alguien llega tarde o recarga la página, ve todas las fotos ya reveladas.
 
+### Agregar fotos desde el teléfono
+
+Toca **+** (abajo a la derecha) → **📷 Foto** y elige una o varias fotos de tu
+galería. Se reducen solas (lado mayor 1600 px) y se agregan al final de tu
+lista, ocultas hasta que las reveles. Toca **🗑** en la tarjeta para borrarla.
+Se guardan en la misma Realtime Database, por sesión.
+
 ### Escrituras en letra roja
 
-Toca **+📖** (abajo, junto a Siguiente) para escribir una escritura:
+Toca **+** → **📖 Escritura** para escribir una escritura:
 
 - **Cita** (p. ej. `Juan 2:19`) y **Texto**.
 - Selecciona palabras y toca **Rojo** o **Resaltar**. También puedes escribir
