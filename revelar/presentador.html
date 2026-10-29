@@ -10,46 +10,46 @@
     // Sin lección elegida (?s=), primero la lista de lecciones.
     if (!new URLSearchParams(location.search).has("s")) location.replace("lecciones.html");
   </script>
-  <link rel="stylesheet" href="revelar.css?v=202610291303">
+  <link rel="stylesheet" href="revelar.css?v=202610291313">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
 </head>
 <body>
   <header class="barra">
-    <span id="estado" class="estado">Conectando…</span>
+    <span id="estado" class="estado" data-i18n="connecting">Conectando…</span>
     <div class="barra-acciones">
-      <button class="btn-barra" id="btnModo" aria-label="Ir en vivo" title="Ir en vivo">
+      <button class="btn-barra" id="btnModo" aria-label="Ir en vivo" title="Ir en vivo" data-i18n-title="goLive">
         <svg class="ico ico-play" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
       </button>
-      <button class="btn-barra" id="btnAgregar" aria-label="Agregar foto o escritura" title="Agregar">
+      <button class="btn-barra" id="btnAgregar" aria-label="Agregar" title="Agregar" data-i18n-title="add">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
       </button>
-      <button class="btn-barra" id="btnOrdenar" aria-label="Editar" title="Editar">
+      <button class="btn-barra" id="btnOrdenar" aria-label="Editar" title="Editar" data-i18n-title="edit">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path class="ico-ordenar" d="M4 20h4L19 9a2.1 2.1 0 0 0-4-4L4 16v4zM13.5 6.5l4 4"/><path class="ico-listo" d="M5 12.5l4.5 4.5L19 7.5"/></svg>
-        <span class="lbl">Editar</span>
+        <span class="lbl" data-i18n="edit">Editar</span>
       </button>
-      <button class="btn-barra" id="btnCompartir" aria-label="Compartir" title="Compartir">
+      <button class="btn-barra" id="btnCompartir" aria-label="Compartir" title="Compartir" data-i18n-title="share">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
       </button>
-      <button class="btn-barra" id="btnImprimir" aria-label="Imprimir" title="Imprimir">
+      <button class="btn-barra" id="btnImprimir" aria-label="Imprimir" title="Imprimir" data-i18n-title="print">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>
       </button>
-      <button class="btn-barra peligro" id="btnReiniciar" aria-label="Reiniciar" title="Reiniciar">
+      <button class="btn-barra peligro" id="btnReiniciar" aria-label="Reiniciar" title="Reiniciar" data-i18n-title="reset">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3 4v5h5"/></svg>
       </button>
     </div>
   </header>
   <a class="leccion-bar" id="leccionBar" href="lecciones.html#lista">
-    <span class="lb-atras" aria-hidden="true">‹</span> <span class="lb-lista">Lecciones</span>
+    <span class="lb-atras" aria-hidden="true">‹</span> <span class="lb-lista" data-i18n="lessons">Lecciones</span>
     <span class="lb-sep" aria-hidden="true">·</span> <span id="leccionTitulo" class="lb-titulo"></span>
   </a>
   <div id="aviso" class="aviso" hidden></div>
 
   <!-- Entrar (solo con Firebase) -->
   <section class="entrada" id="entrada" hidden>
-    <h2>Entra para presentar</h2>
-    <p>Solo tu cuenta puede revelar fotos y escrituras. Los participantes no necesitan cuenta.</p>
-    <button class="btn primario" id="btnEntrar">Entrar con Google</button>
+    <h2 data-i18n="signInToPresent">Entra para presentar</h2>
+    <p data-i18n="signInText">Solo tu cuenta puede revelar fotos y escrituras. Los participantes no necesitan cuenta.</p>
+    <button class="btn primario" id="btnEntrar" data-i18n="signInGoogle">Entrar con Google</button>
   </section>
 
   <!-- Panel -->
@@ -61,17 +61,17 @@
     </div>
     <div class="cuadricula" id="cuadricula"></div>
     <p style="text-align:center;margin-top:28px">
-      <button class="btn-texto" id="btnSalir">Salir</button>
+      <button class="btn-texto" id="btnSalir" data-i18n="exit">Salir</button>
     </p>
     </section>
 
     <!-- Presentar: tira de láminas arriba, notas abajo, Siguiente al final -->
     <section class="presentar" id="vistaPresentar">
-      <div class="tira" id="tira" aria-label="Láminas"></div>
+      <div class="tira" id="tira" aria-label="Láminas" data-i18n-aria="slidesAria"></div>
       <div class="notas-panel" id="notasPanel">
         <div class="notas-cab">
-          <span id="notasDe">Notas</span>
-          <button class="btn-icono" id="btnEditarNotaActual" aria-label="Editar notas">✎</button>
+          <span id="notasDe" data-i18n="notes">Notas</span>
+          <button class="btn-icono" id="btnEditarNotaActual" aria-label="Editar notas" data-i18n-aria="editNotes">✎</button>
         </div>
         <div class="notas" id="notasActual"></div>
       </div>
@@ -79,9 +79,9 @@
 
     <!-- Avance en orden: siempre el mismo botón -->
     <div class="dock">
-      <button class="btn deshacer" id="btnDeshacer" aria-label="Atrás"><span class="sig-label">◀ Atrás</span></button>
+      <button class="btn deshacer" id="btnDeshacer" aria-label="Atrás" data-i18n-aria="back"><span class="sig-label" data-i18n="backBtn">◀ Atrás</span></button>
       <button class="btn primario siguiente" id="btnSiguiente">
-        <span class="sig-label">Siguiente ▶</span>
+        <span class="sig-label" data-i18n="nextBtn">Siguiente ▶</span>
         <span class="sig-cual" id="sigCual"></span>
       </button>
     </div>
@@ -89,24 +89,24 @@
 
   <!-- Imprimir: documento listo para descargar -->
   <dialog id="dlgImprimir">
-    <h2>Documento listo</h2>
+    <h2 data-i18n="docReady">Documento listo</h2>
     <p id="imprimirTxt"></p>
     <div class="acciones">
-      <button class="btn" data-cerrar>Cancelar</button>
-      <button class="btn primario" id="btnDescargarDoc">Descargar</button>
+      <button class="btn" data-cerrar data-i18n="cancel">Cancelar</button>
+      <button class="btn primario" id="btnDescargarDoc" data-i18n="download">Descargar</button>
     </div>
   </dialog>
 
   <!-- Compartir -->
   <dialog id="dlgCompartir">
-    <h2>Invita a los participantes</h2>
-    <p>Que escaneen este código o abran el enlace.</p>
+    <h2 data-i18n="inviteTitle">Invita a los participantes</h2>
+    <p data-i18n="inviteText">Que escaneen este código o abran el enlace.</p>
     <div class="qr" id="qr"></div>
     <input class="enlace" id="enlace" readonly>
     <div class="acciones">
-      <button class="btn" id="btnCopiar">Copiar enlace</button>
-      <button class="btn" id="btnEnviar" hidden>Enviar…</button>
-      <button class="btn primario" data-cerrar>Listo</button>
+      <button class="btn" id="btnCopiar" data-i18n="copyLink">Copiar enlace</button>
+      <button class="btn" id="btnEnviar" hidden data-i18n="send">Enviar…</button>
+      <button class="btn primario" data-cerrar data-i18n="done">Listo</button>
     </div>
   </dialog>
 
@@ -115,72 +115,72 @@
     <h2 id="reiniciarTitulo">¿Reiniciar la sesión?</h2>
     <p id="reiniciarTexto">Se ocultarán todas las fotos y escrituras en los teléfonos de los participantes. Ellos se quedan conectados, listos para empezar de nuevo.</p>
     <div class="acciones">
-      <button class="btn" data-cerrar>Cancelar</button>
-      <button class="btn peligro lleno" id="btnConfirmarReinicio">Reiniciar</button>
+      <button class="btn" data-cerrar data-i18n="cancel">Cancelar</button>
+      <button class="btn peligro lleno" id="btnConfirmarReinicio" data-i18n="reset">Reiniciar</button>
     </div>
   </dialog>
 
   <!-- Falta permiso -->
   <dialog id="dlgPermiso">
-    <h2>Falta un paso</h2>
-    <p>Firebase rechazó el cambio. Casi siempre es porque faltan las <b>reglas más recientes</b>: en Firebase abre <b>Realtime Database → Rules</b>, pega las reglas nuevas (están en <code>revelar/database.rules.json</code>) y toca <b>Publish</b>.</p>
-    <p>Si es la primera vez, este es tu identificador para las reglas:</p>
+    <h2 data-i18n="missingStep">Falta un paso</h2>
+    <p data-i18n-html="missingStepHtml">Firebase rechazó el cambio. Casi siempre es porque faltan las <b>reglas más recientes</b>: en Firebase abre <b>Realtime Database → Rules</b>, pega las reglas nuevas (están en <code>revelar/database.rules.json</code>) y toca <b>Publish</b>.</p>
+    <p data-i18n="uidText">Si es la primera vez, este es tu identificador para las reglas:</p>
     <code class="uid" id="uid"></code>
     <div class="acciones">
-      <button class="btn" id="btnCopiarUid">Copiar</button>
-      <button class="btn primario" data-cerrar>Entendido</button>
+      <button class="btn" id="btnCopiarUid" data-i18n="copy">Copiar</button>
+      <button class="btn primario" data-cerrar data-i18n="gotIt">Entendido</button>
     </div>
   </dialog>
 
   <!-- "+": elegir qué agregar -->
   <dialog id="dlgAgregar" class="dlg-agregar">
-    <h2>Agregar</h2>
-    <p>Se agrega justo después de la lámina que tienes al frente, oculto hasta que lo reveles.</p>
+    <h2 data-i18n="add">Agregar</h2>
+    <p data-i18n="addText">Se agrega justo después de la lámina que tienes al frente, oculto hasta que lo reveles.</p>
     <div class="opciones-agregar">
-      <button class="btn opcion" id="btnAgregarFoto"><span>📷</span>Foto</button>
-      <button class="btn opcion" id="btnAgregarEscritura"><span>📖</span>Escritura</button>
+      <button class="btn opcion" id="btnAgregarFoto"><span>📷</span><span data-i18n="photo">Foto</span></button>
+      <button class="btn opcion" id="btnAgregarEscritura"><span>📖</span><span data-i18n="scripture">Escritura</span></button>
     </div>
-    <div class="acciones"><button class="btn" data-cerrar>Cancelar</button></div>
+    <div class="acciones"><button class="btn" data-cerrar data-i18n="cancel">Cancelar</button></div>
   </dialog>
   <input type="file" id="inputFotos" accept="image/*" multiple hidden>
 
   <!-- Borrar una foto subida -->
   <dialog id="dlgBorrarFoto">
     <h2 id="borrarTitulo">¿Borrar esta foto?</h2>
-    <p>Se quita de tu lista y de los teléfonos de los participantes.</p>
+    <p data-i18n="deleteText">Se quita de tu lista y de los teléfonos de los participantes.</p>
     <div class="acciones">
-      <button class="btn" data-cerrar>Cancelar</button>
-      <button class="btn peligro lleno" id="btnConfirmarBorrarFoto">Borrar</button>
+      <button class="btn" data-cerrar data-i18n="cancel">Cancelar</button>
+      <button class="btn peligro lleno" id="btnConfirmarBorrarFoto" data-i18n="delete">Borrar</button>
     </div>
   </dialog>
 
   <!-- Escritura: crear / editar -->
   <dialog id="dlgEscritura" class="dlg-escritura">
     <h2 id="escTitulo">Nueva escritura</h2>
-    <label class="campo">Cita
-      <input id="escCita" maxlength="120" placeholder="Juan 2:19" autocomplete="off">
+    <label class="campo"><span data-i18n="reference">Cita</span>
+      <input id="escCita" maxlength="120" placeholder="Juan 2:19" data-i18n-ph="refPh" autocomplete="off">
     </label>
     <div class="marcas">
-      <span>Selecciona palabras en la hoja y toca:</span>
-      <button type="button" class="marca-btn rojo-btn" data-marca="r">Rojo</button>
-      <button type="button" class="marca-btn resaltar-btn" data-marca="h">Resaltar</button>
+      <span data-i18n="selectWords">Selecciona palabras en la hoja y toca:</span>
+      <button type="button" class="marca-btn rojo-btn" data-marca="r" data-i18n="red">Rojo</button>
+      <button type="button" class="marca-btn resaltar-btn" data-marca="h" data-i18n="highlight">Resaltar</button>
     </div>
     <!-- La hoja: se escribe y se marca aquí mismo, tal como la verán los participantes -->
     <div class="papel-wrap" id="escPapelWrap">
       <div class="papel-editor" id="escPapel" contenteditable="true" spellcheck="true" role="textbox" aria-multiline="true"
-           aria-label="Texto de la escritura" data-placeholder="Escribe o pega aquí la escritura…"></div>
+           aria-label="Texto de la escritura" data-placeholder="Escribe o pega aquí la escritura…" data-i18n-aria="scriptureText" data-i18n-dph="typeScripture"></div>
       <cite id="escVistaCita"></cite>
     </div>
-    <label class="interruptor"><input type="checkbox" id="escTodoRojo"> Todo en letra roja</label>
-    <p class="ayuda">Toca <b>Rojo</b> o <b>Resaltar</b> otra vez sobre lo mismo para quitarlo. Si la escritura ya está revelada, al guardar el cambio se ve al instante en los teléfonos.</p>
-    <label class="campo campo-notas">📝 Notas para mí <small>(no las ven los participantes)</small>
-      <textarea id="escNotas" rows="3" maxlength="4000" placeholder="- Preguntar: …&#10;- Conectar con …"></textarea>
+    <label class="interruptor"><input type="checkbox" id="escTodoRojo"> <span data-i18n="allRed">Todo en letra roja</span></label>
+    <p class="ayuda" data-i18n-html="markHelpHtml">Toca <b>Rojo</b> o <b>Resaltar</b> otra vez sobre lo mismo para quitarlo. Si la escritura ya está revelada, al guardar el cambio se ve al instante en los teléfonos.</p>
+    <label class="campo campo-notas"><span data-i18n="notesForMeIcon">📝 Notas para mí</span> <small data-i18n="notSeen">(no las ven los participantes)</small>
+      <textarea id="escNotas" rows="3" maxlength="4000" placeholder="- Preguntar: …&#10;- Conectar con …" data-i18n-ph="escNotesPh"></textarea>
     </label>
     <div class="acciones">
-      <button class="btn peligro" id="btnBorrarEsc" hidden>Borrar</button>
-      <button class="btn" data-cerrar>Cancelar</button>
-      <button class="btn" id="btnGuardarEsc">Guardar</button>
-      <button class="btn primario" id="btnGuardarRevelarEsc">Guardar y revelar</button>
+      <button class="btn peligro" id="btnBorrarEsc" hidden data-i18n="delete">Borrar</button>
+      <button class="btn" data-cerrar data-i18n="cancel">Cancelar</button>
+      <button class="btn" id="btnGuardarEsc" data-i18n="save">Guardar</button>
+      <button class="btn primario" id="btnGuardarRevelarEsc" data-i18n="saveReveal">Guardar y revelar</button>
     </div>
   </dialog>
 
@@ -188,34 +188,34 @@
   <dialog id="dlgItem" class="dlg-item">
     <div class="item-cab">
       <div class="notas-prev" id="itemPrev"></div>
-      <div><h2 id="itemTitulo">#1</h2><p>No se muestra a los participantes.</p></div>
+      <div><h2 id="itemTitulo">#1</h2><p data-i18n="notShown">No se muestra a los participantes.</p></div>
     </div>
     <div class="item-acciones">
-      <button class="btn" id="itemNotas">📝 Notas</button>
-      <button class="btn" id="itemEditar">✎ Editar escritura</button>
-      <button class="btn" id="itemCambiarFoto">🖼 Cambiar foto</button>
-      <button class="btn" id="itemOcultar">🙈 Ocultar (Siguiente la salta)</button>
-      <button class="btn peligro" id="itemBorrar">🗑 Borrar</button>
+      <button class="btn" id="itemNotas" data-i18n="menuNotes">📝 Notas</button>
+      <button class="btn" id="itemEditar" data-i18n="menuEditScripture">✎ Editar escritura</button>
+      <button class="btn" id="itemCambiarFoto" data-i18n="menuChangePhoto">🖼 Cambiar foto</button>
+      <button class="btn" id="itemOcultar" data-i18n="menuHide">🙈 Ocultar (Siguiente la salta)</button>
+      <button class="btn peligro" id="itemBorrar" data-i18n="menuDelete">🗑 Borrar</button>
     </div>
-    <div class="acciones"><button class="btn" data-cerrar>Cerrar</button></div>
+    <div class="acciones"><button class="btn" data-cerrar data-i18n="close">Cerrar</button></div>
   </dialog>
 
   <!-- Letra de las notas -->
   <dialog id="dlgLetra" class="dlg-letra">
-    <h2>Letra de las notas</h2>
-    <label class="deslizador">Tamaño <output id="letraTamVal">20</output>
+    <h2 data-i18n="notesFont">Letra de las notas</h2>
+    <label class="deslizador"><span data-i18n="size">Tamaño</span> <output id="letraTamVal">20</output>
       <input type="range" id="letraTam" min="14" max="44" step="1" value="20">
     </label>
-    <label class="deslizador">Espacio entre letras <output id="letraEspVal">0</output>
+    <label class="deslizador"><span data-i18n="spacing">Espacio entre letras</span> <output id="letraEspVal">0</output>
       <input type="range" id="letraEsp" min="0" max="0.2" step="0.01" value="0">
     </label>
-    <div class="letra-prev notas" id="letraPrev">
+    <div class="letra-prev notas" id="letraPrev" data-i18n-html="fontPreviewHtml">
       <p>Mostrar el tamaño del templo.</p>
       <ul><li>Preguntar: ¿qué sentían los peregrinos?</li><li>Leer <mark>Salmo 122:1</mark></li></ul>
     </div>
     <div class="acciones">
-      <button class="btn" id="btnLetraReset">Restablecer</button>
-      <button class="btn primario" data-cerrar>Listo</button>
+      <button class="btn" id="btnLetraReset" data-i18n="resetDefaults">Restablecer</button>
+      <button class="btn primario" data-cerrar data-i18n="done">Listo</button>
     </div>
   </dialog>
   <input type="file" id="inputCambiar" accept="image/*" hidden>
@@ -224,30 +224,34 @@
   <dialog id="dlgNotas" class="dlg-notas">
     <div class="notas-titulo-fila">
       <h2 id="notasTitulo">Notas</h2>
-      <button class="btn letra" id="btnLetra" type="button" aria-label="Tamaño de letra de las notas"><span class="aaa"><span>A</span><span>A</span><span>A</span></span></button>
+      <button class="btn letra" id="btnLetra" type="button" aria-label="Tamaño de letra de las notas" data-i18n-aria="fontSizeAria"><span class="aaa"><span>A</span><span>A</span><span>A</span></span></button>
     </div>
     <div class="notas-prev" id="notasPrev"></div>
-    <label class="campo">Notas para mí <small>(no las ven los participantes)</small>
-      <textarea id="notasTexto" rows="7" maxlength="4000" placeholder="- Preguntar: ¿qué es un templo para ustedes?&#10;- Leer Juan 2:19-21"></textarea>
+    <label class="campo"><span data-i18n="notesForMe">Notas para mí</span> <small data-i18n="notSeen">(no las ven los participantes)</small>
+      <textarea id="notasTexto" rows="7" maxlength="4000" placeholder="- Preguntar: ¿qué es un templo para ustedes?&#10;- Leer Juan 2:19-21" data-i18n-ph="notesPh"></textarea>
     </label>
-    <p class="ayuda">Empieza una línea con <b>-</b> para hacer viñetas. <b>*así*</b> en <span class="rojo">rojo</span> y <b>==así==</b> <mark>resaltado</mark>.</p>
+    <p class="ayuda" data-i18n-html="notesHelpHtml">Empieza una línea con <b>-</b> para hacer viñetas. <b>*así*</b> en <span class="rojo">rojo</span> y <b>==así==</b> <mark>resaltado</mark>.</p>
     <div class="acciones">
-      <button class="btn" data-cerrar id="btnCancelarNotas">Cancelar</button>
-      <button class="btn primario" id="btnGuardarNotas">Guardar</button>
+      <button class="btn" data-cerrar id="btnCancelarNotas" data-i18n="cancel">Cancelar</button>
+      <button class="btn primario" id="btnGuardarNotas" data-i18n="save">Guardar</button>
     </div>
   </dialog>
 
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, crearCatalogo, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202610291303";
-    import { crearPapel } from "./js/papel.js?v=202610291303";
-    import { textoAHtml, notasAHtml } from "./js/escritura.js?v=202610291303";
+    import { crearStore, crearCatalogo, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202610291313";
+    import { crearPapel } from "./js/papel.js?v=202610291313";
+    import { idioma, t, traducir } from "./js/i18n.js?v=202610291313";
+    import { textoAHtml, notasAHtml } from "./js/escritura.js?v=202610291313";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
 
     const $ = (id) => document.getElementById(id);
+    idioma("es");
+    traducir();
+    document.title = t("presenter");
     const sesion = sesionActual();
     const store = await crearStore(sesion);
     const catalogo = await crearCatalogo();
@@ -290,8 +294,7 @@
 
     if (store.modo === "demo") {
       $("aviso").hidden = false;
-      $("aviso").innerHTML = "Modo demo: Firebase aún no está configurado. Abre <a href=\"" +
-        enlaceParticipantes() + "\" target=\"_blank\" style=\"color:inherit\">la página de participantes</a> en otra pestaña para probar.";
+      $("aviso").innerHTML = t("demoPresenter", { url: enlaceParticipantes() });
     }
 
     // ---------- Conexión y participantes ----------
@@ -302,8 +305,8 @@
       e.className = "estado " + (conectado ? "on" : "off");
       // Solo el número de participantes (sin conexión = 0).
       const n = conectado ? (gente || 0) : 0;
-      e.textContent = n === 1 ? "1 participante" : n + " participantes";
-      e.title = conectado ? (n === 1 ? "1 participante" : n + " participantes") : "Sin conexión";
+      e.textContent = n === 1 ? t("participants1") : t("participantsN", { n });
+      e.title = conectado ? e.textContent : t("offline");
       pintarFranja();
     }
     function pintarFranja() {
@@ -311,7 +314,7 @@
       const b = $("btnModo");
       if (!b) return;
       b.classList.toggle("vivo", enVivo);
-      b.title = enVivo ? "En vivo · toca para volver a ensayo" : "Ensayo · toca para ir en vivo";
+      b.title = enVivo ? t("liveTitle") : t("rehearsalTitle");
       b.setAttribute("aria-label", b.title);
       document.body.classList.toggle("en-vivo", enVivo);
     }
@@ -329,12 +332,12 @@
     });
     $("btnEntrar").addEventListener("click", async () => {
       try { await store.entrar(); }
-      catch (e) { if (e?.code !== "auth/popup-closed-by-user") aviso("No se pudo entrar: " + (e?.code || e?.message)); }
+      catch (e) { if (e?.code !== "auth/popup-closed-by-user") aviso(t("signInFail", { e: e?.code || e?.message })); }
     });
 
     // ---------- Tarjetas ----------
     function etiqueta(item) {
-      return item.tipo === "escritura" ? (item.cita || "Escritura") : "";
+      return item.tipo === "escritura" ? (item.cita || t("scripture")) : "";
     }
 
     function crearTarjeta(item) {
@@ -345,17 +348,17 @@
       b.dataset.id = item.id;
       b.innerHTML = `
         <div class="marco"><span class="insignia"></span>
-          <label class="chk-saltar" title="Mostrar con Siguiente">
-            <input type="checkbox" checked aria-label="Mostrar con Siguiente"><span></span>
+          <label class="chk-saltar" title="${t("showWithNext")}">
+            <input type="checkbox" checked aria-label="${t("showWithNext")}"><span></span>
           </label>
         </div>
         <div class="pie">
           <span class="num"></span><span class="tit"></span>
-          <button class="notas-btn" type="button" aria-label="Notas">📝</button>
-          <button class="editar" type="button" aria-label="Editar">✎</button>
-          <button class="borrar" type="button" aria-label="Borrar">🗑</button>
-          <span class="tocar">Mostrar</span>
-          <button class="ocultar" type="button">Ocultar</button>
+          <button class="notas-btn" type="button" aria-label="${t("notes")}">📝</button>
+          <button class="editar" type="button" aria-label="${t("edit")}">✎</button>
+          <button class="borrar" type="button" aria-label="${t("delete")}">🗑</button>
+          <span class="tocar">${t("show")}</span>
+          <button class="ocultar" type="button">${t("hide")}</button>
         </div>`;
       if (item.tipo === "foto") {
         const img = document.createElement("img");
@@ -530,11 +533,11 @@
       if (ordenando) return;
       const n = ordenar(reveladas).filter((k) => !esTemporal(k) && tarjetas.has(k)).length;
       const total = lista.filter((it) => !saltadas.has(it.id)).length;
-      $("resumen").textContent = `${n} de ${total} reveladas` + (saltadas.size ? ` · ${saltadas.size} oculta${saltadas.size > 1 ? "s" : ""}` : "");
+      $("resumen").textContent = t("revealedOf", { n, total }) + (saltadas.size ? (saltadas.size > 1 ? t("hiddenN", { n: saltadas.size }) : t("hiddenN1")) : "");
     }
 
     store.onReveladas((r) => { reveladasReal = r || {}; if (enVivo) { reveladas = reveladasReal; pintarRevelado(); } },
-      (e) => aviso("No se pudo leer la sesión: " + (e?.message || e)));
+      (e) => aviso(t("readFail", { e: e?.message || e })));
     store.onEscrituras((e) => { escrituras = e || {}; sincronizar(); });
     store.onSubidas((f) => { subidas = f || {}; sincronizar(); });
     store.onOrden((ids) => { ordenGuardado = ids; if (!ordenando) aplicarOrden(ids); });
@@ -545,7 +548,7 @@
         (n) => { notas = n || {}; pintarNotasTarjetas(); pintarPresentar(); actualizarFicha(); },
         (e) => {
           bajaNotas = null;
-          if (esPermisoDenegado(e)) aviso("Falta pegar las reglas nuevas para las notas");
+          if (esPermisoDenegado(e)) aviso(t("rulesMissingNotes"));
         });
     }
     // ---------- Esta lección en la lista ----------
@@ -554,9 +557,9 @@
       if (bajaLeccion) return;
       bajaLeccion = catalogo.onLeccion(sesion, (l) => {
         leccion = l;
-        const t = l?.titulo || "Lección sin nombre";
-        $("leccionTitulo").textContent = t;
-        document.title = t + " · Presentador";
+        const tit = l?.titulo || t("untitled");
+        $("leccionTitulo").textContent = tit;
+        document.title = tit + " · " + t("presenter");
         actualizarFicha();
       }, () => { bajaLeccion = null; });
     }
@@ -576,7 +579,7 @@
         else if (firma === fichaEscrita) return;
         fichaEscrita = firma;
         const datos = { laminas: visibles.length, editada: Date.now(), portada: foto ? await miniatura(foto.src) : null };
-        if (!leccion?.titulo) { datos.titulo = "Lección sin nombre"; datos.creada = Date.now(); }
+        if (!leccion?.titulo) { datos.titulo = t("untitled"); datos.creada = Date.now(); }
         catalogo.guardarLeccion(sesion, datos).catch(() => {});
       }, 1500);
     }
@@ -629,15 +632,15 @@
     }
     // ▶ sin círculo = ensayo; ▶ con círculo verde = en vivo. Un toque cambia.
     $("btnModo").addEventListener("click", async () => {
-      if (enVivo) { ensayo = {}; ponerVivo(false); aviso("Ensayo"); return; }
+      if (enVivo) { ensayo = {}; ponerVivo(false); aviso(t("rehearsal")); return; }
       try {
         await store.reiniciar();        // en vivo empieza desde cero
         reveladasReal = {};
         ponerVivo(true);
-        aviso("En vivo");
+        aviso(t("live"));
         // Los participantes (con el enlace de siempre) pasan a esta lección.
         catalogo.ponerActual(sesion).catch((e) =>
-          aviso(esPermisoDenegado(e) ? "Falta pegar las reglas nuevas en Firebase" : "No se pudo cambiar la lección en vivo"));
+          aviso(esPermisoDenegado(e) ? t("rulesMissing") : t("liveSwitchFail")));
       } catch (e) { manejarError(e); }
     });
 
@@ -656,9 +659,9 @@
       $("btnSiguiente").disabled = (!sig && !hayDesvio && !repasando) || enCurso;
       const cual = sig ? `#${i + 1}` + (etiqueta(sig) ? ` · ${etiqueta(sig)}` : "") : "";
       $("sigCual").textContent = hayDesvio
-        ? (sig ? `Quita la mostrada · sigue ${cual}` : "Quita la mostrada")
-        : repasando ? (sig ? `Sigue ${cual}` : "Volver a la última")
-        : (sig ? cual : "Todo revelado ✓");
+        ? (sig ? t("removeShownNext", { c: cual }) : t("removeShown"))
+        : repasando ? (sig ? t("nextC", { c: cual }) : t("backToLast"))
+        : (sig ? cual : t("allRevealed"));
       $("btnDeshacer").disabled = !ultima() || enCurso;
     }
 
@@ -694,7 +697,7 @@
         const flujo = ordenar(reveladas).filter((k) => !esTemporal(k) && !esFoco(k) && tarjetas.has(k));
         const i = flujo.indexOf(enFoco);
         if (i > 0) paso(() => vivo.avanzar(fs, FOCO + flujo[i - 1]));
-        else aviso("Ya estás en la primera");
+        else aviso(t("alreadyFirst"));
         return;
       }
       const id = ultima();
@@ -708,13 +711,13 @@
     function abrirEditor(item) {
       editando = item ? item.id : null;
       confirmarBorrado = false;
-      $("escTitulo").textContent = item ? "Editar escritura" : "Nueva escritura";
+      $("escTitulo").textContent = item ? t("editScripture") : t("newScripture");
       $("escCita").value = item?.cita || "";
       papel.poner(item?.texto || "");
       $("escTodoRojo").checked = !!item?.todoRojo;
       $("escNotas").value = item ? (notas[item.id] || "") : "";
       $("btnBorrarEsc").hidden = !item;
-      $("btnBorrarEsc").textContent = "Borrar";
+      $("btnBorrarEsc").textContent = t("delete");
       $("btnGuardarRevelarEsc").hidden = !!(item && reveladas[item.id]);
       vistaPrevia();
       $("dlgEscritura").showModal();
@@ -740,7 +743,7 @@
 
     async function guardarEscritura(revelarTambien) {
       const texto = papel.texto();
-      if (!texto) { aviso("Escribe el texto de la escritura"); $("escPapel").focus(); return; }
+      if (!texto) { aviso(t("typeTextFirst")); $("escPapel").focus(); return; }
       const previo = editando ? escrituras[editando] : null;
       const datos = {
         cita: $("escCita").value.trim(),
@@ -756,7 +759,7 @@
         if (esNueva) await insertarDespues([id]);
         if (notaNueva !== (notas[id] || "")) await store.guardarNota(id, notaNueva);
         if (revelarTambien) await vivo.revelar(id);
-        aviso(revelarTambien ? "Escritura revelada" : "Escritura guardada");
+        aviso(revelarTambien ? t("scriptureRevealed") : t("scriptureSaved"));
       } catch (e) { manejarError(e); }
     }
     $("btnGuardarEsc").addEventListener("click", () => guardarEscritura(false));
@@ -764,21 +767,21 @@
     $("btnBorrarEsc").addEventListener("click", async () => {
       if (!confirmarBorrado) {
         confirmarBorrado = true;
-        $("btnBorrarEsc").textContent = "¿Seguro? Toca otra vez";
+        $("btnBorrarEsc").textContent = t("sureAgain");
         return;
       }
       const id = editando;
       $("dlgEscritura").close();
-      try { await store.borrarEscritura(id); aviso("Escritura borrada"); }
+      try { await store.borrarEscritura(id); aviso(t("scriptureDeleted")); }
       catch (e) { manejarError(e); }
     });
     // ---------- "+": agregar foto o escritura ----------
     // Lo nuevo va justo después de la lámina que tienes al frente en la tira.
     let anclaNueva = null;
     function idAlFrente() {
-      const t = $("tira"), r = t.getBoundingClientRect(), cx = r.left + r.width / 2;
+      const tt = $("tira"), r = tt.getBoundingClientRect(), cx = r.left + r.width / 2;
       let mejor = null, dist = Infinity;
-      for (const el of t.children) {
+      for (const el of tt.children) {
         const b = el.getBoundingClientRect();
         const d = Math.abs(b.left + b.width / 2 - cx);
         if (d < dist) { dist = d; mejor = el.dataset.id; }
@@ -815,7 +818,7 @@
       let ultimaId = null;
       const nuevas = [];
       for (let i = 0; i < archivos.length; i++) {
-        aviso(archivos.length > 1 ? `Subiendo foto ${i + 1} de ${archivos.length}…` : "Subiendo foto…", true);
+        aviso(archivos.length > 1 ? t("uploadingN", { i: i + 1, n: archivos.length }) : t("uploading"), true);
         try {
           const src = await comprimir(archivos[i]);
           ultimaId = await store.guardarSubida({ src, creado: Date.now() });
@@ -824,10 +827,10 @@
       }
       await insertarDespues(nuevas);
       if (archivos.length > 1) {
-        aviso(`${archivos.length} fotos agregadas · usa 📝 para sus notas`);
+        aviso(t("photosAdded", { n: archivos.length }));
       } else {
-        aviso("Foto agregada");
-        setTimeout(() => abrirNotas(ultimaId, "Notas para esta foto"), 120); // cuadro de notas de la lámina nueva
+        aviso(t("photoAdded"));
+        setTimeout(() => abrirNotas(ultimaId, t("notesForPhoto")), 120); // cuadro de notas de la lámina nueva
       }
     });
 
@@ -837,7 +840,7 @@
       try { fuente = await createImageBitmap(archivo, { imageOrientation: "from-image" }); }
       catch { fuente = await cargarImagen(archivo); }
       const w0 = fuente.width, h0 = fuente.height;
-      if (!w0 || !h0) throw new Error("No se pudo leer la foto");
+      if (!w0 || !h0) throw new Error(t("photoReadFail"));
       const k = Math.min(1, 1600 / Math.max(w0, h0));
       const c = document.createElement("canvas");
       c.width = Math.round(w0 * k);
@@ -847,13 +850,13 @@
         const url = c.toDataURL("image/jpeg", q);
         if (url.length < 1500000) return url;
       }
-      throw new Error("La foto es demasiado grande");
+      throw new Error(t("photoTooBig"));
     }
     function cargarImagen(archivo) {
       return new Promise((ok, no) => {
         const img = new Image();
         img.onload = () => ok(img);
-        img.onerror = () => no(new Error("No se pudo leer la foto (¿formato no compatible?)"));
+        img.onerror = () => no(new Error(t("photoFormat")));
         img.src = URL.createObjectURL(archivo);
       });
     }
@@ -863,16 +866,16 @@
       if (!item) return;
       borrando = item;
       $("borrarTitulo").textContent = item.tipo === "escritura"
-        ? `¿Borrar ${item.cita ? item.cita : "esta escritura"}?`
-        : "¿Borrar esta foto?";
+        ? t("deleteQ", { x: item.cita ? item.cita : t("thisScripture") })
+        : t("deletePhotoQ");
       $("dlgBorrarFoto").showModal();
     }
     $("btnConfirmarBorrarFoto").addEventListener("click", async () => {
       $("dlgBorrarFoto").close();
       const it = borrando;
       try {
-        if (it.tipo === "escritura") { await store.borrarEscritura(it.id); aviso("Escritura borrada"); }
-        else { await store.borrarSubida(it.id); aviso("Foto borrada"); }
+        if (it.tipo === "escritura") { await store.borrarEscritura(it.id); aviso(t("scriptureDeleted")); }
+        else { await store.borrarSubida(it.id); aviso(t("photoDeleted")); }
       }
       catch (e) { manejarError(e); }
     });
@@ -891,7 +894,7 @@
       const item = items.get(id);
       if (!item) return;
       notasDe = id;
-      $("notasTitulo").textContent = titulo || `Notas · ${numeroVisible(id)}${etiqueta(item) ? " · " + etiqueta(item) : ""}`;
+      $("notasTitulo").textContent = titulo || t("notesOf", { n: numeroVisible(id) + (etiqueta(item) ? " · " + etiqueta(item) : "") });
       $("notasPrev").innerHTML = miniaturaHtml(item);
       const c = $("notasPrev").querySelector("cite");
       if (c) c.textContent = item.cita || "";
@@ -908,7 +911,7 @@
         notas = { ...notas, [id]: texto }; if (!texto) delete notas[id];
         pintarNotasTarjetas(); pintarPresentar();
         escucharNotas();
-        aviso("Notas guardadas");
+        aviso(t("notesSaved"));
       }
       catch (e) { manejarError(e); }
     });
@@ -960,14 +963,14 @@
       el.className = "tira-item" + (it.tipo === "escritura" ? " es-escritura" : "") + (it.subida ? " es-subida" : "");
       el.dataset.id = it.id;
       el.innerHTML = `<div class="tira-marco"></div><span class="tira-num"></span><span class="tira-estado"></span>
-        <button class="tira-mas" type="button" aria-label="Opciones de esta lámina">⋯</button>
-        <label class="chk-saltar" title="Sale con Siguiente">
-          <input type="checkbox" checked aria-label="Sale con Siguiente"><span></span>
+        <button class="tira-mas" type="button" aria-label="${t("slideOptions")}">⋯</button>
+        <label class="chk-saltar" title="${t("showWithNext")}">
+          <input type="checkbox" checked aria-label="${t("showWithNext")}"><span></span>
         </label>
         <div class="tira-acc">
-          <button class="t-notas" type="button" aria-label="Notas">📝</button>
-          <button class="t-editar" type="button" aria-label="Editar">✎</button>
-          <button class="t-borrar" type="button" aria-label="Borrar">🗑</button>
+          <button class="t-notas" type="button" aria-label="${t("notes")}">📝</button>
+          <button class="t-editar" type="button" aria-label="${t("edit")}">✎</button>
+          <button class="t-borrar" type="button" aria-label="${t("delete")}">🗑</button>
         </div>`;
       const id = it.id;
       el.addEventListener("click", (e) => {
@@ -996,14 +999,14 @@
       });
       el.querySelector(".t-borrar").addEventListener("click", (e) => { e.stopPropagation(); pedirBorrar(items.get(id)); });
       // Mantener presionada = menú (sin mostrarla a los participantes); no en "Ordenar"
-      let t = 0, x0 = 0, y0 = 0;
+      let tt = 0, x0 = 0, y0 = 0;
       el.addEventListener("pointerdown", (e) => {
         if (ordenando) return;
-        x0 = e.clientX; y0 = e.clientY; clearTimeout(t);
-        t = setTimeout(() => { presionLarga = true; if (navigator.vibrate) navigator.vibrate(15); abrirMenuItem(id); }, 550);
+        x0 = e.clientX; y0 = e.clientY; clearTimeout(tt);
+        tt = setTimeout(() => { presionLarga = true; if (navigator.vibrate) navigator.vibrate(15); abrirMenuItem(id); }, 550);
       });
-      el.addEventListener("pointermove", (e) => { if (Math.hypot(e.clientX - x0, e.clientY - y0) > 10) clearTimeout(t); });
-      ["pointerup", "pointercancel", "pointerleave"].forEach((ev) => el.addEventListener(ev, () => clearTimeout(t)));
+      el.addEventListener("pointermove", (e) => { if (Math.hypot(e.clientX - x0, e.clientY - y0) > 10) clearTimeout(tt); });
+      ["pointerup", "pointercancel", "pointerleave"].forEach((ev) => el.addEventListener(ev, () => clearTimeout(tt)));
       el.addEventListener("contextmenu", (e) => e.preventDefault());
       return el;
     }
@@ -1079,11 +1082,11 @@
       $("inputCambiar").value = "";
       const id = cambiando; cambiando = null;
       if (!archivo || !id) return;
-      aviso("Cambiando foto…", true);
+      aviso(t("changingPhoto"), true);
       try {
         const src = await comprimir(archivo);
         await store.reemplazarFoto(id, src, subidas[id]?.creado);
-        aviso("Foto cambiada");
+        aviso(t("photoChanged"));
       } catch (e) { manejarError(e); }
     });
 
@@ -1098,7 +1101,7 @@
       $("letraTam").value = letra.tam;
       $("letraEsp").value = letra.esp;
       $("letraTamVal").textContent = letra.tam + " px";
-      $("letraEspVal").textContent = letra.esp === 0 ? "normal" : "+" + Math.round(letra.esp * 100) + "%";
+      $("letraEspVal").textContent = letra.esp === 0 ? t("normal") : "+" + Math.round(letra.esp * 100) + "%";
       try { localStorage.setItem("revelar:letra", JSON.stringify(letra)); } catch {}
     }
     $("letraTam").addEventListener("input", (e) => { letra.tam = +e.target.value; aplicarLetra(); });
@@ -1115,7 +1118,7 @@
       pintarResumen();
       pintarDock();
       guardarEstructura();
-      aviso("Oculta · la recuperas en Ordenar");
+      aviso(t("hiddenToast"));
     });
 
     // La lámina que los participantes están viendo ahora.
@@ -1137,19 +1140,20 @@
         el.classList.toggle("temporal", temp.has(id) && !esActual);
         el.classList.toggle("siguiente", !!sig && sig.id === id && !esActual);
         el.querySelector(".tira-estado").textContent =
-          esActual ? (enVivo ? "En pantalla" : "Ensayo") : (sig && sig.id === id) ? "Siguiente" : temp.has(id) ? "👁" : "";
+          esActual ? (enVivo ? t("onScreen") : t("rehearsal")) : (sig && sig.id === id) ? t("next") : temp.has(id) ? "👁" : "";
       });
       // Notas: de la lámina en pantalla; si aún no hay ninguna, de la primera que sigue.
       const id = actual || sig?.id || null;
       const item = id ? items.get(id) : null;
-      $("notasDe").textContent = ordenando ? "Editando · arrastra · ✓ sale con Siguiente"
-        : !item ? "Notas"
-        : (actual ? "Notas · " : "Para empezar · ") + numeroVisible(id) + (etiqueta(item) ? " · " + etiqueta(item) : "");
+      const cab = numeroVisible(id) + (item && etiqueta(item) ? " · " + etiqueta(item) : "");
+      $("notasDe").textContent = ordenando ? t("editingHeader")
+        : !item ? t("notes")
+        : actual ? t("notesOf", { n: cab }) : t("toStart", { n: cab });
       $("btnEditarNotaActual").hidden = !item || !ordenando;   // ✎ de notas: solo en modo Editar
       $("btnEditarNotaActual").dataset.id = id || "";
-      $("notasActual").innerHTML = !item ? '<p class="notas-vacio">Agrega láminas con el botón +.</p>'
+      $("notasActual").innerHTML = !item ? `<p class="notas-vacio">${t("noSlides")}</p>`
         : notas[id] ? notasAHtml(notas[id])
-        : (ordenando ? '<p class="notas-vacio">Sin notas para esta lámina. Toca ✎ para agregar.</p>' : '<p class="notas-vacio">Sin notas para esta lámina.</p>');
+        : `<p class="notas-vacio">${ordenando ? t("noNotesEdit") : t("noNotes")}</p>`;
       if (!ordenando && Date.now() - tocandoTira > 4000) centrarTira(true);
     }
     $("btnEditarNotaActual").addEventListener("click", () => {
@@ -1170,9 +1174,9 @@
       const id = actualId() || siguiente()?.id;
       const el = id && tiraEls.get(id);
       if (!el || $("vistaPresentar").hidden) return;
-      const t = $("tira");
-      const left = el.offsetLeft - (t.clientWidth - el.offsetWidth) / 2;
-      t.scrollTo({ left: Math.max(0, left), behavior: suave ? "smooth" : "auto" });
+      const tt = $("tira");
+      const left = el.offsetLeft - (tt.clientWidth - el.offsetWidth) / 2;
+      tt.scrollTo({ left: Math.max(0, left), behavior: suave ? "smooth" : "auto" });
     }
 
     document.body.classList.add("modo-presentar");
@@ -1228,10 +1232,10 @@
     }
     $("btnOrdenar").addEventListener("click", async () => {
       if (!ordenando) {
-        if (!window.Sortable) { aviso("No se pudo cargar la herramienta para arrastrar. Revisa tu conexión."); return; }
+        if (!window.Sortable) { aviso(t("dragFail")); return; }
         ordenando = true;
         $("panel").classList.add("ordenando"); document.body.classList.add("ordenando-activo");
-        $("btnOrdenar").querySelector(".lbl").textContent = "Listo";
+        $("btnOrdenar").querySelector(".lbl").textContent = t("done");
         $("btnOrdenar").classList.add("activo");
         $("btnCompartir").hidden = $("btnReiniciar").hidden = $("btnAgregar").hidden = true;
         $("btnModo").hidden = true;
@@ -1270,14 +1274,14 @@
       sortable?.destroy(); sortable = null;
       ordenando = false;
       $("panel").classList.remove("ordenando"); document.body.classList.remove("ordenando-activo");
-      $("btnOrdenar").querySelector(".lbl").textContent = "Editar";
+      $("btnOrdenar").querySelector(".lbl").textContent = t("edit");
       $("btnOrdenar").classList.remove("activo");
       $("btnCompartir").hidden = $("btnReiniciar").hidden = $("btnAgregar").hidden = false;
       $("btnModo").hidden = false;
       pintarPresentar();
       ordenGuardado = estructura(ids);
       sincronizar();
-      try { await store.guardarOrden(ordenGuardado); aviso("Orden guardado"); }
+      try { await store.guardarOrden(ordenGuardado); aviso(t("orderSaved")); }
       catch (e) { manejarError(e); }
     });
 
@@ -1294,21 +1298,19 @@
         $("uid").textContent = usuario.uid;
         $("dlgPermiso").showModal();
       } else {
-        aviso("No se pudo guardar: " + (e?.message || e));
+        aviso(t("saveFail", { e: e?.message || e }));
       }
     }
 
     // ---------- Reiniciar ----------
     $("btnReiniciar").addEventListener("click", () => {
-      $("reiniciarTitulo").textContent = enVivo ? "¿Reiniciar la sesión?" : "¿Reiniciar el ensayo?";
-      $("reiniciarTexto").textContent = enVivo
-        ? "Se ocultarán todas las fotos y escrituras en los teléfonos de los participantes. Ellos se quedan conectados, listos para empezar de nuevo."
-        : "Tu ensayo vuelve al principio. Los participantes no ven ningún cambio.";
+      $("reiniciarTitulo").textContent = enVivo ? t("resetLiveQ") : t("resetRehearsalQ");
+      $("reiniciarTexto").textContent = enVivo ? t("resetLiveText") : t("resetRehearsalText");
       $("dlgReiniciar").showModal();
     });
     $("btnConfirmarReinicio").addEventListener("click", async () => {
       $("dlgReiniciar").close();
-      try { await vivo.reiniciar(); aviso(enVivo ? "Sesión reiniciada" : "Ensayo reiniciado"); }
+      try { await vivo.reiniciar(); aviso(enVivo ? t("sessionReset") : t("rehearsalReset")); }
       catch (e) { manejarError(e); }
     });
 
@@ -1333,11 +1335,11 @@
       $("dlgCompartir").showModal();
     });
     $("btnCopiar").addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText($("enlace").value); aviso("Enlace copiado"); }
+      try { await navigator.clipboard.writeText($("enlace").value); aviso(t("linkCopied")); }
       catch { $("enlace").select(); }
     });
     $("btnEnviar").addEventListener("click", () => {
-      navigator.share?.({ title: "Fotos de la clase", url: $("enlace").value }).catch(() => {});
+      navigator.share?.({ title: leccion?.titulo || t("classPhotos"), url: $("enlace").value }).catch(() => {});
     });
     // Imprimir: arma un documento con cada lámina en orden y sus notas debajo;
     // cuando está listo, ofrece descargarlo.
@@ -1345,9 +1347,9 @@
     $("btnImprimir").addEventListener("click", async () => {
       const b = $("btnImprimir");
       if (b.disabled) return;
-      b.disabled = true; aviso("Armando el documento…");
+      b.disabled = true; aviso(t("buildingDoc"));
       try {
-        const { crearResumen } = await import("./js/resumen.js?v=202610291303");
+        const { crearResumen } = await import("./js/resumen.js?v=202610291313");
         const html = await crearResumen({
           lista, saltadas, notas,
           titulo: leccion?.titulo || "",
@@ -1355,9 +1357,9 @@
         const n = lista.filter((it) => !saltadas.has(it.id)).length;
         const base = (leccion?.titulo || "clase").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "clase";
         documento = { html, nombre: `${base}-${new Date().toISOString().slice(0, 10)}.html` };
-        $("imprimirTxt").textContent = `${n} ${n === 1 ? "lámina" : "láminas"}, cada una con sus notas abajo. ¿Lo descargas?`;
+        $("imprimirTxt").textContent = n === 1 ? t("docReadyText1") : t("docReadyTextN", { n });
         $("dlgImprimir").showModal();
-      } catch (e) { aviso("No se pudo armar el documento: " + (e?.message || e)); }
+      } catch (e) { aviso(t("docFail", { e: e?.message || e })); }
       finally { b.disabled = false; }
     });
     $("btnDescargarDoc").addEventListener("click", () => {
@@ -1369,10 +1371,10 @@
       document.body.append(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(a.href), 60000);
       documento = null;
-      aviso("Descargado");
+      aviso(t("downloaded"));
     });
     $("btnCopiarUid").addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText($("uid").textContent); aviso("Copiado"); } catch {}
+      try { await navigator.clipboard.writeText($("uid").textContent); aviso(t("copied")); } catch {}
     });
 
     document.querySelectorAll("[data-cerrar]").forEach((b) =>
@@ -1383,13 +1385,13 @@
     function aviso(msg, fijo) {
       // Píldora corta que sube desde abajo y se desvanece al subir.
       // "fijo" (p. ej. "Subiendo foto…") sube y se queda hasta el siguiente aviso.
-      const t = $("toast");
-      t.textContent = msg;
-      t.classList.remove("subir", "fijo", "visible");
-      void t.offsetWidth; // reinicia la animación
-      t.classList.add(fijo ? "fijo" : "subir");
+      const tt = $("toast");
+      tt.textContent = msg;
+      tt.classList.remove("subir", "fijo", "visible");
+      void tt.offsetWidth; // reinicia la animación
+      tt.classList.add(fijo ? "fijo" : "subir");
       clearTimeout(tAviso);
-      if (!fijo) tAviso = setTimeout(() => t.classList.remove("subir"), 1700);
+      if (!fijo) tAviso = setTimeout(() => tt.classList.remove("subir"), 1700);
     }
   </script>
   <div id="visor" class="visor" hidden></div>

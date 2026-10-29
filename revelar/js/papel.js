@@ -8,7 +8,8 @@
 // El contenido se maneja como una lista de letras con dos marcas (rojo,
 // resaltado). Al tocar un botón se cambia la marca de las letras
 // seleccionadas y se vuelve a dibujar la hoja, conservando la selección.
-import { indicesVersiculos } from "./escritura.js?v=202610291303";
+import { t } from "./i18n.js?v=202610291313";
+import { indicesVersiculos } from "./escritura.js?v=202610291313";
 
 const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const escapar = (t) => String(t).replace(/[&<>"']/g, (c) => ESC[c]);
@@ -144,7 +145,7 @@ export function crearPapel(raiz, { alCambiar, avisar } = {}) {
     // Marca o quita "r" (rojo) o "h" (resaltado) en lo seleccionado.
     marcar(marca) {
       const s = seleccion();
-      if (!s || s[0] === s[1]) { avisar?.("Primero selecciona las palabras"); raiz.focus(); return; }
+      if (!s || s[0] === s[1]) { avisar?.(t("selectFirst")); raiz.focus(); return; }
       let [a, z] = s;
       const letras = leer(raiz);
       while (a < z && /\s/.test(letras[a]?.c)) a++;

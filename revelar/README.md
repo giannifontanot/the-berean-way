@@ -76,6 +76,12 @@ Cada clase es una **lección** con sus propias láminas, escrituras, fotos y not
 - Si cierras el presentador en plena clase (en vivo), al abrirlo vuelves directo
   a esa lección.
 
+**Idioma (ES / EN).** Arriba en **Mis lecciones** hay un interruptor **ES | EN**.
+Cambia todos los textos del presentador, de la lista y del documento de
+🖨 Imprimir, y se recuerda en ese teléfono. Los participantes ven los textos en
+el idioma de su propio teléfono. Tus escrituras, notas y nombres de lecciones no
+se traducen: se quedan como los escribiste. Los textos están en `js/i18n.js`.
+
 **Un solo enlace para los participantes.** El QR de **Compartir** ya no cambia:
 los participantes abren siempre `revelar/` y ven la lección que pusiste **en vivo
 (▶)**. Si pones en vivo otra lección, sus teléfonos se recargan solos y pasan a

@@ -1,7 +1,8 @@
 // resumen.js — Arma un archivo HTML con el resumen de la clase:
 // cada lámina en orden (foto o escritura) seguida de tus notas.
 // Las fotos se incrustan en el archivo, así que se abre sin internet.
-import { textoAHtml, notasAHtml } from "./escritura.js?v=202610291303";
+import { t, idioma } from "./i18n.js?v=202610291313";
+import { textoAHtml, notasAHtml } from "./escritura.js?v=202610291313";
 
 const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const escapar = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ESC[c]);
@@ -63,26 +64,26 @@ footer { color: var(--suave); font-size: 13px; text-align: center; margin-top: 4
  * @returns {Promise<string>} HTML completo
  */
 export async function crearResumen({ lista, saltadas, notas, titulo }) {
-  const nombre = titulo || "Resumen de la clase";
+  const nombre = titulo || t("classSummary");
   const visibles = lista.filter((it) => !saltadas.has(it.id));
-  const fecha = new Date().toLocaleDateString("es-MX", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const fecha = new Date().toLocaleDateString(t("locale"), { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const partes = [];
   for (let i = 0; i < visibles.length; i++) {
     const it = visibles[i];
     let cuerpo, tipo;
     if (it.tipo === "foto") {
-      tipo = "Foto";
+      tipo = t("photo");
       cuerpo = `<div class="foto"><img alt="" src="${escapar(await incrustar(it.src))}"></div>`;
     } else {
-      tipo = it.cita ? escapar(it.cita) : "Escritura";
+      tipo = it.cita ? escapar(it.cita) : t("scripture");
       cuerpo = `<div class="papel"><p>${textoAHtml(it.texto, it.todoRojo)}</p>${it.cita ? `<cite>${escapar(it.cita)}</cite>` : ""}</div>`;
     }
     const n = notas[it.id];
-    const nota = n ? `<div class="notas"><p class="tit">Notas</p>${notasAHtml(n)}</div>` : "";
+    const nota = n ? `<div class="notas"><p class="tit">${t("notes")}</p>${notasAHtml(n)}</div>` : "";
     partes.push(`<section class="lamina"><div class="num">#${i + 1} · ${tipo}</div>${cuerpo}${nota}</section>`);
   }
   return `<!doctype html>
-<html lang="es">
+<html lang="${idioma()}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -94,12 +95,12 @@ export async function crearResumen({ lista, saltadas, notas, titulo }) {
 <body>
 <main>
 <header>
-  <p class="eti">The Berean Way · Resumen de la clase</p>
+  <p class="eti">The Berean Way · ${t("classSummary")}</p>
   <h1>${escapar(nombre)}</h1>
-  <p class="fecha">${escapar(fecha)} · ${visibles.length} láminas</p>
+  <p class="fecha">${escapar(fecha)} · ${visibles.length} ${visibles.length === 1 ? t("slide") : t("slides")}</p>
 </header>
 ${partes.join("\n")}
-<footer>Hecho con Revelar · The Berean Way</footer>
+<footer>${t("madeWith")}</footer>
 </main>
 </body>
 </html>`;

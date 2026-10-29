@@ -1472,3 +1472,21 @@ body.ordenando-activo .leccion-bar { pointer-events: none; opacity: 0.4; }
 #dlgMenu .menu-item { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
 #dlgMenu .menu-item .btn { text-align: left; }
 #dlgMenu .menu-item .btn[hidden] { display: none; }
+
+/* Interruptor de idioma (ES / EN) en "Mis lecciones" */
+.idioma-switch {
+  display: inline-flex; padding: 3px; gap: 2px;
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: 999px;
+}
+.idioma-switch button {
+  border: 0; background: transparent; color: var(--muted);
+  font: inherit; font-size: 13px; font-weight: 700; letter-spacing: 0.04em;
+  padding: 6px 11px; border-radius: 999px; cursor: pointer; min-width: 40px;
+}
+.idioma-switch button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+.pag-lecciones .barra-acciones { gap: 8px; }
+@media (max-width: 380px) {
+  .pag-lecciones .lec-titulo { font-size: 18px; }
+  .pag-lecciones .lec-nueva { padding: 8px 11px; }
+  .idioma-switch button { padding: 6px 9px; min-width: 34px; }
+}
