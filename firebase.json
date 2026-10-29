@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "public": "revelar",
+    "ignore": ["firebase.json", "**/.*", "**/*.md", "database.rules.json"],
+    "cleanUrls": false,
+    "headers": [
+      {
+        "source": "**/*.@(html|js|css)",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      },
+      {
+        "source": "/",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      }
+    ]
+  }
+}

@@ -221,6 +221,25 @@ queda vacío; úsalo solo si quieres fotos que aparezcan en **todas** las leccio
 > adivinables (p. ej. `fotos/a7k2-jerusalen.jpg`) para que nadie las encuentre
 > antes de que las reveles.
 
+## Publicación: GitHub Pages y Firebase Hosting
+
+Cada push a `main` publica la carpeta `revelar/` en dos lugares:
+
+| Dónde | Participantes | Presentador |
+|---|---|---|
+| **Firebase Hosting** (recomendado) | `https://berean-revelar.web.app/` | `https://berean-revelar.web.app/presentador.html` |
+| GitHub Pages | `https://giannifontanot.github.io/the-berean-way/revelar/` | `…/revelar/presentador.html` |
+
+En Firebase los archivos se sirven con `Cache-Control: no-cache`: los cambios se
+ven al recargar, sin esperar. La configuración está en `firebase.json` y
+`.firebaserc` (raíz del repo) y el flujo en `.github/workflows/deploy-firebase.yml`.
+
+**Una sola vez:** el flujo necesita el secreto `FIREBASE_SERVICE_ACCOUNT` en
+GitHub (*Settings → Secrets and variables → Actions*), con la llave JSON de una
+cuenta de servicio de Google Cloud con estos roles: Firebase Hosting Admin,
+Firebase Authentication Admin, Cloud Run Viewer y API Keys Viewer. Mientras no
+exista, el flujo se salta sin fallar.
+
 ## Al publicar cambios
 
 GitHub Pages deja que los teléfonos guarden los archivos hasta 10 minutos.
