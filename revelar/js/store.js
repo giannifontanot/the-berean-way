@@ -13,7 +13,7 @@
 //     Fotos que subes desde el presentador con "+". Guardadas en la misma base de
 //     datos (comprimidas), así no hace falta activar otro servicio de Firebase.
 //     Escrituras y subidas comparten "reveladas" y "orden" con las fotos del repo.
-import { CONFIG } from "../config.js?v=202610282203";
+import { CONFIG } from "../config.js?v=202610290646";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
