@@ -90,7 +90,7 @@ Junto al **+** hay un botón **▶**:
 Una sola pantalla:
 
 - **Arriba**, el punto verde (conectado) con el número de participantes, y los botones: **▶**, **+** (agregar foto o escritura),
-  **⇅ Ordenar**, **Compartir** (QR) y **↺ Reiniciar**.
+  **⇅ Ordenar**, **Compartir** (QR), **🖨 Imprimir** y **↺ Reiniciar**.
 - **La tira** con todas las láminas visibles. La que está en los teléfonos
   tiene marco dorado y dice **En pantalla**; la que sigue, **Siguiente**.
   Desliza para ver más; a los 4 segundos vuelve sola a la actual.
@@ -121,12 +121,13 @@ desmarca la casilla ✓ para ocultarlas (Siguiente las salta) y usa 📝 notas,
 ✎ editar (o cambiar foto) y 🗑 borrar en cada una. Las ocultas aparecen
 atenuadas solo mientras ordenas. **Listo** guarda.
 
-### Resumen de la clase
+### Imprimir
 
-**Compartir → 📄 Resumen de la clase** descarga un archivo HTML con cada lámina
-visible en orden (foto o escritura en papel sepia) seguida de sus notas. Las
-fotos van dentro del archivo, así que se abre sin internet y se puede imprimir
-o enviar. Las láminas ocultas no se incluyen.
+El botón **🖨 Imprimir** (arriba, junto a Compartir) arma un documento con cada
+lámina visible en orden (foto o escritura en papel sepia) y sus notas abajo.
+Cuando está listo pregunta si lo descargas: toca **Descargar**. Es un archivo
+HTML con las fotos adentro, así que se abre sin internet y se puede imprimir o
+enviar. Las láminas ocultas no se incluyen.
 
 ### Notas
 

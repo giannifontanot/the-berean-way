@@ -1408,3 +1408,12 @@ body:not(.en-vivo) .tira-item.actual .tira-estado { background: #3a4166; color: 
 .visor.abierto { opacity: 1; }
 .visor img { width: 100%; height: 100%; object-fit: contain; background: #000; }
 .visor .foto.escritura { width: 100%; max-height: 100%; overflow-y: auto; cursor: zoom-out; }
+
+/* Barra con 6 botones (▶ + Ordenar Compartir Imprimir Reiniciar): que quepa en teléfonos */
+@media (max-width: 430px) {
+  .barra { gap: 8px; padding-left: 12px; padding-right: 12px; }
+  .barra-acciones { gap: 4px; }
+  .btn-barra { width: 36px; height: 36px; }
+  .btn-barra .ico { width: 18px; height: 18px; }
+  .barra .estado { font-size: 13px; min-width: 0; white-space: normal; line-height: 1.15; }
+}
