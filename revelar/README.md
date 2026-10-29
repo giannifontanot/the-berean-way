@@ -90,7 +90,7 @@ Junto al **+** hay un botón **▶**:
 Una sola pantalla:
 
 - **Arriba**, el punto verde (conectado) con el número de participantes, y los botones: **▶**, **+** (agregar foto o escritura),
-  **⇅ Ordenar**, **Compartir** (QR), **🖨 Imprimir** y **↺ Reiniciar**.
+  **✎ Editar**, **Compartir** (QR), **🖨 Imprimir** y **↺ Reiniciar**.
 - **La tira** con todas las láminas visibles. La que está en los teléfonos
   tiene marco dorado y dice **En pantalla**; la que sigue, **Siguiente**.
   Desliza para ver más; a los 4 segundos vuelve sola a la actual.
@@ -99,8 +99,8 @@ Una sola pantalla:
     la imagen o usa Atrás para cerrarla.
   - **⋯** o **mantenerla presionada** abre su menú **sin mostrarla**: Notas,
     Editar (escrituras), Ocultar y Borrar.
-- **Las notas** de la lámina en pantalla (antes de empezar, las de la primera),
-  con **✎** para corregirlas.
+- **Las notas** de la lámina en pantalla (antes de empezar, las de la primera).
+  Durante la clase solo se leen; el **✎** para corregirlas aparece en **Editar**.
 - **Abajo**, **◀ Atrás** y **Siguiente ▶** (más ancho).
   - **◀ Atrás**: si hay un desvío, lo quita; si estás repasando una lámina
     pasada, retrocede una más; si no, quita la última y los teléfonos vuelven a
@@ -116,7 +116,7 @@ notas, y se recuerda en ese teléfono.
 **✎** sobre la foto en **Ordenar**. Sirve también para las fotos del repo: la
 nueva se guarda en Firebase y reemplaza a la original en todos los teléfonos.
 
-**⇅ Ordenar** se hace en la misma tira: arrastra las láminas para moverlas,
+**✎ Editar** (antes Ordenar) se hace en la misma tira: arrastra las láminas para moverlas,
 desmarca la casilla ✓ para ocultarlas (Siguiente las salta) y usa 📝 notas,
 ✎ editar (o cambiar foto) y 🗑 borrar en cada una. Las ocultas aparecen
 atenuadas solo mientras ordenas. **Listo** guarda.
