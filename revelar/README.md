@@ -95,6 +95,8 @@ Una sola pantalla:
   tiene marco dorado y dice **En pantalla**; la que sigue, **Siguiente**.
   Desliza para ver más; a los 4 segundos vuelve sola a la actual.
   - **Tocar** una lámina la muestra (desvío) o regresa a ella si ya pasó.
+  - **Doble toque** la abre al 100 % solo en tu teléfono (no se envía). Toca
+    la imagen o usa Atrás para cerrarla.
   - **⋯** o **mantenerla presionada** abre su menú **sin mostrarla**: Notas,
     Editar (escrituras), Ocultar y Borrar.
 - **Las notas** de la lámina en pantalla (antes de empezar, las de la primera),
