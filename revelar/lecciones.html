@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#11152b">
+  <title>Mis lecciones · Revelar</title>
+  <link rel="stylesheet" href="revelar.css?v=202610291303">
+</head>
+<body class="pag-lecciones">
+  <header class="barra">
+    <h1 class="lec-titulo">Mis lecciones</h1>
+    <div class="barra-acciones">
+      <button class="btn primario lec-nueva" id="btnNueva" hidden>
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Nueva
+      </button>
+    </div>
+  </header>
+
+  <section class="entrada" id="entrada" hidden>
+    <h2>Entra para ver tus lecciones</h2>
+    <p>Solo tu cuenta puede ver y editar tus lecciones.</p>
+    <button class="btn primario" id="btnEntrar">Entrar con Google</button>
+  </section>
+
+  <main class="lec-main" id="main" hidden>
+    <p class="lec-vacio" id="cargando">Cargando…</p>
+    <div class="lec-lista" id="lista"></div>
+    <button class="lec-archivo-btn" id="btnArchivadas" hidden></button>
+    <div class="lec-lista archivadas" id="listaArchivadas" hidden></div>
+  </main>
+
+  <!-- Menú de una lección -->
+  <dialog id="dlgMenu">
+    <h2 id="menuTitulo"></h2>
+    <div class="menu-item">
+      <button class="btn" id="mRenombrar">✎ Cambiar nombre</button>
+      <button class="btn" id="mDuplicar">⧉ Duplicar</button>
+      <button class="btn" id="mArchivar">🗄 Archivar</button>
+      <button class="btn" id="mRestaurar">↩ Restaurar</button>
+    </div>
+    <div class="acciones"><button class="btn" data-cerrar>Cerrar</button></div>
+  </dialog>
+
+  <!-- Nombre (nueva, renombrar, duplicar) -->
+  <dialog id="dlgNombre">
+    <h2 id="nombreTitulo">Nueva lección</h2>
+    <label class="campo">Nombre
+      <input id="nombre" maxlength="80" autocomplete="off" placeholder="p. ej. La tienda de Dios">
+    </label>
+    <div class="acciones">
+      <button class="btn" data-cerrar>Cancelar</button>
+      <button class="btn primario" id="btnNombreOk">Crear</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script type="module">
+    import { CONFIG } from "./config.js?v=202610291303";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado } from "./js/store.js?v=202610291303";
+
+    const $ = (id) => document.getElementById(id);
+    const cat = await crearCatalogo();
+    const PRIMERA = limpiarSesion(CONFIG.sesionPorDefecto) || "clase";
+    let lecciones = {}, actual = null, menuDe = null, accion = null, verArchivadas = false;
+    let registrada = false, empezo = false;
+
+    // Si cerraste el presentador a mitad de clase, regresas directo a esa lección.
+    try {
+      const ultima = localStorage.getItem("revelar:ultima");
+      const v = ultima && JSON.parse(localStorage.getItem("revelar:envivo:" + ultima));
+      if (v && Date.now() - v.desde < 8 * 3600 * 1000 && !location.hash.includes("lista")) {
+        location.replace("presentador.html?s=" + encodeURIComponent(ultima));
+      }
+    } catch {}
+
+    const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+    const escapar = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ESC[c]);
+    const fecha = (ms) => ms ? new Date(ms).toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" }) : "";
+
+    cat.onUsuario((u) => {
+      $("entrada").hidden = !!u;
+      $("main").hidden = !u;
+      $("btnNueva").hidden = !u;
+      if (u && !empezo) { empezo = true; escuchar(); }
+    });
+    $("btnEntrar").addEventListener("click", async () => {
+      try { await cat.entrar(); }
+      catch (e) { if (e?.code !== "auth/popup-closed-by-user") aviso("No se pudo entrar: " + (e?.code || e?.message)); }
+    });
+
+    function escuchar() {
+      cat.onActual((a) => { actual = a; pintar(); });
+      cat.onLecciones((v) => {
+        lecciones = v || {};
+        // La primera lección (la de antes de tener lista) se registra sola.
+        if (!registrada && !lecciones[PRIMERA]) {
+          registrada = true;
+          cat.guardarLeccion(PRIMERA, { titulo: "Lección sin nombre", creada: Date.now(), editada: Date.now() }).catch(() => {});
+        }
+        pintar();
+      }, (e) => {
+        $("cargando").textContent = esPermisoDenegado(e)
+          ? "Falta pegar las reglas nuevas en Firebase (ver README)."
+          : "No se pudo cargar: " + (e?.message || e);
+      });
+    }
+
+    function tarjeta(id, l) {
+      const el = document.createElement("article");
+      el.className = "lec" + (l.archivada ? " archivada" : "");
+      const portada = l.portada
+        ? `<img alt="" src="${escapar(l.portada)}">`
+        : `<span class="lec-sinfoto" aria-hidden="true">📖</span>`;
+      const n = l.laminas || 0;
+      el.innerHTML = `
+        <a class="lec-abrir" href="presentador.html?s=${encodeURIComponent(id)}">
+          <div class="lec-portada">${portada}</div>
+          <div class="lec-info">
+            <h2>${escapar(l.titulo || "Lección sin nombre")}</h2>
+            <p>${n} ${n === 1 ? "lámina" : "láminas"}${l.editada ? " · " + fecha(l.editada) : ""}</p>
+            ${id === actual ? '<span class="lec-envivo">Última en vivo</span>' : ""}
+          </div>
+        </a>
+        <button class="lec-mas" type="button" aria-label="Opciones">⋯</button>`;
+      el.querySelector(".lec-mas").addEventListener("click", () => abrirMenu(id));
+      el.querySelector(".lec-abrir").addEventListener("click", () => {
+        try { localStorage.setItem("revelar:ultima", id); } catch {}
+      });
+      return el;
+    }
+
+    function pintar() {
+      const todas = Object.entries(lecciones).filter(([, l]) => l && typeof l === "object");
+      const orden = (a, b) => (b[1].editada || b[1].creada || 0) - (a[1].editada || a[1].creada || 0);
+      const activas = todas.filter(([, l]) => !l.archivada).sort(orden);
+      const archivadas = todas.filter(([, l]) => l.archivada).sort(orden);
+      $("cargando").hidden = todas.length > 0;
+      if (!todas.length) $("cargando").textContent = "Aún no tienes lecciones. Toca + Nueva.";
+      $("lista").replaceChildren(...activas.map(([id, l]) => tarjeta(id, l)));
+      $("listaArchivadas").replaceChildren(...archivadas.map(([id, l]) => tarjeta(id, l)));
+      $("btnArchivadas").hidden = !archivadas.length;
+      $("btnArchivadas").textContent = (verArchivadas ? "▾ " : "▸ ") + `Archivadas (${archivadas.length})`;
+      $("listaArchivadas").hidden = !verArchivadas || !archivadas.length;
+    }
+    $("btnArchivadas").addEventListener("click", () => { verArchivadas = !verArchivadas; pintar(); });
+
+    // ---------- Menú ----------
+    function abrirMenu(id) {
+      const l = lecciones[id];
+      if (!l) return;
+      menuDe = id;
+      $("menuTitulo").textContent = l.titulo || "Lección sin nombre";
+      $("mArchivar").hidden = !!l.archivada;
+      $("mRestaurar").hidden = !l.archivada;
+      $("dlgMenu").showModal();
+    }
+    $("mArchivar").addEventListener("click", async () => {
+      $("dlgMenu").close();
+      try { await cat.guardarLeccion(menuDe, { archivada: true }); aviso("Archivada"); } catch (e) { error(e); }
+    });
+    $("mRestaurar").addEventListener("click", async () => {
+      $("dlgMenu").close();
+      try { await cat.guardarLeccion(menuDe, { archivada: null }); aviso("Restaurada"); } catch (e) { error(e); }
+    });
+    $("mRenombrar").addEventListener("click", () => {
+      $("dlgMenu").close();
+      pedirNombre("renombrar", "Cambiar nombre", "Guardar", lecciones[menuDe]?.titulo || "");
+    });
+    $("mDuplicar").addEventListener("click", () => {
+      $("dlgMenu").close();
+      pedirNombre("duplicar", "Duplicar lección", "Duplicar", "Copia de " + (lecciones[menuDe]?.titulo || "lección"));
+    });
+    $("btnNueva").addEventListener("click", () => pedirNombre("nueva", "Nueva lección", "Crear", ""));
+
+    function pedirNombre(tipo, titulo, boton, valor) {
+      accion = tipo;
+      $("nombreTitulo").textContent = titulo;
+      $("btnNombreOk").textContent = boton;
+      $("nombre").value = valor;
+      $("dlgNombre").showModal();
+      setTimeout(() => { $("nombre").focus(); $("nombre").select(); }, 50);
+    }
+    $("nombre").addEventListener("keydown", (e) => { if (e.key === "Enter") $("btnNombreOk").click(); });
+    $("btnNombreOk").addEventListener("click", async () => {
+      const titulo = $("nombre").value.trim().slice(0, 80) || "Lección sin nombre";
+      const b = $("btnNombreOk");
+      b.disabled = true;
+      try {
+        const ahora = Date.now();
+        if (accion === "renombrar") {
+          await cat.guardarLeccion(menuDe, { titulo });
+          $("dlgNombre").close(); aviso("Nombre guardado");
+        } else if (accion === "nueva") {
+          const id = nuevoIdLeccion();
+          await cat.guardarLeccion(id, { titulo, creada: ahora, editada: ahora, laminas: 0 });
+          try { localStorage.setItem("revelar:ultima", id); } catch {}
+          location.href = "presentador.html?s=" + id;
+        } else if (accion === "duplicar") {
+          aviso("Duplicando…", true);
+          const o = lecciones[menuDe] || {};
+          const id = nuevoIdLeccion();
+          await cat.duplicar(menuDe, id, {
+            titulo, creada: ahora, editada: ahora,
+            laminas: o.laminas || 0, ...(o.portada ? { portada: o.portada } : {}),
+          });
+          $("dlgNombre").close(); aviso("Duplicada");
+        }
+      } catch (e) { error(e); }
+      finally { b.disabled = false; }
+    });
+
+    document.querySelectorAll("[data-cerrar]").forEach((b) =>
+      b.addEventListener("click", () => b.closest("dialog").close()));
+
+    function error(e) {
+      aviso(esPermisoDenegado(e) ? "Falta pegar las reglas nuevas en Firebase" : "No se pudo: " + (e?.message || e));
+    }
+    let tAviso;
+    function aviso(msg, fijo) {
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.remove("subir", "fijo", "visible");
+      void t.offsetWidth;
+      t.classList.add(fijo ? "fijo" : "subir");
+      clearTimeout(tAviso);
+      if (!fijo) tAviso = setTimeout(() => t.classList.remove("subir"), 1700);
+    }
+  </script>
+</body>
+</html>

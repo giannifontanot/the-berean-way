@@ -8,8 +8,7 @@
 //
 // Usa nombres de archivo no adivinables (p. ej. fotos/a7k2-jerusalen.jpg)
 // para que nadie encuentre las fotos antes de que las reveles.
-export const FOTOS = [
-  { id: "foto-01", src: "fotos/8b70b8-jesus-ensena-templo.jpg" },
-  { id: "foto-02", src: "fotos/9e2c5b-templo-jerusalen.jpg" },
-  { id: "foto-03", src: "fotos/500093-tabernaculo.jpg" },
-];
+// Ahora cada lección tiene sus propias fotos (las subes con + desde el
+// presentador). Esta lista queda vacía; solo úsala si quieres fotos fijas
+// que aparezcan en todas las lecciones.
+export const FOTOS = [];

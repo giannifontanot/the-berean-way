@@ -1,7 +1,7 @@
 // resumen.js — Arma un archivo HTML con el resumen de la clase:
 // cada lámina en orden (foto o escritura) seguida de tus notas.
 // Las fotos se incrustan en el archivo, así que se abre sin internet.
-import { textoAHtml, notasAHtml } from "./escritura.js?v=202610291244";
+import { textoAHtml, notasAHtml } from "./escritura.js?v=202610291303";
 
 const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const escapar = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ESC[c]);
@@ -59,10 +59,11 @@ footer { color: var(--suave); font-size: 13px; text-align: center; margin-top: 4
 `;
 
 /**
- * @param {{ lista: object[], saltadas: Set<string>, notas: Record<string,string>, sesion?: string }} datos
+ * @param {{ lista: object[], saltadas: Set<string>, notas: Record<string,string>, titulo?: string }} datos
  * @returns {Promise<string>} HTML completo
  */
-export async function crearResumen({ lista, saltadas, notas, sesion }) {
+export async function crearResumen({ lista, saltadas, notas, titulo }) {
+  const nombre = titulo || "Resumen de la clase";
   const visibles = lista.filter((it) => !saltadas.has(it.id));
   const fecha = new Date().toLocaleDateString("es-MX", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   const partes = [];
@@ -85,7 +86,7 @@ export async function crearResumen({ lista, saltadas, notas, sesion }) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Resumen de la clase</title>
+<title>${escapar(nombre)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Lora:wght@400;600&display=swap" rel="stylesheet">
 <style>${CSS}</style>
@@ -93,8 +94,8 @@ export async function crearResumen({ lista, saltadas, notas, sesion }) {
 <body>
 <main>
 <header>
-  <p class="eti">The Berean Way${sesion ? " · " + escapar(sesion) : ""}</p>
-  <h1>Resumen de la clase</h1>
+  <p class="eti">The Berean Way · Resumen de la clase</p>
+  <h1>${escapar(nombre)}</h1>
   <p class="fecha">${escapar(fecha)} · ${visibles.length} láminas</p>
 </header>
 ${partes.join("\n")}

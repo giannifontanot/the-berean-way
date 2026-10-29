@@ -61,6 +61,29 @@ python3 -m http.server 8000
 Listo: desde ahora **solo tu cuenta** puede revelar, ocultar o reiniciar. Los
 participantes solo leen y no necesitan cuenta.
 
+## Lecciones
+
+Cada clase es una **lección** con sus propias láminas, escrituras, fotos y notas.
+
+- Abre `presentador.html`: primero aparece **Mis lecciones** (`lecciones.html`).
+  Cada tarjeta muestra la primera foto, el número de láminas y la fecha en que la
+  editaste. Tócala para abrirla.
+- **+ Nueva** crea una lección vacía (solo pide el nombre).
+- **⋯** en cada tarjeta: **Cambiar nombre**, **Duplicar** (copia láminas,
+  escrituras, fotos y notas; no lo revelado) y **Archivar**. Las archivadas
+  quedan abajo en **Archivadas**, de donde se pueden **Restaurar**.
+- Dentro de una lección, la barra **‹ Lecciones · nombre** te regresa a la lista.
+- Si cierras el presentador en plena clase (en vivo), al abrirlo vuelves directo
+  a esa lección.
+
+**Un solo enlace para los participantes.** El QR de **Compartir** ya no cambia:
+los participantes abren siempre `revelar/` y ven la lección que pusiste **en vivo
+(▶)**. Si pones en vivo otra lección, sus teléfonos se recargan solos y pasan a
+ella. Editar o ensayar otra lección no les cambia nada.
+
+Necesita las reglas nuevas de `database.rules.json` (`revelar_lecciones` y
+`revelar_actual`): pégalas en *Realtime Database → Reglas* y *Publicar*.
+
 ## Usar en clase
 
 1. Abre `presentador.html` en tu teléfono.
@@ -176,16 +199,12 @@ Toca **+** → **📖 Escritura** para escribir una escritura:
 - Toca **✎** en la tarjeta para editarla (o borrarla). En **Ordenar** también tiene **🗑**. Si ya está revelada, los
   cambios (por ejemplo, un resaltado nuevo en plena clase) se ven al instante.
 
-Las escrituras se guardan en Firebase por sesión. Las fotos, en cambio, viven
-en el repo.
+Las escrituras y las fotos se guardan en Firebase, en cada lección.
 
-### Varias sesiones
+## Fotos fijas en el repo (opcional)
 
-Agrega `?s=nombre` a la URL del presentador (p. ej.
-`presentador.html?s=martes`). El botón **Compartir** genera el enlace de esa
-sesión. Cada sesión tiene su propia lista.
-
-## Cambiar las fotos
+Las fotos de cada lección se suben desde el presentador con **+**. `fotos.js`
+queda vacío; úsalo solo si quieres fotos que aparezcan en **todas** las lecciones:
 
 1. Pon tus imágenes en `revelar/fotos/` (JPG o WebP de ~1600 px de ancho y
    menos de 500 KB cargan rápido en el teléfono).

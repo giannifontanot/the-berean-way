@@ -13,7 +13,11 @@
 //     Fotos que subes desde el presentador con "+". Guardadas en la misma base de
 //     datos (comprimidas), así no hace falta activar otro servicio de Firebase.
 //     Escrituras y subidas comparten "reveladas" y "orden" con las fotos del repo.
-import { CONFIG } from "../config.js?v=202610291244";
+//   revelar_lecciones/<sesion> = { titulo, creada, editada, archivada, laminas, portada }
+//     Lista de tus lecciones (solo tu cuenta la lee). Cada lección es una sesión.
+//   revelar_actual = "<sesion>"  La lección que está (o estuvo) en vivo. Los
+//     participantes abren siempre el mismo enlace y siguen esta lección.
+import { CONFIG } from "../config.js?v=202610291303";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -55,13 +59,77 @@ export async function crearStore(sesion) {
 }
 
 /* ----------------------------- Firebase ----------------------------- */
-async function storeFirebase(sesion) {
-  const [{ initializeApp }, db] = await Promise.all([
+// Una sola app de Firebase para la página, aunque se pidan store y catálogo.
+let fbListo = null;
+function firebase() {
+  fbListo ??= Promise.all([
     import(FB + "firebase-app.js"),
     import(FB + "firebase-database.js"),
-  ]);
-  const app = initializeApp(CONFIG.firebase);
-  const d = db.getDatabase(app);
+  ]).then(([appMod, db]) => {
+    const app = appMod.getApps().length ? appMod.getApp() : appMod.initializeApp(CONFIG.firebase);
+    return { app, db, d: db.getDatabase(app) };
+  });
+  return fbListo;
+}
+let authListo = null;
+function firebaseAuth() {
+  authListo ??= firebase().then(async ({ app }) => {
+    const authMod = await import(FB + "firebase-auth.js");
+    return { authMod, auth: authMod.getAuth(app) };
+  });
+  return authListo;
+}
+
+/** Id nuevo para una lección: letras y números, compatible con ?s= */
+export function nuevoIdLeccion() {
+  return "l" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+}
+
+/** Lista de lecciones y la lección en vivo (no depende de una sesión). */
+export async function crearCatalogo() {
+  return configurado ? catalogoFirebase() : catalogoDemo();
+}
+
+async function catalogoFirebase() {
+  const { db, d } = await firebase();
+  const { authMod, auth } = await firebaseAuth();
+  const refLecciones = db.ref(d, "revelar_lecciones");
+  const refActual = db.ref(d, "revelar_actual");
+  return {
+    modo: "firebase",
+    onUsuario: (cb) => authMod.onAuthStateChanged(auth, cb),
+    entrar: () => authMod.signInWithPopup(auth, new authMod.GoogleAuthProvider()),
+    onLecciones(cb, onError) {
+      return db.onValue(refLecciones, (s) => cb(s.val() || {}), onError);
+    },
+    onLeccion(id, cb, onError) {
+      return db.onValue(db.ref(d, `revelar_lecciones/${id}`), (s) => cb(s.val()), onError);
+    },
+    guardarLeccion: (id, datos) => db.update(db.ref(d, `revelar_lecciones/${id}`), datos),
+    async leerActual() { return (await db.get(refActual)).val() || null; },
+    onActual(cb) { return db.onValue(refActual, (s) => cb(s.val() || null), () => cb(null)); },
+    ponerActual: (id) => db.set(refActual, id),
+    // Copia orden, escrituras, fotos subidas y notas a una lección nueva (sin lo revelado).
+    async duplicar(origen, destino, ficha) {
+      const [orden, esc, sub, notas] = await Promise.all([
+        db.get(db.ref(d, `revelar/${origen}/orden`)),
+        db.get(db.ref(d, `revelar/${origen}/escrituras`)),
+        db.get(db.ref(d, `revelar/${origen}/subidas`)),
+        db.get(db.ref(d, `revelar_privado/${origen}/notas`)),
+      ]);
+      await db.update(db.ref(d), {
+        [`revelar/${destino}/orden`]: orden.val(),
+        [`revelar/${destino}/escrituras`]: esc.val(),
+        [`revelar/${destino}/subidas`]: sub.val(),
+        [`revelar_privado/${destino}/notas`]: notas.val(),
+        [`revelar_lecciones/${destino}`]: ficha,
+      });
+    },
+  };
+}
+
+async function storeFirebase(sesion) {
+  const { db, d } = await firebase();
   const base = `revelar/${sesion}`;
   const refReveladas = db.ref(d, `${base}/reveladas`);
   const refPresencia = db.ref(d, `${base}/presencia`);
@@ -74,10 +142,7 @@ async function storeFirebase(sesion) {
 
   let authMod = null, auth = null;
   async function getAuth() {
-    if (!auth) {
-      authMod = await import(FB + "firebase-auth.js");
-      auth = authMod.getAuth(app);
-    }
+    if (!auth) ({ authMod, auth } = await firebaseAuth());
     return auth;
   }
 
@@ -173,6 +238,36 @@ async function storeFirebase(sesion) {
 }
 
 /* ------------------------------ Demo ------------------------------- */
+function catalogoDemo() {
+  const CL = "revelar-demo:lecciones", CA = "revelar-demo:actual";
+  const oyentes = new Set(), oyentesActual = new Set();
+  const leer = () => { try { return JSON.parse(localStorage.getItem(CL)) || {}; } catch { return {}; } };
+  const escribir = (v) => { try { localStorage.setItem(CL, JSON.stringify(v)); } catch {} oyentes.forEach((cb) => cb(v)); };
+  const actual = () => { try { return localStorage.getItem(CA) || null; } catch { return null; } };
+  window.addEventListener("storage", (e) => {
+    if (e.key === CL) oyentes.forEach((cb) => cb(leer()));
+    if (e.key === CA) oyentesActual.forEach((cb) => cb(actual()));
+  });
+  return {
+    modo: "demo",
+    onUsuario(cb) { cb({ uid: "demo" }); return () => {}; },
+    async entrar() {},
+    onLecciones(cb) { oyentes.add(cb); cb(leer()); return () => oyentes.delete(cb); },
+    onLeccion(id, cb) { const f = (v) => cb(v[id] || null); oyentes.add(f); f(leer()); return () => oyentes.delete(f); },
+    async guardarLeccion(id, datos) { const v = leer(); v[id] = { ...(v[id] || {}), ...datos }; escribir(v); },
+    async leerActual() { return actual(); },
+    onActual(cb) { oyentesActual.add(cb); cb(actual()); return () => oyentesActual.delete(cb); },
+    async ponerActual(id) { try { localStorage.setItem(CA, id); } catch {} oyentesActual.forEach((cb) => cb(id)); },
+    async duplicar(origen, destino, ficha) {
+      for (const k of ["orden", "escrituras", "subidas", "notas"]) {
+        const val = localStorage.getItem(`revelar-demo:${origen}:${k}`);
+        if (val != null) localStorage.setItem(`revelar-demo:${destino}:${k}`, val);
+      }
+      const v = leer(); v[destino] = ficha; escribir(v);
+    },
+  };
+}
+
 function storeDemo(sesion) {
   const clave = `revelar-demo:${sesion}`;
   const oyentes = new Set();

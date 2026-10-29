@@ -75,6 +75,38 @@
           ".validate": false
         }
       }
+    },
+    "revelar_lecciones": {
+      ".read": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+      ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+      "$leccion": {
+        "titulo": {
+          ".validate": "newData.isString() && newData.val().length <= 80"
+        },
+        "creada": {
+          ".validate": "newData.isNumber()"
+        },
+        "editada": {
+          ".validate": "newData.isNumber()"
+        },
+        "archivada": {
+          ".validate": "newData.isBoolean()"
+        },
+        "laminas": {
+          ".validate": "newData.isNumber()"
+        },
+        "portada": {
+          ".validate": "newData.isString() && newData.val().beginsWith('data:image/') && newData.val().length < 100000"
+        },
+        "$otro": {
+          ".validate": false
+        }
+      }
+    },
+    "revelar_actual": {
+      ".read": true,
+      ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+      ".validate": "newData.isString() && newData.val().length <= 40"
     }
   }
 }

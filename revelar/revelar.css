@@ -1417,3 +1417,58 @@ body:not(.en-vivo) .tira-item.actual .tira-estado { background: #3a4166; color: 
   .btn-barra .ico { width: 18px; height: 18px; }
   .barra .estado { font-size: 13px; min-width: 0; white-space: normal; line-height: 1.15; }
 }
+
+/* ===== Lecciones ===== */
+/* Barra fina bajo el encabezado del presentador: regresar a la lista + nombre */
+.leccion-bar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 16px; min-height: 32px;
+  font-size: 13px; color: var(--muted); text-decoration: none;
+  border-bottom: 1px solid var(--line); background: var(--bg);
+  white-space: nowrap; overflow: hidden;
+}
+.leccion-bar .lb-atras { font-size: 20px; line-height: 1; color: var(--accent); margin-top: -2px; }
+.leccion-bar .lb-lista { color: var(--accent); font-weight: 700; }
+.leccion-bar .lb-titulo { color: var(--text); font-weight: 700; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.leccion-bar:active { background: var(--bg-2); }
+body.ordenando-activo .leccion-bar { pointer-events: none; opacity: 0.4; }
+
+/* Página "Mis lecciones" */
+.pag-lecciones .lec-titulo { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.01em; }
+.pag-lecciones .lec-nueva { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; }
+.pag-lecciones .lec-nueva .ico { width: 18px; height: 18px; }
+.lec-main { max-width: 640px; margin: 0 auto; padding: 16px 16px 48px; }
+.lec-vacio { color: var(--muted); text-align: center; margin: 48px 0; }
+.lec-lista { display: flex; flex-direction: column; gap: 12px; }
+.lec {
+  position: relative; display: flex; align-items: stretch;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  overflow: hidden;
+}
+.lec-abrir { flex: 1; display: flex; gap: 14px; align-items: center; padding: 10px; color: inherit; text-decoration: none; min-width: 0; }
+.lec-abrir:active { background: var(--bg-2); }
+.lec-portada {
+  flex: none; width: 64px; height: 84px; border-radius: 10px; overflow: hidden;
+  background: #f1e4c8; display: grid; place-items: center;
+}
+.lec-portada img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lec-sinfoto { font-size: 26px; opacity: 0.75; }
+.lec-info { min-width: 0; }
+.lec-info h2 { margin: 0 0 4px; font-size: 17px; font-weight: 700; line-height: 1.25;
+  overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.lec-info p { margin: 0; font-size: 13px; color: var(--muted); }
+.lec-envivo { display: inline-block; margin-top: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--ok); }
+.lec-mas {
+  flex: none; width: 48px; border: 0; border-left: 1px solid var(--line);
+  background: transparent; color: var(--muted); font-size: 22px; cursor: pointer;
+}
+.lec-mas:active { background: var(--bg-2); }
+.lec.archivada { opacity: 0.65; }
+.lec-archivo-btn {
+  display: block; margin: 28px auto 12px; background: none; border: 0;
+  color: var(--muted); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; padding: 8px 12px;
+}
+#dlgMenu .menu-item { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+#dlgMenu .menu-item .btn { text-align: left; }
+#dlgMenu .menu-item .btn[hidden] { display: none; }
