@@ -131,7 +131,8 @@ const TEXTOS = {
     fontPreviewHtml: "<p>Mostrar el tamaño del templo.</p><ul><li>Preguntar: ¿qué sentían los peregrinos?</li><li>Leer <mark>Salmo 122:1</mark></li></ul>",
     fontSizeAria: "Tamaño de letra de las notas", normal: "normal",
     notesPh: "- Preguntar: ¿qué es un templo para ustedes?\n- Leer Juan 2:19-21",
-    notesHelpHtml: 'Empieza una línea con <b>-</b> para hacer viñetas. <b>*así*</b> en <span class="rojo">rojo</span> y <b>==así==</b> <mark>resaltado</mark>.',
+    notesHelpHtml: 'Empieza una línea con <b>-</b> para hacer viñetas. Toca <b>Rojo</b> o <b>Resaltar</b> otra vez para quitarlo.',
+    selectWordsNotes: "Selecciona palabras y toca:", notesPhOne: "- Preguntar: ¿qué es un templo para ustedes?",
 
     // Participantes
     waiting: "Esperando", reconnecting: "Sin conexión… reconectando",
@@ -274,7 +275,8 @@ const TEXTOS = {
     fontPreviewHtml: "<p>Show the size of the temple.</p><ul><li>Ask: how did the pilgrims feel?</li><li>Read <mark>Psalm 122:1</mark></li></ul>",
     fontSizeAria: "Notes font size", normal: "normal",
     notesPh: "- Ask: what is a temple to you?\n- Read John 2:19-21",
-    notesHelpHtml: 'Start a line with <b>-</b> for bullets. <b>*like this*</b> in <span class="rojo">red</span> and <b>==like this==</b> <mark>highlighted</mark>.',
+    notesHelpHtml: 'Start a line with <b>-</b> for bullets. Tap <b>Red</b> or <b>Highlight</b> again to remove it.',
+    selectWordsNotes: "Select words and tap:", notesPhOne: "- Ask: what is a temple to you?",
 
     waiting: "Waiting", reconnecting: "Offline… reconnecting",
     demoParticipant: "Demo mode: Firebase isn't set up yet. It only syncs with other tabs in this browser.",

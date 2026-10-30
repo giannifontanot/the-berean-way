@@ -200,7 +200,7 @@ enviar. Las láminas ocultas no se incluyen.
 
 ### Notas
 
-Cada lámina puede tener notas: viñetas con `-`, `*rojo*` y `==resaltado==`.
+Cada lámina puede tener notas: viñetas con `-`; selecciona palabras y toca **Rojo** o **Resaltar** (se guardan como `*rojo*` y `==resaltado==`).
 Al crear una escritura o subir **una** foto se te piden; si no, usa **⋯ → Notas**
 en la tira, o en **✎ Editar**: toca la lámina y usa **✎** en el cuadro de notas. Se guardan en `revelar_privado/<sesión>/notas`,
 que **solo tu cuenta** puede leer: nunca llegan a los participantes.

@@ -10,7 +10,7 @@
     // Sin lección elegida (?s=), primero la lista de lecciones.
     if (!new URLSearchParams(location.search).has("s")) location.replace("lecciones.html");
   </script>
-  <link rel="stylesheet" href="revelar.css?v=202610301348">
+  <link rel="stylesheet" href="revelar.css?v=202610301354">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
 </head>
@@ -229,10 +229,15 @@
       <button class="btn letra" id="btnLetra" type="button" aria-label="Tamaño de letra de las notas" data-i18n-aria="fontSizeAria"><span class="aaa"><span>A</span><span>A</span><span>A</span></span></button>
     </div>
     <div class="notas-prev" id="notasPrev"></div>
-    <label class="campo"><span data-i18n="notesForMe">Notas para mí</span> <small data-i18n="notSeen">(no las ven los participantes)</small>
-      <textarea id="notasTexto" rows="7" maxlength="4000" placeholder="- Preguntar: ¿qué es un templo para ustedes?&#10;- Leer Juan 2:19-21" data-i18n-ph="notesPh"></textarea>
-    </label>
-    <p class="ayuda" data-i18n-html="notesHelpHtml">Empieza una línea con <b>-</b> para hacer viñetas. <b>*así*</b> en <span class="rojo">rojo</span> y <b>==así==</b> <mark>resaltado</mark>.</p>
+    <div class="campo"><span data-i18n="notesForMe">Notas para mí</span> <small data-i18n="notSeen">(no las ven los participantes)</small></div>
+    <div class="marcas">
+      <span data-i18n="selectWordsNotes">Selecciona palabras y toca:</span>
+      <button type="button" class="marca-btn rojo-btn" data-marca-notas="r" data-i18n="red">Rojo</button>
+      <button type="button" class="marca-btn resaltar-btn" data-marca-notas="h" data-i18n="highlight">Resaltar</button>
+    </div>
+    <div class="notas-editor" id="notasTexto" contenteditable="true" spellcheck="true" role="textbox" aria-multiline="true"
+         aria-label="Notas" data-i18n-aria="notes" data-placeholder="- Preguntar: ¿qué es un templo para ustedes?" data-i18n-dph="notesPhOne"></div>
+    <p class="ayuda" data-i18n-html="notesHelpHtml">Empieza una línea con <b>-</b> para hacer viñetas. Toca <b>Rojo</b> o <b>Resaltar</b> otra vez para quitarlo.</p>
     <div class="acciones">
       <button class="btn" data-cerrar id="btnCancelarNotas" data-i18n="cancel">Cancelar</button>
       <button class="btn primario" id="btnGuardarNotas" data-i18n="save">Guardar</button>
@@ -242,10 +247,10 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202610301348";
-    import { crearPapel } from "./js/papel.js?v=202610301348";
-    import { idioma, t, traducir } from "./js/i18n.js?v=202610301348";
-    import { textoAHtml, notasAHtml } from "./js/escritura.js?v=202610301348";
+    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202610301354";
+    import { crearPapel } from "./js/papel.js?v=202610301354";
+    import { idioma, t, traducir } from "./js/i18n.js?v=202610301354";
+    import { textoAHtml, notasAHtml } from "./js/escritura.js?v=202610301354";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -740,6 +745,12 @@
 
     // La hoja sepia es el editor y la vista previa a la vez.
     const papel = crearPapel($("escPapel"), { alCambiar: () => vistaPrevia(), avisar: (m) => aviso(m) });
+    // Notas: se marcan igual que las escrituras (seleccionar y tocar Rojo o Resaltar)
+    const papelNotas = crearPapel($("notasTexto"), { avisar: (m) => aviso(m), versiculos: false });
+    document.querySelectorAll("[data-marca-notas]").forEach((btn) => {
+      btn.addEventListener("pointerdown", (e) => e.preventDefault()); // no perder la selección
+      btn.addEventListener("click", () => papelNotas.marcar(btn.dataset.marcaNotas));
+    });
     function vistaPrevia() {
       $("escVistaCita").textContent = $("escCita").value.trim();
       $("escPapelWrap").classList.toggle("todo-rojo", $("escTodoRojo").checked);
@@ -930,16 +941,16 @@
       const item = items.get(id);
       if (!item) return;
       notasDe = id;
-      $("notasTitulo").textContent = titulo || t("notesOf", { n: numeroVisible(id) + (etiqueta(item) ? " · " + etiqueta(item) : "") });
+      $("notasTitulo").textContent = titulo || t("notesOf", { n: [numeroVisible(id), etiqueta(item)].filter(Boolean).join(" · ") });
       $("notasPrev").innerHTML = miniaturaHtml(item);
       const c = $("notasPrev").querySelector("cite");
       if (c) c.textContent = item.cita || "";
-      $("notasTexto").value = notas[id] || "";
+      papelNotas.poner(notas[id] || "");
       $("dlgNotas").showModal();
       $("notasTexto").focus();
     }
     $("btnGuardarNotas").addEventListener("click", async () => {
-      const id = notasDe, texto = $("notasTexto").value.trim();
+      const id = notasDe, texto = papelNotas.texto().trim().slice(0, 4000);
       $("dlgNotas").close();
       if (!id || texto === (notas[id] || "")) return;
       try {
@@ -1404,7 +1415,7 @@
       if (b.disabled) return;
       b.disabled = true; aviso(t("buildingDoc"));
       try {
-        const { crearResumen } = await import("./js/resumen.js?v=202610301348");
+        const { crearResumen } = await import("./js/resumen.js?v=202610301354");
         const html = await crearResumen({
           lista, saltadas, notas,
           titulo: leccion?.titulo || "",

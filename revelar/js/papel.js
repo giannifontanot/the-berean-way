@@ -8,8 +8,8 @@
 // El contenido se maneja como una lista de letras con dos marcas (rojo,
 // resaltado). Al tocar un botón se cambia la marca de las letras
 // seleccionadas y se vuelve a dibujar la hoja, conservando la selección.
-import { t } from "./i18n.js?v=202610301348";
-import { indicesVersiculos } from "./escritura.js?v=202610301348";
+import { t } from "./i18n.js?v=202610301354";
+import { indicesVersiculos } from "./escritura.js?v=202610301354";
 
 const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const escapar = (t) => String(t).replace(/[&<>"']/g, (c) => ESC[c]);
@@ -61,9 +61,9 @@ function leer(raiz) {
   return out;
 }
 
-/** Dibuja las letras en la hoja. Los números de versículo se ven grises. */
-function dibujar(raiz, letras) {
-  const vn = indicesVersiculos(letras.map((x) => x.c).join(""));
+/** Dibuja las letras en la hoja. Los números de versículo se ven grises (si aplica). */
+function dibujar(raiz, letras, versiculos = true) {
+  const vn = versiculos ? indicesVersiculos(letras.map((x) => x.c).join("")) : new Set();
   let html = "", i = 0;
   while (i < letras.length) {
     const { r, h } = letras[i];
@@ -104,7 +104,9 @@ function aPunto(raiz, indice) {
   return ultimo ? [ultimo, ultimo.nodeValue.length] : [raiz, 0];
 }
 
-export function crearPapel(raiz, { alCambiar, avisar } = {}) {
+// versiculos: false para las notas (sin números de versículo en gris).
+export function crearPapel(raiz, { alCambiar, avisar, versiculos = true } = {}) {
+  const dib = (r, l) => dibujar(r, l, versiculos);
   // Pegar siempre como texto simple
   raiz.addEventListener("paste", (e) => {
     e.preventDefault();
@@ -113,7 +115,7 @@ export function crearPapel(raiz, { alCambiar, avisar } = {}) {
   });
   raiz.addEventListener("input", () => alCambiar?.());
   // Al salir de la hoja, se vuelve a dibujar (números de versículo en gris)
-  raiz.addEventListener("blur", () => dibujar(raiz, leer(raiz)));
+  raiz.addEventListener("blur", () => dib(raiz, leer(raiz)));
 
   function seleccion() {
     const sel = getSelection();
@@ -135,7 +137,7 @@ export function crearPapel(raiz, { alCambiar, avisar } = {}) {
   }
 
   return {
-    poner(texto) { dibujar(raiz, desdeMarcado(texto)); },
+    poner(texto) { dib(raiz, desdeMarcado(texto)); },
     texto() {
       const letras = leer(raiz);
       while (letras.length && /\s/.test(letras[letras.length - 1].c)) letras.pop();
@@ -153,7 +155,7 @@ export function crearPapel(raiz, { alCambiar, avisar } = {}) {
       if (a === z) return;
       const todas = letras.slice(a, z).every((x) => x[marca]);
       for (let i = a; i < z; i++) letras[i][marca] = !todas;
-      dibujar(raiz, letras);
+      dib(raiz, letras);
       raiz.focus();
       seleccionar(a, z);
       alCambiar?.();

@@ -1731,3 +1731,17 @@ body:not(.pag-lecciones) .barra .estado { grid-column: 3; justify-self: end; }
 body.ordenando-activo .barra #btnAgregar { order: 1; }
 body.ordenando-activo .barra #btnImprimir { order: 2; }
 body.ordenando-activo .barra #btnOrdenar { order: 3; }
+
+/* Editor de notas: se escribe y se marca (Rojo / Resaltar) como en la hoja de escrituras */
+.notas-editor {
+  min-height: 160px; max-height: 45vh; overflow-y: auto;
+  padding: 12px 14px; border-radius: 12px; border: 1px solid #9499a9;
+  background: #b9bdc9; color: #151824; white-space: pre-wrap; word-wrap: break-word;
+  font-family: var(--font-sans); font-size: var(--notas-fs, 20px); letter-spacing: var(--notas-ls, 0); line-height: 1.5;
+  outline: none;
+}
+.notas-editor:focus { box-shadow: 0 0 0 2px var(--accent); }
+.notas-editor:empty::before { content: attr(data-placeholder); color: #5c6175; pointer-events: none; }
+.notas-editor .rojo { color: #9a1712; }
+.notas-editor mark { background: rgba(240, 196, 50, 0.75); color: inherit; }
+.dlg-notas .marcas { margin: 6px 0 8px; }
