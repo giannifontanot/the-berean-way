@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610301204";
+import { CONFIG } from "../config.js?v=202610301208";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -163,6 +163,9 @@ async function catalogoFirebase() {
     onBloqueado(cb) {
       return db.onValue(ref(`revelar_bloqueados/${uid()}`), (s) => cb(s.val() === true), () => cb(false));
     },
+    // Ubicación aproximada que el maestro decide compartir con el administrador.
+    guardarUbicacion: (u) => db.set(ref(`revelar_maestros/${uid()}/ubicacion`), u),
+    quitarUbicacion: () => db.remove(ref(`revelar_maestros/${uid()}/ubicacion`)),
     esAdmin: () => uid() === PRESENTADOR_ORIGINAL,
     // Administrador: todos los maestros y quién está bloqueado
     onMaestros(cb, onError) {
@@ -375,13 +378,17 @@ function catalogoDemo() {
     async entrar() {},
     async miPerfil() { return { codigo: "demo", nombre: "Demo" }; },
     async actualizarPerfil() {},
+    async guardarUbicacion(u) { try { localStorage.setItem("revelar-demo:ubicacion", JSON.stringify(u)); } catch {} },
+    async quitarUbicacion() { try { localStorage.removeItem("revelar-demo:ubicacion"); } catch {} },
     onBloqueado(cb) { cb(false); return () => {}; },
     esAdmin: () => true,
     onMaestros(cb) {
       const ahora = Date.now();
       cb({
-        demo: { codigo: "demo", nombre: "Demo (tú)", correo: "demo@ejemplo.com", lecciones: Object.keys(leer()).length, activo: ahora, creado: ahora },
-        m2: { codigo: "k7m2", nombre: "Ana López", correo: "ana@ejemplo.com", lecciones: 4, activo: ahora - 86400000 * 2, creado: ahora - 86400000 * 9 },
+        demo: { codigo: "demo", nombre: "Demo (tú)", correo: "demo@ejemplo.com", lecciones: Object.keys(leer()).length, activo: ahora, creado: ahora,
+          ...(leerJ("revelar-demo:ubicacion").lat != null ? { ubicacion: leerJ("revelar-demo:ubicacion") } : {}) },
+        m2: { codigo: "k7m2", nombre: "Ana López", correo: "ana@ejemplo.com", lecciones: 4, activo: ahora - 86400000 * 2, creado: ahora - 86400000 * 9,
+          ubicacion: { lat: 25.7, lng: -100.3, ciudad: "Monterrey", fecha: ahora } },
         m3: { codigo: "p4qx", nombre: "Pastor Juan", correo: "juan@ejemplo.com", lecciones: 1, activo: ahora - 86400000 * 30, creado: ahora - 86400000 * 40 },
       });
       return () => {};

@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#11152b">
   <title>Mis lecciones · Revelar</title>
-  <link rel="stylesheet" href="revelar.css?v=202610301204">
+  <link rel="stylesheet" href="revelar.css?v=202610301208">
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -33,6 +33,14 @@
   </section>
 
   <main class="lec-main" id="main" hidden>
+    <!-- Ubicación opcional para el administrador -->
+    <div class="lec-ubic" id="ubicCard" hidden>
+      <p data-i18n="shareCityQ">📍 ¿Quieres que el administrador vea en un mapa desde qué ciudad das tus clases?</p>
+      <div class="lec-recibida-acc">
+        <button class="btn primario" type="button" id="ubicSi" data-i18n="yesShare">Sí, compartir</button>
+        <button class="btn" type="button" id="ubicNo" data-i18n="notNow">Ahora no</button>
+      </div>
+    </div>
     <!-- Cuenta pausada por el administrador -->
     <p class="lec-bloqueado" id="avisoBloqueo" hidden data-i18n="youAreBlocked">Tu cuenta está pausada. Habla con el administrador.</p>
     <!-- Solo el administrador -->
@@ -48,7 +56,23 @@
     <div class="lec-lista" id="lista"></div>
     <button class="lec-archivo-btn" id="btnArchivadas" hidden></button>
     <div class="lec-lista archivadas" id="listaArchivadas" hidden></div>
+    <button class="lec-archivo-btn" id="lnkUbic" type="button" data-i18n="myLocation">📍 Mi ubicación</button>
   </main>
+
+  <!-- Mi ubicación (opcional; solo la ve el administrador) -->
+  <dialog id="dlgUbic">
+    <h2 data-i18n="locationTitle">Tu ubicación</h2>
+    <p data-i18n="locationText">Opcional. Solo el administrador la ve, en un mapa. Es aproximada (unos 10 km) y puedes quitarla cuando quieras.</p>
+    <p class="ubic-actual" id="ubicActual" hidden></p>
+    <label class="campo"><span data-i18n="cityLabel">Ciudad</span>
+      <input id="ubicCiudad" maxlength="60" autocomplete="address-level2" placeholder="Houston">
+    </label>
+    <div class="acciones">
+      <button class="btn peligro" type="button" id="ubicQuitar" data-i18n="stopSharing" hidden>Dejar de compartir</button>
+      <button class="btn" type="button" data-cerrar data-i18n="cancel">Cancelar</button>
+      <button class="btn primario" type="button" id="ubicGuardar" data-i18n="useMyLocation">📍 Usar mi ubicación</button>
+    </div>
+  </dialog>
 
   <!-- Menú de una lección -->
   <dialog id="dlgMenu">
@@ -92,9 +116,9 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202610301204";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610301204";
-    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610301204";
+    import { CONFIG } from "./config.js?v=202610301208";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610301208";
+    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610301208";
 
     const $ = (id) => document.getElementById(id);
 
@@ -147,6 +171,9 @@
       cat.miPerfil().then((p) => {
         perfil = p;
         $("codigoGrandeLista").textContent = p.codigo;
+        let ocultaUbic = false;
+        try { ocultaUbic = localStorage.getItem("revelar:ubicNo") === "1"; } catch {}
+        $("ubicCard").hidden = !!p.ubicacion || ocultaUbic || !!cat.esAdmin?.();
         cat.onActual(usuario?.uid === PRESENTADOR_ORIGINAL ? null : p.codigo, (a) => { actual = a; pintar(); });
       }).catch(() => {});
       cat.onBuzon((v) => { recibidas = v || {}; pintarBuzon(); });
@@ -269,6 +296,49 @@
         }
       } catch (e) { error(e); }
       finally { b.disabled = false; }
+    });
+
+    // ---------- Mi ubicación (opcional, aproximada, solo para el administrador) ----------
+    function abrirUbic() {
+      const u = perfil?.ubicacion;
+      $("ubicCiudad").value = u?.ciudad || "";
+      $("ubicActual").hidden = !u;
+      $("ubicActual").textContent = u ? t("sharingNow", { c: u.ciudad || `${u.lat}, ${u.lng}` }) : "";
+      $("ubicQuitar").hidden = !u;
+      $("dlgUbic").showModal();
+    }
+    $("lnkUbic").addEventListener("click", abrirUbic);
+    $("ubicSi").addEventListener("click", abrirUbic);
+    $("ubicNo").addEventListener("click", () => {
+      try { localStorage.setItem("revelar:ubicNo", "1"); } catch {}
+      $("ubicCard").hidden = true;
+    });
+    $("ubicGuardar").addEventListener("click", () => {
+      const b = $("ubicGuardar");
+      if (!navigator.geolocation) { aviso(t("locationFail")); return; }
+      b.disabled = true;
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        // Redondeado a 1 decimal (~10 km): la ciudad, no la casa.
+        const u = {
+          lat: Math.round(pos.coords.latitude * 10) / 10,
+          lng: Math.round(pos.coords.longitude * 10) / 10,
+          fecha: Date.now(),
+          ...($("ubicCiudad").value.trim() ? { ciudad: $("ubicCiudad").value.trim().slice(0, 60) } : {}),
+        };
+        try {
+          await cat.guardarUbicacion(u);
+          if (perfil) perfil.ubicacion = u;
+          $("dlgUbic").close(); $("ubicCard").hidden = true; aviso(t("locationSaved"));
+        } catch (e) { error(e); }
+        finally { b.disabled = false; }
+      }, () => { b.disabled = false; aviso(t("locationFail")); }, { enableHighAccuracy: false, timeout: 15000, maximumAge: 600000 });
+    });
+    $("ubicQuitar").addEventListener("click", async () => {
+      try {
+        await cat.quitarUbicacion();
+        if (perfil) delete perfil.ubicacion;
+        $("dlgUbic").close(); aviso(t("locationRemoved"));
+      } catch (e) { error(e); }
     });
 
     // ---------- Enviar una copia a otro maestro ----------

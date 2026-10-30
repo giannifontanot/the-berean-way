@@ -118,6 +118,12 @@ caso("El administrador quita el en vivo de B", SI, "DELETE", "revelar_vivo/bbbb"
 caso("El administrador desbloquea a B", SI, "DELETE", "revelar_bloqueados/" + B, G)
 caso("B desbloqueado revela otra vez", SI, "PUT", "revelar/sb/reveladas/x", B, 1)
 
+# Ubicación aproximada (opcional, la comparte cada maestro)
+caso("B comparte su ciudad", SI, "PUT", "revelar_maestros/" + B + "/ubicacion", B, {"lat": 29.8, "lng": -95.4, "ciudad": "Houston", "fecha": 1})
+caso("Latitud imposible", NO, "PUT", "revelar_maestros/" + B + "/ubicacion", B, {"lat": 120, "lng": 0})
+caso("A no cambia la ubicación de B", NO, "PUT", "revelar_maestros/" + B + "/ubicacion", A, {"lat": 1, "lng": 1})
+caso("B deja de compartir", SI, "DELETE", "revelar_maestros/" + B + "/ubicacion", B)
+
 print(f"\n{total - len(fallas)} de {total} casos correctos")
 if fallas:
     print("::error::Reglas que fallaron (" + str(len(fallas)) + "): " + " | ".join(fallas))

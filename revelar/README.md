@@ -83,6 +83,11 @@ cambia lo de otro (lo garantizan las reglas de Firebase; ver
   última actividad. **Pausar** le impide crear, cambiar o presentar (y sus alumnos
   dejan de ver su clase en vivo); **Reactivar** lo devuelve. Sus lecciones no se
   borran. El maestro pausado ve un aviso en su lista.
+- **Mapa (administrador):** en **Maestros**, **🗺 Mapa** muestra en OpenStreetMap a
+  los maestros que **eligieron** compartir su ciudad. Cada maestro decide en
+  **Mis lecciones → 📍 Mi ubicación**: se guarda aproximada (redondeada a ~10 km),
+  solo la ve el administrador y se puede quitar cuando quiera. No se rastrea a nadie
+  sin su permiso.
 - **Enviar copia:** en **⋯** de una lección, **📤 Enviar copia a otro maestro**
   con su código. Se envían fotos, escrituras y, si se marca «Incluir mis notas», las notas. El otro
   maestro la ve en **Recibidas** y toca **Aceptar** o **Descartar**.
