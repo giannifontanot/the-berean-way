@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610301535";
+import { CONFIG } from "../config.js?v=202610301545";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 

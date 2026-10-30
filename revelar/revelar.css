@@ -1859,28 +1859,52 @@ button, a[href], [role="button"] { transition: scale 0.18s cubic-bezier(0.3, 1.4
 #contactoCodigo { text-transform: lowercase; letter-spacing: 0.1em; }
 .nuevo-contacto .error-m { color: var(--danger); margin: -4px 0 8px; font-size: 14px; }
 
-/* ---------- Presentador (PWA): más aire arriba y abajo ----------
-   El ancho del teléfono manda en horizontal (6 botones + el punto verde), así que el aire
-   se gana en vertical. El punto verde late despacio: se lee como «en vivo», no como botón. */
+/* ---------- Presentador (PWA): solo botones arriba, con aire; el punto verde baja a la fila de la lección ---------- */
 body:not(.pag-lecciones) > .barra {
-  padding-top: max(20px, calc(env(safe-area-inset-top) + 12px));
-  padding-bottom: 20px;
+  display: flex; justify-content: center;
+  padding-top: max(18px, calc(env(safe-area-inset-top) + 10px));
+  padding-bottom: 18px;
 }
-body:not(.pag-lecciones) .barra .estado { font-size: 16px; gap: 7px; }
-body:not(.pag-lecciones) .barra .estado::before { width: 10px; height: 10px; animation: latidoVivo 2.4s ease-in-out infinite; }
-body:not(.pag-lecciones) .barra .estado.off::before { animation: none; }
+body:not(.pag-lecciones) .barra .barra-acciones { flex: none; gap: 12px; }
+body:not(.pag-lecciones) .barra .btn-barra { width: 48px; height: 48px; }
+body:not(.pag-lecciones) .barra .btn-barra .ico { width: 22px; height: 22px; }
+@media (max-width: 430px) {
+  body:not(.pag-lecciones) .barra .barra-acciones { gap: 9px; }
+  body:not(.pag-lecciones) .barra .btn-barra { width: 46px; height: 46px; }
+}
+@media (max-width: 390px) {
+  body:not(.pag-lecciones) .barra .barra-acciones { gap: 8px; }
+  body:not(.pag-lecciones) .barra .btn-barra { width: 44px; height: 44px; }
+  body:not(.pag-lecciones) .barra .btn-barra .ico { width: 21px; height: 21px; }
+}
+@media (max-width: 360px) {
+  body:not(.pag-lecciones) .barra .barra-acciones { gap: 6px; }
+  body:not(.pag-lecciones) .barra .btn-barra { width: 42px; height: 42px; }
+  body:not(.pag-lecciones) .barra .btn-barra .ico { width: 20px; height: 20px; }
+}
+
+/* Fila de la lección: ‹ Lecciones · nombre  …  ● 12 */
+.leccion-fila {
+  display: flex; align-items: center; gap: 10px; flex: none;
+  border-bottom: 1px solid var(--line); background: var(--bg);
+  padding-right: 16px;
+}
+.leccion-fila .leccion-bar { flex: 1; min-width: 0; border-bottom: 0; min-height: 40px; font-size: 14px; }
+.leccion-fila .estado {
+  flex: none; display: inline-flex; align-items: center; gap: 7px;
+  font-size: 16px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.leccion-fila .estado::before {
+  content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+  background: #3dff7a; animation: latidoVivo 2.4s ease-in-out infinite;
+}
+.leccion-fila .estado.off { color: var(--muted); }
+.leccion-fila .estado.off::before { background: #ff5a52; animation: none; box-shadow: none; }
 @keyframes latidoVivo {
   0%, 100% { box-shadow: 0 0 4px 1px rgba(61, 255, 122, 0.65); }
   50% { box-shadow: 0 0 10px 3px rgba(61, 255, 122, 0.95); }
 }
-@media (prefers-reduced-motion: reduce) { body:not(.pag-lecciones) .barra .estado::before { animation: none; } }
-@media (max-width: 430px) {
-  body:not(.pag-lecciones) > .barra { padding-top: max(18px, calc(env(safe-area-inset-top) + 10px)); padding-bottom: 18px; }
-}
-@media (max-width: 380px) {
-  body:not(.pag-lecciones) .barra .estado { font-size: 14px; gap: 5px; }
-  body:not(.pag-lecciones) .barra .estado::before { width: 9px; height: 9px; }
-}
+@media (prefers-reduced-motion: reduce) { .leccion-fila .estado::before { animation: none; } }
 
 /* Mapa: Uso · Mostrar · Compartir en tres columnas simétricas (la del centro a su medida),
    cada control centrado bajo su nombre; nada se sale por la izquierda. */

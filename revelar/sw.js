@@ -2,7 +2,7 @@
 // Siempre intenta la red primero (así cada publicación se ve enseguida);
 // si no hay conexión, usa la última copia guardada. Solo archivos de este sitio:
 // Firebase (lecciones en vivo) nunca pasa por aquí.
-const CACHE = "berean-reveal-v2";
+const CACHE = "berean-reveal-v3";
 const BASICOS = ["./", "index.html", "lecciones.html", "presentador.html", "revelar.css"];
 
 self.addEventListener("install", (e) => {
