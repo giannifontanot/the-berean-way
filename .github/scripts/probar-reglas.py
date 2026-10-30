@@ -144,6 +144,29 @@ caso("Uso inválido", NO, "PUT", "revelar_maestros/" + B + "/uso", B, "fiesta")
 caso("B aparece en el mapa como 'otro'", SI, "PUT", "revelar_mapa/" + B, B, {"lat": 1, "lng": 1, "uso": "otro"})
 caso("B deja de compartir", SI, "DELETE", "revelar_mapa/" + B, B)
 
+# Aceptar una copia con datos reales (la lección pública «clase»), igual que el app:
+# (1) reclama la lección nueva, (2) copia todo en una sola escritura.
+try:
+    real = json.load(urllib.request.urlopen("https://berean-revelar-default-rtdb.firebaseio.com/revelar/clase.json"))
+except Exception as e:  # noqa: BLE001
+    real = None
+    print("Sin datos reales:", e)
+if real:
+    caso("B reclama la copia", SI, "PUT", "revelar_duenos/c1", B, B)
+    claves = ["esc_P51pW1_HtQizptLF4Ur", "foto-01", "foto-02", "sub_foto01"]
+    paquete = {
+        "revelar/c1/orden": real.get("orden"),
+        "revelar/c1/escrituras": real.get("escrituras"),
+        "revelar/c1/subidas": real.get("subidas"),
+        "revelar_lecciones/" + B + "/c1": {"titulo": "El tabernáculo de Juan", "creada": 1, "editada": 1},
+        "revelar_privado/c1/notas": {k: "nota" for k in claves},
+        "revelar_buzon/" + B + "/e9": None,
+    }
+    for k, v in paquete.items():
+        caso("parte " + k, SI, "PATCH", "", B, {k: v})
+    caso("B reclama otra copia", SI, "PUT", "revelar_duenos/c2", B, B)
+    caso("B acepta la copia (todo junto)", SI, "PATCH", "", B, {k.replace("/c1", "/c2"): v for k, v in paquete.items()})
+
 print(f"\n{total - len(fallas)} de {total} casos correctos")
 if fallas:
     print("::error::Reglas que fallaron (" + str(len(fallas)) + "): " + " | ".join(fallas))
