@@ -1803,3 +1803,12 @@ body.ordenando-activo .barra #btnOrdenar { order: 3; }
 
 /* Aviso junto al botón que tocaste (el texto sube y se desvanece desde ahí) */
 .toast.junto { bottom: auto; }
+
+/* Avisos: al menos 1 segundo completo a la vista, luego suben y se desvanecen */
+.toast.subir { animation: avisoSube2 2.3s cubic-bezier(0.25, 0.8, 0.3, 1) forwards; }
+@keyframes avisoSube2 {
+  0%   { opacity: 0; transform: translate(-50%, 16px); }
+  9%   { opacity: 1; transform: translate(-50%, 0); }
+  62%  { opacity: 1; transform: translate(-50%, -6px); }
+  100% { opacity: 0; transform: translate(-50%, -70px); }
+}
