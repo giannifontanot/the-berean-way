@@ -134,6 +134,9 @@
         "correo": {
           ".validate": "newData.isString() && newData.val().length <= 120"
         },
+        "uso": {
+          ".validate": "newData.isString() && (newData.val() === 'iglesia' || newData.val() === 'otro')"
+        },
         "$otro": {
           ".validate": false
         }
@@ -218,6 +221,9 @@
         },
         "fecha": {
           ".validate": "newData.isNumber()"
+        },
+        "uso": {
+          ".validate": "newData.isString() && (newData.val() === 'iglesia' || newData.val() === 'otro')"
         },
         "$otro": {
           ".validate": false

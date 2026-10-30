@@ -1645,3 +1645,18 @@ body.con-mapa-completo { overflow: hidden; }
 .leaflet-popup-content { color: #1d1a16; font-family: var(--font-sans); }
 /* Fuera del mundo (arriba y abajo en pantalla vertical): azul oscuro, no gris */
 .lec-mapa-lienzo.leaflet-container, .adm-mapa-lienzo.leaflet-container, .mapa-completo.leaflet-container { background: #0f1a33; }
+
+/* Uso principal (Iglesia/Otro) y filtro del mapa (Iglesia/Otro/Todos) */
+.mapa-controles { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.fila-control { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.fila-control > span { color: var(--muted); font-size: 13px; font-weight: 700; letter-spacing: 0.04em; }
+.seg {
+  display: inline-flex; padding: 3px; gap: 2px;
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: 999px;
+}
+.seg button {
+  border: 0; background: transparent; color: var(--muted);
+  font: inherit; font-size: 14px; font-weight: 700;
+  padding: 6px 13px; border-radius: 999px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--text); color: var(--bg); }

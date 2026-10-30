@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610301219";
+import { CONFIG } from "../config.js?v=202610301223";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -169,6 +169,12 @@ async function catalogoFirebase() {
       ...u, nombre: String(auth.currentUser?.displayName || "").slice(0, 80),
     }),
     quitarUbicacion: () => db.remove(ref(`revelar_mapa/${uid()}`)),
+    // Uso principal de la app (iglesia u otro): en el perfil y, si compartes, en el mapa.
+    async guardarUso(uso) {
+      await db.set(ref(`revelar_maestros/${uid()}/uso`), uso);
+      const enMapa = await val(`revelar_mapa/${uid()}`);
+      if (enMapa) await db.set(ref(`revelar_mapa/${uid()}/uso`), uso);
+    },
     onMapa(cb) { return db.onValue(ref("revelar_mapa"), (s) => cb(s.val() || {}), () => cb({})); },
     esAdmin: () => uid() === PRESENTADOR_ORIGINAL,
     // Administrador: todos los maestros y quién está bloqueado
@@ -380,16 +386,22 @@ function catalogoDemo() {
     uid: () => "demo",
     onUsuario(cb) { cb({ uid: "demo", displayName: "Demo" }); return () => {}; },
     async entrar() {},
-    async miPerfil() { return { codigo: "demo", nombre: "Demo" }; },
+    async miPerfil() { let uso = null; try { uso = localStorage.getItem("revelar-demo:uso"); } catch {} return { codigo: "demo", nombre: "Demo", ...(uso ? { uso } : {}) }; },
     async actualizarPerfil() {},
     async guardarUbicacion(u) { try { localStorage.setItem("revelar-demo:ubicacion", JSON.stringify({ ...u, nombre: "Demo" })); } catch {} oyentesMapa.forEach((f) => f()); },
     async quitarUbicacion() { try { localStorage.removeItem("revelar-demo:ubicacion"); } catch {} oyentesMapa.forEach((f) => f()); },
+    async guardarUso(uso) {
+      try { localStorage.setItem("revelar-demo:uso", uso); } catch {}
+      const yo = leerJ("revelar-demo:ubicacion");
+      if (yo.lat != null) { yo.uso = uso; try { localStorage.setItem("revelar-demo:ubicacion", JSON.stringify(yo)); } catch {} }
+      oyentesMapa.forEach((f) => f());
+    },
     onMapa(cb) {
       const f = () => {
         const yo = leerJ("revelar-demo:ubicacion");
         cb({
-          m2: { lat: 25.7, lng: -100.3, ciudad: "Monterrey", nombre: "Ana López" },
-          m3: { lat: 4.7, lng: -74.1, ciudad: "Bogotá", nombre: "Pastor Juan" },
+          m2: { lat: 25.7, lng: -100.3, ciudad: "Monterrey", nombre: "Ana López", uso: "otro" },
+          m3: { lat: 4.7, lng: -74.1, ciudad: "Bogotá", nombre: "Pastor Juan", uso: "iglesia" },
           ...(yo.lat != null ? { demo: yo } : {}),
         });
       };
