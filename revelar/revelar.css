@@ -1823,3 +1823,9 @@ body.ordenando-activo .barra #btnOrdenar { order: 3; }
 
 /* Avisos claros sobre el fondo oscuro (antes azul sobre azul) */
 .toast { background: #f3f1ea; color: #12152b; border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55); }
+
+/* Presionar: el botón se hunde y se aclara un poco; la acción ocurre al terminar */
+button, a[href], [role="button"] { transition: scale 0.18s cubic-bezier(0.3, 1.4, 0.5, 1), filter 0.18s ease; }
+.presionado { scale: 0.92; filter: brightness(1.18); transition: scale 0.12s ease-out, filter 0.12s ease-out; }
+.tira-item.presionado { scale: 0.96; }
+@media (prefers-reduced-motion: reduce) { .presionado { scale: 1; } }
