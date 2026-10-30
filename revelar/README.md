@@ -87,7 +87,6 @@ cambia lo de otro (lo garantizan las reglas de Firebase; ver
   cuadrado con la Tierra completa muestra a los maestros que **eligieron** compartir
   su ciudad (tú en verde). La casilla **Ubicación** pide permiso al teléfono y la
   guarda aproximada (~10 km) con tu nombre; desmárcala para quitarte. Doble toque = pantalla completa (✕ o Atrás para salir).
-  El administrador ve el mismo mapa en **Maestros → 🗺 Mapa** (pausados en rojo).
 - **Encima del mapa, en una fila:** **Uso** (⛪ iglesia · 👥 otro, lo elige cada
   maestro), **Mostrar** (⛪ · 👥 · 🌐 todos; se recuerda en ese teléfono) y
   **Ubicación** (una casilla: marcada = apareces en el mapa con tu ubicación
