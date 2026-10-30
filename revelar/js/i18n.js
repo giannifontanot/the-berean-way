@@ -143,7 +143,8 @@ const TEXTOS = {
     addTeacher: "Agregar maestro", editTeacher: "Cambiar nombre", codeLabel: "Código del maestro",
     nameLabel: "Nombre (para ti)", namePhStudent: "Pastor Juan", saveFollow: "Guardar y seguir",
     now: "ahora", teacherWith: "Maestro {c}", mainClass: "The Berean Way", removeTeacher: "Quitar",
-    codeTooShort: "El código tiene 4 letras o números.",
+    codeTooShort: "El código tiene al menos 4 letras o números.",
+    installApp: "Instalar el app",
     teachersAdmin: "Maestros", adminOnly: "Solo el administrador puede ver esta pantalla.",
     noTeachers: "Aún no hay maestros.", teachersN: "maestros", blockedN: "pausados",
     noName: "Sin nombre", you: "tú", lastActive: "activo", blockedBadge: "Pausado",
@@ -172,7 +173,7 @@ const TEXTOS = {
     mapNote: "Solo aparecen los maestros que eligieron compartir su ciudad (aproximada).", myLocationShort: "📍 Mi ubicación", classCode: "Código de la clase", codeShort: "Código", nameShort: "Nombre",
 
     // Documento para imprimir
-    classSummary: "Resumen de la clase", madeWith: "The Berean Way",
+    classSummary: "Resumen de la clase", madeWith: "Berean Reveal",
   },
 
   en: {
@@ -291,7 +292,8 @@ const TEXTOS = {
     addTeacher: "Add a teacher", editTeacher: "Rename", codeLabel: "Teacher's code",
     nameLabel: "Name (just for you)", namePhStudent: "Pastor John", saveFollow: "Save and follow",
     now: "now", teacherWith: "Teacher {c}", mainClass: "The Berean Way", removeTeacher: "Remove",
-    codeTooShort: "The code has 4 letters or numbers.",
+    codeTooShort: "The code has at least 4 letters or numbers.",
+    installApp: "Install the app",
     teachersAdmin: "Teachers", adminOnly: "Only the administrator can see this screen.",
     noTeachers: "No teachers yet.", teachersN: "teachers", blockedN: "paused",
     noName: "No name", you: "you", lastActive: "active", blockedBadge: "Paused",
@@ -319,7 +321,7 @@ const TEXTOS = {
     mapFail: "Couldn't load the map", locShared: "📍 {c}",
     mapNote: "Only teachers who chose to share their (approximate) city appear.", classCode: "Class code", codeShort: "Code", nameShort: "Name",
 
-    classSummary: "Class summary", madeWith: "The Berean Way",
+    classSummary: "Class summary", madeWith: "Berean Reveal",
   },
 };
 

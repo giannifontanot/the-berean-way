@@ -5,7 +5,7 @@ const SEL = "button, a[href], [role='button']";
 const ESPERA = 150;                       // ms: lo que dura el "hundirse"
 // Estos necesitan el toque directo del dedo (ventanas de Google, cámara, compartir,
 // portapapeles): se animan pero no esperan.
-const DIRECTOS = "#btnEntrar, #btnAgregarFoto, #btnEnviar, #btnCopiar, #btnCopiarUid, #itemCambiarFoto, #itemPrev, .t-editar, .seg button, .idioma-switch button, [data-marca], [data-marca-notas]";
+const DIRECTOS = "#btnEntrar, #btnInstalar, #btnAgregarFoto, #btnEnviar, #btnCopiar, #btnCopiarUid, #itemCambiarFoto, #itemPrev, .t-editar, .seg button, .idioma-switch button, [data-marca], [data-marca-notas]";
 const IGNORAR = "input, label, textarea, select, [contenteditable='true'], .leaflet-container";
 
 function animar(el) {

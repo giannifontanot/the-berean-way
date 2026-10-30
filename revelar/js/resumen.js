@@ -1,8 +1,8 @@
 // resumen.js — Arma un archivo HTML con el resumen de la clase:
 // cada lámina en orden (foto o escritura) seguida de tus notas.
 // Las fotos se incrustan en el archivo, así que se abre sin internet.
-import { t, idioma } from "./i18n.js?v=202610301451";
-import { textoAHtml, notasAHtml } from "./escritura.js?v=202610301451";
+import { t, idioma } from "./i18n.js?v=202610301510";
+import { textoAHtml, notasAHtml } from "./escritura.js?v=202610301510";
 
 const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const escapar = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ESC[c]);
@@ -95,7 +95,7 @@ export async function crearResumen({ lista, saltadas, notas, titulo }) {
 <body>
 <main>
 <header>
-  <p class="eti">The Berean Way · ${t("classSummary")}</p>
+  <p class="eti">Berean Reveal · ${t("classSummary")}</p>
   <h1>${escapar(nombre)}</h1>
   <p class="fecha">${escapar(fecha)} · ${visibles.length} ${visibles.length === 1 ? t("slide") : t("slides")}</p>
 </header>

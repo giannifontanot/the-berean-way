@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610301451";
+import { CONFIG } from "../config.js?v=202610301510";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -101,7 +101,7 @@ export const PRESENTADOR_ORIGINAL = "xWkkWXXR0jcHMnOGEwYjrxzxGtX2";
 function nuevoCodigo() {
   const L = "23456789abcdefghjkmnpqrstuvwxyz";
   let c = "";
-  for (let i = 0; i < 4; i++) c += L[Math.floor(Math.random() * L.length)];
+  for (let i = 0; i < 5; i++) c += L[Math.floor(Math.random() * L.length)];
   return c;
 }
 export function limpiarCodigo(c) {
