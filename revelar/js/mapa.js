@@ -35,7 +35,20 @@ export function crearMapa(elemento, { textoDosDedos = "Usa dos dedos para mover 
   cerrar.textContent = "✕";
   cerrar.setAttribute("aria-label", "Cerrar");
 
-  function verTierra() { mapa.fitBounds(TIERRA, { animate: false }); }
+  // Toda la Tierra sin franjas oscuras: en la caja cuadrada, el mapa llena todo el alto
+  // (de polo a polo). En pantalla completa vertical se ve todo el ancho, centrado.
+  function verTierra() {
+    const { x: w, y: h } = mapa.getSize();
+    if (h <= w * 1.15) {
+      const z = Math.ceil(Math.log2(h / 256) * 4) / 4;   // mundo ≥ alto de la caja
+      mapa.setView([0, 0], z, { animate: false });
+      return;
+    }
+    mapa.fitBounds(TIERRA, { animate: false });
+    const mundo = mapa.getPixelWorldBounds(), vista = mapa.getPixelBounds();
+    const mover = (mundo.min.y + mundo.max.y) / 2 - (vista.min.y + vista.max.y) / 2;
+    if (vista.max.y - vista.min.y >= mundo.max.y - mundo.min.y && Math.abs(mover) > 0.5) mapa.panBy([0, mover], { animate: false });
+  }
   function pantallaCompleta(si, desdeHistoria) {
     if (si === completo) return;
     completo = si;
