@@ -42,7 +42,8 @@ for s_ in sesiones:
     o = obtener(f"/revelar/{s_}/orden")
     n = obtener(f"/revelar_privado/{s_}/notas", superficial=True) or {}
     sb = obtener(f"/revelar/{s_}/subidas", superficial=True) or {}
-    print(f"::notice::{s_}: orden={o} · notas={sorted(n)} · subidas={sorted(sb)}")
+    fn = {k: (obtener(f"/revelar_privado/{s_}/notas/{k}") or "")[:60] for k in n if "foto" in k}
+    print(f"::notice::{s_}: {len(o or [])} en orden · notas de fotos del repo={fn} · subidas foto={[k for k in sb if 'foto' in k]}")
 cambios, resumen = {}, []
 for s in sesiones:
     orden = obtener(f"/revelar/{s}/orden")
