@@ -1692,3 +1692,11 @@ body.con-mapa-completo { overflow: hidden; }
 }
 .chk-ubic input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
 .chk-ubic input:disabled + span { opacity: 0.5; }
+
+/* Mis lecciones: encabezado de la lista con + Nueva a la derecha */
+.lec-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 6px 0 12px; }
+.lec-cabecera .lec-sub { margin: 0; }
+.lec-cabecera .lec-nueva { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; }
+.lec-cabecera .lec-nueva .ico { width: 18px; height: 18px; }
+.lec-mapa { padding-bottom: 18px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.pag-lecciones a.btn-barra { text-decoration: none; }
