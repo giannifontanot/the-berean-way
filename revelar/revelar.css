@@ -1526,3 +1526,18 @@ a.btn-barra { text-decoration: none; box-sizing: border-box; }
 @media (prefers-reduced-motion: reduce) {
   #notasActual.notas-entra { animation-duration: 0.01s; }
 }
+
+/* Varios maestros: tu enlace y las copias recibidas */
+.lec-enlace {
+  display: flex; flex-direction: column; gap: 2px;
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 10px 14px; margin-bottom: 16px; font-size: 13px; color: var(--muted);
+}
+.lec-enlace > b { color: var(--text); font-size: 15px; word-break: break-all; }
+.lec-enlace small b { color: var(--gold); letter-spacing: 0.08em; }
+.lec-sub { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 4px 0 10px; }
+.lec-buzon { margin-bottom: 22px; }
+.lec.recibida { border-color: var(--gold); }
+.lec-recibida-acc { display: flex; gap: 8px; margin-top: 8px; }
+.lec-recibida-acc .btn { padding: 6px 14px; font-size: 14px; }
+#codigoDestino { text-transform: lowercase; letter-spacing: 0.1em; font-size: 18px; }

@@ -24,7 +24,7 @@
 
   <script type="module">
     import { CONFIG } from "./config.js?v=202610300845";
-    import { crearStore, crearCatalogo, sesionActual, ordenar, esTemporal, idReal, esFoco, FOCO } from "./js/store.js?v=202610300845";
+    import { crearStore, crearCatalogo, limpiarCodigo, sesionActual, ordenar, esTemporal, idReal, esFoco, FOCO } from "./js/store.js?v=202610300845";
     import { idioma, t, traducir } from "./js/i18n.js?v=202610300845";
     import { textoAHtml, esEscritura, esSubida } from "./js/escritura.js?v=202610300845";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
@@ -44,13 +44,16 @@
 
     // Un solo enlace para siempre: sin ?s= se sigue la lección que el presentador
     // puso en vivo. Si cambia de lección, la página se recarga sola.
+    // ?p=<código> sigue la lección en vivo de ese maestro; sin código, la del presentador original.
     let sesion = sesionActual();
     if (!new URLSearchParams(location.search).has("s")) {
+      const codigo = limpiarCodigo(new URLSearchParams(location.search).get("p")) || null;
       try {
         const cat = await crearCatalogo();
-        const actual = await cat.leerActual();
+        const actual = await cat.leerActual(codigo);
         if (actual) sesion = actual;
-        cat.onActual((a) => { if (a && a !== sesion) location.reload(); });
+        else if (codigo) sesion = "sin-leccion-" + codigo;   // aún no hay lección en vivo: espera
+        cat.onActual(codigo, (a) => { if (a && a !== sesion) location.reload(); });
       } catch {}
     }
     const store = await crearStore(sesion);

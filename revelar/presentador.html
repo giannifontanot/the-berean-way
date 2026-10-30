@@ -243,7 +243,7 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, crearCatalogo, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202610300845";
+    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202610300845";
     import { crearPapel } from "./js/papel.js?v=202610300845";
     import { idioma, t, traducir } from "./js/i18n.js?v=202610300845";
     import { textoAHtml, notasAHtml } from "./js/escritura.js?v=202610300845";
@@ -335,7 +335,10 @@
       usuario = u;
       $("entrada").hidden = !!u;
       $("panel").hidden = !u;
-      if (u) { escucharNotas(); escucharLeccion(); }
+      if (u) {
+        escucharNotas(); escucharLeccion();
+        catalogo.miPerfil?.().then((p) => { perfil = p; }).catch(() => {});
+      }
       else if (bajaNotas) { try { bajaNotas(); } catch {} bajaNotas = null; notas = {}; }
     });
     $("btnEntrar").addEventListener("click", async () => {
@@ -574,6 +577,7 @@
     // Número de láminas, portada (primera foto, chiquita) y fecha de edición.
     var tFicha = 0, fichaEscrita = "";
     var notasMostradas = null;   // lámina cuyas notas se ven (para animar el cambio)
+    var perfil = null;           // { codigo } del maestro: su enlace para participantes
     function actualizarFicha() {
       clearTimeout(tFicha);
       tFicha = setTimeout(async () => {
@@ -648,7 +652,10 @@
         ponerVivo(true);
         aviso(t("live"));
         // Los participantes (con el enlace de siempre) pasan a esta lección.
-        catalogo.ponerActual(sesion).catch((e) =>
+        (async () => {
+          if (!perfil && catalogo.miPerfil) perfil = await catalogo.miPerfil();
+          await catalogo.ponerActual(sesion, perfil?.codigo);
+        })().catch((e) =>
           aviso(esPermisoDenegado(e) ? t("rulesMissing") : t("liveSwitchFail")));
       } catch (e) { manejarError(e); }
     });
@@ -1333,12 +1340,17 @@
     });
 
     // ---------- Compartir ----------
+    // Enlace de los participantes: ?p=<tu código>. El presentador original conserva
+    // su enlace sin código (el QR que ya tiene impreso sigue sirviendo).
     function enlaceParticipantes() {
       const url = new URL("./", location.href);
       url.search = "";
+      const original = usuario?.uid === PRESENTADOR_ORIGINAL || store.modo === "demo";
+      if (perfil?.codigo && !original) url.searchParams.set("p", perfil.codigo);
       return url.href;
     }
-    $("btnCompartir").addEventListener("click", () => {
+    $("btnCompartir").addEventListener("click", async () => {
+      if (!perfil && catalogo.miPerfil) { try { perfil = await catalogo.miPerfil(); } catch {} }
       const link = enlaceParticipantes();
       $("enlace").value = link;
       if (window.qrcode) {
