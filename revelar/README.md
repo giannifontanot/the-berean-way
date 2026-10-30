@@ -186,7 +186,7 @@ notas, y se recuerda en ese teléfono.
 nueva se guarda en Firebase y reemplaza a la original en todos los teléfonos.
 
 **✎ Editar** (antes Ordenar) se hace en la misma tira: arrastra las láminas para moverlas,
-desmarca la casilla ✓ para ocultarlas (Siguiente las salta) y usa 📝 notas,
+desmarca la casilla ✓ para ocultarlas (Siguiente las salta); toca una lámina para ver sus notas abajo (✎ para cambiarlas), y usa
 ✎ editar (o cambiar foto) y 🗑 borrar en cada una. Las ocultas aparecen
 atenuadas solo mientras ordenas. **Listo** guarda.
 
@@ -202,7 +202,7 @@ enviar. Las láminas ocultas no se incluyen.
 
 Cada lámina puede tener notas: viñetas con `-`, `*rojo*` y `==resaltado==`.
 Al crear una escritura o subir **una** foto se te piden; si no, usa **⋯ → Notas**
-en la tira, **✎** en el cuadro de notas o **📝** en Ordenar. Se guardan en `revelar_privado/<sesión>/notas`,
+en la tira, o en **✎ Editar**: toca la lámina y usa **✎** en el cuadro de notas. Se guardan en `revelar_privado/<sesión>/notas`,
 que **solo tu cuenta** puede leer: nunca llegan a los participantes.
 
 ### Agregar fotos desde el teléfono
