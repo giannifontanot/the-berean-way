@@ -92,7 +92,7 @@ cambia lo de otro (lo garantizan las reglas de Firebase; ver
   **Ubicación** (una casilla: marcada = apareces en el mapa con tu ubicación
   aproximada; desmarcada = te quitas). Puntos: verde = tú, rojo = los demás.
 - **Enviar copia:** en **⋯** de una lección, **📤 Enviar copia a otro maestro**
-  con su código. Se envían fotos, escrituras y notas. El otro
+  con su código (o varios, separados por comas). Se envían fotos, escrituras y notas. El otro
   maestro la ve en **Recibidas** y toca **Aceptar** o **Descartar**.
 
 Datos: `revelar_duenos/<lección>` (dueño), `revelar_lecciones/<uid>/…`,

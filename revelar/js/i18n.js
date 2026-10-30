@@ -47,8 +47,9 @@ const TEXTOS = {
     received: "Recibidas", sendCopy: "📤 Enviar copia a otro maestro",
     sendCopyTitle: "Enviar una copia",
     sendCopyText: "Se envían las fotos, las escrituras y tus notas. El otro maestro la acepta en su lista.", includeNotes: "Incluir mis notas",
-    teacherCode: "Código del otro maestro", sendBtn: "Enviar",
-    copySent: "Copia enviada", codeNotFound: "No existe un maestro con ese código",
+    teacherCode: "Código del maestro (o varios)", sendBtn: "Enviar",
+    copySent: "Copia enviada", codeNotFound: "No existe un maestro con ese código", copiesSent: "Copia enviada a {n} maestros", someSent: "Enviada a {n}. No existe: {c}", codesNotFound: "No existe: {c}",
+    severalCodes: "Para enviarla a varios maestros, separa los códigos con comas.", codesPh: "k7m2, p4qx",
     fromName: "De {n}", accept: "Aceptar", discard: "Descartar",
     accepting: "Copiando la lección…", accepted: "Lección agregada", discarded: "Descartada",
 
@@ -202,8 +203,9 @@ const TEXTOS = {
     received: "Received", sendCopy: "📤 Send a copy to another teacher",
     sendCopyTitle: "Send a copy",
     sendCopyText: "The photos, the scriptures and your notes are sent. The other teacher accepts it in their list.", includeNotes: "Include my notes",
-    teacherCode: "The other teacher's code", sendBtn: "Send",
-    copySent: "Copy sent", codeNotFound: "No teacher has that code",
+    teacherCode: "Teacher's code (or several)", sendBtn: "Send",
+    copySent: "Copy sent", codeNotFound: "No teacher has that code", copiesSent: "Copy sent to {n} teachers", someSent: "Sent to {n}. Not found: {c}", codesNotFound: "Not found: {c}",
+    severalCodes: "To send it to several teachers, separate the codes with commas.", codesPh: "k7m2, p4qx",
     fromName: "From {n}", accept: "Accept", discard: "Discard",
     accepting: "Copying the lesson…", accepted: "Lesson added", discarded: "Discarded",
 
