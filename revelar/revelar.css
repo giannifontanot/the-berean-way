@@ -1762,3 +1762,13 @@ body.ordenando-activo .barra #btnOrdenar { order: 3; }
 @media (prefers-reduced-motion: reduce) {
   .chk-ubic input:not(:checked) + span { animation: none; }
 }
+
+/* Etiquetas más descriptivas sobre Uso · Mostrar · Ubicación (hasta 2 renglones) */
+.mapa-controles { align-items: flex-end; }
+.ctl-tit {
+  white-space: normal; text-align: center; text-transform: none; letter-spacing: 0.01em;
+  font-size: 12px; line-height: 1.2; max-width: 100%;
+}
+.ctl:nth-child(3) { width: 92px; }
+.ctl:nth-child(1) .ctl-tit { max-width: 90px; }
+@media (max-width: 370px) { .ctl-tit { font-size: 11px; } .ctl:nth-child(3) { width: 80px; } }
