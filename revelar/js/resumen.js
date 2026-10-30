@@ -1,8 +1,8 @@
 // resumen.js — Arma un archivo HTML con el resumen de la clase:
 // cada lámina en orden (foto o escritura) seguida de tus notas.
 // Las fotos se incrustan en el archivo, así que se abre sin internet.
-import { t, idioma } from "./i18n.js?v=202610301122";
-import { textoAHtml, notasAHtml } from "./escritura.js?v=202610301122";
+import { t, idioma } from "./i18n.js?v=202610301125";
+import { textoAHtml, notasAHtml } from "./escritura.js?v=202610301125";
 
 const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const escapar = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ESC[c]);

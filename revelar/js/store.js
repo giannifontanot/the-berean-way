@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610301122";
+import { CONFIG } from "../config.js?v=202610301125";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -209,13 +209,17 @@ async function catalogoFirebase() {
       });
     },
     // Enviar una copia (sin notas) a otro maestro, por su código.
-    async enviarCopia(codigo, origen, titulo) {
+    // Las notas son privadas: si las incluyes, viajan dentro del envío
+    // (solo el maestro que lo recibe puede leer su buzón).
+    async enviarCopia(codigo, origen, titulo, conNotas) {
       const destino = await val(`revelar_codigos/${limpiarCodigo(codigo)}`);
       if (!destino) { const e = new Error("codigo"); e.code = "codigo"; throw e; }
       const u = auth.currentUser;
+      const notas = conNotas ? await val(`revelar_privado/${origen}/notas`) : null;
       await db.push(ref(`revelar_buzon/${destino}`), {
         deUid: u.uid, deNombre: String(u.displayName || u.email || "").slice(0, 80),
         origen, titulo: String(titulo || "").slice(0, 80), creado: Date.now(),
+        ...(notas ? { notas } : {}),
       });
     },
     onBuzon(cb) {
@@ -226,6 +230,7 @@ async function catalogoFirebase() {
       const ahora = Date.now();
       await copiarContenido(datos.origen, destino, {
         [`revelar_lecciones/${uid()}/${destino}`]: { titulo: datos.titulo || "", creada: ahora, editada: ahora },
+        [`revelar_privado/${destino}/notas`]: datos.notas || null,
         [`revelar_buzon/${uid()}/${envio}`]: null,
       });
     },
@@ -400,14 +405,16 @@ function catalogoDemo() {
     onActual(codigo, cb) { oyentesActual.add(cb); cb(actual()); return () => oyentesActual.delete(cb); },
     async ponerActual(sesion) { try { localStorage.setItem(CA, sesion); } catch {} oyentesActual.forEach((cb) => cb(sesion)); },
     async duplicar(origen, destino, ficha) { copiar(origen, destino, true); const v = leer(); v[destino] = ficha; escribir(v); },
-    async enviarCopia(codigo, origen, titulo) {
+    async enviarCopia(codigo, origen, titulo, conNotas) {
       if (limpiarCodigo(codigo) !== "demo") { const e = new Error("codigo"); e.code = "codigo"; throw e; }
-      const b = buzon(); b["env" + Date.now().toString(36)] = { deUid: "demo", deNombre: "Demo", origen, titulo, creado: Date.now() };
+      const notas = conNotas ? leerJ(`revelar-demo:${origen}:notas`) : null;
+      const b = buzon(); b["env" + Date.now().toString(36)] = { deUid: "demo", deNombre: "Demo", origen, titulo, creado: Date.now(), ...(notas && Object.keys(notas).length ? { notas } : {}) };
       escribirBuzon(b);
     },
     onBuzon(cb) { oyentesBuzon.add(cb); cb(buzon()); return () => oyentesBuzon.delete(cb); },
     async aceptarCopia(envio, datos, destino) {
       copiar(datos.origen, destino, false);
+      if (datos.notas) try { localStorage.setItem(`revelar-demo:${destino}:notas`, JSON.stringify(datos.notas)); } catch {}
       const v = leer(); v[destino] = { titulo: datos.titulo, creada: Date.now(), editada: Date.now() }; escribir(v);
       const b = buzon(); delete b[envio]; escribirBuzon(b);
     },

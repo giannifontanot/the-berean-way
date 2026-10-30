@@ -180,6 +180,11 @@
           "creado": {
             ".validate": "newData.isNumber()"
           },
+          "notas": {
+            "$n": {
+              ".validate": "newData.isString() && newData.val().length <= 4000"
+            }
+          },
           "$otro": {
             ".validate": false
           }
