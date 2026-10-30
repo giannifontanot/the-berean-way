@@ -27,14 +27,11 @@ def token(uid):
 
 
 def pedir(metodo, ruta, uid=None, datos=None):
-    url = f"{BASE}/{ruta}.json?ns={NS}"
+    # Como un usuario con sesión: el ID token va en ?auth= (Bearer sería acceso de administrador)
     t = token(uid)
+    url = f"{BASE}/{ruta}.json?ns={NS}" + (f"&auth={t}" if t else "")
     cuerpo = None if datos is None else json.dumps(datos).encode()
     req = urllib.request.Request(url, data=cuerpo, method=metodo)
-    if t:
-        req.add_header("Authorization", "Bearer " + t)
-    if uid == "admin":
-        req.add_header("Authorization", "Bearer owner")
     try:
         with urllib.request.urlopen(req) as r:
             return r.status
@@ -97,8 +94,8 @@ caso("Nadie escribe en la raíz", NO, "PATCH", "", A, {"x": 1})
 caso("A no escribe en lección sin reclamar", NO, "PATCH", "", A, {"revelar/s2/orden": ["x"]})
 
 print(f"\n{total - len(fallas)} de {total} casos correctos")
-for f in fallas:
-    print(f"::error::Regla: falló «{f}»")
+if fallas:
+    print("::error::Reglas que fallaron (" + str(len(fallas)) + "): " + " | ".join(fallas))
 if not fallas:
     print(f"::notice::Reglas probadas: {total} de {total} casos correctos")
 sys.exit(1 if fallas else 0)
