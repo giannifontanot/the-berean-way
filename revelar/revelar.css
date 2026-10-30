@@ -1703,3 +1703,21 @@ body.con-mapa-completo { overflow: hidden; }
 
 /* Modo Editar: la lámina tocada queda marcada y sus notas se ven abajo */
 .panel.ordenando .tira-item.elegida .tira-marco { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* Presentador: botones al centro (más grandes y separados), participantes a la derecha */
+body:not(.pag-lecciones) .barra { justify-content: space-between; gap: 8px; }
+body:not(.pag-lecciones) .barra .barra-acciones { flex: 1; justify-content: center; margin: 0; gap: 12px; }
+body:not(.pag-lecciones) .barra .btn-barra { width: 44px; height: 44px; }
+body:not(.pag-lecciones) .barra .btn-barra .ico { width: 21px; height: 21px; }
+body:not(.pag-lecciones) .barra #btnCompartir { margin-left: 0; }
+body:not(.pag-lecciones) .barra .estado { flex: none; }
+@media (max-width: 430px) {
+  body:not(.pag-lecciones) .barra { padding-left: 8px; padding-right: 10px; gap: 6px; }
+  body:not(.pag-lecciones) .barra .barra-acciones { gap: 8px; }
+  body:not(.pag-lecciones) .barra .btn-barra { width: 40px; height: 40px; }
+  body:not(.pag-lecciones) .barra .btn-barra .ico { width: 19px; height: 19px; }
+}
+@media (max-width: 370px) {
+  body:not(.pag-lecciones) .barra .barra-acciones { gap: 5px; }
+  body:not(.pag-lecciones) .barra .btn-barra { width: 38px; height: 38px; }
+}
