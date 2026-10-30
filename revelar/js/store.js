@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610301447";
+import { CONFIG } from "../config.js?v=202610301451";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -238,6 +238,13 @@ async function catalogoFirebase() {
     onBuzon(cb) {
       return db.onValue(ref(`revelar_buzon/${uid()}`), (s) => cb(s.val() || {}), () => cb({}));
     },
+    // Mis maestros para enviar copias: { código: nombre }
+    onContactos(cb) {
+      return db.onValue(ref(`revelar_maestros/${uid()}/contactos`), (s) => cb(s.val() || {}), () => cb({}));
+    },
+    async existeCodigo(codigo) { return !!(await val(`revelar_codigos/${limpiarCodigo(codigo)}`)); },
+    guardarContacto: (codigo, nombre) => db.set(ref(`revelar_maestros/${uid()}/contactos/${limpiarCodigo(codigo)}`), String(nombre).slice(0, 40)),
+    quitarContacto: (codigo) => db.remove(ref(`revelar_maestros/${uid()}/contactos/${codigo}`)),
     async aceptarCopia(envio, datos, destino) {
       await db.set(ref(`revelar_duenos/${destino}`), uid());
       const ahora = Date.now();
@@ -445,6 +452,10 @@ function catalogoDemo() {
       escribirBuzon(b);
     },
     onBuzon(cb) { oyentesBuzon.add(cb); cb(buzon()); return () => oyentesBuzon.delete(cb); },
+    onContactos(cb) { const f = () => cb(leerJ("revelar-demo:contactos")); oyentesBuzon.add(f); f(); return () => oyentesBuzon.delete(f); },
+    async existeCodigo(codigo) { return limpiarCodigo(codigo) === "demo"; },
+    async guardarContacto(codigo, nombre) { const v = leerJ("revelar-demo:contactos"); v[limpiarCodigo(codigo)] = nombre; try { localStorage.setItem("revelar-demo:contactos", JSON.stringify(v)); } catch {} oyentesBuzon.forEach((f) => f(buzon())); },
+    async quitarContacto(codigo) { const v = leerJ("revelar-demo:contactos"); delete v[codigo]; try { localStorage.setItem("revelar-demo:contactos", JSON.stringify(v)); } catch {} oyentesBuzon.forEach((f) => f(buzon())); },
     async aceptarCopia(envio, datos, destino) {
       copiar(datos.origen, destino, false);
       if (datos.notas) try { localStorage.setItem(`revelar-demo:${destino}:notas`, JSON.stringify(datos.notas)); } catch {}

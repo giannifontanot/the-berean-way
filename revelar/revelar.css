@@ -1829,3 +1829,32 @@ button, a[href], [role="button"] { transition: scale 0.18s cubic-bezier(0.3, 1.4
 .presionado { scale: 0.92; filter: brightness(1.18); transition: scale 0.12s ease-out, filter 0.12s ease-out; }
 .tira-item.presionado { scale: 0.96; }
 @media (prefers-reduced-motion: reduce) { .presionado { scale: 1; } }
+
+/* Enviar copia: maestros en fila (se acomodan en varios renglones), con espacio para no errar */
+.dlg-enviar { width: min(440px, calc(100vw - 32px)); }
+.contactos { display: flex; flex-wrap: wrap; gap: 12px; margin: 6px 0 16px; }
+.contacto {
+  position: relative; display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 34px 10px 12px; min-height: 48px; border-radius: 14px; cursor: pointer;
+  background: var(--bg-2); border: 2px solid var(--line); color: var(--text); font: inherit;
+}
+.contacto input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.contacto .caja { width: 22px; height: 22px; flex: none; border-radius: 6px; border: 2px solid var(--muted); display: grid; place-items: center; }
+.contacto.marcado { border-color: var(--ok); background: rgba(124, 207, 154, 0.12); }
+.contacto.marcado .caja { background: var(--ok); border-color: var(--ok); }
+.contacto.marcado .caja::after { content: ""; width: 6px; height: 11px; border: solid #0d2a1a; border-width: 0 3px 3px 0; transform: translateY(-1px) rotate(45deg); }
+.contacto .nombre { font-weight: 700; font-size: 15px; }
+.contacto small { color: var(--muted); font-size: 11px; letter-spacing: 0.08em; }
+.contacto .quitar {
+  position: absolute; top: 2px; right: 4px; width: 26px; height: 26px; border: 0; background: none;
+  color: var(--muted); font-size: 13px; cursor: pointer; border-radius: 999px;
+}
+.contacto.agregar { padding: 10px 16px; border-style: dashed; color: var(--accent); font-weight: 700; justify-content: center; }
+.contacto.agregar span { font-size: 20px; line-height: 1; }
+.nuevo-contacto { margin: 0 0 8px; }
+.nuevo-contacto .fila-maestro { display: flex; gap: 10px; }
+.nuevo-contacto .campo-nombre { flex: 1; }
+.nuevo-contacto .campo-codigo { flex: 0 0 36%; }
+.nuevo-contacto input { width: 100%; }
+#contactoCodigo { text-transform: lowercase; letter-spacing: 0.1em; }
+.nuevo-contacto .error-m { color: var(--danger); margin: -4px 0 8px; font-size: 14px; }

@@ -137,6 +137,11 @@
         "uso": {
           ".validate": "newData.isString() && (newData.val() === 'iglesia' || newData.val() === 'otro')"
         },
+        "contactos": {
+          "$c": {
+            ".validate": "$c.matches(/^[a-z0-9]{4,8}$/) && newData.isString() && newData.val().length <= 40"
+          }
+        },
         "$otro": {
           ".validate": false
         }
