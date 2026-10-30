@@ -90,7 +90,7 @@ cambia lo de otro (lo garantizan las reglas de Firebase; ver
 - **Encima del mapa, en una fila:** **Uso** (⛪ iglesia · 👥 otro, lo elige cada
   maestro), **Mostrar** (⛪ · 👥 · 🌐 todos; se recuerda en ese teléfono) y
   **Ubicación** (una casilla: marcada = apareces en el mapa con tu ubicación
-  aproximada; desmarcada = te quitas). Puntos: dorado = iglesia, azul = otro, verde = tú.
+  aproximada; desmarcada = te quitas). Puntos: verde = tú, rojo = los demás.
 - **Enviar copia:** en **⋯** de una lección, **📤 Enviar copia a otro maestro**
   con su código. Se envían fotos, escrituras y, si se marca «Incluir mis notas», las notas. El otro
   maestro la ve en **Recibidas** y toca **Aceptar** o **Descartar**.
