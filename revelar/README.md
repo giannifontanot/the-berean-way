@@ -69,8 +69,8 @@ cambia lo de otro (lo garantizan las reglas de Firebase; ver
 `.github/scripts/probar-reglas.py`, 38 casos que se prueban en cada cambio).
 
 - Cada maestro tiene un **código** (p. ej. `k7m2`) y su **enlace para
-  participantes**: `berean-revelar.web.app/?p=k7m2`. Aparece arriba en
-  **Mis lecciones** y en **Compartir**. Sus participantes solo siguen sus clases.
+  participantes**: `berean-revelar.web.app/?p=k7m2`. El código aparece grande
+  arriba en **Mis lecciones**; el enlace y su QR, en **Compartir**. Sus participantes solo siguen sus clases.
 - El presentador original conserva su enlace sin código.
 - **Alumnos con varios maestros:** en la pantalla de participantes, el botón
   discreto 👥 (arriba a la derecha) abre **Mis maestros**: escriben el código del
