@@ -5,8 +5,9 @@ PROYECTO = "berean-revelar"
 CLI = ["npx", "--yes", "firebase-tools@15"]
 YO = "xWkkWXXR0jcHMnOGEwYjrxzxGtX2"
 COD = sys.argv[1]
+LINEAS = []
 def nota(*a):
-    print("::notice::" + " ".join(str(x) for x in a).replace("\n", " "))
+    LINEAS.append(" ".join(str(x) for x in a).replace("\n", " "))
 def obtener(ruta, sup=False):
     cmd = CLI + ["database:get", ruta, "--project", PROYECTO] + (["--shallow"] if sup else [])
     return json.loads(subprocess.run(cmd, check=True, capture_output=True, text=True).stdout or "null")
@@ -47,3 +48,6 @@ for e, x in (obtener(f"/revelar_buzon/{destino}") or {}).items():
     nota("envio", e, {c: (y if c in ("origen", "titulo", "deNombre", "creado") else "…") for c, y in x.items()})
 nota("duenos de clase:", obtener("/revelar_duenos/clase"))
 nota("lecciones de Carlet:", obtener(f"/revelar_lecciones/{destino}", True))
+
+print("::notice::" + " || ".join(LINEAS[:20]))
+print("::notice::" + " || ".join(LINEAS[20:]))
