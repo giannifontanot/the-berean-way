@@ -1576,3 +1576,31 @@ a.btn-barra { text-decoration: none; box-sizing: border-box; }
 .dlg-maestros .fila-maestro input { width: 100%; }
 .dlg-maestros .fila-maestro { align-items: flex-start; }
 .dlg-maestros #mCodigo { font-size: 16px; }
+
+/* Administrador: pantalla de maestros */
+.lec-admin {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; margin-bottom: 16px; border-radius: var(--radius);
+  background: var(--card); border: 1px solid var(--line); color: var(--text);
+  text-decoration: none; font-weight: 700;
+}
+.lec-admin span[aria-hidden] { color: var(--muted); font-size: 20px; }
+.lec-bloqueado { background: rgba(229, 115, 115, 0.12); border: 1px solid rgba(229, 115, 115, 0.5); color: var(--text); border-radius: var(--radius); padding: 12px 14px; margin: 0 0 16px; }
+.pag-maestros .barra { justify-content: flex-start; gap: 12px; }
+.pag-maestros a.btn-barra { text-decoration: none; }
+.adm-resumen { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.adm-resumen div { background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px; text-align: center; }
+.adm-resumen b { display: block; font-size: 24px; }
+.adm-resumen span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.lec.maestro { align-items: center; }
+.lec.maestro .lec-info p { margin: 2px 0 0; overflow-wrap: anywhere; }
+.adm-codigo { color: var(--gold); letter-spacing: 0.08em; font-weight: 700; }
+.adm-tu { font-size: 11px; font-weight: 700; color: var(--ok); text-transform: uppercase; letter-spacing: 0.06em; }
+.adm-estado { display: inline-block; margin-top: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--danger); }
+.lec.maestro.bloqueado { opacity: 0.75; border-color: rgba(229, 115, 115, 0.5); }
+.adm-btn {
+  flex: none; margin: 0 12px; padding: 8px 14px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--bg-2); color: var(--text);
+  font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.adm-btn.peligro { color: var(--danger); border-color: rgba(229, 115, 115, 0.5); }

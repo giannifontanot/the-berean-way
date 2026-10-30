@@ -24,7 +24,9 @@
 //   revelar_actual = "<sesion>"  Igual, para el enlace original sin ?p= (presentador original).
 //   revelar_buzon/<uid>/<envio> = { deUid, deNombre, origen, titulo, creado }
 //     Copias de lecciones que otro maestro te envió.
-import { CONFIG } from "../config.js?v=202610301029";
+//   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
+//     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
+import { CONFIG } from "../config.js?v=202610301122";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -148,6 +150,34 @@ async function catalogoFirebase() {
         return perfil;
       }
       throw new Error("No se pudo crear tu código");
+    },
+    // Datos que ve el administrador: cuántas lecciones y última actividad.
+    actualizarPerfil(datos) {
+      const u = auth.currentUser;
+      return db.update(ref(`revelar_maestros/${u.uid}`), {
+        nombre: String(u.displayName || u.email || "").slice(0, 80),
+        correo: String(u.email || "").slice(0, 120),
+        activo: Date.now(), ...datos,
+      });
+    },
+    onBloqueado(cb) {
+      return db.onValue(ref(`revelar_bloqueados/${uid()}`), (s) => cb(s.val() === true), () => cb(false));
+    },
+    esAdmin: () => uid() === PRESENTADOR_ORIGINAL,
+    // Administrador: todos los maestros y quién está bloqueado
+    onMaestros(cb, onError) {
+      return db.onValue(ref("revelar_maestros"), (s) => cb(s.val() || {}), onError);
+    },
+    onBloqueados(cb) {
+      return db.onValue(ref("revelar_bloqueados"), (s) => cb(s.val() || {}), () => cb({}));
+    },
+    async bloquear(otro, codigo, si) {
+      if (si) {
+        await db.set(ref(`revelar_bloqueados/${otro}`), true);
+        if (codigo) await db.remove(ref(`revelar_vivo/${codigo}`));   // sus alumnos dejan de ver su clase
+      } else {
+        await db.remove(ref(`revelar_bloqueados/${otro}`));
+      }
     },
     onLecciones(cb, onError) {
       return db.onValue(ref(`revelar_lecciones/${uid()}`), (s) => cb(s.val() || {}), onError);
@@ -315,7 +345,7 @@ async function storeFirebase(sesion) {
 /* ------------------------------ Demo ------------------------------- */
 function catalogoDemo() {
   const CL = "revelar-demo:lecciones", CA = "revelar-demo:actual", CB = "revelar-demo:buzon";
-  const oyentes = new Set(), oyentesActual = new Set(), oyentesBuzon = new Set();
+  const oyentes = new Set(), oyentesActual = new Set(), oyentesBuzon = new Set(), oyentesBloq = new Set();
   const leerJ = (k) => { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch { return {}; } };
   const leer = () => leerJ(CL);
   const escribir = (v) => { try { localStorage.setItem(CL, JSON.stringify(v)); } catch {} oyentes.forEach((cb) => cb(v)); };
@@ -339,6 +369,25 @@ function catalogoDemo() {
     onUsuario(cb) { cb({ uid: "demo", displayName: "Demo" }); return () => {}; },
     async entrar() {},
     async miPerfil() { return { codigo: "demo", nombre: "Demo" }; },
+    async actualizarPerfil() {},
+    onBloqueado(cb) { cb(false); return () => {}; },
+    esAdmin: () => true,
+    onMaestros(cb) {
+      const ahora = Date.now();
+      cb({
+        demo: { codigo: "demo", nombre: "Demo (tú)", correo: "demo@ejemplo.com", lecciones: Object.keys(leer()).length, activo: ahora, creado: ahora },
+        m2: { codigo: "k7m2", nombre: "Ana López", correo: "ana@ejemplo.com", lecciones: 4, activo: ahora - 86400000 * 2, creado: ahora - 86400000 * 9 },
+        m3: { codigo: "p4qx", nombre: "Pastor Juan", correo: "juan@ejemplo.com", lecciones: 1, activo: ahora - 86400000 * 30, creado: ahora - 86400000 * 40 },
+      });
+      return () => {};
+    },
+    onBloqueados(cb) { const f = () => cb(leerJ("revelar-demo:bloqueados")); oyentesBloq.add(f); f(); return () => oyentesBloq.delete(f); },
+    async bloquear(otro, codigo, si) {
+      const v = leerJ("revelar-demo:bloqueados");
+      if (si) v[otro] = true; else delete v[otro];
+      try { localStorage.setItem("revelar-demo:bloqueados", JSON.stringify(v)); } catch {}
+      oyentesBloq.forEach((f) => f());
+    },
     onLecciones(cb) { oyentes.add(cb); cb(leer()); return () => oyentes.delete(cb); },
     onLeccion(id, cb) { const f = (v) => cb(v[id] || null); oyentes.add(f); f(leer()); return () => oyentes.delete(f); },
     async guardarLeccion(id, datos) {

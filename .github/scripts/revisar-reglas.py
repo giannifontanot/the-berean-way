@@ -20,6 +20,8 @@ ESCRITURA_PUBLICA = {"rules/revelar/$sesion/presencia/$conexion"}
 LECTURA_PUBLICA = {"rules/revelar/$sesion", "rules/revelar_vivo/$codigo", "rules/revelar_actual"}
 DUENO = "root.child('revelar_duenos/' + $sesion).val() === auth.uid"
 YO = "auth.uid === $uid"
+BLOQ = "!root.child('revelar_bloqueados/' + auth.uid).exists()"
+ADMIN = "auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'"
 
 # Ruta → (clave, texto que debe contener)
 OBLIGATORIAS = [
@@ -37,6 +39,16 @@ OBLIGATORIAS = [
     ("rules/revelar_vivo/$codigo", ".write", "root.child('revelar_codigos/' + $codigo).val() === auth.uid"),
     ("rules/revelar_duenos/$sesion", ".write", "!data.exists() && newData.val() === auth.uid"),
     ("rules/revelar_codigos/$codigo", ".write", "!data.exists() && newData.val() === auth.uid"),
+    # Maestros bloqueados: no escriben nada
+    ("rules/revelar/$sesion/reveladas", ".write", BLOQ),
+    ("rules/revelar/$sesion/escrituras", ".write", BLOQ),
+    ("rules/revelar/$sesion/subidas", ".write", BLOQ),
+    ("rules/revelar_duenos/$sesion", ".write", BLOQ),
+    ("rules/revelar_lecciones/$uid", ".write", BLOQ),
+    ("rules/revelar_buzon/$uid/$envio", ".write", BLOQ),
+    # Solo el administrador bloquea y ve a todos los maestros
+    ("rules/revelar_bloqueados/$uid", ".write", ADMIN),
+    ("rules/revelar_maestros", ".read", ADMIN),
 ]
 
 errores = []

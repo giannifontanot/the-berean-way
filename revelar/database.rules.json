@@ -4,19 +4,19 @@
       "$sesion": {
         ".read": true,
         "reveladas": {
-          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
+          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()",
           "$foto": {
             ".validate": "newData.isNumber()"
           }
         },
         "orden": {
-          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
+          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()",
           "$i": {
             ".validate": "newData.isString()"
           }
         },
         "escrituras": {
-          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
+          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()",
           "$e": {
             ".validate": "newData.hasChildren(['texto'])",
             "cita": {
@@ -37,7 +37,7 @@
           }
         },
         "subidas": {
-          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
+          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()",
           "$f": {
             ".validate": "newData.hasChildren(['src'])",
             "src": {
@@ -65,7 +65,7 @@
     "revelar_privado": {
       "$sesion": {
         ".read": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
-        ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
+        ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()",
         "notas": {
           "$n": {
             ".validate": "newData.isString() && newData.val().length <= 4000"
@@ -79,14 +79,14 @@
     "revelar_duenos": {
       "$sesion": {
         ".read": "auth != null",
-        ".write": "auth != null && ((!data.exists() && newData.val() === auth.uid) || data.val() === auth.uid)",
+        ".write": "auth != null && ((!data.exists() && newData.val() === auth.uid) || data.val() === auth.uid) && !root.child('revelar_bloqueados/' + auth.uid).exists()",
         ".validate": "newData.isString() && newData.val().length <= 128"
       }
     },
     "revelar_lecciones": {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
-        ".write": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid && !root.child('revelar_bloqueados/' + auth.uid).exists()",
         "$leccion": {
           "titulo": {
             ".validate": "newData.isString() && newData.val().length <= 80"
@@ -127,20 +127,30 @@
         },
         "$otro": {
           ".validate": false
+        },
+        "lecciones": {
+          ".validate": "newData.isNumber()"
+        },
+        "activo": {
+          ".validate": "newData.isNumber()"
+        },
+        "correo": {
+          ".validate": "newData.isString() && newData.val().length <= 120"
         }
-      }
+      },
+      ".read": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'"
     },
     "revelar_codigos": {
       "$codigo": {
         ".read": "auth != null",
-        ".write": "auth != null && !data.exists() && newData.val() === auth.uid",
+        ".write": "auth != null && !data.exists() && newData.val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()",
         ".validate": "newData.isString() && $codigo.matches(/^[a-z0-9]{4,8}$/)"
       }
     },
     "revelar_vivo": {
       "$codigo": {
         ".read": true,
-        ".write": "auth != null && root.child('revelar_codigos/' + $codigo).val() === auth.uid",
+        ".write": "(auth != null && root.child('revelar_codigos/' + $codigo).val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()) || (auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2')",
         ".validate": "newData.isString() && newData.val().length <= 40"
       }
     },
@@ -153,7 +163,7 @@
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
         "$envio": {
-          ".write": "auth != null && ((!data.exists() && newData.child('deUid').val() === auth.uid) || (auth.uid === $uid && !newData.exists()))",
+          ".write": "auth != null && ((!data.exists() && newData.child('deUid').val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()) || (auth.uid === $uid && !newData.exists()))",
           ".validate": "newData.hasChildren(['deUid', 'origen', 'titulo'])",
           "deUid": {
             ".validate": "newData.isString()"
@@ -174,6 +184,14 @@
             ".validate": false
           }
         }
+      }
+    },
+    "revelar_bloqueados": {
+      ".read": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2')",
+        ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+        ".validate": "newData.val() === true"
       }
     }
   }
