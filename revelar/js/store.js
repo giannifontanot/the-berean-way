@@ -17,7 +17,7 @@
 //     Lista de tus lecciones (solo tu cuenta la lee). Cada lección es una sesión.
 //   revelar_actual = "<sesion>"  La lección que está (o estuvo) en vivo. Los
 //     participantes abren siempre el mismo enlace y siguen esta lección.
-import { CONFIG } from "../config.js?v=202610300841";
+import { CONFIG } from "../config.js?v=202610300845";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 

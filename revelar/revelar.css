@@ -1519,10 +1519,10 @@ a.btn-barra { text-decoration: none; box-sizing: border-box; }
 
 /* Notas: al cambiar de lámina, el texto nuevo aparece suavemente */
 @keyframes notasEntra {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: none; }
 }
-#notasActual.notas-entra { animation: notasEntra 0.45s cubic-bezier(0.25, 0.8, 0.3, 1) both; }
+#notasActual.notas-entra { animation: notasEntra 1.6s cubic-bezier(0.22, 0.6, 0.3, 1) both; }
 @media (prefers-reduced-motion: reduce) {
   #notasActual.notas-entra { animation-duration: 0.01s; }
 }
