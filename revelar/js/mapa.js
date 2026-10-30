@@ -60,7 +60,7 @@ export function crearMapa(elemento, { textoDosDedos = "Usa dos dedos para mover 
         const tactil = L.Browser.mobile || L.Browser.touch && !L.Browser.pointer || matchMedia("(pointer: coarse)").matches;
         mapa = L.map(elemento, {
           worldCopyJump: true, scrollWheelZoom: false, doubleClickZoom: false,
-          zoomSnap: 0.25, minZoom: 0, dragging: !tactil, touchZoom: true,
+          zoomSnap: 0.25, minZoom: 0, dragging: !tactil, touchZoom: true, zoomControl: false,
         });
         esTactil = tactil;
         if (tactil) {
