@@ -1568,3 +1568,11 @@ a.btn-barra { text-decoration: none; box-sizing: border-box; }
 .dlg-maestros .error-m { color: var(--danger); margin: -4px 0 8px; font-size: 14px; }
 .codigo-grande { text-align: center; margin: 4px 0 12px; color: var(--muted); }
 .codigo-grande b { display: block; font-size: 34px; letter-spacing: 0.25em; color: var(--text); margin-top: 2px; }
+/* Código y nombre en la misma fila */
+.dlg-maestros .fila-maestro { display: flex; gap: 10px; align-items: flex-end; }
+.dlg-maestros .fila-maestro .campo { margin-bottom: 12px; min-width: 0; }
+.dlg-maestros .campo-codigo { flex: 0 0 34%; }
+.dlg-maestros .campo-nombre { flex: 1 1 auto; }
+.dlg-maestros .fila-maestro input { width: 100%; }
+.dlg-maestros .fila-maestro { align-items: flex-start; }
+.dlg-maestros #mCodigo { font-size: 16px; }

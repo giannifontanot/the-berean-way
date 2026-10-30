@@ -139,9 +139,9 @@ const TEXTOS = {
     participantReadFail: "No se pudo leer la sesión. Revisa las reglas de Firebase.",
     myTeachers: "Mis maestros", followHint: "Toca un maestro para seguir su clase.",
     addTeacher: "Agregar maestro", editTeacher: "Cambiar nombre", codeLabel: "Código del maestro",
-    nameLabel: "Nombre (para ti)", namePhStudent: "p. ej. Pastor Juan", saveFollow: "Guardar y seguir",
+    nameLabel: "Nombre (para ti)", namePhStudent: "Pastor Juan", saveFollow: "Guardar y seguir",
     now: "ahora", teacherWith: "Maestro {c}", mainClass: "The Berean Way", removeTeacher: "Quitar",
-    codeTooShort: "El código tiene 4 letras o números.", classCode: "Código de la clase",
+    codeTooShort: "El código tiene 4 letras o números.", classCode: "Código de la clase", codeShort: "Código", nameShort: "Nombre",
 
     // Documento para imprimir
     classSummary: "Resumen de la clase", madeWith: "Hecho con Revelar · The Berean Way",
@@ -259,9 +259,9 @@ const TEXTOS = {
     participantReadFail: "Couldn't read the session. Check the Firebase rules.",
     myTeachers: "My teachers", followHint: "Tap a teacher to follow their class.",
     addTeacher: "Add a teacher", editTeacher: "Rename", codeLabel: "Teacher's code",
-    nameLabel: "Name (just for you)", namePhStudent: "e.g. Pastor John", saveFollow: "Save and follow",
+    nameLabel: "Name (just for you)", namePhStudent: "Pastor John", saveFollow: "Save and follow",
     now: "now", teacherWith: "Teacher {c}", mainClass: "The Berean Way", removeTeacher: "Remove",
-    codeTooShort: "The code has 4 letters or numbers.", classCode: "Class code",
+    codeTooShort: "The code has 4 letters or numbers.", classCode: "Class code", codeShort: "Code", nameShort: "Name",
 
     classSummary: "Class summary", madeWith: "Made with Revelar · The Berean Way",
   },

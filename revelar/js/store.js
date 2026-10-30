@@ -24,7 +24,7 @@
 //   revelar_actual = "<sesion>"  Igual, para el enlace original sin ?p= (presentador original).
 //   revelar_buzon/<uid>/<envio> = { deUid, deNombre, origen, titulo, creado }
 //     Copias de lecciones que otro maestro te envió.
-import { CONFIG } from "../config.js?v=202610301020";
+import { CONFIG } from "../config.js?v=202610301029";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
