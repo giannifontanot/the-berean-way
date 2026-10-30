@@ -105,7 +105,7 @@ export function crearMapa(elemento, { textoDosDedos = "Usa dos dedos para mover 
       capa.clearLayers();
       for (const p of puntos) {
         const color = p.color || "#e8c170";
-        L.circleMarker([p.lat, p.lng], { radius: 8, color, weight: 2, fillColor: color, fillOpacity: 0.8, className: p.clase || "" })
+        L.circleMarker([p.lat, p.lng], { radius: p.radio || 8, color, weight: 2, fillColor: color, fillOpacity: 0.8, className: p.clase || "" })
           .bindPopup(`<b>${escapar(p.titulo)}</b>${p.detalle ? "<br>" + escapar(p.detalle) : ""}`)
           .addTo(capa);
       }
