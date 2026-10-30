@@ -49,10 +49,15 @@ for s in sesiones:
     orden = obtener(f"/revelar/{s}/orden")
     if not isinstance(orden, list):
         continue
+    notas = obtener(f"/revelar_privado/{s}/notas") or {}
     usadas = [k for k in FOTOS if any(str(x).lstrip("~") == k for x in orden)]
+    # Si el orden ya no las tiene pero quedan sus notas, es la lección donde estaban:
+    # se recuperan las 3 y se ponen al principio (luego se acomodan en Editar).
+    if not usadas and any(k in notas for k in FOTOS):
+        usadas = list(FOTOS)
+        orden = list(FOTOS) + [x for x in orden if str(x).lstrip("~") not in FOTOS]
     if not usadas:
         continue
-    notas = obtener(f"/revelar_privado/{s}/notas") or {}
     subidas = obtener(f"/revelar/{s}/subidas", superficial=True) or {}
     nuevo = []
     for x in orden:
