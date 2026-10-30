@@ -1,4 +1,4 @@
-name: Diag enviar copia (solo lectura)
+name: Diag enviar copia (prueba)
 on:
   push:
     branches: [diag-copia]
@@ -7,10 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: "22" }
       - env:
           LLAVE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           printf '%s' "$LLAVE" > "$RUNNER_TEMP/llave.json"
           export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/llave.json"
-          python3 .github/scripts/diag-copia.py k4wyn
+          cd .github/diag && npm init -y >/dev/null && npm i firebase@12 firebase-admin@13 >/dev/null 2>&1
+          timeout 600 node copia.mjs
           rm -f "$RUNNER_TEMP/llave.json"
