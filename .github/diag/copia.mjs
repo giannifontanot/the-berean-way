@@ -22,9 +22,9 @@ try {
   const orden = await val("revelar/clase/orden"); log("orden " + JSON.stringify(orden)?.length);
   const esc = await val("revelar/clase/escrituras"); log("escrituras " + Object.keys(esc || {}).length);
   const sub = await val("revelar/clase/subidas"); log("subidas " + Object.keys(sub || {}).length);
-  await conLimite(update(ref(d, ""), { [`revelar/${DEST}/orden`]: orden, [`revelar/${DEST}/escrituras`]: esc }), 60000, "update orden"); log("orden+escrituras escritas");
+  await conLimite(update(ref(d), { [`revelar/${DEST}/orden`]: orden, [`revelar/${DEST}/escrituras`]: esc }), 60000, "update orden"); log("orden+escrituras escritas");
   for (const [k, f] of Object.entries(sub || {})) { await conLimite(set(ref(d, `revelar/${DEST}/subidas/${k}`), f), 60000, "foto " + k); log("foto " + k); }
-  await conLimite(update(ref(d, ""), { [`revelar_lecciones/${UID}/${DEST}`]: { titulo: "prueba", creada: 1, editada: 1 }, [`revelar_privado/${DEST}/notas`]: { "foto-01": "x" } }), 30000, "final"); log("final ok");
+  await conLimite(update(ref(d), { [`revelar_lecciones/${UID}/${DEST}`]: { titulo: "prueba", creada: 1, editada: 1 }, [`revelar_privado/${DEST}/notas`]: { "foto-01": "x" } }), 30000, "final"); log("final ok");
 } catch (e) { log("ERROR " + (e.code || "") + " " + e.message); }
 finally {
   const db = admin.database();
