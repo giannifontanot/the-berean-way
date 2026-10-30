@@ -1812,3 +1812,11 @@ body.ordenando-activo .barra #btnOrdenar { order: 3; }
   62%  { opacity: 1; transform: translate(-50%, -6px); }
   100% { opacity: 0; transform: translate(-50%, -70px); }
 }
+
+/* Mapa en el teléfono: aviso "Usa dos dedos para mover el mapa" */
+.mapa-dos-dedos {
+  position: absolute; inset: 0; z-index: 900; display: grid; place-items: center; padding: 20px;
+  background: rgba(10, 12, 26, 0.55); color: #fff; font-weight: 700; font-size: 16px; text-align: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.mapa-dos-dedos.ver { opacity: 1; }
