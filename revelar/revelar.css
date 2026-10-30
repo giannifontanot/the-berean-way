@@ -1745,3 +1745,10 @@ body.ordenando-activo .barra #btnOrdenar { order: 3; }
 .notas-editor .rojo { color: #9a1712; }
 .notas-editor mark { background: rgba(240, 196, 50, 0.75); color: inherit; }
 .dlg-notas .marcas { margin: 6px 0 8px; }
+
+/* Invitación a compartir la ubicación (se oculta cuando ya compartes) */
+.mapa-invita {
+  margin: 0 0 12px; padding: 10px 14px; border-radius: 12px;
+  background: rgba(232, 193, 112, 0.12); border: 1px solid rgba(232, 193, 112, 0.45);
+  color: var(--text); font-size: 15px; line-height: 1.35;
+}
