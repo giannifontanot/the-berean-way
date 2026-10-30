@@ -13,7 +13,8 @@ jobs:
         run: |
           cat > p.mjs <<'JS'
           import { chromium } from "playwright";
-          const S = "diag" + Date.now().toString(36);
+          const S = await (await fetch("https://berean-revelar-default-rtdb.firebaseio.com/revelar_actual.json")).json();
+          console.log("lección en vivo (enlace sin código):", S);
           const leer = async () => {
             const r = await fetch(`https://berean-revelar-default-rtdb.firebaseio.com/revelar/${S}/presencia.json`);
             const j = await r.json(); return j ? Object.keys(j).length : 0;
@@ -22,7 +23,9 @@ jobs:
           const pg = await b.newPage();
           pg.on("pageerror", (e) => console.log("PAGEERR", e.message));
           pg.on("console", (m) => { if (m.type() === "error") console.log("CONSOLE", m.text()); });
-          await pg.goto(`https://berean-revelar.web.app/?s=${S}`);
+          let cargas = 0;
+          pg.on("load", () => { cargas++; });
+          await pg.goto(`https://berean-revelar.web.app/`);
           const res = [];
           for (const t of [2, 5, 10, 20, 40]) {
             await pg.waitForTimeout((t - (res.length ? [2,5,10,20,40][res.length-1] : 0)) * 1000);
@@ -31,6 +34,6 @@ jobs:
           await b.close();
           await new Promise((r) => setTimeout(r, 3000));
           res.push(`cerrada=${await leer()}`);
-          console.log(`::notice::Presencia (${S}): ${res.join(" ")}`);
+          console.log(`::notice::Enlace sin código → ${S}: ${res.join(" ")} · cargas de página=${cargas}`);
           JS
           node p.mjs
