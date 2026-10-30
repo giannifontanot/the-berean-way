@@ -8,7 +8,8 @@ import time
 import urllib.error
 import urllib.request
 
-NS = "demo-revelar"
+NS = "demo-revelar-default-rtdb"
+PROYECTO = "demo-revelar"
 BASE = "http://127.0.0.1:9000"
 G = "xWkkWXXR0jcHMnOGEwYjrxzxGtX2"   # presentador original
 A, B = "maestraA", "maestroB"
@@ -20,7 +21,7 @@ def token(uid):
     b = lambda d: base64.urlsafe_b64encode(json.dumps(d).encode()).decode().rstrip("=")
     ahora = int(time.time())
     carga = {"sub": uid, "user_id": uid, "iat": ahora, "exp": ahora + 3600, "auth_time": ahora,
-             "aud": NS, "iss": f"https://securetoken.google.com/{NS}",
+             "aud": PROYECTO, "iss": f"https://securetoken.google.com/{PROYECTO}",
              "firebase": {"sign_in_provider": "google.com", "identities": {}}}
     return b({"alg": "none", "type": "JWT"}) + "." + b(carga) + "."
 
