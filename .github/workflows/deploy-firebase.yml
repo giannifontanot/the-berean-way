@@ -13,6 +13,7 @@ on:
       - "firebase.json"
       - ".firebaserc"
       - ".github/workflows/deploy-firebase.yml"
+      - ".github/scripts/revisar-reglas.py"
   workflow_dispatch:
 
 concurrency:
@@ -54,8 +55,15 @@ jobs:
       # Reglas de seguridad de la base de datos (revelar/database.rules.json).
       # Necesita el rol "Firebase Realtime Database Admin" en la cuenta de servicio.
       # Si falla, no detiene la publicación de las páginas.
-      - name: Deploy database rules
+      # Revisión de seguridad: si las reglas abren algo de más, NO se publican.
+      - name: Revisar reglas
+        id: revisar
         if: env.HAY_LLAVE == 'true'
+        continue-on-error: true
+        run: python3 .github/scripts/revisar-reglas.py revelar/database.rules.json
+
+      - name: Deploy database rules
+        if: env.HAY_LLAVE == 'true' && steps.revisar.outcome == 'success'
         continue-on-error: true
         env:
           LLAVE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

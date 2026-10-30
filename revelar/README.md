@@ -237,8 +237,17 @@ ven al recargar, sin esperar. La configuración está en `firebase.json` y
 **Una sola vez:** el flujo necesita el secreto `FIREBASE_SERVICE_ACCOUNT` en
 GitHub (*Settings → Secrets and variables → Actions*), con la llave JSON de una
 cuenta de servicio de Google Cloud con estos roles: Firebase Hosting Admin,
-Firebase Authentication Admin, Cloud Run Viewer y API Keys Viewer. Mientras no
-exista, el flujo se salta sin fallar.
+Firebase Authentication Admin, Cloud Run Viewer, API Keys Viewer, Service Usage
+Consumer y Firebase Realtime Database Admin. Mientras no exista, el flujo se salta
+sin fallar.
+
+**Reglas de la base de datos.** El mismo flujo publica `database.rules.json`, pero
+antes lo revisa `.github/scripts/revisar-reglas.py`. Si las reglas no son JSON
+válido, no tienen tu UID, dejan escribir sin tu cuenta (salvo la presencia de
+participantes) o dejan leer en público algo privado, **no se publican** y la
+ejecución lo marca con un error. Las páginas se publican de todos modos.
+El archivo del repo manda: un cambio hecho a mano en la consola de Firebase se
+reemplaza en el siguiente push.
 
 ## Al publicar cambios
 
