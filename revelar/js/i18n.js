@@ -154,12 +154,12 @@ const TEXTOS = {
     shareCityQ: "📍 ¿Quieres que el administrador vea en un mapa desde qué ciudad das tus clases?",
     yesShare: "Sí, compartir", notNow: "Ahora no", myLocation: "📍 Mi ubicación",
     locationTitle: "Tu ubicación",
-    locationText: "Opcional. Los maestros de Revelar verán en el mapa tu nombre y tu ciudad aproximada (unos 10 km). Puedes quitarla cuando quieras.",
+    locationText: "Opcional. Los maestros del app verán en el mapa tu nombre y tu ciudad aproximada (unos 10 km). Puedes quitarla cuando quieras.",
     mapInvite: "🌎 ¿Desde dónde enseñan los demás? Marca «Compartir la mía» y aparece tú también.",
     mainUse: "Uso principal", showOnMap: "Mostrar en el mapa", mainUseShort: "Mi uso principal", displayShort: "Mostrar en el mapa", locationShort: "Compartir la mía",
     shareMyLocationTitle: "Compartir mi ubicación aproximada con los maestros", sharingApprox: "compartes tu ubicación aproximada", myLocationTitle: "Mi ubicación (compartiendo)", useChurch: "Iglesia", useOther: "Otro", useAll: "Todos",
     useSaved: "Uso guardado",
-    useChurchInfo: "⛪ Uso Revelar en mi iglesia", useOtherInfo: "👥 Uso Revelar fuera de la iglesia (escuela, grupo, casa…)",
+    useChurchInfo: "⛪ Uso el app en mi iglesia", useOtherInfo: "👥 Uso el app fuera de la iglesia (escuela, grupo, casa…)",
     showChurchInfo: "⛪ Mostrando solo maestros de iglesia", showOtherInfo: "👥 Mostrando solo maestros de otros lugares",
     showAllInfo: "🌐 Mostrando a todos los maestros",
     shareMyLocation: "📍 Compartir mi ubicación", teachersOnMap: "{n} maestros en el mapa", teachersOnMap1: "1 maestro en el mapa", sharingApproxCap: "Compartes tu ubicación aproximada.", teachersMap: "Mapa de maestros",
@@ -171,7 +171,7 @@ const TEXTOS = {
     mapNote: "Solo aparecen los maestros que eligieron compartir su ciudad (aproximada).", myLocationShort: "📍 Mi ubicación", classCode: "Código de la clase", codeShort: "Código", nameShort: "Nombre",
 
     // Documento para imprimir
-    classSummary: "Resumen de la clase", madeWith: "Hecho con Revelar · The Berean Way",
+    classSummary: "Resumen de la clase", madeWith: "The Berean Way",
   },
 
   en: {
@@ -301,12 +301,12 @@ const TEXTOS = {
     shareCityQ: "📍 Would you like the administrator to see on a map which city you teach from?",
     yesShare: "Yes, share", notNow: "Not now", myLocation: "📍 My location",
     locationTitle: "Your location",
-    locationText: "Optional. Revelar teachers will see your name and approximate city (about 10 km) on the map. You can remove it anytime.",
+    locationText: "Optional. Teachers in the app will see your name and approximate city (about 10 km) on the map. You can remove it anytime.",
     mapInvite: "🌎 Where do other teachers teach from? Check “Share mine” and show up too.",
     mainUse: "Main use", showOnMap: "Display on map", mainUseShort: "My main use", displayShort: "Display on map", locationShort: "Share mine",
     shareMyLocationTitle: "Share my approximate location with teachers", sharingApprox: "you're sharing your approximate location", myLocationTitle: "My location (sharing)", useChurch: "Church", useOther: "Other", useAll: "All",
     useSaved: "Use saved",
-    useChurchInfo: "⛪ I use Revelar at my church", useOtherInfo: "👥 I use Revelar outside church (school, group, home…)",
+    useChurchInfo: "⛪ I use the app at my church", useOtherInfo: "👥 I use the app outside church (school, group, home…)",
     showChurchInfo: "⛪ Showing church teachers only", showOtherInfo: "👥 Showing teachers from other places only",
     showAllInfo: "🌐 Showing all teachers",
     shareMyLocation: "📍 Share my location", teachersOnMap: "{n} teachers on the map", teachersOnMap1: "1 teacher on the map", sharingApproxCap: "You're sharing your approximate location.", teachersMap: "Teachers map",
@@ -317,7 +317,7 @@ const TEXTOS = {
     mapFail: "Couldn't load the map", locShared: "📍 {c}",
     mapNote: "Only teachers who chose to share their (approximate) city appear.", classCode: "Class code", codeShort: "Code", nameShort: "Name",
 
-    classSummary: "Class summary", madeWith: "Made with Revelar · The Berean Way",
+    classSummary: "Class summary", madeWith: "The Berean Way",
   },
 };
 
