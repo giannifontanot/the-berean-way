@@ -1858,3 +1858,35 @@ button, a[href], [role="button"] { transition: scale 0.18s cubic-bezier(0.3, 1.4
 .nuevo-contacto input { width: 100%; }
 #contactoCodigo { text-transform: lowercase; letter-spacing: 0.1em; }
 .nuevo-contacto .error-m { color: var(--danger); margin: -4px 0 8px; font-size: 14px; }
+
+/* ---------- Presentador (PWA): más aire arriba y abajo ----------
+   El ancho del teléfono manda en horizontal (6 botones + el punto verde), así que el aire
+   se gana en vertical. El punto verde late despacio: se lee como «en vivo», no como botón. */
+body:not(.pag-lecciones) > .barra {
+  padding-top: max(20px, calc(env(safe-area-inset-top) + 12px));
+  padding-bottom: 20px;
+}
+body:not(.pag-lecciones) .barra .estado { font-size: 16px; gap: 7px; }
+body:not(.pag-lecciones) .barra .estado::before { width: 10px; height: 10px; animation: latidoVivo 2.4s ease-in-out infinite; }
+body:not(.pag-lecciones) .barra .estado.off::before { animation: none; }
+@keyframes latidoVivo {
+  0%, 100% { box-shadow: 0 0 4px 1px rgba(61, 255, 122, 0.65); }
+  50% { box-shadow: 0 0 10px 3px rgba(61, 255, 122, 0.95); }
+}
+@media (prefers-reduced-motion: reduce) { body:not(.pag-lecciones) .barra .estado::before { animation: none; } }
+@media (max-width: 430px) {
+  body:not(.pag-lecciones) > .barra { padding-top: max(18px, calc(env(safe-area-inset-top) + 10px)); padding-bottom: 18px; }
+}
+@media (max-width: 380px) {
+  body:not(.pag-lecciones) .barra .estado { font-size: 14px; gap: 5px; }
+  body:not(.pag-lecciones) .barra .estado::before { width: 9px; height: 9px; }
+}
+
+/* Mapa: Uso · Mostrar · Compartir en tres columnas simétricas (la del centro a su medida),
+   cada control centrado bajo su nombre; nada se sale por la izquierda. */
+.mapa-controles {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end; justify-items: center; column-gap: 10px;
+}
+.mapa-controles .ctl { width: 100%; }
+.mapa-controles .ctl-tit { text-wrap: balance; }
