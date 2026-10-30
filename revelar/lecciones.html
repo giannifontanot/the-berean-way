@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#11152b">
   <title>Mis lecciones · Revelar</title>
-  <link rel="stylesheet" href="revelar.css?v=202610301208">
+  <link rel="stylesheet" href="revelar.css?v=202610301219">
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -33,14 +33,6 @@
   </section>
 
   <main class="lec-main" id="main" hidden>
-    <!-- Ubicación opcional para el administrador -->
-    <div class="lec-ubic" id="ubicCard" hidden>
-      <p data-i18n="shareCityQ">📍 ¿Quieres que el administrador vea en un mapa desde qué ciudad das tus clases?</p>
-      <div class="lec-recibida-acc">
-        <button class="btn primario" type="button" id="ubicSi" data-i18n="yesShare">Sí, compartir</button>
-        <button class="btn" type="button" id="ubicNo" data-i18n="notNow">Ahora no</button>
-      </div>
-    </div>
     <!-- Cuenta pausada por el administrador -->
     <p class="lec-bloqueado" id="avisoBloqueo" hidden data-i18n="youAreBlocked">Tu cuenta está pausada. Habla con el administrador.</p>
     <!-- Solo el administrador -->
@@ -52,17 +44,24 @@
       <h2 class="lec-sub" data-i18n="received">Recibidas</h2>
       <div class="lec-lista" id="listaBuzon"></div>
     </section>
+    <!-- Mapa de maestros: cada uno decide si aparece -->
+    <section class="lec-mapa" id="seccionMapa" hidden>
+      <div id="mapaMaestros" class="lec-mapa-lienzo" aria-label="Mapa de maestros" data-i18n-aria="teachersMap"></div>
+      <div class="lec-mapa-pie">
+        <span id="mapaEstado"></span>
+        <button class="btn" type="button" id="btnUbic" data-i18n="shareMyLocation">📍 Compartir mi ubicación</button>
+      </div>
+    </section>
     <p class="lec-vacio" id="cargando">Cargando…</p>
     <div class="lec-lista" id="lista"></div>
     <button class="lec-archivo-btn" id="btnArchivadas" hidden></button>
     <div class="lec-lista archivadas" id="listaArchivadas" hidden></div>
-    <button class="lec-archivo-btn" id="lnkUbic" type="button" data-i18n="myLocation">📍 Mi ubicación</button>
   </main>
 
-  <!-- Mi ubicación (opcional; solo la ve el administrador) -->
+  <!-- Mi ubicación en el mapa de maestros (opcional) -->
   <dialog id="dlgUbic">
     <h2 data-i18n="locationTitle">Tu ubicación</h2>
-    <p data-i18n="locationText">Opcional. Solo el administrador la ve, en un mapa. Es aproximada (unos 10 km) y puedes quitarla cuando quieras.</p>
+    <p data-i18n="locationText">Opcional. Los maestros de Revelar verán en el mapa tu nombre y tu ciudad aproximada (unos 10 km). Puedes quitarla cuando quieras.</p>
     <p class="ubic-actual" id="ubicActual" hidden></p>
     <label class="campo"><span data-i18n="cityLabel">Ciudad</span>
       <input id="ubicCiudad" maxlength="60" autocomplete="address-level2" placeholder="Houston">
@@ -116,9 +115,9 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202610301208";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610301208";
-    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610301208";
+    import { CONFIG } from "./config.js?v=202610301219";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610301219";
+    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610301219";
 
     const $ = (id) => document.getElementById(id);
 
@@ -136,11 +135,13 @@
       aplicarIdioma();
       pintar();
       pintarBuzon();
+      if (!$("seccionMapa").hidden) pintarMapa();
     }));
 
     const cat = await crearCatalogo();
     let lecciones = {}, actual = null, menuDe = null, accion = null, verArchivadas = false;
     let empezo = false, usuario = null, perfil = null, recibidas = {};
+    let puntosMapa = {}, mapaUI = null;
 
     // Si cerraste el presentador a mitad de clase, regresas directo a esa lección.
     try {
@@ -171,12 +172,11 @@
       cat.miPerfil().then((p) => {
         perfil = p;
         $("codigoGrandeLista").textContent = p.codigo;
-        let ocultaUbic = false;
-        try { ocultaUbic = localStorage.getItem("revelar:ubicNo") === "1"; } catch {}
-        $("ubicCard").hidden = !!p.ubicacion || ocultaUbic || !!cat.esAdmin?.();
+
         cat.onActual(usuario?.uid === PRESENTADOR_ORIGINAL ? null : p.codigo, (a) => { actual = a; pintar(); });
       }).catch(() => {});
       cat.onBuzon((v) => { recibidas = v || {}; pintarBuzon(); });
+      cat.onMapa?.((v) => { puntosMapa = v || {}; pintarMapa(); });
       $("lnkMaestros").hidden = !cat.esAdmin?.();
       cat.onBloqueado?.((b) => {
         $("avisoBloqueo").hidden = !b;
@@ -298,21 +298,34 @@
       finally { b.disabled = false; }
     });
 
-    // ---------- Mi ubicación (opcional, aproximada, solo para el administrador) ----------
+    // ---------- Mapa de maestros y mi ubicación (opcional, aproximada) ----------
+    function miUbicacion() { return puntosMapa[cat.uid?.()] || null; }
+    async function pintarMapa() {
+      $("seccionMapa").hidden = false;
+      const lista = Object.entries(puntosMapa).filter(([, u]) => u && typeof u.lat === "number");
+      const yo = miUbicacion();
+      $("mapaEstado").textContent = yo
+        ? t("sharingNow", { c: yo.ciudad || `${yo.lat}, ${yo.lng}` })
+        : lista.length ? t("teachersOnMap", { n: lista.length }) : t("noLocations");
+      $("btnUbic").textContent = yo ? t("myLocation") : t("shareMyLocation");
+      $("btnUbic").classList.toggle("primario", !yo);
+      try {
+        mapaUI ??= (await import("./js/mapa.js?v=202610301219")).crearMapa($("mapaMaestros"));
+        await mapaUI.pintar(lista.map(([id, u]) => ({
+          lat: u.lat, lng: u.lng, titulo: u.nombre || t("noName"), detalle: u.ciudad || "",
+          color: id === cat.uid?.() ? "#7ccf9a" : "#e8c170",
+        })));
+      } catch { $("mapaEstado").textContent = t("mapFail"); }
+    }
     function abrirUbic() {
-      const u = perfil?.ubicacion;
+      const u = miUbicacion();
       $("ubicCiudad").value = u?.ciudad || "";
       $("ubicActual").hidden = !u;
       $("ubicActual").textContent = u ? t("sharingNow", { c: u.ciudad || `${u.lat}, ${u.lng}` }) : "";
       $("ubicQuitar").hidden = !u;
       $("dlgUbic").showModal();
     }
-    $("lnkUbic").addEventListener("click", abrirUbic);
-    $("ubicSi").addEventListener("click", abrirUbic);
-    $("ubicNo").addEventListener("click", () => {
-      try { localStorage.setItem("revelar:ubicNo", "1"); } catch {}
-      $("ubicCard").hidden = true;
-    });
+    $("btnUbic").addEventListener("click", abrirUbic);
     $("ubicGuardar").addEventListener("click", () => {
       const b = $("ubicGuardar");
       if (!navigator.geolocation) { aviso(t("locationFail")); return; }
@@ -325,20 +338,14 @@
           fecha: Date.now(),
           ...($("ubicCiudad").value.trim() ? { ciudad: $("ubicCiudad").value.trim().slice(0, 60) } : {}),
         };
-        try {
-          await cat.guardarUbicacion(u);
-          if (perfil) perfil.ubicacion = u;
-          $("dlgUbic").close(); $("ubicCard").hidden = true; aviso(t("locationSaved"));
-        } catch (e) { error(e); }
+        try { await cat.guardarUbicacion(u); $("dlgUbic").close(); aviso(t("locationSaved")); }
+        catch (e) { error(e); }
         finally { b.disabled = false; }
       }, () => { b.disabled = false; aviso(t("locationFail")); }, { enableHighAccuracy: false, timeout: 15000, maximumAge: 600000 });
     });
     $("ubicQuitar").addEventListener("click", async () => {
-      try {
-        await cat.quitarUbicacion();
-        if (perfil) delete perfil.ubicacion;
-        $("dlgUbic").close(); aviso(t("locationRemoved"));
-      } catch (e) { error(e); }
+      try { await cat.quitarUbicacion(); $("dlgUbic").close(); aviso(t("locationRemoved")); }
+      catch (e) { error(e); }
     });
 
     // ---------- Enviar una copia a otro maestro ----------

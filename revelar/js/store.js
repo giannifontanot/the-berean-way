@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610301208";
+import { CONFIG } from "../config.js?v=202610301219";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -164,8 +164,12 @@ async function catalogoFirebase() {
       return db.onValue(ref(`revelar_bloqueados/${uid()}`), (s) => cb(s.val() === true), () => cb(false));
     },
     // Ubicación aproximada que el maestro decide compartir con el administrador.
-    guardarUbicacion: (u) => db.set(ref(`revelar_maestros/${uid()}/ubicacion`), u),
-    quitarUbicacion: () => db.remove(ref(`revelar_maestros/${uid()}/ubicacion`)),
+    // Mapa de maestros: cada uno decide compartir su ciudad (aprox.); lo ven los maestros.
+    guardarUbicacion: (u) => db.set(ref(`revelar_mapa/${uid()}`), {
+      ...u, nombre: String(auth.currentUser?.displayName || "").slice(0, 80),
+    }),
+    quitarUbicacion: () => db.remove(ref(`revelar_mapa/${uid()}`)),
+    onMapa(cb) { return db.onValue(ref("revelar_mapa"), (s) => cb(s.val() || {}), () => cb({})); },
     esAdmin: () => uid() === PRESENTADOR_ORIGINAL,
     // Administrador: todos los maestros y quién está bloqueado
     onMaestros(cb, onError) {
@@ -353,7 +357,7 @@ async function storeFirebase(sesion) {
 /* ------------------------------ Demo ------------------------------- */
 function catalogoDemo() {
   const CL = "revelar-demo:lecciones", CA = "revelar-demo:actual", CB = "revelar-demo:buzon";
-  const oyentes = new Set(), oyentesActual = new Set(), oyentesBuzon = new Set(), oyentesBloq = new Set();
+  const oyentes = new Set(), oyentesActual = new Set(), oyentesBuzon = new Set(), oyentesBloq = new Set(), oyentesMapa = new Set();
   const leerJ = (k) => { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch { return {}; } };
   const leer = () => leerJ(CL);
   const escribir = (v) => { try { localStorage.setItem(CL, JSON.stringify(v)); } catch {} oyentes.forEach((cb) => cb(v)); };
@@ -378,17 +382,27 @@ function catalogoDemo() {
     async entrar() {},
     async miPerfil() { return { codigo: "demo", nombre: "Demo" }; },
     async actualizarPerfil() {},
-    async guardarUbicacion(u) { try { localStorage.setItem("revelar-demo:ubicacion", JSON.stringify(u)); } catch {} },
-    async quitarUbicacion() { try { localStorage.removeItem("revelar-demo:ubicacion"); } catch {} },
+    async guardarUbicacion(u) { try { localStorage.setItem("revelar-demo:ubicacion", JSON.stringify({ ...u, nombre: "Demo" })); } catch {} oyentesMapa.forEach((f) => f()); },
+    async quitarUbicacion() { try { localStorage.removeItem("revelar-demo:ubicacion"); } catch {} oyentesMapa.forEach((f) => f()); },
+    onMapa(cb) {
+      const f = () => {
+        const yo = leerJ("revelar-demo:ubicacion");
+        cb({
+          m2: { lat: 25.7, lng: -100.3, ciudad: "Monterrey", nombre: "Ana López" },
+          m3: { lat: 4.7, lng: -74.1, ciudad: "Bogotá", nombre: "Pastor Juan" },
+          ...(yo.lat != null ? { demo: yo } : {}),
+        });
+      };
+      oyentesMapa.add(f); f();
+      return () => oyentesMapa.delete(f);
+    },
     onBloqueado(cb) { cb(false); return () => {}; },
     esAdmin: () => true,
     onMaestros(cb) {
       const ahora = Date.now();
       cb({
-        demo: { codigo: "demo", nombre: "Demo (tú)", correo: "demo@ejemplo.com", lecciones: Object.keys(leer()).length, activo: ahora, creado: ahora,
-          ...(leerJ("revelar-demo:ubicacion").lat != null ? { ubicacion: leerJ("revelar-demo:ubicacion") } : {}) },
-        m2: { codigo: "k7m2", nombre: "Ana López", correo: "ana@ejemplo.com", lecciones: 4, activo: ahora - 86400000 * 2, creado: ahora - 86400000 * 9,
-          ubicacion: { lat: 25.7, lng: -100.3, ciudad: "Monterrey", fecha: ahora } },
+        demo: { codigo: "demo", nombre: "Demo (tú)", correo: "demo@ejemplo.com", lecciones: Object.keys(leer()).length, activo: ahora, creado: ahora },
+        m2: { codigo: "k7m2", nombre: "Ana López", correo: "ana@ejemplo.com", lecciones: 4, activo: ahora - 86400000 * 2, creado: ahora - 86400000 * 9 },
         m3: { codigo: "p4qx", nombre: "Pastor Juan", correo: "juan@ejemplo.com", lecciones: 1, activo: ahora - 86400000 * 30, creado: ahora - 86400000 * 40 },
       });
       return () => {};

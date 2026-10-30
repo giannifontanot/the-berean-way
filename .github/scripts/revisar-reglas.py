@@ -49,6 +49,9 @@ OBLIGATORIAS = [
     # Solo el administrador bloquea y ve a todos los maestros
     ("rules/revelar_bloqueados/$uid", ".write", ADMIN),
     ("rules/revelar_maestros", ".read", ADMIN),
+    # Mapa: solo maestros con sesión lo ven; cada uno cambia solo lo suyo
+    ("rules/revelar_mapa", ".read", "auth != null"),
+    ("rules/revelar_mapa/$uid", ".write", YO),
 ]
 
 errores = []

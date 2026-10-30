@@ -1620,3 +1620,28 @@ a.btn-barra { text-decoration: none; box-sizing: border-box; }
 .adm-mapa-lienzo { height: min(65vh, 560px); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: #0b0e1f; }
 .adm-mapa-nota { color: var(--muted); font-size: 13px; margin: 8px 2px 0; }
 .adm-mapa .leaflet-popup-content { color: #1d1a16; font-family: var(--font-sans); }
+
+/* Mapa de maestros: cuadrado, la Tierra completa; doble toque = pantalla completa */
+.lec-mapa { margin-bottom: 18px; }
+.lec-mapa-lienzo, .adm-mapa-lienzo {
+  width: 100%; aspect-ratio: 1 / 1; height: auto; max-height: none;
+  border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: #aad3df;
+}
+.lec-mapa-pie { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; }
+.lec-mapa-pie span { color: var(--muted); font-size: 13px; min-width: 0; }
+.lec-mapa-pie .btn { flex: none; padding: 7px 12px; font-size: 14px; }
+.mapa-completo {
+  position: fixed !important; inset: 0; z-index: 2000;
+  width: 100vw !important; height: 100vh !important; height: 100dvh !important; aspect-ratio: auto !important;
+  border-radius: 0 !important; border: 0 !important;
+}
+body.con-mapa-completo { overflow: hidden; }
+.mapa-cerrar {
+  position: absolute; z-index: 1001; top: max(12px, env(safe-area-inset-top)); right: 12px;
+  width: 44px; height: 44px; border-radius: 999px; border: 0;
+  background: rgba(17, 21, 43, 0.85); color: #fff; font-size: 20px; cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+.leaflet-popup-content { color: #1d1a16; font-family: var(--font-sans); }
+/* Fuera del mundo (arriba y abajo en pantalla vertical): azul oscuro, no gris */
+.lec-mapa-lienzo.leaflet-container, .adm-mapa-lienzo.leaflet-container, .mapa-completo.leaflet-container { background: #0f1a33; }
