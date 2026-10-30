@@ -63,11 +63,11 @@ jobs:
           printf '%s' "$LLAVE" > "$RUNNER_TEMP/llave.json"
           export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/llave.json"
           set +e
-          npx --yes firebase-tools@15 deploy --only database --project berean-revelar --non-interactive 2>&1 | tee "$RUNNER_TEMP/reglas.txt"
+          npx --yes firebase-tools@15 deploy --only database --project berean-revelar --non-interactive --debug > "$RUNNER_TEMP/reglas.txt" 2>&1
           codigo=${PIPESTATUS[0]}
           rm -f "$RUNNER_TEMP/llave.json"
           if [ "$codigo" -ne 0 ]; then
-            grep -iE "error|denied|permission|not found|404|403|enable" "$RUNNER_TEMP/reglas.txt" | tail -8 | while IFS= read -r l; do echo "::warning::Reglas: $l"; done
+            grep -E "\[status\]|HTTP Error|PERMISSION|\"message\"" "$RUNNER_TEMP/reglas.txt" | grep -v " 200$" | tail -10 | while IFS= read -r l; do echo "::warning::Reglas: ${l:0:300}"; done
             exit "$codigo"
           fi
           echo "::notice::Reglas de la base de datos publicadas"
