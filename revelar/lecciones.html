@@ -6,11 +6,14 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#11152b">
   <title>Mis lecciones · Revelar</title>
-  <link rel="stylesheet" href="revelar.css?v=202610301125">
+  <link rel="stylesheet" href="revelar.css?v=202610301200">
 </head>
 <body class="pag-lecciones">
   <header class="barra">
-    <h1 class="lec-titulo" data-i18n="myLessons">Mis lecciones</h1>
+    <h1 class="lec-codigo" aria-live="polite">
+      <small data-i18n="yourCode">Tu código</small>
+      <b id="codigoGrandeLista">····</b>
+    </h1>
     <div class="barra-acciones">
       <div class="idioma-switch" role="group" aria-label="Idioma" data-i18n-aria="language">
         <button type="button" data-lang="es" aria-pressed="false">ES</button>
@@ -34,7 +37,6 @@
     <div class="lec-enlace" id="miEnlace" hidden>
       <span data-i18n="yourLink">Enlace para tus participantes</span>
       <b id="miEnlaceTxt"></b>
-      <small><span data-i18n="yourCode">Tu código</span>: <b id="miCodigo"></b></small>
     </div>
     <!-- Cuenta pausada por el administrador -->
     <p class="lec-bloqueado" id="avisoBloqueo" hidden data-i18n="youAreBlocked">Tu cuenta está pausada. Habla con el administrador.</p>
@@ -95,9 +97,9 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202610301125";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610301125";
-    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610301125";
+    import { CONFIG } from "./config.js?v=202610301200";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610301200";
+    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610301200";
 
     const $ = (id) => document.getElementById(id);
 
@@ -153,7 +155,7 @@
         url.search = "";
         if (usuario?.uid !== PRESENTADOR_ORIGINAL && cat.modo !== "demo") url.searchParams.set("p", p.codigo);
         $("miEnlaceTxt").textContent = url.host + url.pathname + url.search;
-        $("miCodigo").textContent = p.codigo;
+        $("codigoGrandeLista").textContent = p.codigo;
         $("miEnlace").hidden = false;
         cat.onActual(usuario?.uid === PRESENTADOR_ORIGINAL ? null : p.codigo, (a) => { actual = a; pintar(); });
       }).catch(() => {});
