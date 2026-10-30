@@ -1933,3 +1933,6 @@ body.ordenando-activo .barra #btnOrdenar.presionado { background: #fff4dc; borde
   background: #3ddc84; border-color: #3ddc84; color: #0b2a17;
   box-shadow: 0 0 0 4px rgba(61, 220, 132, 0.3);
 }
+/* Editar: al tocar una lámina no se hunde; pasa directo al borde dorado */
+body.ordenando-activo .tira-item.presionado,
+body.ordenando-activo .tira-item .presionado { scale: 1; filter: none; transition: none; }
