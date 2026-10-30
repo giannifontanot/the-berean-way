@@ -1772,3 +1772,11 @@ body.ordenando-activo .barra #btnOrdenar { order: 3; }
 .ctl:nth-child(3) { width: 92px; }
 .ctl:nth-child(1) .ctl-tit { max-width: 90px; }
 @media (max-width: 370px) { .ctl-tit { font-size: 11px; } .ctl:nth-child(3) { width: 80px; } }
+
+/* Tu punto verde en el mapa parpadea despacio */
+@keyframes miPunto {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 0 rgba(61, 220, 132, 0)); }
+  50% { opacity: 0.45; filter: drop-shadow(0 0 6px rgba(61, 220, 132, 0.9)); }
+}
+.leaflet-interactive.mi-punto { animation: miPunto 2.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .leaflet-interactive.mi-punto { animation: none; } }
