@@ -1,0 +1,26 @@
+name: Migrar a varios maestros (una sola vez)
+
+# Pasa las lecciones existentes a la estructura de varios maestros.
+# "aplicar" = false solo muestra el plan.
+
+on:
+  workflow_dispatch:
+    inputs:
+      aplicar:
+        description: "Aplicar los cambios (si no, solo muestra el plan)"
+        type: boolean
+        default: false
+
+jobs:
+  migrar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Migrar
+        env:
+          LLAVE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          printf '%s' "$LLAVE" > "$RUNNER_TEMP/llave.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/llave.json"
+          python3 .github/scripts/migrar-maestros.py ${{ inputs.aplicar && '--aplicar' || '' }}
+          rm -f "$RUNNER_TEMP/llave.json"

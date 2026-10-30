@@ -61,6 +61,25 @@ python3 -m http.server 8000
 Listo: desde ahora **solo tu cuenta** puede revelar, ocultar o reiniciar. Los
 participantes solo leen y no necesitan cuenta.
 
+## Varios maestros
+
+Cualquier persona con cuenta de Google puede entrar al presentador y tener
+**su propio espacio**: sus lecciones, fotos, escrituras y notas. Nadie ve ni
+cambia lo de otro (lo garantizan las reglas de Firebase; ver
+`.github/scripts/probar-reglas.py`, 38 casos que se prueban en cada cambio).
+
+- Cada maestro tiene un **código** (p. ej. `k7m2`) y su **enlace para
+  participantes**: `berean-revelar.web.app/?p=k7m2`. Aparece arriba en
+  **Mis lecciones** y en **Compartir**. Sus participantes solo siguen sus clases.
+- El presentador original conserva su enlace sin código.
+- **Enviar copia:** en **⋯** de una lección, **📤 Enviar copia a otro maestro**
+  con su código. Se envían láminas, escrituras y fotos (no las notas). El otro
+  maestro la ve en **Recibidas** y toca **Aceptar** o **Descartar**.
+
+Datos: `revelar_duenos/<lección>` (dueño), `revelar_lecciones/<uid>/…`,
+`revelar_maestros/<uid>`, `revelar_codigos/<código>`, `revelar_vivo/<código>`,
+`revelar_buzon/<uid>/…`.
+
 ## Lecciones
 
 Cada clase es una **lección** con sus propias láminas, escrituras, fotos y notas.
