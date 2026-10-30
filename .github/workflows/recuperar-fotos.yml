@@ -1,0 +1,22 @@
+name: Recuperar las 3 láminas de fotos (una sola vez)
+on:
+  workflow_dispatch:
+    inputs:
+      aplicar:
+        description: "Aplicar (si no, solo muestra el plan)"
+        type: boolean
+        default: false
+jobs:
+  recuperar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with: { fetch-depth: 0 }
+      - name: Recuperar
+        env:
+          LLAVE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          printf '%s' "$LLAVE" > "$RUNNER_TEMP/llave.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/llave.json"
+          python3 .github/scripts/recuperar-fotos.py ${{ inputs.aplicar && '--aplicar' || '' }}
+          rm -f "$RUNNER_TEMP/llave.json"
