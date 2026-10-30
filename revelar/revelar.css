@@ -1780,3 +1780,4 @@ body.ordenando-activo .barra #btnOrdenar { order: 3; }
 }
 .leaflet-interactive.mi-punto { animation: miPunto 2.4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .leaflet-interactive.mi-punto { animation: none; } }
+.lec-mapa-estado { white-space: pre-line; line-height: 1.4; }
