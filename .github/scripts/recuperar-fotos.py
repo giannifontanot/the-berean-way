@@ -37,6 +37,12 @@ def imagen_repo(ruta):
 
 aplicar = "--aplicar" in sys.argv
 sesiones = obtener("/revelar", superficial=True) or {}
+# Diagnóstico: qué hay en cada lección
+for s_ in sesiones:
+    o = obtener(f"/revelar/{s_}/orden")
+    n = obtener(f"/revelar_privado/{s_}/notas", superficial=True) or {}
+    sb = obtener(f"/revelar/{s_}/subidas", superficial=True) or {}
+    print(f"::notice::{s_}: orden={o} · notas={sorted(n)} · subidas={sorted(sb)}")
 cambios, resumen = {}, []
 for s in sesiones:
     orden = obtener(f"/revelar/{s}/orden")
