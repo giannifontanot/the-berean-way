@@ -8,8 +8,8 @@
 // El contenido se maneja como una lista de letras con dos marcas (rojo,
 // resaltado). Al tocar un botón se cambia la marca de las letras
 // seleccionadas y se vuelve a dibujar la hoja, conservando la selección.
-import { t } from "./i18n.js?v=202610291313";
-import { indicesVersiculos } from "./escritura.js?v=202610291313";
+import { t } from "./i18n.js?v=202610300823";
+import { indicesVersiculos } from "./escritura.js?v=202610300823";
 
 const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const escapar = (t) => String(t).replace(/[&<>"']/g, (c) => ESC[c]);

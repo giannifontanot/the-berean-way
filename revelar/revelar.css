@@ -1490,3 +1490,17 @@ body.ordenando-activo .leccion-bar { pointer-events: none; opacity: 0.4; }
   .pag-lecciones .lec-nueva { padding: 8px 11px; }
   .idioma-switch button { padding: 6px 9px; min-width: 34px; }
 }
+
+/* Barra con 7 botones (Lecciones ▶ + Editar Compartir Imprimir Reiniciar) */
+a.btn-barra { text-decoration: none; box-sizing: border-box; }
+@media (max-width: 430px) {
+  .barra { gap: 6px; padding-left: 10px; padding-right: 10px; }
+  .barra-acciones { gap: 3px; }
+  .btn-barra { width: 35px; height: 35px; }
+  .barra .estado { font-size: 12px; }
+}
+@media (max-width: 370px) {
+  .btn-barra { width: 33px; height: 33px; }
+  .btn-barra .ico { width: 17px; height: 17px; }
+  .barra .estado { font-size: 11px; }
+}

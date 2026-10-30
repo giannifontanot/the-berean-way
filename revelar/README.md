@@ -72,7 +72,8 @@ Cada clase es una **lección** con sus propias láminas, escrituras, fotos y not
 - **⋯** en cada tarjeta: **Cambiar nombre**, **Duplicar** (copia láminas,
   escrituras, fotos y notas; no lo revelado) y **Archivar**. Las archivadas
   quedan abajo en **Archivadas**, de donde se pueden **Restaurar**.
-- Dentro de una lección, la barra **‹ Lecciones · nombre** te regresa a la lista.
+- Dentro de una lección, el primer botón de arriba (☰ **Lecciones**) o la barra
+  **‹ Lecciones · nombre** te regresan a la lista para trabajar en otra.
 - Si cierras el presentador en plena clase (en vivo), al abrirlo vuelves directo
   a esa lección.
 
