@@ -1,0 +1,16 @@
+name: Diag enviar copia (solo lectura)
+on:
+  push:
+    branches: [diag-copia]
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - env:
+          LLAVE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          printf '%s' "$LLAVE" > "$RUNNER_TEMP/llave.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/llave.json"
+          python3 .github/scripts/diag-copia.py k4wyn
+          rm -f "$RUNNER_TEMP/llave.json"
