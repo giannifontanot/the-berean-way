@@ -158,7 +158,7 @@ Junto al **+** hay un botón **▶**:
 Una sola pantalla:
 
 - **Arriba**, de izquierda a derecha: **☰ Lecciones**, el punto verde (conectado) con 👥 y el número de
-  participantes, luego **+** (agregar foto o escritura),
+  participantes, luego **+** (agregar foto o escritura; aparece solo en **✎ Editar**),
   **✎ Editar**, **🖨 Imprimir**, **↺ Reiniciar** y, al final, **Compartir** (QR) y **▶**.
 - **La tira** con todas las láminas visibles. La que está en los teléfonos
   tiene marco dorado y dice **En pantalla**; la que sigue, **Siguiente**.

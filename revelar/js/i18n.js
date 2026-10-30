@@ -67,9 +67,9 @@ const TEXTOS = {
     // Tira y notas
     slidesAria: "Láminas", slideOptions: "Opciones de esta lámina", showWithNext: "Sale con Siguiente",
     onScreen: "En pantalla", rehearsal: "Ensayo", next: "Siguiente", live: "En vivo",
-    editingHeader: "Editando · arrastra · ✓ sale con Siguiente",
+    editingHeader: "Editando · arrastra · ✓ sale con Siguiente", editingNotesOf: "Editando · notas de {n}",
     notesOf: "Notas · {n}", toStart: "Para empezar · {n}",
-    editNotes: "Editar notas", noSlides: "Agrega láminas con el botón +.",
+    editNotes: "Editar notas", noSlides: "Toca ✎ y luego + para agregar láminas.",
     noNotes: "Sin notas para esta lámina.", noNotesEdit: "Sin notas para esta lámina. Toca ✎ para agregar.",
     back: "Atrás", backBtn: "◀ Atrás", nextBtn: "Siguiente ▶",
     removeShownNext: "Quita la mostrada · sigue {c}", removeShown: "Quita la mostrada",
@@ -214,9 +214,9 @@ const TEXTOS = {
 
     slidesAria: "Slides", slideOptions: "Options for this slide", showWithNext: "Shown with Next",
     onScreen: "On screen", rehearsal: "Rehearsal", next: "Next", live: "Live",
-    editingHeader: "Editing · drag · ✓ shown with Next",
+    editingHeader: "Editing · drag · ✓ shown with Next", editingNotesOf: "Editing · notes for {n}",
     notesOf: "Notes · {n}", toStart: "To start · {n}",
-    editNotes: "Edit notes", noSlides: "Add slides with the + button.",
+    editNotes: "Edit notes", noSlides: "Tap ✎, then + to add slides.",
     noNotes: "No notes for this slide.", noNotesEdit: "No notes for this slide. Tap ✎ to add some.",
     back: "Back", backBtn: "◀ Back", nextBtn: "Next ▶",
     removeShownNext: "Remove the shown one · then {c}", removeShown: "Remove the shown one",
