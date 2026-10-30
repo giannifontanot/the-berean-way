@@ -1820,3 +1820,6 @@ body.ordenando-activo .barra #btnOrdenar { order: 3; }
   opacity: 0; pointer-events: none; transition: opacity 0.25s;
 }
 .mapa-dos-dedos.ver { opacity: 1; }
+
+/* Avisos claros sobre el fondo oscuro (antes azul sobre azul) */
+.toast { background: #f3f1ea; color: #12152b; border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55); }
