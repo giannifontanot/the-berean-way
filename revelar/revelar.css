@@ -1781,3 +1781,25 @@ body.ordenando-activo .barra #btnOrdenar { order: 3; }
 .leaflet-interactive.mi-punto { animation: miPunto 2.4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .leaflet-interactive.mi-punto { animation: none; } }
 .lec-mapa-estado { white-space: pre-line; line-height: 1.4; }
+
+/* Burbuja que explica la elección (Mi uso principal / Mostrar en el mapa); se va a los 2 s */
+.ctl { position: relative; }
+.burbuja {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; z-index: 50;
+  transform: translate(-50%, 6px); opacity: 0; pointer-events: none;
+  width: max-content; max-width: 210px; padding: 8px 12px; border-radius: 12px;
+  background: var(--text); color: var(--bg); font-size: 13px; font-weight: 700; line-height: 1.3; text-align: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.burbuja::after {
+  content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border: 7px solid transparent; border-top-color: var(--text);
+}
+.burbuja.ver { opacity: 1; transform: translate(-50%, 0); }
+.ctl:first-child .burbuja { left: 0; transform: translate(0, 6px); }
+.ctl:first-child .burbuja.ver { transform: translate(0, 0); }
+.ctl:first-child .burbuja::after { left: 40px; }
+
+/* Aviso junto al botón que tocaste (el texto sube y se desvanece desde ahí) */
+.toast.junto { bottom: auto; }
