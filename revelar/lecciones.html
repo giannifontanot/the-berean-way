@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#11152b">
   <title>Mis lecciones · Revelar</title>
-  <link rel="stylesheet" href="revelar.css?v=202610301223">
+  <link rel="stylesheet" href="revelar.css?v=202610301227">
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -46,28 +46,30 @@
     </section>
     <!-- Mapa de maestros: cada uno decide si aparece -->
     <section class="lec-mapa" id="seccionMapa" hidden>
+      <!-- Una fila: uso principal · mostrar en el mapa · mi ubicación (íconos con nombre arriba) -->
       <div class="mapa-controles">
-        <div class="fila-control">
-          <span data-i18n="mainUse">Uso principal</span>
-          <div class="seg" id="segUso" role="group" aria-label="Uso principal" data-i18n-aria="mainUse">
-            <button type="button" data-v="iglesia" aria-pressed="false" data-i18n="useChurch">Iglesia</button>
-            <button type="button" data-v="otro" aria-pressed="false" data-i18n="useOther">Otro</button>
+        <div class="ctl">
+          <span class="ctl-tit" data-i18n="mainUseShort">Uso</span>
+          <div class="seg seg-ico" id="segUso" role="group" aria-label="Uso principal" data-i18n-aria="mainUse">
+            <button type="button" data-v="iglesia" aria-pressed="false" title="Iglesia" data-i18n-title="useChurch"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v5M10 4h4"/><path d="M5 21V12l7-5 7 5v9"/><path d="M10 21v-4a2 2 0 0 1 4 0v4"/></svg></button>
+            <button type="button" data-v="otro" aria-pressed="false" title="Otro" data-i18n-title="useOther"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M11.5 19c0-3 2-5 4.5-5s5.5 2 5.5 5"/></svg></button>
           </div>
         </div>
-        <div class="fila-control">
-          <span data-i18n="showOnMap">Ver en el mapa</span>
-          <div class="seg" id="segFiltro" role="group" aria-label="Ver en el mapa" data-i18n-aria="showOnMap">
-            <button type="button" data-v="iglesia" aria-pressed="false" data-i18n="useChurch">Iglesia</button>
-            <button type="button" data-v="otro" aria-pressed="false" data-i18n="useOther">Otro</button>
-            <button type="button" data-v="todos" aria-pressed="true" data-i18n="useAll">Todos</button>
+        <div class="ctl">
+          <span class="ctl-tit" data-i18n="displayShort">Mostrar</span>
+          <div class="seg seg-ico" id="segFiltro" role="group" aria-label="Mostrar en el mapa" data-i18n-aria="showOnMap">
+            <button type="button" data-v="iglesia" aria-pressed="false" title="Iglesia" data-i18n-title="useChurch"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v5M10 4h4"/><path d="M5 21V12l7-5 7 5v9"/><path d="M10 21v-4a2 2 0 0 1 4 0v4"/></svg></button>
+            <button type="button" data-v="otro" aria-pressed="false" title="Otro" data-i18n-title="useOther"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5M11.5 19c0-3 2-5 4.5-5s5.5 2 5.5 5"/></svg></button>
+            <button type="button" data-v="todos" aria-pressed="true" title="Todos" data-i18n-title="useAll"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg></button>
           </div>
+        </div>
+        <div class="ctl">
+          <span class="ctl-tit" data-i18n="locationShort">Ubicación</span>
+          <button class="btn-ubic" type="button" id="btnUbic" title="Compartir mi ubicación" data-i18n-title="shareMyLocation"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></button>
         </div>
       </div>
       <div id="mapaMaestros" class="lec-mapa-lienzo" aria-label="Mapa de maestros" data-i18n-aria="teachersMap"></div>
-      <div class="lec-mapa-pie">
-        <span id="mapaEstado"></span>
-        <button class="btn" type="button" id="btnUbic" data-i18n="shareMyLocation">📍 Compartir mi ubicación</button>
-      </div>
+      <p class="lec-mapa-estado" id="mapaEstado"></p>
     </section>
     <p class="lec-vacio" id="cargando">Cargando…</p>
     <div class="lec-lista" id="lista"></div>
@@ -132,9 +134,9 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202610301223";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610301223";
-    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610301223";
+    import { CONFIG } from "./config.js?v=202610301227";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610301227";
+    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610301227";
 
     const $ = (id) => document.getElementById(id);
 
@@ -330,10 +332,11 @@
       $("mapaEstado").textContent = yo
         ? t("sharingNow", { c: yo.ciudad || `${yo.lat}, ${yo.lng}` })
         : lista.length ? t("teachersOnMap", { n: lista.length }) : t("noLocations");
-      $("btnUbic").textContent = yo ? t("myLocation") : t("shareMyLocation");
-      $("btnUbic").classList.toggle("primario", !yo);
+      $("btnUbic").classList.toggle("compartiendo", !!yo);
+      $("btnUbic").title = yo ? t("myLocationTitle") : t("shareMyLocationTitle");
+      $("btnUbic").setAttribute("aria-label", $("btnUbic").title);
       try {
-        mapaUI ??= (await import("./js/mapa.js?v=202610301223")).crearMapa($("mapaMaestros"));
+        mapaUI ??= (await import("./js/mapa.js?v=202610301227")).crearMapa($("mapaMaestros"));
         await mapaUI.pintar(lista.map(([id, u]) => ({
           lat: u.lat, lng: u.lng, titulo: u.nombre || t("noName"),
           detalle: [u.ciudad, u.uso ? t(u.uso === "iglesia" ? "useChurch" : "useOther") : ""].filter(Boolean).join(" · "),

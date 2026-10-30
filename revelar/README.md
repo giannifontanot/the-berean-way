@@ -89,10 +89,10 @@ cambia lo de otro (lo garantizan las reglas de Firebase; ver
   la guarda aproximada (~10 km), con el nombre y la ciudad que escribas; se puede
   quitar cuando quieras. Doble toque = pantalla completa (✕ o Atrás para salir).
   El administrador ve el mismo mapa en **Maestros → 🗺 Mapa** (pausados en rojo).
-- **Uso principal y filtro:** encima del mapa, **Uso principal: Iglesia | Otro**
-  (lo elige cada maestro; se guarda en su perfil y en su punto del mapa) y
-  **Ver en el mapa: Iglesia | Otro | Todos** (se recuerda en ese teléfono).
-  Puntos: dorado = iglesia, azul = otro, verde = tú.
+- **Encima del mapa, en una fila:** **Uso** (⛪ iglesia · 👥 otro, lo elige cada
+  maestro), **Mostrar** (⛪ · 👥 · 🌐 todos; se recuerda en ese teléfono) y
+  **Ubicación** (📍: azul = compartir; con borde verde = ya compartes, toca para
+  cambiar o quitar). Puntos: dorado = iglesia, azul = otro, verde = tú.
 - **Enviar copia:** en **⋯** de una lección, **📤 Enviar copia a otro maestro**
   con su código. Se envían fotos, escrituras y, si se marca «Incluir mis notas», las notas. El otro
   maestro la ve en **Recibidas** y toca **Aceptar** o **Descartar**.
