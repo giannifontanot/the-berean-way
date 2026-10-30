@@ -1,0 +1,36 @@
+name: Diagnóstico de presencia (temporal)
+on:
+  push:
+    branches: [diag-presencia]
+jobs:
+  probar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v5
+        with: { node-version: "22" }
+      - run: npm i -s playwright@1 && npx playwright install --with-deps chromium >/dev/null
+      - name: Abrir la página de participantes y leer la presencia
+        run: |
+          cat > p.mjs <<'JS'
+          import { chromium } from "playwright";
+          const S = "diag" + Date.now().toString(36);
+          const leer = async () => {
+            const r = await fetch(`https://berean-revelar-default-rtdb.firebaseio.com/revelar/${S}/presencia.json`);
+            const j = await r.json(); return j ? Object.keys(j).length : 0;
+          };
+          const b = await chromium.launch();
+          const pg = await b.newPage();
+          pg.on("pageerror", (e) => console.log("PAGEERR", e.message));
+          pg.on("console", (m) => { if (m.type() === "error") console.log("CONSOLE", m.text()); });
+          await pg.goto(`https://berean-revelar.web.app/?s=${S}`);
+          const res = [];
+          for (const t of [2, 5, 10, 20, 40]) {
+            await pg.waitForTimeout((t - (res.length ? [2,5,10,20,40][res.length-1] : 0)) * 1000);
+            res.push(`${t}s=${await leer()}`);
+          }
+          await b.close();
+          await new Promise((r) => setTimeout(r, 3000));
+          res.push(`cerrada=${await leer()}`);
+          console.log(`::notice::Presencia (${S}): ${res.join(" ")}`);
+          JS
+          node p.mjs
