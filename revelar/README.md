@@ -78,6 +78,11 @@ cambia lo de otro (lo garantizan las reglas de Firebase; ver
   seguir su clase. Se guarda en su teléfono. Quien entra por un QR queda guardado
   solo. `berean-revelar.web.app/?unirse` abre esa lista directamente.
 - **Compartir** muestra el código de la clase en grande, para quien no pueda escanear.
+- **Administrador (presentador original):** en **Mis lecciones** aparece
+  **👥 Maestros**: cada maestro con nombre, correo, código, número de lecciones y
+  última actividad. **Pausar** le impide crear, cambiar o presentar (y sus alumnos
+  dejan de ver su clase en vivo); **Reactivar** lo devuelve. Sus lecciones no se
+  borran. El maestro pausado ve un aviso en su lista.
 - **Enviar copia:** en **⋯** de una lección, **📤 Enviar copia a otro maestro**
   con su código. Se envían láminas, escrituras y fotos (no las notas). El otro
   maestro la ve en **Recibidas** y toca **Aceptar** o **Descartar**.
