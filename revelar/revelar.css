@@ -1541,3 +1541,30 @@ a.btn-barra { text-decoration: none; box-sizing: border-box; }
 .lec-recibida-acc { display: flex; gap: 8px; margin-top: 8px; }
 .lec-recibida-acc .btn { padding: 6px 14px; font-size: 14px; }
 #codigoDestino { text-transform: lowercase; letter-spacing: 0.1em; font-size: 18px; }
+
+/* Participantes: botón discreto para elegir maestro y su lista */
+.btn-maestros {
+  position: fixed; top: max(12px, env(safe-area-inset-top)); right: 12px; z-index: 30;
+  width: 40px; height: 40px; border-radius: 999px; display: grid; place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(10, 12, 26, 0.45);
+  color: rgba(255, 255, 255, 0.75); cursor: pointer;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  opacity: 0.6; transition: opacity 0.2s;
+}
+.btn-maestros:hover, .btn-maestros:focus-visible { opacity: 1; }
+.btn-maestros svg { width: 20px; height: 20px; }
+.dlg-maestros { width: min(420px, calc(100vw - 32px)); }
+.dlg-maestros .ayuda-m { margin: 0 0 10px; }
+.dlg-maestros h3 { font-size: 15px; margin: 18px 0 10px; color: var(--text); }
+.mis-maestros { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.mis-maestros li { display: flex; align-items: stretch; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-2); overflow: hidden; }
+.mis-maestros li.actual { border-color: var(--ok); }
+.mis-maestros .m-ir { flex: 1; min-width: 0; text-align: left; background: none; border: 0; color: inherit; font: inherit; padding: 10px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+.mis-maestros .m-ir b { font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mis-maestros .m-ir small { color: var(--muted); font-size: 12px; letter-spacing: 0.06em; }
+.mis-maestros li.actual .m-ir small { color: var(--ok); }
+.mis-maestros .m-ed, .mis-maestros .m-x { width: 44px; border: 0; border-left: 1px solid var(--line); background: none; color: var(--muted); font-size: 16px; cursor: pointer; }
+.dlg-maestros #mCodigo { text-transform: lowercase; letter-spacing: 0.12em; font-size: 18px; }
+.dlg-maestros .error-m { color: var(--danger); margin: -4px 0 8px; font-size: 14px; }
+.codigo-grande { text-align: center; margin: 4px 0 12px; color: var(--muted); }
+.codigo-grande b { display: block; font-size: 34px; letter-spacing: 0.25em; color: var(--text); margin-top: 2px; }

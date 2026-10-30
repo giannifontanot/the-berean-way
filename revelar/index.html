@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#11152b">
   <title>Fotos de la clase</title>
-  <link rel="stylesheet" href="revelar.css?v=202610300937">
+  <link rel="stylesheet" href="revelar.css?v=202610301020">
 </head>
 <body class="sala">
   <!-- Sin barra superior: solo el contenido. Si se pierde la conexión, aparece un aviso discreto. -->
@@ -22,11 +22,33 @@
 
   <div class="visor" id="visor" hidden><img id="visorImg" alt=""></div>
 
+  <!-- Elegir maestro: los códigos guardados en este teléfono -->
+  <button class="btn-maestros" id="btnMaestros" type="button" aria-label="Mis maestros" data-i18n-aria="myTeachers">
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M15.5 5.2a3 3 0 0 1 0 5.6M17.5 14.3c2 .6 3.5 2.5 3.5 5.2"/></svg>
+  </button>
+  <dialog id="dlgMaestros" class="dlg-maestros">
+    <h2 data-i18n="myTeachers">Mis maestros</h2>
+    <p class="ayuda-m" data-i18n="followHint">Toca un maestro para seguir su clase.</p>
+    <ul class="mis-maestros" id="misMaestros"></ul>
+    <h3 id="tituloForm" data-i18n="addTeacher">Agregar maestro</h3>
+    <label class="campo"><span data-i18n="codeLabel">Código del maestro</span>
+      <input id="mCodigo" maxlength="8" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text" placeholder="k7m2">
+    </label>
+    <label class="campo"><span data-i18n="nameLabel">Nombre (para ti)</span>
+      <input id="mNombre" maxlength="40" autocomplete="off" placeholder="p. ej. Pastor Juan" data-i18n-ph="namePhStudent">
+    </label>
+    <p class="error-m" id="mError" hidden></p>
+    <div class="acciones">
+      <button class="btn" type="button" id="mCerrar" data-i18n="close">Cerrar</button>
+      <button class="btn primario" type="button" id="mGuardar" data-i18n="saveFollow">Guardar y seguir</button>
+    </div>
+  </dialog>
+
   <script type="module">
-    import { CONFIG } from "./config.js?v=202610300937";
-    import { crearStore, crearCatalogo, limpiarCodigo, sesionActual, ordenar, esTemporal, idReal, esFoco, FOCO } from "./js/store.js?v=202610300937";
-    import { idioma, t, traducir } from "./js/i18n.js?v=202610300937";
-    import { textoAHtml, esEscritura, esSubida } from "./js/escritura.js?v=202610300937";
+    import { CONFIG } from "./config.js?v=202610301020";
+    import { crearStore, crearCatalogo, limpiarCodigo, sesionActual, ordenar, esTemporal, idReal, esFoco, FOCO } from "./js/store.js?v=202610301020";
+    import { idioma, t, traducir } from "./js/i18n.js?v=202610301020";
+    import { textoAHtml, esEscritura, esSubida } from "./js/escritura.js?v=202610301020";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -45,9 +67,81 @@
     // Un solo enlace para siempre: sin ?s= se sigue la lección que el presentador
     // puso en vivo. Si cambia de lección, la página se recarga sola.
     // ?p=<código> sigue la lección en vivo de ese maestro; sin código, la del presentador original.
+    // ---------- Mis maestros (guardados en este teléfono) ----------
+    const param = new URLSearchParams(location.search);
+    const MIS = "revelar:maestros";
+    const leerMis = () => { try { return JSON.parse(localStorage.getItem(MIS)) || []; } catch { return []; } };
+    const guardarMis = (l) => { try { localStorage.setItem(MIS, JSON.stringify(l)); } catch {} };
+    // "" = la clase original (enlace sin código); null = sesión fija (?s=)
+    const codigoActual = param.has("s") ? null : (limpiarCodigo(param.get("p")) || "");
+    if (codigoActual !== null && !param.has("unirse")) {   // ?unirse solo abre la lista
+      const l = leerMis();
+      const m = l.find((x) => x.codigo === codigoActual);
+      if (m) m.usado = Date.now(); else l.push({ codigo: codigoActual, nombre: "", usado: Date.now() });
+      guardarMis(l);
+    }
+    const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+    const escapar = (x) => String(x ?? "").replace(/[&<>"']/g, (c) => ESC[c]);
+    const nombreDe = (m) => m.nombre || (m.codigo ? t("teacherWith", { c: m.codigo }) : t("mainClass"));
+    const irA = (codigo) => { location.href = codigo ? "./?p=" + encodeURIComponent(codigo) : "./"; };
+    let editando = null;
+    function pintarMaestros() {
+      const l = leerMis().sort((a, b) => (b.usado || 0) - (a.usado || 0));
+      $("misMaestros").innerHTML = l.map((m) => `
+        <li class="${m.codigo === codigoActual ? "actual" : ""}" data-c="${escapar(m.codigo)}">
+          <button type="button" class="m-ir">
+            <b>${escapar(nombreDe(m))}</b>
+            <small>${m.codigo ? escapar(m.codigo) : "—"}${m.codigo === codigoActual ? " · " + escapar(t("now")) : ""}</small>
+          </button>
+          <button type="button" class="m-ed" aria-label="${escapar(t("edit"))}">✎</button>
+          <button type="button" class="m-x" aria-label="${escapar(t("removeTeacher"))}">✕</button>
+        </li>`).join("");
+      $("misMaestros").hidden = !l.length;
+      $("tituloForm").textContent = editando !== null ? t("editTeacher") : t("addTeacher");
+    }
+    $("misMaestros").addEventListener("click", (e) => {
+      const li = e.target.closest("li");
+      if (!li) return;
+      const codigo = li.dataset.c;
+      if (e.target.closest(".m-x")) {
+        guardarMis(leerMis().filter((m) => m.codigo !== codigo));
+        pintarMaestros();
+      } else if (e.target.closest(".m-ed")) {
+        const m = leerMis().find((x) => x.codigo === codigo);
+        editando = codigo;
+        $("mCodigo").value = codigo; $("mNombre").value = m?.nombre || "";
+        pintarMaestros(); $("mNombre").focus();
+      } else if (codigo === codigoActual) {
+        $("dlgMaestros").close();
+      } else irA(codigo);
+    });
+    function abrirMaestros() {
+      editando = null; $("mCodigo").value = ""; $("mNombre").value = ""; $("mError").hidden = true;
+      pintarMaestros();
+      $("dlgMaestros").showModal();
+    }
+    $("btnMaestros").addEventListener("click", abrirMaestros);
+    $("mCerrar").addEventListener("click", () => $("dlgMaestros").close());
+    $("mGuardar").addEventListener("click", () => {
+      const codigo = limpiarCodigo($("mCodigo").value);
+      const nombre = $("mNombre").value.trim().slice(0, 40);
+      if (codigo.length < 4 && !(editando === "" && !codigo)) {
+        $("mError").textContent = t("codeTooShort"); $("mError").hidden = false; $("mCodigo").focus(); return;
+      }
+      let l = leerMis();
+      if (editando !== null && editando !== codigo) l = l.filter((m) => m.codigo !== editando);
+      const m = l.find((x) => x.codigo === codigo);
+      if (m) { m.nombre = nombre; m.usado = Date.now(); } else l.push({ codigo, nombre, usado: Date.now() });
+      guardarMis(l);
+      if (codigo === codigoActual) { editando = null; $("mCodigo").value = ""; $("mNombre").value = ""; pintarMaestros(); return; }
+      irA(codigo);
+    });
+    [$("mCodigo"), $("mNombre")].forEach((el) => el.addEventListener("keydown", (e) => { if (e.key === "Enter") $("mGuardar").click(); }));
+    if (param.has("unirse")) abrirMaestros();
+
     let sesion = sesionActual();
-    if (!new URLSearchParams(location.search).has("s")) {
-      const codigo = limpiarCodigo(new URLSearchParams(location.search).get("p")) || null;
+    if (!param.has("s")) {
+      const codigo = codigoActual || null;
       try {
         const cat = await crearCatalogo();
         const actual = await cat.leerActual(codigo);

@@ -72,6 +72,12 @@ cambia lo de otro (lo garantizan las reglas de Firebase; ver
   participantes**: `berean-revelar.web.app/?p=k7m2`. Aparece arriba en
   **Mis lecciones** y en **Compartir**. Sus participantes solo siguen sus clases.
 - El presentador original conserva su enlace sin código.
+- **Alumnos con varios maestros:** en la pantalla de participantes, el botón
+  discreto 👥 (arriba a la derecha) abre **Mis maestros**: escriben el código del
+  maestro y un nombre para recordarlo (p. ej. «Pastor Juan»), y tocan uno para
+  seguir su clase. Se guarda en su teléfono. Quien entra por un QR queda guardado
+  solo. `berean-revelar.web.app/?unirse` abre esa lista directamente.
+- **Compartir** muestra el código de la clase en grande, para quien no pueda escanear.
 - **Enviar copia:** en **⋯** de una lección, **📤 Enviar copia a otro maestro**
   con su código. Se envían láminas, escrituras y fotos (no las notas). El otro
   maestro la ve en **Recibidas** y toca **Aceptar** o **Descartar**.

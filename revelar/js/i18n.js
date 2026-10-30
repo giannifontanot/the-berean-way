@@ -137,6 +137,11 @@ const TEXTOS = {
     waiting: "Esperando", reconnecting: "Sin conexión… reconectando",
     demoParticipant: "Modo demo: Firebase aún no está configurado. Solo se sincroniza con otras pestañas de este navegador.",
     participantReadFail: "No se pudo leer la sesión. Revisa las reglas de Firebase.",
+    myTeachers: "Mis maestros", followHint: "Toca un maestro para seguir su clase.",
+    addTeacher: "Agregar maestro", editTeacher: "Cambiar nombre", codeLabel: "Código del maestro",
+    nameLabel: "Nombre (para ti)", namePhStudent: "p. ej. Pastor Juan", saveFollow: "Guardar y seguir",
+    now: "ahora", teacherWith: "Maestro {c}", mainClass: "The Berean Way", removeTeacher: "Quitar",
+    codeTooShort: "El código tiene 4 letras o números.", classCode: "Código de la clase",
 
     // Documento para imprimir
     classSummary: "Resumen de la clase", madeWith: "Hecho con Revelar · The Berean Way",
@@ -252,6 +257,11 @@ const TEXTOS = {
     waiting: "Waiting", reconnecting: "Offline… reconnecting",
     demoParticipant: "Demo mode: Firebase isn't set up yet. It only syncs with other tabs in this browser.",
     participantReadFail: "Couldn't read the session. Check the Firebase rules.",
+    myTeachers: "My teachers", followHint: "Tap a teacher to follow their class.",
+    addTeacher: "Add a teacher", editTeacher: "Rename", codeLabel: "Teacher's code",
+    nameLabel: "Name (just for you)", namePhStudent: "e.g. Pastor John", saveFollow: "Save and follow",
+    now: "now", teacherWith: "Teacher {c}", mainClass: "The Berean Way", removeTeacher: "Remove",
+    codeTooShort: "The code has 4 letters or numbers.", classCode: "Class code",
 
     classSummary: "Class summary", madeWith: "Made with Revelar · The Berean Way",
   },
