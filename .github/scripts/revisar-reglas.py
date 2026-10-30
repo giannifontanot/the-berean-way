@@ -17,7 +17,10 @@ import sys
 ARCHIVO = sys.argv[1] if len(sys.argv) > 1 else "revelar/database.rules.json"
 
 ESCRITURA_PUBLICA = {"rules/revelar/$sesion/presencia/$conexion"}
-LECTURA_PUBLICA = {"rules/revelar/$sesion", "rules/revelar_vivo/$codigo", "rules/revelar_actual"}
+LECTURA_PUBLICA = {"rules/revelar/$sesion", "rules/revelar_vivo/$codigo", "rules/revelar_actual",
+                   "rules/revelar_compartidas/$sesion"}
+# Notas: solo se leen sin cuenta si el dueño compartió esa lección (enlace del resumen)
+LECTURA_SI_COMPARTIDA = {"rules/revelar_privado/$sesion/notas": "root.child('revelar_compartidas/' + $sesion).exists()"}
 DUENO = "root.child('revelar_duenos/' + $sesion).val() === auth.uid"
 YO = "auth.uid === $uid"
 BLOQ = "!root.child('revelar_bloqueados/' + auth.uid).exists()"
@@ -31,6 +34,8 @@ OBLIGATORIAS = [
     ("rules/revelar/$sesion/subidas", ".write", DUENO),
     ("rules/revelar_privado/$sesion", ".read", DUENO),
     ("rules/revelar_privado/$sesion", ".write", DUENO),
+    ("rules/revelar_compartidas/$sesion", ".write", DUENO),
+    ("rules/revelar_compartidas/$sesion", ".write", BLOQ),
     ("rules/revelar_lecciones/$uid", ".read", YO),
     ("rules/revelar_lecciones/$uid", ".write", YO),
     ("rules/revelar_maestros/$uid", ".read", YO),
@@ -89,6 +94,10 @@ def recorrer(nodo, ruta):
                 error(f"{ruta}: .write no exige una cuenta ({valor!r})")
         elif clave == ".read":
             if ruta in LECTURA_PUBLICA:
+                continue
+            if ruta in LECTURA_SI_COMPARTIDA:
+                if valor != LECTURA_SI_COMPARTIDA[ruta]:
+                    error(f"{ruta}: .read inesperado ({valor!r})")
                 continue
             if valor is True or not (isinstance(valor, str) and "auth != null" in valor):
                 error(f"{ruta}: .read es público ({valor!r})")

@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610301905";
+import { CONFIG } from "../config.js?v=202610301930";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -108,6 +108,29 @@ export function limpiarCodigo(c) {
   return String(c || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 8);
 }
 
+/**
+ * Resumen compartido por enlace: lo lee cualquiera, sin cuenta.
+ * @returns {Promise<null | {titulo, orden, escrituras, subidas, notas}>} null si no está compartida
+ */
+export async function leerCompartida(sesion) {
+  if (!configurado) {
+    const j = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+    const info = (j("revelar-demo:compartidas") || {})[sesion];
+    if (!info) return null;
+    const c = `revelar-demo:${sesion}`;
+    return { titulo: info.titulo, orden: j(c + ":orden"), escrituras: j(c + ":escrituras") || {}, subidas: j(c + ":subidas") || {}, notas: j(c + ":notas") || {} };
+  }
+  const { db, d } = await firebase();
+  const val = async (r) => (await db.get(db.ref(d, r))).val();
+  const info = await val(`revelar_compartidas/${sesion}`);
+  if (!info) return null;
+  const [orden, escrituras, subidas, notas] = await Promise.all([
+    val(`revelar/${sesion}/orden`), val(`revelar/${sesion}/escrituras`), val(`revelar/${sesion}/subidas`),
+    val(`revelar_privado/${sesion}/notas`).catch(() => null),
+  ]);
+  return { titulo: info.titulo, orden, escrituras: escrituras || {}, subidas: subidas || {}, notas: notas || {} };
+}
+
 /** Lecciones del maestro, su código y la lección en vivo (no depende de una sesión). */
 export async function crearCatalogo() {
   return configurado ? catalogoFirebase() : catalogoDemo();
@@ -119,6 +142,7 @@ async function catalogoFirebase() {
   const uid = () => auth.currentUser?.uid;
   const ref = (ruta) => db.ref(d, ruta);
   const val = async (ruta) => (await db.get(ref(ruta))).val();
+  const perfilPedido = {};
   // Copia lo público de una lección (orden, escrituras, fotos) a otra.
   async function copiarContenido(origen, destino, extra) {
     const [orden, esc, sub] = await Promise.all([
@@ -137,19 +161,27 @@ async function catalogoFirebase() {
     onUsuario: (cb) => authMod.onAuthStateChanged(auth, cb),
     entrar: () => authMod.signInWithPopup(auth, new authMod.GoogleAuthProvider()),
     // Perfil del maestro; la primera vez se le asigna un código único.
-    async miPerfil() {
+    // Seguro aunque se pida dos veces a la vez (o en dos pestañas): el código del
+    // perfil se fija con una transacción, así nunca se reemplaza por otro.
+    miPerfil() {
       const u = auth.currentUser;
-      const p = await val(`revelar_maestros/${u.uid}`);
-      if (p?.codigo) return p;
-      for (let intento = 0; intento < 8; intento++) {
-        const codigo = nuevoCodigo();
-        try { await db.set(ref(`revelar_codigos/${codigo}`), u.uid); }
-        catch { continue; }                      // ya existe: probar otro
-        const perfil = { codigo, nombre: String(u.displayName || u.email || "").slice(0, 80), creado: Date.now() };
-        await db.set(ref(`revelar_maestros/${u.uid}`), perfil);
-        return perfil;
-      }
-      throw new Error("No se pudo crear tu código");
+      perfilPedido[u.uid] ??= (async () => {
+        const p = await val(`revelar_maestros/${u.uid}`);
+        if (p?.codigo) return p;
+        for (let intento = 0; intento < 8; intento++) {
+          const codigo = nuevoCodigo();
+          try { await db.set(ref(`revelar_codigos/${codigo}`), u.uid); }
+          catch { continue; }                      // ya existe: probar otro
+          const r = await db.runTransaction(ref(`revelar_maestros/${u.uid}/codigo`), (actual) => actual || codigo);
+          const final = r.snapshot.val() || codigo;
+          const extra = { nombre: String(u.displayName || u.email || "").slice(0, 80) };
+          if (!p?.creado) extra.creado = Date.now();
+          await db.update(ref(`revelar_maestros/${u.uid}`), extra);
+          return { ...(p || {}), ...extra, codigo: final };
+        }
+        throw new Error("No se pudo crear tu código");
+      })().catch((e) => { delete perfilPedido[u.uid]; throw e; });
+      return perfilPedido[u.uid];
     },
     // Datos que ve el administrador: cuántas lecciones y última actividad.
     actualizarPerfil(datos) {
@@ -255,6 +287,10 @@ async function catalogoFirebase() {
       });
     },
     descartarCopia: (envio) => db.remove(ref(`revelar_buzon/${uid()}/${envio}`)),
+    // Resumen compartido por enlace (solo lectura, con notas)
+    compartir: (sesion, titulo) => db.set(ref(`revelar_compartidas/${sesion}`), { titulo: String(titulo || "").slice(0, 80), desde: Date.now() }),
+    dejarDeCompartir: (sesion) => db.remove(ref(`revelar_compartidas/${sesion}`)),
+    async estaCompartida(sesion) { return !!(await val(`revelar_compartidas/${sesion}`)); },
   };
 }
 
@@ -463,6 +499,9 @@ function catalogoDemo() {
       const b = buzon(); delete b[envio]; escribirBuzon(b);
     },
     async descartarCopia(envio) { const b = buzon(); delete b[envio]; escribirBuzon(b); },
+    async compartir(sesion, titulo) { const v = leerJ("revelar-demo:compartidas"); v[sesion] = { titulo, desde: Date.now() }; try { localStorage.setItem("revelar-demo:compartidas", JSON.stringify(v)); } catch {} },
+    async dejarDeCompartir(sesion) { const v = leerJ("revelar-demo:compartidas"); delete v[sesion]; try { localStorage.setItem("revelar-demo:compartidas", JSON.stringify(v)); } catch {} },
+    async estaCompartida(sesion) { return !!leerJ("revelar-demo:compartidas")[sesion]; },
   };
 }
 

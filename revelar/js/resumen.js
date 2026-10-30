@@ -1,8 +1,31 @@
 // resumen.js — Arma un archivo HTML con el resumen de la clase:
 // cada lámina en orden (foto o escritura) seguida de tus notas.
 // Las fotos se incrustan en el archivo, así que se abre sin internet.
-import { t, idioma } from "./i18n.js?v=202610301905";
-import { textoAHtml, notasAHtml } from "./escritura.js?v=202610301905";
+import { t, idioma } from "./i18n.js?v=202610301930";
+import { textoAHtml, notasAHtml } from "./escritura.js?v=202610301930";
+
+/**
+ * Arma la lista en el orden del presentador a partir de lo guardado en la lección.
+ * Las láminas con "~" al inicio del id están saltadas (no se muestran en el resumen).
+ */
+export function armarLista({ orden, escrituras, subidas }) {
+  const items = new Map();
+  [
+    ...Object.entries(subidas || {}).filter(([id]) => id.startsWith("sub_"))
+      .map(([id, f]) => ({ id, tipo: "foto", src: f.src, creado: f.creado })),
+    ...Object.entries(escrituras || {}).map(([id, e]) => ({ id, tipo: "escritura", ...e })),
+  ].sort((a, b) => (a.creado || 0) - (b.creado || 0)).forEach((it) => items.set(it.id, it));
+  const lista = [], saltadas = new Set(), vistos = new Set();
+  for (const crudo of Object.values(orden || {})) {
+    const oculta = String(crudo).startsWith("~");
+    const id = oculta ? String(crudo).slice(1) : String(crudo);
+    if (!items.has(id) || vistos.has(id)) continue;
+    vistos.add(id); lista.push(items.get(id));
+    if (oculta) saltadas.add(id);
+  }
+  for (const it of items.values()) if (!vistos.has(it.id)) lista.push(it);
+  return { lista, saltadas };
+}
 
 const ESC = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const escapar = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ESC[c]);

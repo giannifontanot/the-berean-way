@@ -67,9 +67,26 @@
         ".read": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
         ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()",
         "notas": {
+          ".read": "root.child('revelar_compartidas/' + $sesion).exists()",
           "$n": {
             ".validate": "newData.isString() && newData.val().length <= 4000"
           }
+        },
+        "$otro": {
+          ".validate": false
+        }
+      }
+    },
+    "revelar_compartidas": {
+      "$sesion": {
+        ".read": true,
+        ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()",
+        ".validate": "newData.hasChildren(['titulo'])",
+        "titulo": {
+          ".validate": "newData.isString() && newData.val().length <= 80"
+        },
+        "desde": {
+          ".validate": "newData.isNumber()"
         },
         "$otro": {
           ".validate": false
