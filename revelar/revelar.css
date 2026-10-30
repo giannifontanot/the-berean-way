@@ -1942,3 +1942,12 @@ body.ordenando-activo .barra #btnOrdenar.presionado { background: #fff4dc; borde
 /* Presentar: al tocar una lámina no se hunde; pasa directo al borde dorado (en Editar sí se hunde) */
 body:not(.ordenando-activo) .tira-item.presionado,
 body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; transition: none; }
+
+/* Quitar maestro: confirmar y luego 10 segundos para arrepentirse */
+.dlg-quitar { width: min(380px, calc(100vw - 32px)); text-align: center; }
+.dlg-quitar .acciones { justify-content: center; }
+.q-cuenta { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 6px 0 14px; }
+.q-cuenta b { font-size: 48px; line-height: 1; font-variant-numeric: tabular-nums; color: var(--danger); }
+.q-barra { display: block; width: 100%; height: 6px; border-radius: 999px; background: var(--bg-2); overflow: hidden; }
+.q-barra i { display: block; height: 100%; width: 100%; background: var(--danger); transform-origin: left; animation: qBarra linear forwards; }
+@keyframes qBarra { from { transform: scaleX(1); } to { transform: scaleX(0); } }
