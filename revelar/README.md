@@ -85,14 +85,13 @@ cambia lo de otro (lo garantizan las reglas de Firebase; ver
   borran. El maestro pausado ve un aviso en su lista.
 - **Mapa de maestros:** en **Mis lecciones**, arriba de las lecciones, un mapa
   cuadrado con la Tierra completa muestra a los maestros que **eligieron** compartir
-  su ciudad (tú en verde). **📍 Compartir mi ubicación** pide permiso al teléfono,
-  la guarda aproximada (~10 km), con el nombre y la ciudad que escribas; se puede
-  quitar cuando quieras. Doble toque = pantalla completa (✕ o Atrás para salir).
+  su ciudad (tú en verde). La casilla **Ubicación** pide permiso al teléfono y la
+  guarda aproximada (~10 km) con tu nombre; desmárcala para quitarte. Doble toque = pantalla completa (✕ o Atrás para salir).
   El administrador ve el mismo mapa en **Maestros → 🗺 Mapa** (pausados en rojo).
 - **Encima del mapa, en una fila:** **Uso** (⛪ iglesia · 👥 otro, lo elige cada
   maestro), **Mostrar** (⛪ · 👥 · 🌐 todos; se recuerda en ese teléfono) y
-  **Ubicación** (📍: azul = compartir; con borde verde = ya compartes, toca para
-  cambiar o quitar). Puntos: dorado = iglesia, azul = otro, verde = tú.
+  **Ubicación** (una casilla: marcada = apareces en el mapa con tu ubicación
+  aproximada; desmarcada = te quitas). Puntos: dorado = iglesia, azul = otro, verde = tú.
 - **Enviar copia:** en **⋯** de una lección, **📤 Enviar copia a otro maestro**
   con su código. Se envían fotos, escrituras y, si se marca «Incluir mis notas», las notas. El otro
   maestro la ve en **Recibidas** y toca **Aceptar** o **Descartar**.
