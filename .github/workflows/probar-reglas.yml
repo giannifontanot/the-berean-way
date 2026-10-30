@@ -1,0 +1,25 @@
+name: Probar reglas de Firebase
+
+# Prueba revelar/database.rules.json en el emulador de Realtime Database:
+# quién puede leer y escribir qué (maestros, participantes, anónimos).
+
+on:
+  push:
+    branches: [main, multi-maestros]
+    paths:
+      - "revelar/database.rules.json"
+      - ".github/scripts/probar-reglas.py"
+      - ".github/workflows/probar-reglas.yml"
+  workflow_dispatch:
+
+jobs:
+  probar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Probar reglas en el emulador
+        run: npx --yes firebase-tools@15 emulators:exec --only database --project demo-revelar "python3 .github/scripts/probar-reglas.py"

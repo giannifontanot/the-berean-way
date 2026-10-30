@@ -13,11 +13,18 @@
 //     Fotos que subes desde el presentador con "+". Guardadas en la misma base de
 //     datos (comprimidas), así no hace falta activar otro servicio de Firebase.
 //     Escrituras y subidas comparten "reveladas" y "orden" con las fotos del repo.
-//   revelar_lecciones/<sesion> = { titulo, creada, editada, archivada, laminas, portada }
-//     Lista de tus lecciones (solo tu cuenta la lee). Cada lección es una sesión.
-//   revelar_actual = "<sesion>"  La lección que está (o estuvo) en vivo. Los
-//     participantes abren siempre el mismo enlace y siguen esta lección.
-import { CONFIG } from "../config.js?v=202610300845";
+//   Varios maestros (cualquiera con cuenta de Google):
+//   revelar_duenos/<sesion> = "<uid>"   Dueño de cada lección; solo él escribe en ella.
+//   revelar_lecciones/<uid>/<sesion> = { titulo, creada, editada, archivada, laminas, portada }
+//     La lista de lecciones de cada maestro (solo él la lee).
+//   revelar_maestros/<uid> = { codigo, nombre, creado }   Perfil de cada maestro.
+//   revelar_codigos/<codigo> = "<uid>"  Código corto de cada maestro (único).
+//   revelar_vivo/<codigo> = "<sesion>"  La lección en vivo de ese maestro. Sus
+//     participantes abren ?p=<codigo> y la siguen.
+//   revelar_actual = "<sesion>"  Igual, para el enlace original sin ?p= (presentador original).
+//   revelar_buzon/<uid>/<envio> = { deUid, deNombre, origen, titulo, creado }
+//     Copias de lecciones que otro maestro te envió.
+import { CONFIG } from "../config.js?v=202610300937";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -85,7 +92,21 @@ export function nuevoIdLeccion() {
   return "l" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
 }
 
-/** Lista de lecciones y la lección en vivo (no depende de una sesión). */
+/** Presentador original: su enlace sin ?p= sigue funcionando. */
+export const PRESENTADOR_ORIGINAL = "xWkkWXXR0jcHMnOGEwYjrxzxGtX2";
+
+/** Código corto para el enlace de participantes (sin letras que se confunden). */
+function nuevoCodigo() {
+  const L = "23456789abcdefghjkmnpqrstuvwxyz";
+  let c = "";
+  for (let i = 0; i < 4; i++) c += L[Math.floor(Math.random() * L.length)];
+  return c;
+}
+export function limpiarCodigo(c) {
+  return String(c || "").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 8);
+}
+
+/** Lecciones del maestro, su código y la lección en vivo (no depende de una sesión). */
 export async function crearCatalogo() {
   return configurado ? catalogoFirebase() : catalogoDemo();
 }
@@ -93,38 +114,92 @@ export async function crearCatalogo() {
 async function catalogoFirebase() {
   const { db, d } = await firebase();
   const { authMod, auth } = await firebaseAuth();
-  const refLecciones = db.ref(d, "revelar_lecciones");
-  const refActual = db.ref(d, "revelar_actual");
+  const uid = () => auth.currentUser?.uid;
+  const ref = (ruta) => db.ref(d, ruta);
+  const val = async (ruta) => (await db.get(ref(ruta))).val();
+  // Copia lo público de una lección (orden, escrituras, fotos) a otra.
+  async function copiarContenido(origen, destino, extra) {
+    const [orden, esc, sub] = await Promise.all([
+      val(`revelar/${origen}/orden`), val(`revelar/${origen}/escrituras`), val(`revelar/${origen}/subidas`),
+    ]);
+    await db.update(ref(""), {
+      [`revelar/${destino}/orden`]: orden,
+      [`revelar/${destino}/escrituras`]: esc,
+      [`revelar/${destino}/subidas`]: sub,
+      ...extra,
+    });
+  }
   return {
     modo: "firebase",
+    uid,
     onUsuario: (cb) => authMod.onAuthStateChanged(auth, cb),
     entrar: () => authMod.signInWithPopup(auth, new authMod.GoogleAuthProvider()),
+    // Perfil del maestro; la primera vez se le asigna un código único.
+    async miPerfil() {
+      const u = auth.currentUser;
+      const p = await val(`revelar_maestros/${u.uid}`);
+      if (p?.codigo) return p;
+      for (let intento = 0; intento < 8; intento++) {
+        const codigo = nuevoCodigo();
+        try { await db.set(ref(`revelar_codigos/${codigo}`), u.uid); }
+        catch { continue; }                      // ya existe: probar otro
+        const perfil = { codigo, nombre: String(u.displayName || u.email || "").slice(0, 80), creado: Date.now() };
+        await db.set(ref(`revelar_maestros/${u.uid}`), perfil);
+        return perfil;
+      }
+      throw new Error("No se pudo crear tu código");
+    },
     onLecciones(cb, onError) {
-      return db.onValue(refLecciones, (s) => cb(s.val() || {}), onError);
+      return db.onValue(ref(`revelar_lecciones/${uid()}`), (s) => cb(s.val() || {}), onError);
     },
     onLeccion(id, cb, onError) {
-      return db.onValue(db.ref(d, `revelar_lecciones/${id}`), (s) => cb(s.val()), onError);
+      return db.onValue(ref(`revelar_lecciones/${uid()}/${id}`), (s) => cb(s.val()), onError);
     },
-    guardarLeccion: (id, datos) => db.update(db.ref(d, `revelar_lecciones/${id}`), datos),
-    async leerActual() { return (await db.get(refActual)).val() || null; },
-    onActual(cb) { return db.onValue(refActual, (s) => cb(s.val() || null), () => cb(null)); },
-    ponerActual: (id) => db.set(refActual, id),
+    guardarLeccion: (id, datos) => db.update(ref(`revelar_lecciones/${uid()}/${id}`), datos),
+    async crearLeccion(id, ficha) {
+      await db.set(ref(`revelar_duenos/${id}`), uid());
+      await db.set(ref(`revelar_lecciones/${uid()}/${id}`), ficha);
+    },
+    // Lección en vivo: del maestro (?p=código) o la original (sin código).
+    async leerActual(codigo) { return (await val(codigo ? `revelar_vivo/${codigo}` : "revelar_actual")) || null; },
+    onActual(codigo, cb) {
+      return db.onValue(ref(codigo ? `revelar_vivo/${codigo}` : "revelar_actual"), (s) => cb(s.val() || null), () => cb(null));
+    },
+    async ponerActual(sesion, codigo) {
+      if (codigo) await db.set(ref(`revelar_vivo/${codigo}`), sesion);
+      if (uid() === PRESENTADOR_ORIGINAL) await db.set(ref("revelar_actual"), sesion);
+    },
     // Copia orden, escrituras, fotos subidas y notas a una lección nueva (sin lo revelado).
     async duplicar(origen, destino, ficha) {
-      const [orden, esc, sub, notas] = await Promise.all([
-        db.get(db.ref(d, `revelar/${origen}/orden`)),
-        db.get(db.ref(d, `revelar/${origen}/escrituras`)),
-        db.get(db.ref(d, `revelar/${origen}/subidas`)),
-        db.get(db.ref(d, `revelar_privado/${origen}/notas`)),
-      ]);
-      await db.update(db.ref(d), {
-        [`revelar/${destino}/orden`]: orden.val(),
-        [`revelar/${destino}/escrituras`]: esc.val(),
-        [`revelar/${destino}/subidas`]: sub.val(),
-        [`revelar_privado/${destino}/notas`]: notas.val(),
-        [`revelar_lecciones/${destino}`]: ficha,
+      await db.set(ref(`revelar_duenos/${destino}`), uid());
+      const notas = await val(`revelar_privado/${origen}/notas`);
+      await copiarContenido(origen, destino, {
+        [`revelar_privado/${destino}/notas`]: notas,
+        [`revelar_lecciones/${uid()}/${destino}`]: ficha,
       });
     },
+    // Enviar una copia (sin notas) a otro maestro, por su código.
+    async enviarCopia(codigo, origen, titulo) {
+      const destino = await val(`revelar_codigos/${limpiarCodigo(codigo)}`);
+      if (!destino) { const e = new Error("codigo"); e.code = "codigo"; throw e; }
+      const u = auth.currentUser;
+      await db.push(ref(`revelar_buzon/${destino}`), {
+        deUid: u.uid, deNombre: String(u.displayName || u.email || "").slice(0, 80),
+        origen, titulo: String(titulo || "").slice(0, 80), creado: Date.now(),
+      });
+    },
+    onBuzon(cb) {
+      return db.onValue(ref(`revelar_buzon/${uid()}`), (s) => cb(s.val() || {}), () => cb({}));
+    },
+    async aceptarCopia(envio, datos, destino) {
+      await db.set(ref(`revelar_duenos/${destino}`), uid());
+      const ahora = Date.now();
+      await copiarContenido(datos.origen, destino, {
+        [`revelar_lecciones/${uid()}/${destino}`]: { titulo: datos.titulo || "", creada: ahora, editada: ahora },
+        [`revelar_buzon/${uid()}/${envio}`]: null,
+      });
+    },
+    descartarCopia: (envio) => db.remove(ref(`revelar_buzon/${uid()}/${envio}`)),
   };
 }
 
@@ -239,32 +314,55 @@ async function storeFirebase(sesion) {
 
 /* ------------------------------ Demo ------------------------------- */
 function catalogoDemo() {
-  const CL = "revelar-demo:lecciones", CA = "revelar-demo:actual";
-  const oyentes = new Set(), oyentesActual = new Set();
-  const leer = () => { try { return JSON.parse(localStorage.getItem(CL)) || {}; } catch { return {}; } };
+  const CL = "revelar-demo:lecciones", CA = "revelar-demo:actual", CB = "revelar-demo:buzon";
+  const oyentes = new Set(), oyentesActual = new Set(), oyentesBuzon = new Set();
+  const leerJ = (k) => { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch { return {}; } };
+  const leer = () => leerJ(CL);
   const escribir = (v) => { try { localStorage.setItem(CL, JSON.stringify(v)); } catch {} oyentes.forEach((cb) => cb(v)); };
+  const buzon = () => leerJ(CB);
+  const escribirBuzon = (v) => { try { localStorage.setItem(CB, JSON.stringify(v)); } catch {} oyentesBuzon.forEach((cb) => cb(v)); };
   const actual = () => { try { return localStorage.getItem(CA) || null; } catch { return null; } };
   window.addEventListener("storage", (e) => {
     if (e.key === CL) oyentes.forEach((cb) => cb(leer()));
     if (e.key === CA) oyentesActual.forEach((cb) => cb(actual()));
+    if (e.key === CB) oyentesBuzon.forEach((cb) => cb(buzon()));
   });
+  const copiar = (origen, destino, conNotas) => {
+    for (const k of ["orden", "escrituras", "subidas", ...(conNotas ? ["notas"] : [])]) {
+      const val = localStorage.getItem(`revelar-demo:${origen}:${k}`);
+      if (val != null) localStorage.setItem(`revelar-demo:${destino}:${k}`, val);
+    }
+  };
   return {
     modo: "demo",
-    onUsuario(cb) { cb({ uid: "demo" }); return () => {}; },
+    uid: () => "demo",
+    onUsuario(cb) { cb({ uid: "demo", displayName: "Demo" }); return () => {}; },
     async entrar() {},
+    async miPerfil() { return { codigo: "demo", nombre: "Demo" }; },
     onLecciones(cb) { oyentes.add(cb); cb(leer()); return () => oyentes.delete(cb); },
     onLeccion(id, cb) { const f = (v) => cb(v[id] || null); oyentes.add(f); f(leer()); return () => oyentes.delete(f); },
-    async guardarLeccion(id, datos) { const v = leer(); v[id] = { ...(v[id] || {}), ...datos }; escribir(v); },
-    async leerActual() { return actual(); },
-    onActual(cb) { oyentesActual.add(cb); cb(actual()); return () => oyentesActual.delete(cb); },
-    async ponerActual(id) { try { localStorage.setItem(CA, id); } catch {} oyentesActual.forEach((cb) => cb(id)); },
-    async duplicar(origen, destino, ficha) {
-      for (const k of ["orden", "escrituras", "subidas", "notas"]) {
-        const val = localStorage.getItem(`revelar-demo:${origen}:${k}`);
-        if (val != null) localStorage.setItem(`revelar-demo:${destino}:${k}`, val);
-      }
-      const v = leer(); v[destino] = ficha; escribir(v);
+    async guardarLeccion(id, datos) {
+      const v = leer(); v[id] = { ...(v[id] || {}), ...datos };
+      Object.keys(v[id]).forEach((k) => v[id][k] == null && delete v[id][k]);
+      escribir(v);
     },
+    async crearLeccion(id, ficha) { const v = leer(); v[id] = ficha; escribir(v); },
+    async leerActual() { return actual(); },
+    onActual(codigo, cb) { oyentesActual.add(cb); cb(actual()); return () => oyentesActual.delete(cb); },
+    async ponerActual(sesion) { try { localStorage.setItem(CA, sesion); } catch {} oyentesActual.forEach((cb) => cb(sesion)); },
+    async duplicar(origen, destino, ficha) { copiar(origen, destino, true); const v = leer(); v[destino] = ficha; escribir(v); },
+    async enviarCopia(codigo, origen, titulo) {
+      if (limpiarCodigo(codigo) !== "demo") { const e = new Error("codigo"); e.code = "codigo"; throw e; }
+      const b = buzon(); b["env" + Date.now().toString(36)] = { deUid: "demo", deNombre: "Demo", origen, titulo, creado: Date.now() };
+      escribirBuzon(b);
+    },
+    onBuzon(cb) { oyentesBuzon.add(cb); cb(buzon()); return () => oyentesBuzon.delete(cb); },
+    async aceptarCopia(envio, datos, destino) {
+      copiar(datos.origen, destino, false);
+      const v = leer(); v[destino] = { titulo: datos.titulo, creada: Date.now(), editada: Date.now() }; escribir(v);
+      const b = buzon(); delete b[envio]; escribirBuzon(b);
+    },
+    async descartarCopia(envio) { const b = buzon(); delete b[envio]; escribirBuzon(b); },
   };
 }
 

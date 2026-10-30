@@ -4,19 +4,19 @@
       "$sesion": {
         ".read": true,
         "reveladas": {
-          ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
           "$foto": {
             ".validate": "newData.isNumber()"
           }
         },
         "orden": {
-          ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
           "$i": {
             ".validate": "newData.isString()"
           }
         },
         "escrituras": {
-          ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
           "$e": {
             ".validate": "newData.hasChildren(['texto'])",
             "cita": {
@@ -37,7 +37,7 @@
           }
         },
         "subidas": {
-          ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
           "$f": {
             ".validate": "newData.hasChildren(['src'])",
             "src": {
@@ -64,8 +64,8 @@
     },
     "revelar_privado": {
       "$sesion": {
-        ".read": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
-        ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
+        ".read": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
+        ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid",
         "notas": {
           "$n": {
             ".validate": "newData.isString() && newData.val().length <= 4000"
@@ -76,37 +76,105 @@
         }
       }
     },
+    "revelar_duenos": {
+      "$sesion": {
+        ".read": "auth != null",
+        ".write": "auth != null && ((!data.exists() && newData.val() === auth.uid) || data.val() === auth.uid)",
+        ".validate": "newData.isString() && newData.val().length <= 128"
+      }
+    },
     "revelar_lecciones": {
-      ".read": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
-      ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
-      "$leccion": {
-        "titulo": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid",
+        "$leccion": {
+          "titulo": {
+            ".validate": "newData.isString() && newData.val().length <= 80"
+          },
+          "creada": {
+            ".validate": "newData.isNumber()"
+          },
+          "editada": {
+            ".validate": "newData.isNumber()"
+          },
+          "archivada": {
+            ".validate": "newData.isBoolean()"
+          },
+          "laminas": {
+            ".validate": "newData.isNumber()"
+          },
+          "portada": {
+            ".validate": "newData.isString() && newData.val().beginsWith('data:image/') && newData.val().length < 100000"
+          },
+          "$otro": {
+            ".validate": false
+          }
+        }
+      }
+    },
+    "revelar_maestros": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid",
+        "codigo": {
+          ".validate": "newData.isString() && newData.val().length <= 8"
+        },
+        "nombre": {
           ".validate": "newData.isString() && newData.val().length <= 80"
         },
-        "creada": {
+        "creado": {
           ".validate": "newData.isNumber()"
-        },
-        "editada": {
-          ".validate": "newData.isNumber()"
-        },
-        "archivada": {
-          ".validate": "newData.isBoolean()"
-        },
-        "laminas": {
-          ".validate": "newData.isNumber()"
-        },
-        "portada": {
-          ".validate": "newData.isString() && newData.val().beginsWith('data:image/') && newData.val().length < 100000"
         },
         "$otro": {
           ".validate": false
         }
       }
     },
+    "revelar_codigos": {
+      "$codigo": {
+        ".read": "auth != null",
+        ".write": "auth != null && !data.exists() && newData.val() === auth.uid",
+        ".validate": "newData.isString() && $codigo.matches(/^[a-z0-9]{4,8}$/)"
+      }
+    },
+    "revelar_vivo": {
+      "$codigo": {
+        ".read": true,
+        ".write": "auth != null && root.child('revelar_codigos/' + $codigo).val() === auth.uid",
+        ".validate": "newData.isString() && newData.val().length <= 40"
+      }
+    },
     "revelar_actual": {
       ".read": true,
       ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",
       ".validate": "newData.isString() && newData.val().length <= 40"
+    },
+    "revelar_buzon": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        "$envio": {
+          ".write": "auth != null && ((!data.exists() && newData.child('deUid').val() === auth.uid) || (auth.uid === $uid && !newData.exists()))",
+          ".validate": "newData.hasChildren(['deUid', 'origen', 'titulo'])",
+          "deUid": {
+            ".validate": "newData.isString()"
+          },
+          "deNombre": {
+            ".validate": "newData.isString() && newData.val().length <= 80"
+          },
+          "origen": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "titulo": {
+            ".validate": "newData.isString() && newData.val().length <= 80"
+          },
+          "creado": {
+            ".validate": "newData.isNumber()"
+          },
+          "$otro": {
+            ".validate": false
+          }
+        }
+      }
     }
   }
 }
