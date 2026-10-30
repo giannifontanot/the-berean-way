@@ -1914,3 +1914,17 @@ body:not(.pag-lecciones) .barra .btn-barra .ico { width: 22px; height: 22px; }
 }
 .mapa-controles .ctl { width: 100%; }
 .mapa-controles .ctl-tit { text-wrap: balance; }
+
+/* Botones de arriba: al tocarlos cambian de color al instante, se quedan así un momento
+   (la acción ocurre después, ver presion.js) y vuelven suavemente a su color. */
+.barra .barra-acciones .btn-barra { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, scale 0.12s ease-out; }
+.barra .barra-acciones .btn-barra.presionado {
+  background: var(--gold); border-color: var(--gold); color: #11152b;
+  box-shadow: 0 0 0 4px rgba(232, 193, 112, 0.28);
+  filter: none; transition: none;
+}
+.barra .barra-acciones .btn-barra.peligro.presionado {
+  background: var(--danger); border-color: var(--danger); color: #fff;
+  box-shadow: 0 0 0 4px rgba(229, 115, 115, 0.3);
+}
+body.ordenando-activo .barra #btnOrdenar.presionado { background: #fff4dc; border-color: #fff4dc; color: #11152b; }
