@@ -32,7 +32,7 @@ jobs:
 
       - name: Checkout
         if: env.HAY_LLAVE == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Deploy to Firebase Hosting
         if: env.HAY_LLAVE == 'true'
