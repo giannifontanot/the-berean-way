@@ -36,8 +36,17 @@ jobs:
 
       - name: Deploy to Firebase Hosting
         if: env.HAY_LLAVE == 'true'
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: berean-revelar
-          channelId: live
+        env:
+          LLAVE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          printf '%s' "$LLAVE" > "$RUNNER_TEMP/llave.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/llave.json"
+          set +e
+          npx --yes firebase-tools@15 deploy --only hosting --project berean-revelar --non-interactive 2>&1 | tee "$RUNNER_TEMP/salida.txt"
+          codigo=${PIPESTATUS[0]}
+          rm -f "$RUNNER_TEMP/llave.json"
+          if [ "$codigo" -ne 0 ]; then
+            # Muestra el error como anotación (se ve en el resumen de la ejecución)
+            grep -iE "error|denied|permission|not found|404|403|enable" "$RUNNER_TEMP/salida.txt" | tail -8 | while IFS= read -r l; do echo "::error::$l"; done
+            exit "$codigo"
+          fi
