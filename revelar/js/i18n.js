@@ -51,7 +51,7 @@ const TEXTOS = {
     copySent: "Copia enviada", codeNotFound: "No existe un maestro con ese código", copiesSent: "Copia enviada a {n} maestros", addToList: "Agregar", someSent: "Enviada a {n}. No existe: {c}", codesNotFound: "No existe: {c}",
     severalCodes: "Para enviarla a varios maestros, separa los códigos con comas.", codesPh: "k7m2, p4qx",
     fromName: "De {n}", accept: "Aceptar", discard: "Descartar",
-    accepting: "Copiando la lección…", accepted: "Lección agregada", discarded: "Descartada",
+    accepting: "Copiando la lección…", acceptingN: "Copiando foto {i} de {n}…", accepted: "Lección agregada", discarded: "Descartada",
 
     // Presentador: barra
     connecting: "Conectando…", participants1: "1 participante", participantsN: "{n} participantes",
@@ -208,7 +208,7 @@ const TEXTOS = {
     copySent: "Copy sent", codeNotFound: "No teacher has that code", copiesSent: "Copy sent to {n} teachers", addToList: "Add", someSent: "Sent to {n}. Not found: {c}", codesNotFound: "Not found: {c}",
     severalCodes: "To send it to several teachers, separate the codes with commas.", codesPh: "k7m2, p4qx",
     fromName: "From {n}", accept: "Accept", discard: "Discard",
-    accepting: "Copying the lesson…", accepted: "Lesson added", discarded: "Discarded",
+    accepting: "Copying the lesson…", acceptingN: "Copying photo {i} of {n}…", accepted: "Lesson added", discarded: "Discarded",
 
     connecting: "Connecting…", participants1: "1 participant", participantsN: "{n} participants",
     offline: "Offline",

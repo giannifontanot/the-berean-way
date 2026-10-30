@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610301930";
+import { CONFIG } from "../config.js?v=202610301845";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -144,16 +144,23 @@ async function catalogoFirebase() {
   const val = async (ruta) => (await db.get(ref(ruta))).val();
   const perfilPedido = {};
   // Copia lo público de una lección (orden, escrituras, fotos) a otra.
-  async function copiarContenido(origen, destino, extra) {
+  // Por partes: primero orden y escrituras, luego cada foto (una escritura chica por foto,
+  // así un teléfono con señal lenta no se atora con varios MB de golpe) y al final «extra»,
+  // que es lo que hace aparecer la lección en la lista.
+  async function copiarContenido(origen, destino, extra, progreso) {
     const [orden, esc, sub] = await Promise.all([
       val(`revelar/${origen}/orden`), val(`revelar/${origen}/escrituras`), val(`revelar/${origen}/subidas`),
     ]);
     await db.update(ref(""), {
       [`revelar/${destino}/orden`]: orden,
       [`revelar/${destino}/escrituras`]: esc,
-      [`revelar/${destino}/subidas`]: sub,
-      ...extra,
     });
+    const fotos = Object.entries(sub || {});
+    for (let i = 0; i < fotos.length; i++) {
+      progreso?.(i + 1, fotos.length);
+      await db.set(ref(`revelar/${destino}/subidas/${fotos[i][0]}`), fotos[i][1]);
+    }
+    await db.update(ref(""), extra);
   }
   return {
     modo: "firebase",
@@ -277,14 +284,17 @@ async function catalogoFirebase() {
     async existeCodigo(codigo) { return !!(await val(`revelar_codigos/${limpiarCodigo(codigo)}`)); },
     guardarContacto: (codigo, nombre) => db.set(ref(`revelar_maestros/${uid()}/contactos/${limpiarCodigo(codigo)}`), String(nombre).slice(0, 40)),
     quitarContacto: (codigo) => db.remove(ref(`revelar_maestros/${uid()}/contactos/${codigo}`)),
-    async aceptarCopia(envio, datos, destino) {
-      await db.set(ref(`revelar_duenos/${destino}`), uid());
+    // El id de la lección nueva sale del envío: si se corta a la mitad, al reintentar
+    // sigue donde iba (no deja lecciones a medias).
+    async aceptarCopia(envio, datos, _destino, progreso) {
+      const destino = "r" + limpiarSesion(envio).slice(0, 38);
+      if ((await val(`revelar_duenos/${destino}`)) !== uid()) await db.set(ref(`revelar_duenos/${destino}`), uid());
       const ahora = Date.now();
       await copiarContenido(datos.origen, destino, {
         [`revelar_lecciones/${uid()}/${destino}`]: { titulo: datos.titulo || "", creada: ahora, editada: ahora },
         [`revelar_privado/${destino}/notas`]: datos.notas || null,
         [`revelar_buzon/${uid()}/${envio}`]: null,
-      });
+      }, progreso);
     },
     descartarCopia: (envio) => db.remove(ref(`revelar_buzon/${uid()}/${envio}`)),
     // Resumen compartido por enlace (solo lectura, con notas)
