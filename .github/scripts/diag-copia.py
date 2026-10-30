@@ -31,3 +31,19 @@ for lid, l in lecs.items():
     largo = max([len(v) for v in notas.values() if isinstance(v, str)] or [0])
     tit = l.get("titulo") or ""
     nota(f"leccion {lid}: titulo={len(tit)} chars, notas={len(notas)}, nota mas larga={largo}, malas={malas}, claves raras={[k for k in notas if not k.replace('_','').replace('-','').isalnum()]}")
+# Contenido de la lección «clase» que se copia: campos y tamaños
+for parte in ("escrituras", "subidas"):
+    v = obtener(f"/revelar/clase/{parte}") or {}
+    for k, x in v.items():
+        if isinstance(x, dict):
+            info = {c: (len(y) if isinstance(y, str) else type(y).__name__) for c, y in x.items()}
+            if "src" in x: info["src_ini"] = str(x["src"])[:15]
+            nota(parte, k, info)
+        else:
+            nota(parte, k, "NO-DICT", type(x).__name__)
+orden = obtener("/revelar/clase/orden")
+nota("orden tipo", type(orden).__name__, "len", len(orden or []), "no-str", [o for o in (orden.values() if isinstance(orden, dict) else orden or []) if not isinstance(o, str)])
+for e, x in (obtener(f"/revelar_buzon/{destino}") or {}).items():
+    nota("envio", e, {c: (y if c in ("origen", "titulo", "deNombre", "creado") else "…") for c, y in x.items()})
+nota("duenos de clase:", obtener("/revelar_duenos/clase"))
+nota("lecciones de Carlet:", obtener(f"/revelar_lecciones/{destino}", True))
