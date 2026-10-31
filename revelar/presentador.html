@@ -10,7 +10,7 @@
     // Sin lección elegida (?s=), primero la lista de lecciones.
     if (!new URLSearchParams(location.search).has("s")) location.replace("lecciones.html");
   </script>
-  <link rel="stylesheet" href="revelar.css?v=202610302020">
+  <link rel="stylesheet" href="revelar.css?v=202610310600">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <link rel="manifest" href="maestro.webmanifest">
@@ -20,7 +20,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Maestro">
-  <script type="module" src="js/pwa.js?v=202610302020"></script>
+  <script type="module" src="js/pwa.js?v=202610310600"></script>
 </head>
 <body>
   <header class="barra">
@@ -255,15 +255,27 @@
     </div>
   </dialog>
 
+  <!-- Lámina en blanco: ¿foto o escritura? -->
+  <dialog id="dlgPendiente" class="dlg-pendiente">
+    <h2 id="pendTitulo">¿Qué va en esta lámina?</h2>
+    <p class="pend-idea" id="pendIdea"></p>
+    <div class="menu-item">
+      <button class="btn" type="button" id="btnPendFoto" data-i18n="pendingPhoto">🖼 Foto</button>
+      <button class="btn" type="button" id="btnPendEscritura" data-i18n="pendingScripture">📜 Escritura</button>
+    </div>
+    <div class="acciones"><button class="btn" data-cerrar data-i18n="cancel">Cancelar</button></div>
+  </dialog>
+  <input type="file" id="inputPendiente" accept="image/*" hidden>
+
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202610302020";
-    import "./js/presion.js?v=202610302020";
-    import { colocarAviso } from "./js/junto.js?v=202610302020";
-    import { crearPapel } from "./js/papel.js?v=202610302020";
-    import { idioma, t, traducir } from "./js/i18n.js?v=202610302020";
-    import { textoAHtml, notasAHtml } from "./js/escritura.js?v=202610302020";
+    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202610310600";
+    import "./js/presion.js?v=202610310600";
+    import { colocarAviso } from "./js/junto.js?v=202610310600";
+    import { crearPapel } from "./js/papel.js?v=202610310600";
+    import { idioma, t, traducir } from "./js/i18n.js?v=202610310600";
+    import { textoAHtml, notasAHtml } from "./js/escritura.js?v=202610310600";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -355,6 +367,7 @@
       if (u) {
         escucharNotas(); escucharLeccion();
         catalogo.miPerfil?.().then((p) => { perfil = p; }).catch(() => {});
+        setTimeout(() => crearEsqueleto(), 0);
       }
       else if (bajaNotas) { try { bajaNotas(); } catch {} bajaNotas = null; notas = {}; }
     });
@@ -438,6 +451,7 @@
     // Si ya pasó en el flujo, los teléfonos simplemente regresan a ella.
     function tocarItem(id) {
       if (ordenando) return;
+      if (items.get(id)?.pendiente) { aviso(t("pendingPresent")); return; }
       if (reveladas[id]) {
         accion(id, () => vivo.avanzar(focos(), FOCO + id));
         return;
@@ -466,7 +480,8 @@
       [
         ...Object.entries(subidas).filter(([id]) => id.startsWith("sub_"))
           .map(([id, f]) => ({ id, tipo: "foto", subida: true, src: f.src, creado: f.creado })),
-        ...Object.entries(escrituras).map(([id, e]) => ({ id, tipo: "escritura", ...e })),
+        // Escritura sin texto = lámina en blanco (de las «ideas» de la lección): falta elegir foto o escritura
+        ...Object.entries(escrituras).map(([id, e]) => ({ id, tipo: "escritura", ...e, pendiente: !String(e?.texto || "").trim() })),
       ]
         .sort((a, b) => (a.creado || 0) - (b.creado || 0))
         .forEach((it) => items.set(it.id, it));
@@ -573,7 +588,11 @@
     function escucharNotas() {
       if (bajaNotas) return;
       bajaNotas = store.onNotas(
-        (n) => { notas = n || {}; pintarNotasTarjetas(); pintarPresentar(); actualizarFicha(); },
+        (n) => {
+          notas = n || {}; pintarNotasTarjetas();
+          if ([...items.values()].some((it) => it.pendiente)) construirTira(); else pintarPresentar();
+          actualizarFicha();
+        },
         (e) => {
           bajaNotas = null;
           if (esPermisoDenegado(e)) aviso(t("rulesMissingNotes"));
@@ -689,7 +708,7 @@
     // "Siguiente" quita lo que mostraste fuera de orden y revela el primer elemento
     // de tu cuadrícula que aún no se ha revelado.
     // "↶" oculta lo último que apareció (por si tocaste de más).
-    function siguiente() { return lista.find((it) => !reveladas[it.id] && !saltadas.has(it.id)); }
+    function siguiente() { return lista.find((it) => !reveladas[it.id] && !saltadas.has(it.id) && !it.pendiente); }
     function ultima() { return ordenar(reveladas).filter((k) => tarjetas.has(idReal(k))).pop(); }
 
     function pintarDock() {
@@ -702,7 +721,7 @@
       $("sigCual").textContent = hayDesvio
         ? (sig ? t("removeShownNext", { c: cual }) : t("removeShown"))
         : repasando ? (sig ? t("nextC", { c: cual }) : t("backToLast"))
-        : (sig ? cual : t("allRevealed"));
+        : (sig ? cual : lista.some((it) => it.pendiente && !saltadas.has(it.id)) ? t("fillBlanks") : t("allRevealed"));
       $("btnDeshacer").disabled = !ultima() || enCurso;
     }
 
@@ -952,6 +971,15 @@
     // ---------- Notas ----------
     function miniaturaHtml(item) {
       if (!item) return "";
+      if (item.pendiente) {
+        const idea = String(notas[item.id] || "").replace(/[*=]/g, "").split("\n")[0].slice(0, 90);
+        const div = document.createElement("div");
+        div.className = "pendiente-mini";
+        div.innerHTML = `<b aria-hidden="true">＋</b><span class="p-idea"></span><small></small>`;
+        div.querySelector(".p-idea").textContent = idea || t("pendingSlide");
+        div.querySelector("small").textContent = t("pendingTap");
+        return div.outerHTML;
+      }
       if (item.tipo === "foto") return `<img alt="" src="${item.src.replace(/"/g, "&quot;")}">`;
       return `<div class="verso-mini"><cite></cite><p>${textoAHtml(item.texto, item.todoRojo)}</p></div>`;
     }
@@ -978,7 +1006,7 @@
       try {
         await store.guardarNota(id, texto);
         notas = { ...notas, [id]: texto }; if (!texto) delete notas[id];
-        pintarNotasTarjetas(); pintarPresentar();
+        pintarNotasTarjetas(); construirTira();
         escucharNotas();
         aviso(t("notesSaved"));
       }
@@ -1012,9 +1040,11 @@
         let el = tiraEls.get(it.id);
         const nuevo = !el;
         if (nuevo) { el = crearItemTira(it); tiraEls.set(it.id, el); }
-        const firma = it.tipo === "foto" ? it.src.length + ":" + it.src.slice(-24) : `${it.cita}|${it.texto}|${it.todoRojo}`;
+        const firma = it.tipo === "foto" ? it.src.length + ":" + it.src.slice(-24)
+          : it.pendiente ? "p|" + (notas[it.id] || "") : `${it.cita}|${it.texto}|${it.todoRojo}`;
         if (el.dataset.firma !== firma) {
           el.dataset.firma = firma;
+          el.classList.toggle("es-pendiente", !!it.pendiente);
           el.querySelector(".tira-marco").innerHTML = miniaturaHtml(it);
           const c = el.querySelector("cite");
           if (c) c.textContent = it.cita || "";
@@ -1030,6 +1060,7 @@
       el.setAttribute("role", "button");
       el.tabIndex = 0;
       el.className = "tira-item" + (it.tipo === "escritura" ? " es-escritura" : "") + (it.subida ? " es-subida" : "");
+      el.classList.toggle("es-pendiente", !!it.pendiente);
       el.dataset.id = it.id;
       el.innerHTML = `<div class="tira-marco"></div><span class="tira-num"></span><span class="tira-estado"></span>
         <label class="chk-saltar" title="${t("showWithNext")}">
@@ -1044,7 +1075,7 @@
         if (e.target.closest(".tira-mas")) { abrirMenuItem(id); return; }
         if (e.target.closest(".chk-saltar, .tira-acc")) return;
         if (presionLarga) { presionLarga = false; return; }
-        if (ordenando) { elegirEnEdicion(id); return; }   // en Editar: tocar = ver sus notas
+        if (ordenando) { elegirEnEdicion(id); if (items.get(id)?.pendiente) elegirTipo(id); return; }   // en Editar: tocar = ver sus notas
         marcarTira();
         // Doble toque = verla en grande solo en tu teléfono (no se envía).
         // Un toque se espera un instante por si llega el segundo.
@@ -1061,7 +1092,8 @@
       el.querySelector(".t-editar").addEventListener("click", (e) => {
         e.stopPropagation();
         const x = items.get(id);
-        if (x?.tipo === "foto") cambiarFoto(id); else abrirEditor(x);
+        if (x?.pendiente) elegirTipo(id);
+        else if (x?.tipo === "foto") cambiarFoto(id); else abrirEditor(x);
       });
       el.querySelector(".t-borrar").addEventListener("click", (e) => { e.stopPropagation(); pedirBorrar(items.get(id)); });
       // Mantener presionada no hace nada (sin menú del sistema tampoco)
@@ -1087,7 +1119,7 @@
     // o con el botón Atrás de Android.
     function abrirVisor(id) {
       const item = items.get(id);
-      if (!item) return;
+      if (!item || item.pendiente) return;
       const v = $("visor");
       if (item.tipo === "foto") {
         v.innerHTML = `<img alt="" src="${item.src.replace(/"/g, "&quot;")}">`;
@@ -1148,6 +1180,67 @@
       } catch (e) { manejarError(e); }
     });
 
+    // ---------- Láminas en blanco (ideas de la lección) ----------
+    // Elegir qué será: Escritura (se escribe en la misma lámina) o Foto (la reemplaza en su lugar).
+    let pendienteDe = null;
+    function elegirTipo(id) {
+      pendienteDe = id;
+      $("pendTitulo").textContent = t("pendingQ");
+      const idea = String(notas[id] || "").replace(/[*=]/g, "").split("\n")[0];
+      $("pendIdea").textContent = idea;
+      $("pendIdea").hidden = !idea;
+      $("dlgPendiente").showModal();
+    }
+    $("btnPendEscritura").addEventListener("click", () => {
+      $("dlgPendiente").close();
+      const it = items.get(pendienteDe);
+      if (it) abrirEditor(it);
+    });
+    $("btnPendFoto").addEventListener("click", () => { $("dlgPendiente").close(); $("inputPendiente").click(); });
+    $("inputPendiente").addEventListener("change", async () => {
+      const archivo = $("inputPendiente").files[0];
+      $("inputPendiente").value = "";
+      const viejo = pendienteDe;
+      if (!archivo || !viejo || !items.has(viejo)) return;
+      aviso(t("uploading"), true);
+      try {
+        const src = await comprimir(archivo);
+        const nuevo = await store.guardarSubida({ src, creado: items.get(viejo).creado || Date.now() });
+        if (notas[viejo]) await store.guardarNota(nuevo, notas[viejo]);
+        if (ordenando) {
+          // En Editar el orden vive en la tira: la foto toma el lugar de la lámina en blanco.
+          for (let k = 0; k < 30 && !tiraEls.has(nuevo); k++) await new Promise((r) => setTimeout(r, 100));
+          const a = tiraEls.get(viejo), n = tiraEls.get(nuevo);
+          if (a && n) a.before(n);
+        } else {
+          const ids = (ordenGuardado || []).map((x) => (String(x) === viejo ? nuevo : String(x) === OCULTA + viejo ? OCULTA + nuevo : x));
+          await store.guardarOrden(ids);
+        }
+        await store.borrarEscritura(viejo);
+        if (ordenando) { pintarSaltadasTira(); elegirEnEdicion(nuevo); }
+        aviso(t("photoAdded"));
+      } catch (e) { manejarError(e); }
+    });
+    // Al abrir una lección recién creada con ideas: una lámina en blanco por línea.
+    async function crearEsqueleto() {
+      const clave = "revelar:esqueleto:" + sesion;
+      let lineas = null;
+      try { lineas = JSON.parse(localStorage.getItem(clave)); } catch {}
+      if (!Array.isArray(lineas) || !lineas.length) return;
+      try { localStorage.removeItem(clave); } catch {}
+      aviso(t("loading"), true);
+      try {
+        const base = Date.now(), ids = [];
+        for (let i = 0; i < lineas.length; i++) {
+          const id = await store.guardarEscritura(null, { cita: "", texto: "", todoRojo: false, creado: base + i });
+          await store.guardarNota(id, String(lineas[i]).slice(0, 4000));
+          ids.push(id);
+        }
+        await store.guardarOrden(ids);
+        aviso(ids.length === 1 ? t("outlineMade1") : t("outlineMade", { n: ids.length }));
+      } catch (e) { manejarError(e); }
+    }
+
     // ---------- AAA: letra de las notas ----------
     const LETRA_DEF = { tam: 20, esp: 0 };
     let letra = { ...LETRA_DEF };
@@ -1201,7 +1294,8 @@
           esActual ? (enVivo ? t("onScreen") : t("rehearsal")) : (sig && sig.id === id) ? t("next") : temp.has(id) ? "👁" : "";
       });
       // Notas: de la lámina en pantalla; si aún no hay ninguna, de la primera que sigue.
-      const id = (ordenando && notasEdicion && items.has(notasEdicion)) ? notasEdicion : (actual || sig?.id || null);
+      const id = (ordenando && notasEdicion && items.has(notasEdicion)) ? notasEdicion
+        : (actual || sig?.id || lista.find((it) => !saltadas.has(it.id))?.id || null);
       const item = id ? items.get(id) : null;
       const cab = [numeroVisible(id), item ? etiqueta(item) : ""].filter(Boolean).join(" · ");
       $("notasDe").textContent = ordenando ? (notasEdicion && item ? t("editingNotesOf", { n: cab }) : t("editingHeader"))
@@ -1428,7 +1522,7 @@
       if (b.disabled) return;
       b.disabled = true; aviso(t("buildingDoc"));
       try {
-        const { crearResumen } = await import("./js/resumen.js?v=202610302020");
+        const { crearResumen } = await import("./js/resumen.js?v=202610310600");
         const html = await crearResumen({
           lista, saltadas, notas,
           titulo: leccion?.titulo || "",

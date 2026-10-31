@@ -7,7 +7,7 @@ const ESPERA_BARRA = 280;                 // botones de arriba: cambian de color
 const espera = (el) => (el.closest(".barra .barra-acciones") ? ESPERA_BARRA : ESPERA);
 // Estos necesitan el toque directo del dedo (ventanas de Google, cámara, compartir,
 // portapapeles): se animan pero no esperan.
-const DIRECTOS = "#btnEntrar, #btnInstalar, #btnCompartir, #mCompartir, #btnAgregarFoto, #btnEnviar, #btnCopiar, #btnCopiarUid, #itemCambiarFoto, #itemPrev, .t-editar, .seg button, .idioma-switch button, [data-marca], [data-marca-notas]";
+const DIRECTOS = "#btnEntrar, #btnPendFoto, #btnInstalar, #btnCompartir, #mCompartir, #btnAgregarFoto, #btnEnviar, #btnCopiar, #btnCopiarUid, #itemCambiarFoto, #itemPrev, .t-editar, .seg button, .idioma-switch button, [data-marca], [data-marca-notas]";
 const IGNORAR = "input, label, textarea, select, [contenteditable='true'], .leaflet-container";
 
 function animar(el) {

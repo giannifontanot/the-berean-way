@@ -1951,3 +1951,17 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 .q-barra { display: block; width: 100%; height: 6px; border-radius: 999px; background: var(--bg-2); overflow: hidden; }
 .q-barra i { display: block; height: 100%; width: 100%; background: var(--danger); transform-origin: left; animation: qBarra linear forwards; }
 @keyframes qBarra { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+/* Lámina en blanco (de las ideas de la lección): marco punteado con la idea */
+.tira-item.es-pendiente .tira-marco { background: transparent; border: 2px dashed rgba(232, 193, 112, 0.6); }
+.pendiente-mini {
+  width: 100%; height: 100%; box-sizing: border-box; padding: 8px 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  text-align: center; color: var(--text); overflow: hidden;
+}
+.pendiente-mini b { font-size: 26px; line-height: 1; color: var(--gold); font-weight: 400; }
+.pendiente-mini .p-idea { font-size: 13px; font-weight: 700; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.pendiente-mini small { font-size: 10.5px; color: var(--muted); line-height: 1.2; }
+.dlg-pendiente { width: min(380px, calc(100vw - 32px)); }
+.dlg-pendiente .pend-idea { margin: 0 0 14px; padding: 10px 12px; border-radius: 10px; background: var(--bg-2); color: var(--text); font-size: 15px; }
+#notasPrev .pendiente-mini, #itemPrev .pendiente-mini { min-height: 80px; border: 2px dashed rgba(232, 193, 112, 0.6); border-radius: 10px; }

@@ -1,8 +1,8 @@
 // resumen.js — Arma un archivo HTML con el resumen de la clase:
 // cada lámina en orden (foto o escritura) seguida de tus notas.
 // Las fotos se incrustan en el archivo, así que se abre sin internet.
-import { t, idioma } from "./i18n.js?v=202610302020";
-import { textoAHtml, notasAHtml } from "./escritura.js?v=202610302020";
+import { t, idioma } from "./i18n.js?v=202610310600";
+import { textoAHtml, notasAHtml } from "./escritura.js?v=202610310600";
 
 /**
  * Arma la lista en el orden del presentador a partir de lo guardado en la lección.
@@ -94,7 +94,10 @@ export async function crearResumen({ lista, saltadas, notas, titulo }) {
   for (let i = 0; i < visibles.length; i++) {
     const it = visibles[i];
     let cuerpo, tipo;
-    if (it.tipo === "foto") {
+    if (it.tipo === "escritura" && !String(it.texto || "").trim()) {
+      tipo = t("pendingSlide");          // lámina en blanco: solo sus notas
+      cuerpo = "";
+    } else if (it.tipo === "foto") {
       tipo = t("photo");
       cuerpo = `<div class="foto"><img alt="" src="${escapar(await incrustar(it.src))}"></div>`;
     } else {
