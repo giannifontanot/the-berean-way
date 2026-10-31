@@ -170,7 +170,7 @@ const TEXTOS = {
     locationFail: "No se pudo obtener tu ubicación",
     map: "🗺 Mapa", list: "☰ Lista", noLocations: "Ningún maestro ha compartido su ubicación todavía.",
     mapFail: "No se pudo cargar el mapa", locShared: "📍 {c}",
-    mapNote: "Solo aparecen los maestros que eligieron compartir su ciudad (aproximada).", myLocationShort: "📍 Mi ubicación", classCode: "Código de la clase", codeShort: "Código", nameShort: "Nombre",
+    mapNote: "Solo aparecen los maestros que eligieron compartir su ciudad (aproximada).", myLocationShort: "📍 Mi ubicación", classCode: "Código del maestro", codeShort: "Código", nameShort: "Nombre",
 
     // Documento para imprimir
     classSummary: "Resumen de la clase", madeWith: "Berean Reveal",
@@ -319,7 +319,7 @@ const TEXTOS = {
     locationFail: "Couldn't get your location",
     map: "🗺 Map", list: "☰ List", noLocations: "No teacher has shared their location yet.",
     mapFail: "Couldn't load the map", locShared: "📍 {c}",
-    mapNote: "Only teachers who chose to share their (approximate) city appear.", classCode: "Class code", codeShort: "Code", nameShort: "Name",
+    mapNote: "Only teachers who chose to share their (approximate) city appear.", classCode: "Teacher code", codeShort: "Code", nameShort: "Name",
 
     classSummary: "Class summary", madeWith: "Berean Reveal",
   },
