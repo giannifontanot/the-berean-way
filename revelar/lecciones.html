@@ -6,7 +6,8 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#11152b">
   <title>Mis lecciones · Berean Reveal</title>
-  <link rel="stylesheet" href="revelar.css?v=202610310540">
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
+  <link rel="stylesheet" href="revelar.css?v=202610310615">
   <link rel="manifest" href="maestro.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="iconos/maestro-192.png">
   <link rel="apple-touch-icon" href="iconos/maestro-180.png">
@@ -14,7 +15,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Maestro">
-  <script type="module" src="js/pwa.js?v=202610310540"></script>
+  <script type="module" src="js/pwa.js?v=202610310615"></script>
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -118,12 +119,14 @@
       <input id="nombre" maxlength="80" autocomplete="off" placeholder="p. ej. La tienda de Dios" data-i18n-ph="namePh">
     </label>
     <!-- Solo en «Nueva»: cada línea será una lámina en blanco con esa línea como nota -->
-    <label class="campo" id="campoEsqueleto" hidden><span data-i18n="outlineLabel">Ideas de la clase (opcional)</span>
-      <textarea id="esqueleto" rows="6" placeholder="Una idea por línea…" data-i18n-ph="outlinePh"></textarea>
+    <div class="campo" id="campoEsqueleto" hidden><span data-i18n="outlineLabel">Ideas de la clase (opcional)</span>
+      <!-- Una fila por idea: ⠿ para arrastrar, Enter = nueva fila -->
+      <div class="ideas" id="ideas"></div>
       <small class="campo-ayuda" data-i18n="outlineHelp">Cada línea será una lámina en blanco con esa idea en sus notas. Después eliges foto o escritura.</small>
-    </label>
+    </div>
     <div class="acciones">
       <button class="btn" data-cerrar data-i18n="cancel">Cancelar</button>
+      <button class="btn" id="btnBorrador" hidden data-i18n="saveDraft">Guardar borrador</button>
       <button class="btn primario" id="btnNombreOk">Crear</button>
     </div>
   </dialog>
@@ -158,12 +161,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202610310540";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610310540";
-    import "./js/presion.js?v=202610310540";
-    import { confirmarQuitar } from "./js/confirmar.js?v=202610310540";
-    import { colocarAviso } from "./js/junto.js?v=202610310540";
-    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610310540";
+    import { CONFIG } from "./config.js?v=202610310615";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610310615";
+    import "./js/presion.js?v=202610310615";
+    import { confirmarQuitar } from "./js/confirmar.js?v=202610310615";
+    import { colocarAviso } from "./js/junto.js?v=202610310615";
+    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610310615";
 
     const $ = (id) => document.getElementById(id);
 
@@ -252,6 +255,23 @@
         ? `<img alt="" src="${escapar(l.portada)}">`
         : `<span class="lec-sinfoto" aria-hidden="true">📖</span>`;
       const n = l.laminas || 0;
+      if (l.borrador) {
+        // Borrador: abre el editor de ideas (todavía no es una clase)
+        const k = Array.isArray(l.ideas) ? l.ideas.length : Object.keys(l.ideas || {}).length;
+        el.classList.add("borrador");
+        el.innerHTML = `
+          <button class="lec-abrir" type="button">
+            <div class="lec-portada"><span class="lec-sinfoto" aria-hidden="true">📝</span></div>
+            <div class="lec-info">
+              <h2>${escapar(l.titulo || t("untitled"))}</h2>
+              <p><span class="lec-borrador">${t("draft")}</span> ${k === 1 ? t("ideas1") : t("ideasN", { n: k })}${l.editada ? " · " + fecha(l.editada) : ""}</p>
+            </div>
+          </button>
+          <button class="lec-mas" type="button" aria-label="${t("options")}">⋯</button>`;
+        el.querySelector(".lec-mas").addEventListener("click", () => abrirMenu(id));
+        el.querySelector(".lec-abrir").addEventListener("click", () => abrirBorrador(id));
+        return el;
+      }
       el.innerHTML = `
         <a class="lec-abrir" href="presentador.html?s=${encodeURIComponent(id)}">
           <div class="lec-portada">${portada}</div>
@@ -293,7 +313,8 @@
       $("mArchivar").hidden = !!l.archivada;
       $("mRestaurar").hidden = !l.archivada;
       $("mNoCompartir").hidden = true;
-      cat.estaCompartida?.(id).then((si) => { if (menuDe === id) $("mNoCompartir").hidden = !si; }).catch(() => {});
+      ["mCompartir", "mEnviar", "mDuplicar"].forEach((b) => { $(b).hidden = !!l.borrador; });
+      if (!l.borrador) cat.estaCompartida?.(id).then((si) => { if (menuDe === id) $("mNoCompartir").hidden = !si; }).catch(() => {});
       $("dlgMenu").showModal();
     }
     // Compartir resumen: enlace de solo lectura (cada lámina con sus notas), siempre al día.
@@ -330,19 +351,122 @@
       $("dlgMenu").close();
       pedirNombre("duplicar", t("duplicateTitle"), t("duplicateBtn"), t("copyOf", { t: lecciones[menuDe]?.titulo || t("lessonWord") }));
     });
-    $("btnNueva").addEventListener("click", () => pedirNombre("nueva", t("newLesson"), t("create"), ""));
+    $("btnNueva").addEventListener("click", () => { borradorDe = null; pedirNombre("nueva", t("newLesson"), t("createClass"), ""); });
 
-    function pedirNombre(tipo, titulo, boton, valor) {
+    function pedirNombre(tipo, titulo, boton, valor, ideas = []) {
       accion = tipo;
+      const conIdeas = tipo === "nueva" || tipo === "borrador";
       $("nombreTitulo").textContent = titulo;
       $("btnNombreOk").textContent = boton;
       $("nombre").value = valor;
-      $("campoEsqueleto").hidden = tipo !== "nueva";
-      $("esqueleto").value = "";
+      $("campoEsqueleto").hidden = !conIdeas;
+      $("btnBorrador").hidden = !conIdeas;
+      $("dlgNombre").classList.toggle("con-ideas", conIdeas);
+      if (conIdeas) ponerIdeas(ideas);
       $("dlgNombre").showModal();
-      setTimeout(() => { $("nombre").focus(); $("nombre").select(); }, 50);
+      setTimeout(() => { $("nombre").focus(); if (tipo !== "borrador") $("nombre").select(); }, 50);
     }
-    $("nombre").addEventListener("keydown", (e) => { if (e.key === "Enter") $("btnNombreOk").click(); });
+    $("nombre").addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      if (!$("campoEsqueleto").hidden) $("ideas").querySelector(".idea-txt")?.focus();   // con ideas: baja a la primera
+      else $("btnNombreOk").click();
+    });
+
+    // ---------- Ideas: una fila por idea, con asa ⠿ para moverla ----------
+    let borradorDe = null, sortIdeas = null;
+    function filaIdea(texto = "") {
+      const f = document.createElement("div");
+      f.className = "idea";
+      f.innerHTML = `<span class="asa" aria-hidden="true">⠿</span><input class="idea-txt" maxlength="500" enterkeyhint="next" autocomplete="off">`;
+      f.querySelector("input").value = texto;
+      f.querySelector("input").placeholder = t("outlinePh");
+      return f;
+    }
+    function ponerIdeas(lista) {
+      const l = Array.isArray(lista) ? lista : Object.values(lista || {});
+      $("ideas").replaceChildren(...(l.length ? l : [""]).map((x) => filaIdea(String(x))));
+      if (window.Sortable && !sortIdeas) {
+        sortIdeas = Sortable.create($("ideas"), {
+          handle: ".asa", animation: 220, forceFallback: true, fallbackOnBody: false,
+          ghostClass: "idea-hueco", chosenClass: "idea-elegida",
+        });
+      }
+    }
+    function leerIdeas() {
+      return [...$("ideas").querySelectorAll(".idea-txt")].map((i) => i.value.trim()).filter(Boolean).slice(0, 60);
+    }
+    function nuevaFila(despues, texto = "") {
+      const n = filaIdea(texto);
+      despues.after(n);
+      const i = n.querySelector("input"); i.focus(); i.setSelectionRange(0, 0);
+      return n;
+    }
+    function borrarFila(fila) {
+      const prev = fila.previousElementSibling;
+      if (!prev) return false;
+      const pi = prev.querySelector("input"), L = pi.value.length;
+      pi.value += fila.querySelector("input").value;
+      fila.remove(); pi.focus(); pi.setSelectionRange(L, L);
+      return true;
+    }
+    $("ideas").addEventListener("keydown", (e) => {
+      const inp = e.target.closest(".idea-txt");
+      if (!inp) return;
+      const fila = inp.parentElement;
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const pos = inp.selectionStart ?? inp.value.length;
+        const resto = inp.value.slice(pos);
+        inp.value = inp.value.slice(0, pos);
+        nuevaFila(fila, resto);
+      } else if (e.key === "Backspace" && inp.selectionStart === 0 && inp.selectionEnd === 0) {
+        if (borrarFila(fila)) e.preventDefault();
+      } else if (e.key === "ArrowDown" && fila.nextElementSibling) {
+        e.preventDefault(); fila.nextElementSibling.querySelector("input").focus();
+      } else if (e.key === "ArrowUp" && fila.previousElementSibling) {
+        e.preventDefault(); fila.previousElementSibling.querySelector("input").focus();
+      }
+    });
+    // Teclados de Android: el borrar llega como beforeinput (no como tecla)
+    $("ideas").addEventListener("beforeinput", (e) => {
+      const inp = e.target.closest?.(".idea-txt");
+      if (!inp || e.inputType !== "deleteContentBackward") return;
+      if (inp.selectionStart === 0 && inp.selectionEnd === 0 && borrarFila(inp.parentElement)) e.preventDefault();
+    });
+    // Pegar varias líneas: una fila por línea
+    $("ideas").addEventListener("paste", (e) => {
+      const inp = e.target.closest(".idea-txt");
+      const txt = e.clipboardData?.getData("text") || "";
+      if (!inp || !/\n/.test(txt)) return;
+      e.preventDefault();
+      const partes = txt.split(/\r?\n/).map((x) => x.trim()).filter(Boolean);
+      const pos = inp.selectionStart ?? inp.value.length, resto = inp.value.slice(inp.selectionEnd ?? pos);
+      inp.value = inp.value.slice(0, pos) + (partes.shift() || "");
+      let ult = inp.parentElement;
+      for (const p of partes) ult = nuevaFila(ult, p);
+      const ui = ult.querySelector("input"); ui.value += resto; ui.focus();
+    });
+    function abrirBorrador(id) {
+      const l = lecciones[id];
+      if (!l) return;
+      borradorDe = id;
+      pedirNombre("borrador", t("draftTitle"), t("createClass"), l.titulo || "", l.ideas || []);
+    }
+    $("btnBorrador").addEventListener("click", async () => {
+      const titulo = $("nombre").value.trim().slice(0, 80) || t("untitled");
+      const ideas = leerIdeas();
+      const id = borradorDe || nuevoIdLeccion();
+      const ahora = Date.now();
+      const b = $("btnBorrador");
+      b.disabled = true;
+      try {
+        await cat.guardarLeccion(id, { titulo, creada: lecciones[id]?.creada || ahora, editada: ahora, borrador: true, ideas: ideas.length ? ideas : null });
+        borradorDe = id;
+        $("dlgNombre").close(); aviso(t("draftSaved"));
+      } catch (e) { error(e); }
+      finally { b.disabled = false; }
+    });
     $("btnNombreOk").addEventListener("click", async () => {
       const titulo = $("nombre").value.trim().slice(0, 80) || t("untitled");
       const b = $("btnNombreOk");
@@ -352,12 +476,12 @@
         if (accion === "renombrar") {
           await cat.guardarLeccion(menuDe, { titulo });
           $("dlgNombre").close(); aviso(t("nameSaved"));
-        } else if (accion === "nueva") {
-          const id = nuevoIdLeccion();
-          await cat.crearLeccion(id, { titulo, creada: ahora, editada: ahora, laminas: 0 });
+        } else if (accion === "nueva" || accion === "borrador") {
+          const id = (accion === "borrador" && borradorDe) || nuevoIdLeccion();
+          const lineas = leerIdeas();
+          await cat.crearLeccion(id, { titulo, creada: lecciones[id]?.creada || ahora, editada: ahora, laminas: 0 });
           try { localStorage.setItem("revelar:ultima", id); } catch {}
           // Ideas: el presentador crea una lámina en blanco por línea (con la línea como nota)
-          const lineas = $("esqueleto").value.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).slice(0, 60);
           if (lineas.length) try { localStorage.setItem("revelar:esqueleto:" + id, JSON.stringify(lineas)); } catch {}
           location.href = "presentador.html?s=" + id;
         } else if (accion === "duplicar") {
@@ -390,7 +514,7 @@
       if (!$("chkUbic").disabled) $("chkUbic").checked = !!yo;
       $("mapaInvita").hidden = !!yo;
       try {
-        mapaUI ??= (await import("./js/mapa.js?v=202610310540")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
+        mapaUI ??= (await import("./js/mapa.js?v=202610310615")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
         await mapaUI.pintar(lista.map(([id, u]) => ({
           lat: u.lat, lng: u.lng, titulo: u.nombre || t("noName"),
           detalle: [u.ciudad, u.uso ? t(u.uso === "iglesia" ? "useChurch" : "useOther") : ""].filter(Boolean).join(" · "),

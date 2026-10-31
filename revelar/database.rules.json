@@ -123,6 +123,14 @@
           "portada": {
             ".validate": "newData.isString() && newData.val().beginsWith('data:image/') && newData.val().length < 100000"
           },
+          "borrador": {
+            ".validate": "newData.isBoolean()"
+          },
+          "ideas": {
+            "$i": {
+              ".validate": "newData.isString() && newData.val().length <= 500"
+            }
+          },
           "$otro": {
             ".validate": false
           }

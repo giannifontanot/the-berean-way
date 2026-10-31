@@ -1972,3 +1972,30 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 }
 #dlgNombre .campo input::placeholder, #dlgNombre .campo textarea::placeholder { color: #5c6175; }
 #dlgNombre .campo input:focus, #dlgNombre .campo textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Ideas de la clase: una fila por idea con asa ⠿ a la izquierda para arrastrarla */
+#dlgNombre.con-ideas { width: min(460px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); overflow-y: auto; }
+.ideas {
+  display: flex; flex-direction: column; gap: 6px; margin-top: 6px;
+  padding: 8px; border-radius: 12px; background: #b9bdc9; border: 1px solid #9499a9;
+}
+.idea { display: flex; align-items: center; gap: 6px; border-radius: 9px; background: #c9ccd6; }
+.idea .asa {
+  flex: none; width: 34px; height: 40px; display: grid; place-items: center;
+  font-size: 20px; line-height: 1; color: #4b5064; cursor: grab; touch-action: none;
+  -webkit-user-select: none; user-select: none;
+}
+#dlgNombre .ideas .idea-txt {
+  flex: 1; min-width: 0; width: auto; margin: 0; padding: 9px 10px 9px 2px;
+  border: 0; border-radius: 0 9px 9px 0; background: transparent; color: #151824; font-size: 16px;
+}
+#dlgNombre .ideas .idea-txt:focus { outline: none; }
+.idea:focus-within { box-shadow: 0 0 0 2px var(--accent); }
+.idea-hueco { opacity: 0.35; }
+.idea-elegida { box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); }
+.lec.borrador .lec-portada { background: rgba(232, 193, 112, 0.12); }
+.lec-borrador {
+  display: inline-block; padding: 1px 8px; border-radius: 999px; margin-right: 4px;
+  background: rgba(232, 193, 112, 0.18); color: var(--gold); font-weight: 700; font-size: 12px;
+}
+.lec.borrador button.lec-abrir { border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
