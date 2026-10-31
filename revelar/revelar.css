@@ -1999,3 +1999,9 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
   background: rgba(232, 193, 112, 0.18); color: var(--gold); font-weight: 700; font-size: 12px;
 }
 .lec.borrador button.lec-abrir { border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+/* Cada idea hace wrap: el renglón crece para verse completo */
+.idea { align-items: flex-start; }
+#dlgNombre .ideas textarea.idea-txt {
+  resize: none; overflow: hidden; min-height: 0; line-height: 1.4; font: 16px/1.4 var(--font-serif);
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
