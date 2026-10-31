@@ -2061,7 +2061,8 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 .aj-quien small:empty { display: none; }
 .btn.aj-salir { flex: none; min-height: 36px; padding: 6px 14px; font-size: 14px; }
 #dlgAjustes .aj-etiqueta { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-#dlgAjustes .idioma-opciones { display: flex; width: 100%; margin: 0 0 18px; padding: 4px; box-sizing: border-box; }
+#dlgAjustes .idioma-opciones { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; width: 100%; margin: 0 0 18px; padding: 4px; box-sizing: border-box; border-radius: 18px; }
+#dlgAjustes .idioma-opciones button { border-radius: 14px; }
 #dlgAjustes .idioma-opciones button { flex: 1; font-size: 15px; padding: 10px 12px; letter-spacing: 0; color: var(--text); min-height: 44px; }
 #dlgAjustes .idioma-opciones button[aria-pressed="false"] { background: color-mix(in srgb, var(--accent) 22%, transparent); }
 #dlgAjustes .idioma-opciones button[aria-pressed="true"] { background: var(--text); color: var(--bg); }

@@ -1,4 +1,4 @@
-// i18n.js — Textos de la app en español e inglés.
+// i18n.js — Textos de la app: español e inglés aquí; los demás idiomas en i18n-xx.js.
 //
 // El idioma se elige con el interruptor de "Mis lecciones" y se recuerda en
 // ese teléfono (localStorage). Los participantes usan el idioma de su teléfono,
@@ -13,8 +13,17 @@
 //   data-i18n-dph="clave"    → data-placeholder (editor de escrituras)
 // En JS: t("clave", { n: 3 }) → reemplaza {n}.
 
+import fr from "./i18n-fr.js?v=202610310853";
+import pt from "./i18n-pt.js?v=202610310853";
+import de from "./i18n-de.js?v=202610310853";
+import ja from "./i18n-ja.js?v=202610310853";
+import hi from "./i18n-hi.js?v=202610310853";
+import id from "./i18n-id.js?v=202610310853";
+
 const CLAVE = "revelar:idioma";
-export const IDIOMAS = ["es", "en"];
+export const IDIOMAS = ["es", "en", "fr", "pt", "de", "ja", "hi", "id"];
+/** Nombre de cada idioma en su propio idioma (para la ventana de Ajustes). */
+export const NOMBRES = { es: "Español", en: "English", fr: "Français", pt: "Português (Brasil)", de: "Deutsch", ja: "日本語", hi: "हिन्दी", id: "Bahasa Indonesia" };
 
 const TEXTOS = {
   es: {
@@ -337,6 +346,7 @@ const TEXTOS = {
     classSummary: "Class summary", madeWith: "Berean Reveal",
     teacherApp: "Reveal — the teacher app",
   },
+  fr, pt, de, ja, hi, id,
 };
 
 let actual = null;
@@ -346,7 +356,12 @@ export function idioma(defecto) {
   if (actual) return actual;
   let v = null;
   try { v = localStorage.getItem(CLAVE); } catch {}
-  if (!IDIOMAS.includes(v)) v = defecto || (/^es\b/i.test(navigator.language || "") ? "es" : "en");
+  if (!IDIOMAS.includes(v)) {
+    // El idioma del teléfono, si lo tenemos (pt-BR → pt, de-AT → de…); si no, inglés.
+    const tel = (navigator.languages?.length ? navigator.languages : [navigator.language || ""])
+      .map((x) => String(x).slice(0, 2).toLowerCase()).find((x) => IDIOMAS.includes(x));
+    v = tel || defecto || "en";
+  }
   actual = v;
   document.documentElement.lang = v;
   return v;
@@ -361,7 +376,7 @@ export function ponerIdioma(v) {
 
 export function t(clave, vars) {
   const l = actual || idioma();
-  let s = TEXTOS[l][clave] ?? TEXTOS.es[clave] ?? clave;
+  let s = TEXTOS[l]?.[clave] ?? TEXTOS.en[clave] ?? TEXTOS.es[clave] ?? clave;
   if (vars) s = s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
   return s;
 }
