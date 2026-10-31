@@ -9,7 +9,7 @@
 //   revelar/<sesion>/escrituras/<id> = { cita, texto, todoRojo, creado }
 //   revelar_privado/<sesion>/notas/<id> = "texto" (notas del presentador: solo tu cuenta
 //     puede leerlas; fuera de "revelar/" porque ahí todo es de lectura pública)
-//   revelar/<sesion>/subidas/<id> = { src: "data:image/jpeg;base64,…", creado }
+//   revelar/<sesion>/subidas/<id> = { src: "data:image/webp;base64,…" (o jpeg), creado }
 //     Fotos que subes desde el presentador con "+". Guardadas en la misma base de
 //     datos (comprimidas), así no hace falta activar otro servicio de Firebase.
 //     Escrituras y subidas comparten "reveladas" y "orden" con las fotos del repo.
@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610310754";
+import { CONFIG } from "../config.js?v=202610310759";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
