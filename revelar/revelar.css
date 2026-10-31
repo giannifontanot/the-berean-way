@@ -1965,3 +1965,10 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 .dlg-pendiente { width: min(380px, calc(100vw - 32px)); }
 .dlg-pendiente .pend-idea { margin: 0 0 14px; padding: 10px 12px; border-radius: 10px; background: var(--bg-2); color: var(--text); font-size: 15px; }
 #notasPrev .pendiente-mini, #itemPrev .pendiente-mini { min-height: 80px; border: 2px dashed rgba(232, 193, 112, 0.6); border-radius: 10px; }
+
+/* Nueva lección: nombre e ideas con el mismo gris azulado del editor de notas */
+#dlgNombre .campo input, #dlgNombre .campo textarea {
+  background: #b9bdc9; color: #151824; border: 1px solid #9499a9;
+}
+#dlgNombre .campo input::placeholder, #dlgNombre .campo textarea::placeholder { color: #5c6175; }
+#dlgNombre .campo input:focus, #dlgNombre .campo textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
