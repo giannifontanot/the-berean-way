@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610301845";
+import { CONFIG } from "../config.js?v=202610302000";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -151,7 +151,7 @@ async function catalogoFirebase() {
     const [orden, esc, sub] = await Promise.all([
       val(`revelar/${origen}/orden`), val(`revelar/${origen}/escrituras`), val(`revelar/${origen}/subidas`),
     ]);
-    await db.update(ref(""), {
+    await db.update(db.ref(d), {
       [`revelar/${destino}/orden`]: orden,
       [`revelar/${destino}/escrituras`]: esc,
     });
@@ -160,7 +160,7 @@ async function catalogoFirebase() {
       progreso?.(i + 1, fotos.length);
       await db.set(ref(`revelar/${destino}/subidas/${fotos[i][0]}`), fotos[i][1]);
     }
-    await db.update(ref(""), extra);
+    await db.update(db.ref(d), extra);
   }
   return {
     modo: "firebase",
