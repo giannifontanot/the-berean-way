@@ -1,5 +1,6 @@
 // i18n-hi.js — हिन्दी पाठ।
 export default {
+  slideType: "स्लाइड", newSlide: "नई स्लाइड", editSlide: "स्लाइड संपादित करें", slideSaved: "स्लाइड सहेजी गई", slideRevealed: "स्लाइड दिखाई गई", slideDeleted: "स्लाइड हटाई गई", typeSlideFirst: "स्लाइड पर कुछ लिखें", slideTooLong: "स्लाइड बहुत लंबी है", slidePh: "अपनी स्लाइड यहाँ लिखें…", slideHelp: "पाठ चुनें और कोई शैली टैप करें। हटाने के लिए फिर से टैप करें।", menuEditSlide: "✎ स्लाइड संपादित करें", pendingSlideType: "📝 स्लाइड", fontBigger: "बड़े अक्षर", fontSmaller: "छोटे अक्षर", boldTxt: "बोल्ड", italicTxt: "इटैलिक", bulletsTxt: "बुलेट", numbersTxt: "क्रमांक", centerTxt: "बीच में", clearFormat: "फ़ॉर्मेटिंग हटाएँ", slideText: "स्लाइड का पाठ", slideStyles: "शैलियाँ", thisSlide: "यह स्लाइड",
   cancel: "रद्द करें", save: "सहेजें", delete: "हटाएँ", close: "बंद करें", done: "हो गया", copy: "कॉपी करें", copied: "कॉपी हो गया", create: "बनाएँ", gotIt: "समझ गया",
   signInGoogle: "Google से साइन इन करें", signInFail: "साइन इन नहीं हो सका: {e}",
   rulesMissing: "नए नियम अभी Firebase में चिपकाने बाकी हैं",
@@ -21,7 +22,7 @@ export default {
   draft: "ड्राफ़्ट", draftTitle: "ड्राफ़्ट", draftSaved: "ड्राफ़्ट सहेजा गया", draftAccepted: "ड्राफ़्ट आपकी सूची में जोड़ा गया",
   ideas1: "· 1 विचार", ideasN: "· {n} विचार", outlinePh: "एक विचार लिखें…",
   outlineHelp: "Enter = नया विचार · खिसकाने के लिए ⠿ खींचें। हर विचार एक खाली स्लाइड बनेगा, जिसके नोट्स में वही विचार होगा।",
-  pendingSlide: "भरने वाली स्लाइड", fillBlanks: "✎ संपादित करें में खाली स्लाइड भरें", pendingTap: "फ़ोटो या वचन चुनने के लिए टैप करें",
+  pendingSlide: "भरने वाली स्लाइड", fillBlanks: "✎ संपादित करें में खाली स्लाइड भरें", pendingTap: "फ़ोटो, वचन या स्लाइड चुनने के लिए टैप करें",
   pendingQ: "इस स्लाइड पर क्या होगा?", pendingPhoto: "🖼 फ़ोटो", pendingScripture: "📜 वचन",
   pendingPresent: "यह स्लाइड खाली है: इसे ✎ संपादित करें में भरें",
   outlineMade: "हो गया: आपके विचारों के साथ {n} खाली स्लाइड", outlineMade1: "हो गया: आपके विचार के साथ 1 खाली स्लाइड",

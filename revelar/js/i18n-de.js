@@ -1,5 +1,6 @@
 // i18n-de.js — Texte auf Deutsch.
 export default {
+  slideType: "Folie", newSlide: "Neue Folie", editSlide: "Folie bearbeiten", slideSaved: "Folie gespeichert", slideRevealed: "Folie gezeigt", slideDeleted: "Folie gelöscht", typeSlideFirst: "Schreib etwas auf die Folie", slideTooLong: "Die Folie ist zu lang", slidePh: "Schreib hier deine Folie…", slideHelp: "Markiere den Text und tippe auf einen Stil. Tippe noch einmal, um ihn zu entfernen.", menuEditSlide: "✎ Folie bearbeiten", pendingSlideType: "📝 Folie", fontBigger: "Größere Schrift", fontSmaller: "Kleinere Schrift", boldTxt: "Fett", italicTxt: "Kursiv", bulletsTxt: "Aufzählung", numbersTxt: "Nummerierung", centerTxt: "Zentrieren", clearFormat: "Formatierung entfernen", slideText: "Text der Folie", slideStyles: "Stile", thisSlide: "diese Folie",
   cancel: "Abbrechen", save: "Speichern", delete: "Löschen", close: "Schließen", done: "Fertig", copy: "Kopieren", copied: "Kopiert", create: "Erstellen", gotIt: "Verstanden",
   signInGoogle: "Mit Google anmelden", signInFail: "Anmeldung nicht möglich: {e}",
   rulesMissing: "Die neuen Regeln müssen noch in Firebase eingefügt werden",
@@ -21,7 +22,7 @@ export default {
   draft: "Entwurf", draftTitle: "Entwurf", draftSaved: "Entwurf gespeichert", draftAccepted: "Entwurf zu deiner Liste hinzugefügt",
   ideas1: "· 1 Idee", ideasN: "· {n} Ideen", outlinePh: "Schreib eine Idee…",
   outlineHelp: "Enter = neue Idee · ziehe ⠿, um sie zu verschieben. Jede Idee wird eine leere Folie mit dieser Idee in den Notizen.",
-  pendingSlide: "Folie zum Füllen", fillBlanks: "Fülle die leeren Folien unter ✎ Bearbeiten", pendingTap: "Tippen, um Foto oder Bibelstelle zu wählen",
+  pendingSlide: "Folie zum Füllen", fillBlanks: "Fülle die leeren Folien unter ✎ Bearbeiten", pendingTap: "Tippen, um Foto, Bibelstelle oder Folie zu wählen",
   pendingQ: "Was kommt auf diese Folie?", pendingPhoto: "🖼 Foto", pendingScripture: "📜 Bibelstelle",
   pendingPresent: "Diese Folie ist leer: fülle sie unter ✎ Bearbeiten",
   outlineMade: "Fertig: {n} leere Folien mit deinen Ideen", outlineMade1: "Fertig: 1 leere Folie mit deiner Idee",

@@ -1,5 +1,6 @@
 // i18n-fr.js — Textes en français.
 export default {
+  slideType: "Diapositive", newSlide: "Nouvelle diapositive", editSlide: "Modifier la diapositive", slideSaved: "Diapositive enregistrée", slideRevealed: "Diapositive révélée", slideDeleted: "Diapositive supprimée", typeSlideFirst: "Écris quelque chose sur la diapositive", slideTooLong: "La diapositive est trop longue", slidePh: "Écris ta diapositive ici…", slideHelp: "Sélectionne le texte et touche un style. Touche-le encore pour l’enlever.", menuEditSlide: "✎ Modifier la diapositive", pendingSlideType: "📝 Diapositive", fontBigger: "Texte plus grand", fontSmaller: "Texte plus petit", boldTxt: "Gras", italicTxt: "Italique", bulletsTxt: "Puces", numbersTxt: "Numéros", centerTxt: "Centrer", clearFormat: "Effacer la mise en forme", slideText: "Texte de la diapositive", slideStyles: "Styles", thisSlide: "cette diapositive",
   cancel: "Annuler", save: "Enregistrer", delete: "Supprimer", close: "Fermer", done: "Terminé", copy: "Copier", copied: "Copié", create: "Créer", gotIt: "Compris",
   signInGoogle: "Se connecter avec Google", signInFail: "Connexion impossible : {e}",
   rulesMissing: "Il faut encore coller les nouvelles règles dans Firebase",
@@ -21,7 +22,7 @@ export default {
   draft: "Brouillon", draftTitle: "Brouillon", draftSaved: "Brouillon enregistré", draftAccepted: "Brouillon ajouté à ta liste",
   ideas1: "· 1 idée", ideasN: "· {n} idées", outlinePh: "Écris une idée…",
   outlineHelp: "Entrée = nouvelle idée · fais glisser ⠿ pour la déplacer. Chaque idée devient une diapositive vide avec cette idée dans ses notes.",
-  pendingSlide: "Diapositive à remplir", fillBlanks: "Remplis les diapositives vides dans ✎ Modifier", pendingTap: "Touche pour choisir une photo ou une Écriture",
+  pendingSlide: "Diapositive à remplir", fillBlanks: "Remplis les diapositives vides dans ✎ Modifier", pendingTap: "Touche pour choisir photo, Écriture ou diapositive",
   pendingQ: "Que mettre sur cette diapositive ?", pendingPhoto: "🖼 Photo", pendingScripture: "📜 Écriture",
   pendingPresent: "Cette diapositive est vide : remplis-la dans ✎ Modifier",
   outlineMade: "C’est fait : {n} diapositives vides avec tes idées", outlineMade1: "C’est fait : 1 diapositive vide avec ton idée",

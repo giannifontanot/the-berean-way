@@ -1,5 +1,6 @@
 // i18n-pt.js — Textos em português do Brasil.
 export default {
+  slideType: "Slide", newSlide: "Novo slide", editSlide: "Editar slide", slideSaved: "Slide salvo", slideRevealed: "Slide revelado", slideDeleted: "Slide excluído", typeSlideFirst: "Escreva algo no slide", slideTooLong: "O slide está longo demais", slidePh: "Escreva seu slide aqui…", slideHelp: "Selecione o texto e toque em um estilo. Toque de novo para tirar.", menuEditSlide: "✎ Editar slide", pendingSlideType: "📝 Slide", fontBigger: "Letra maior", fontSmaller: "Letra menor", boldTxt: "Negrito", italicTxt: "Itálico", bulletsTxt: "Marcadores", numbersTxt: "Números", centerTxt: "Centralizar", clearFormat: "Limpar formatação", slideText: "Texto do slide", slideStyles: "Estilos", thisSlide: "este slide",
   cancel: "Cancelar", save: "Salvar", delete: "Excluir", close: "Fechar", done: "Pronto", copy: "Copiar", copied: "Copiado", create: "Criar", gotIt: "Entendi",
   signInGoogle: "Entrar com o Google", signInFail: "Não foi possível entrar: {e}",
   rulesMissing: "Ainda falta colar as novas regras no Firebase",
@@ -21,7 +22,7 @@ export default {
   draft: "Rascunho", draftTitle: "Rascunho", draftSaved: "Rascunho salvo", draftAccepted: "Rascunho adicionado à sua lista",
   ideas1: "· 1 ideia", ideasN: "· {n} ideias", outlinePh: "Escreva uma ideia…",
   outlineHelp: "Enter = nova ideia · arraste ⠿ para movê-la. Cada ideia vira um slide em branco com essa ideia nas notas.",
-  pendingSlide: "Slide para preencher", fillBlanks: "Preencha os slides em branco em ✎ Editar", pendingTap: "Toque para escolher foto ou Escritura",
+  pendingSlide: "Slide para preencher", fillBlanks: "Preencha os slides em branco em ✎ Editar", pendingTap: "Toque para escolher foto, Escritura ou slide",
   pendingQ: "O que vai neste slide?", pendingPhoto: "🖼 Foto", pendingScripture: "📜 Escritura",
   pendingPresent: "Este slide está em branco: preencha-o em ✎ Editar",
   outlineMade: "Pronto: {n} slides em branco com suas ideias", outlineMade1: "Pronto: 1 slide em branco com sua ideia",

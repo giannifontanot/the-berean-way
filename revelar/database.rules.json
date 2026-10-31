@@ -23,7 +23,7 @@
               ".validate": "newData.isString() && newData.val().length <= 120"
             },
             "texto": {
-              ".validate": "newData.isString() && newData.val().length <= 4000"
+              ".validate": "newData.isString() && newData.val().length <= 10000"
             },
             "todoRojo": {
               ".validate": "newData.isBoolean()"
@@ -33,6 +33,9 @@
             },
             "$otro": {
               ".validate": false
+            },
+            "lamina": {
+              ".validate": "newData.isBoolean()"
             }
           }
         },

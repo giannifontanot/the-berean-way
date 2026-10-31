@@ -2126,3 +2126,67 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 .mm-nuevo { padding-top: 14px; border-top: 1px solid var(--line); }
 .btn.mm-agregar { width: 100%; justify-content: center; min-height: 46px; margin-top: 4px; }
 #dlgMisMaestros .acciones { margin-top: 16px; }
+
+/* ---------- Lámina de texto libre (como una diapositiva de PowerPoint) ---------- */
+.lam { font-family: var(--font-sans); line-height: 1.4; color: #1b2233; overflow-wrap: anywhere; }
+.lam div { min-height: 1em; }
+.lam .c { text-align: center; }
+.lam ul, .lam ol { margin: .25em 0; padding-left: 1.35em; }
+.lam li { margin: .1em 0; }
+.lam li::marker { color: #6b5a3a; }
+.lam b { font-weight: 800; }
+.lam .t1 { font-size: .62em; } .lam .t2 { font-size: .8em; } .lam .t4 { font-size: 1.2em; }
+.lam .t5 { font-size: 1.5em; line-height: 1.2; } .lam .t6 { font-size: 2em; line-height: 1.15; } .lam .t7 { font-size: 2.6em; line-height: 1.1; }
+.lam .rojo { color: #c62828; }
+.lam mark { background: #ffe66d; color: inherit; padding: 0 2px; border-radius: 2px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+/* Tarjeta en el teléfono de los participantes y visor del presentador */
+.foto.escritura.es-lamina, .sala .foto.escritura.es-lamina { background: #fdfcf9; background-image: none; border-color: #e3e0d8; }
+.foto.escritura.es-lamina .verso { padding: 28px 24px; }
+.foto.escritura.es-lamina .lam { font-size: 22px; }
+.foto.escritura.es-lamina cite:empty { display: none; }
+/* Miniaturas (cuadrícula, tira y menú) */
+.verso-mini.lam-mini { background: #fdfcf9; justify-content: flex-start; }
+.verso-mini.lam-mini cite { display: none; }
+.verso-mini.lam-mini .lam { font-size: 12px; overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent); mask-image: linear-gradient(to bottom, #000 72%, transparent); }
+.tira-marco .verso-mini.lam-mini .lam { font-size: 10px; }
+.notas-prev .verso-mini.lam-mini .lam { font-size: 8px; }
+.dlg-notas .notas-prev .verso-mini.lam-mini .lam, .dlg-item .notas-prev .verso-mini.lam-mini .lam { font-size: 11px; }
+/* "+": tres opciones */
+.opciones-agregar { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.opciones-agregar .btn.opcion { min-width: 0; padding: 14px 4px; gap: 6px; }
+.opciones-agregar .btn.opcion span:first-child { font-size: 30px; }
+.opciones-agregar .btn.opcion span:last-child { font-size: 15px; line-height: 1.2; overflow-wrap: anywhere; }
+/* Editor de la lámina */
+.dlg-lamina { width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow-y: auto; box-sizing: border-box; padding: 18px; }
+.lam-barra { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0 10px; padding: 6px;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 14px; position: sticky; top: -18px; z-index: 2; }
+.lam-btn { min-width: 40px; height: 40px; padding: 0 8px; border-radius: 10px; border: 1px solid transparent; background: transparent;
+  color: var(--text); font: inherit; font-size: 17px; font-weight: 700; display: inline-grid; place-items: center; grid-auto-flow: column; gap: 1px; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; }
+.lam-btn svg { width: 21px; height: 21px; }
+.lam-btn:hover { background: color-mix(in srgb, var(--text) 8%, transparent); }
+.lam-btn.activo { background: var(--text); color: var(--bg); }
+.lam-a { font-size: 18px; } .lam-a.chico { font-size: 13px; }
+.lam-btn.lam-rojo { color: #ff6b62; text-decoration: underline 3px #ff6b62; text-underline-offset: 3px; }
+.lam-btn.lam-rojo.activo { background: #c62828; color: #fff; text-decoration-color: #fff; }
+.lam-btn.lam-res span { background: #ffe66d; color: #1b2233; padding: 0 4px; border-radius: 3px; font-size: 15px; }
+.lam-btn.lam-res.activo { background: #ffe66d; }
+.lam-sep { width: 1px; height: 24px; background: var(--line); margin: 0 2px; }
+.lam-hoja-wrap { border-radius: 12px; background: #fdfcf9; border: 1px solid #e3e0d8; box-shadow: 0 4px 18px rgba(0,0,0,.25); }
+.lam-hoja { min-height: 220px; padding: 22px 20px; font-size: 22px; outline: none; caret-color: #1b2233; }
+.lam-hoja:empty::before { content: attr(data-placeholder); color: #9a9488; pointer-events: none; }
+.dlg-lamina .ayuda { margin: 10px 0 0; font-size: 14px; }
+@media (max-width: 400px) {
+  .lam-btn { min-width: 36px; height: 38px; padding: 0 6px; font-size: 16px; }
+  .lam-sep { display: none; }
+  .lam-hoja { font-size: 19px; padding: 18px 16px; min-height: 200px; }
+}
+/* En el editor, los tamaños que pone el navegador se ven igual que en la lámina final */
+.lam-hoja font[size="1"], .lam-hoja [style*="font-size: x-small"] { font-size: .62em !important; }
+.lam-hoja font[size="2"], .lam-hoja [style*="font-size: small"] { font-size: .8em !important; }
+.lam-hoja font[size="3"], .lam-hoja [style*="font-size: medium"] { font-size: 1em !important; }
+.lam-hoja font[size="4"], .lam-hoja [style*="font-size: large"] { font-size: 1.2em !important; }
+.lam-hoja font[size="5"], .lam-hoja [style*="font-size: x-large"] { font-size: 1.5em !important; line-height: 1.2; }
+.lam-hoja font[size="6"], .lam-hoja [style*="font-size: xx-large"] { font-size: 2em !important; line-height: 1.15; }
+.lam-hoja font[size="7"], .lam-hoja [style*="font-size: xxx-large"], .lam-hoja [style*="webkit-xxx-large"] { font-size: 2.6em !important; line-height: 1.1; }
+.lam-hoja [style*="background-color"] { border-radius: 2px; }

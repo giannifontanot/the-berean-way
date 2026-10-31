@@ -6,7 +6,7 @@
 //   revelar/<sesion>/reveladas/<fotoId> = marca de tiempo (orden de revelado)
 //   revelar/<sesion>/presencia/<conexion> = true (un participante conectado)
 //   revelar/<sesion>/orden = [ids] (orden de TU cuadrícula; solo lo usa el presentador)
-//   revelar/<sesion>/escrituras/<id> = { cita, texto, todoRojo, creado }
+//   revelar/<sesion>/escrituras/<id> = { cita, texto, todoRojo, creado }   (lamina: true → lámina de texto libre; texto = HTML pequeño)
 //   revelar_privado/<sesion>/notas/<id> = "texto" (notas del presentador: solo tu cuenta
 //     puede leerlas; fuera de "revelar/" porque ahí todo es de lectura pública)
 //   revelar/<sesion>/subidas/<id> = { src: "data:image/webp;base64,…" (o jpeg), creado }
@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610311029";
+import { CONFIG } from "../config.js?v=202610311641";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 

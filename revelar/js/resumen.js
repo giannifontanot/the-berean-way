@@ -1,8 +1,8 @@
 // resumen.js — Arma un archivo HTML con el resumen de la clase:
 // cada lámina en orden (foto o escritura) seguida de tus notas.
 // Las fotos se incrustan en el archivo, así que se abre sin internet.
-import { t, idioma } from "./i18n.js?v=202610311029";
-import { textoAHtml, notasAHtml } from "./escritura.js?v=202610311029";
+import { t, idioma } from "./i18n.js?v=202610311641";
+import { textoAHtml, notasAHtml, cuerpoHtml, laminaTexto } from "./escritura.js?v=202610311641";
 
 /**
  * Arma la lista en el orden del presentador a partir de lo guardado en la lección.
@@ -72,6 +72,13 @@ h1 { font-family: "Lora", Georgia, serif; font-weight: 600; font-size: clamp(28p
 .papel .rojo { color: var(--rojo); }
 .papel mark { background: rgba(247,214,92,.6); color: inherit; padding: 0 1px; }
 .papel .vnum { color: #b9a37f; font-size: 1em; vertical-align: baseline; margin-right: .3em; }
+.papel.es-lamina { background: #fdfcf9; background-image: none; border-color: #e3e0d8; color: #1b2233; }
+.lam { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 20px; line-height: 1.45; }
+.lam div { min-height: 1em; } .lam .c { text-align: center; }
+.lam ul, .lam ol { margin: .2em 0; padding-left: 1.4em; }
+.lam .t1 { font-size: .62em; } .lam .t2 { font-size: .8em; } .lam .t4 { font-size: 1.2em; } .lam .t5 { font-size: 1.5em; }
+.lam .t6 { font-size: 2em; } .lam .t7 { font-size: 2.6em; }
+.lam .rojo { color: var(--rojo); } .lam mark { background: #ffe66d; color: inherit; padding: 0 2px; border-radius: 2px; }
 .notas { margin-top: 12px; background: #efede8; border-radius: 10px; padding: 14px 16px; font-size: 16px; }
 .notas .tit { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); font-weight: 700; margin: 0 0 6px; }
 .notas p { margin: 0 0 6px; }
@@ -100,6 +107,9 @@ export async function crearResumen({ lista, saltadas, notas, titulo }) {
     } else if (it.tipo === "foto") {
       tipo = t("photo");
       cuerpo = `<div class="foto"><img alt="" src="${escapar(await incrustar(it.src))}"></div>`;
+    } else if (it.lamina) {
+      tipo = t("slideType");
+      cuerpo = `<div class="papel es-lamina">${cuerpoHtml(it)}</div>`;
     } else {
       tipo = it.cita ? escapar(it.cita) : t("scripture");
       cuerpo = `<div class="papel"><p>${textoAHtml(it.texto, it.todoRojo)}</p>${it.cita ? `<cite>${escapar(it.cita)}</cite>` : ""}</div>`;

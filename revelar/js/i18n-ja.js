@@ -1,5 +1,6 @@
 // i18n-ja.js — 日本語のテキスト。
 export default {
+  slideType: "スライド", newSlide: "新しいスライド", editSlide: "スライドを編集", slideSaved: "スライドを保存しました", slideRevealed: "スライドを表示しました", slideDeleted: "スライドを削除しました", typeSlideFirst: "スライドに何か入力してください", slideTooLong: "スライドが長すぎます", slidePh: "ここにスライドの内容を入力…", slideHelp: "文字を選択してスタイルをタップ。もう一度タップすると取り消せます。", menuEditSlide: "✎ スライドを編集", pendingSlideType: "📝 スライド", fontBigger: "文字を大きく", fontSmaller: "文字を小さく", boldTxt: "太字", italicTxt: "斜体", bulletsTxt: "箇条書き", numbersTxt: "番号付き", centerTxt: "中央揃え", clearFormat: "書式をクリア", slideText: "スライドの本文", slideStyles: "スタイル", thisSlide: "このスライド",
   cancel: "キャンセル", save: "保存", delete: "削除", close: "閉じる", done: "完了", copy: "コピー", copied: "コピーしました", create: "作成", gotIt: "了解",
   signInGoogle: "Google でログイン", signInFail: "ログインできませんでした：{e}",
   rulesMissing: "新しいルールを Firebase に貼り付ける必要があります",
@@ -21,7 +22,7 @@ export default {
   draft: "下書き", draftTitle: "下書き", draftSaved: "下書きを保存しました", draftAccepted: "下書きをリストに追加しました",
   ideas1: "· アイデア 1 件", ideasN: "· アイデア {n} 件", outlinePh: "アイデアを入力…",
   outlineHelp: "Enter = 新しいアイデア · ⠿ をドラッグして移動。各アイデアは、そのアイデアをメモに入れた空のスライドになります。",
-  pendingSlide: "未入力のスライド", fillBlanks: "✎ 編集で空のスライドを埋めてください", pendingTap: "タップして写真か聖句を選ぶ",
+  pendingSlide: "未入力のスライド", fillBlanks: "✎ 編集で空のスライドを埋めてください", pendingTap: "タップして写真・聖句・スライドを選ぶ",
   pendingQ: "このスライドに何を入れますか？", pendingPhoto: "🖼 写真", pendingScripture: "📜 聖句",
   pendingPresent: "このスライドは空です：✎ 編集で入力してください",
   outlineMade: "完了：アイデア入りの空のスライド {n} 枚", outlineMade1: "完了：アイデア入りの空のスライド 1 枚",

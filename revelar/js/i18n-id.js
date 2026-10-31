@@ -1,5 +1,6 @@
 // i18n-id.js — Teks dalam bahasa Indonesia.
 export default {
+  slideType: "Slide", newSlide: "Slide baru", editSlide: "Ubah slide", slideSaved: "Slide disimpan", slideRevealed: "Slide ditampilkan", slideDeleted: "Slide dihapus", typeSlideFirst: "Tulis sesuatu di slide", slideTooLong: "Slide terlalu panjang", slidePh: "Tulis slide-mu di sini…", slideHelp: "Pilih teks lalu ketuk sebuah gaya. Ketuk lagi untuk menghapusnya.", menuEditSlide: "✎ Ubah slide", pendingSlideType: "📝 Slide", fontBigger: "Huruf lebih besar", fontSmaller: "Huruf lebih kecil", boldTxt: "Tebal", italicTxt: "Miring", bulletsTxt: "Butir", numbersTxt: "Nomor", centerTxt: "Tengahkan", clearFormat: "Hapus format", slideText: "Teks slide", slideStyles: "Gaya", thisSlide: "slide ini",
   cancel: "Batal", save: "Simpan", delete: "Hapus", close: "Tutup", done: "Selesai", copy: "Salin", copied: "Tersalin", create: "Buat", gotIt: "Mengerti",
   signInGoogle: "Masuk dengan Google", signInFail: "Tidak bisa masuk: {e}",
   rulesMissing: "Aturan baru masih perlu ditempel di Firebase",
@@ -21,7 +22,7 @@ export default {
   draft: "Draf", draftTitle: "Draf", draftSaved: "Draf disimpan", draftAccepted: "Draf ditambahkan ke daftarmu",
   ideas1: "· 1 ide", ideasN: "· {n} ide", outlinePh: "Tulis sebuah ide…",
   outlineHelp: "Enter = ide baru · seret ⠿ untuk memindahkannya. Setiap ide menjadi slide kosong dengan ide itu di catatannya.",
-  pendingSlide: "Slide untuk diisi", fillBlanks: "Isi slide kosong di ✎ Ubah", pendingTap: "Ketuk untuk memilih foto atau ayat",
+  pendingSlide: "Slide untuk diisi", fillBlanks: "Isi slide kosong di ✎ Ubah", pendingTap: "Ketuk untuk memilih foto, ayat, atau slide",
   pendingQ: "Apa isi slide ini?", pendingPhoto: "🖼 Foto", pendingScripture: "📜 Ayat",
   pendingPresent: "Slide ini kosong: isi di ✎ Ubah",
   outlineMade: "Selesai: {n} slide kosong dengan ide-idemu", outlineMade1: "Selesai: 1 slide kosong dengan idemu",
