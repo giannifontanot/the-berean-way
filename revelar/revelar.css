@@ -2083,3 +2083,9 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 /* Engrane de Ajustes: presente pero discreto (gris, sin marco) */
 #btnAjustes { color: var(--muted); opacity: .6; background: transparent; border-color: transparent; box-shadow: none; }
 #btnAjustes:hover, #btnAjustes:focus-visible { opacity: 1; }
+
+/* Logotipo arriba en medio de Mis lecciones */
+.pag-lecciones .barra { position: relative; }
+.logo-barra { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; line-height: 0; }
+.logo-barra img { height: 54px; width: auto; display: block; }
+@media (max-width: 360px) { .logo-barra img { height: 46px; } }
