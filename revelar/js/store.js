@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610310620";
+import { CONFIG } from "../config.js?v=202610310650";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -238,6 +238,8 @@ async function catalogoFirebase() {
       return db.onValue(ref(`revelar_lecciones/${uid()}/${id}`), (s) => cb(s.val()), onError);
     },
     guardarLeccion: (id, datos) => db.update(ref(`revelar_lecciones/${uid()}/${id}`), datos),
+    // Orden de tu lista (lo que arrastras con ⠿): pos = 0, 1, 2… en una sola escritura
+    ordenarLecciones: (ids) => db.update(ref(`revelar_lecciones/${uid()}`), Object.fromEntries(ids.map((id, i) => [`${id}/pos`, i]))),
     async crearLeccion(id, ficha) {
       await db.set(ref(`revelar_duenos/${id}`), uid());
       await db.set(ref(`revelar_lecciones/${uid()}/${id}`), ficha);
@@ -487,6 +489,7 @@ function catalogoDemo() {
       escribir(v);
     },
     async crearLeccion(id, ficha) { const v = leer(); v[id] = ficha; escribir(v); },
+    async ordenarLecciones(ids) { const v = leer(); ids.forEach((id, i) => { if (v[id]) v[id].pos = i; }); escribir(v); },
     async leerActual() { return actual(); },
     onActual(codigo, cb) { oyentesActual.add(cb); cb(actual()); return () => oyentesActual.delete(cb); },
     async ponerActual(sesion) { try { localStorage.setItem(CA, sesion); } catch {} oyentesActual.forEach((cb) => cb(sesion)); },

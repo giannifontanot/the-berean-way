@@ -126,6 +126,9 @@
           "borrador": {
             ".validate": "newData.isBoolean()"
           },
+          "pos": {
+            ".validate": "newData.isNumber()"
+          },
           "ideas": {
             "$i": {
               ".validate": "newData.isString() && newData.val().length <= 500"

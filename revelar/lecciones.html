@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#11152b">
   <title>Mis lecciones · Berean Reveal</title>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
-  <link rel="stylesheet" href="revelar.css?v=202610310620">
+  <link rel="stylesheet" href="revelar.css?v=202610310650">
   <link rel="manifest" href="maestro.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="iconos/maestro-192.png">
   <link rel="apple-touch-icon" href="iconos/maestro-180.png">
@@ -15,7 +15,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Maestro">
-  <script type="module" src="js/pwa.js?v=202610310620"></script>
+  <script type="module" src="js/pwa.js?v=202610310650"></script>
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -126,7 +126,7 @@
     </div>
     <div class="acciones">
       <button class="btn" data-cerrar data-i18n="cancel">Cancelar</button>
-      <button class="btn" id="btnBorrador" hidden data-i18n="saveDraft">Guardar borrador</button>
+      <button class="btn guardar-amarillo" id="btnBorrador" hidden data-i18n="saveDraft">Guardar</button>
       <button class="btn primario" id="btnNombreOk">Crear</button>
     </div>
   </dialog>
@@ -161,12 +161,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202610310620";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610310620";
-    import "./js/presion.js?v=202610310620";
-    import { confirmarQuitar } from "./js/confirmar.js?v=202610310620";
-    import { colocarAviso } from "./js/junto.js?v=202610310620";
-    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610310620";
+    import { CONFIG } from "./config.js?v=202610310650";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610310650";
+    import "./js/presion.js?v=202610310650";
+    import { confirmarQuitar } from "./js/confirmar.js?v=202610310650";
+    import { colocarAviso } from "./js/junto.js?v=202610310650";
+    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610310650";
 
     const $ = (id) => document.getElementById(id);
 
@@ -251,6 +251,7 @@
     function tarjeta(id, l) {
       const el = document.createElement("article");
       el.className = "lec" + (l.archivada ? " archivada" : "");
+      el.dataset.id = id;
       const portada = l.portada
         ? `<img alt="" src="${escapar(l.portada)}">`
         : `<span class="lec-sinfoto" aria-hidden="true">📖</span>`;
@@ -260,6 +261,7 @@
         const k = Array.isArray(l.ideas) ? l.ideas.length : Object.keys(l.ideas || {}).length;
         el.classList.add("borrador");
         el.innerHTML = `
+          <span class="lec-asa" aria-hidden="true">⠿</span>
           <button class="lec-abrir" type="button">
             <div class="lec-portada"><span class="lec-sinfoto" aria-hidden="true">📝</span></div>
             <div class="lec-info">
@@ -273,6 +275,7 @@
         return el;
       }
       el.innerHTML = `
+        <span class="lec-asa" aria-hidden="true">⠿</span>
         <a class="lec-abrir" href="presentador.html?s=${encodeURIComponent(id)}">
           <div class="lec-portada">${portada}</div>
           <div class="lec-info">
@@ -289,19 +292,56 @@
       return el;
     }
 
+    var sortLista = null, arrastrandoLista = false;   // var: pintar() puede correr antes de esta línea
     function pintar() {
       const todas = Object.entries(lecciones).filter(([, l]) => l && typeof l === "object");
       const orden = (a, b) => (b[1].editada || b[1].creada || 0) - (a[1].editada || a[1].creada || 0);
-      const activas = todas.filter(([, l]) => !l.archivada).sort(orden);
+      // Tu orden (⠿): las que aún no tienen lugar (nuevas) van arriba; luego por posición
+      const porLugar = (a, b) => {
+        const pa = typeof a[1].pos === "number", pb = typeof b[1].pos === "number";
+        if (pa !== pb) return pa ? 1 : -1;
+        return pa ? a[1].pos - b[1].pos : orden(a, b);
+      };
+      const activas = todas.filter(([, l]) => !l.archivada).sort(porLugar);
       const archivadas = todas.filter(([, l]) => l.archivada).sort(orden);
       $("cargando").hidden = todas.length > 0;
       if (!todas.length) $("cargando").textContent = t("noLessons");
+      if (arrastrandoLista) return;     // no redibujar mientras mueves una
       $("lista").replaceChildren(...activas.map(([id, l]) => tarjeta(id, l)));
-      $("listaArchivadas").replaceChildren(...archivadas.map(([id, l]) => tarjeta(id, l)));
-      $("btnArchivadas").hidden = !archivadas.length;
-      $("btnArchivadas").textContent = (verArchivadas ? "▾ " : "▸ ") + t("archivedN", { n: archivadas.length });
-      $("listaArchivadas").hidden = !verArchivadas || !archivadas.length;
     }
+    // Ordenar la lista con el asa ⠿: la tarjeta sigue al dedo y las demás le abren lugar.
+    $("lista").addEventListener("pointerdown", (e) => {
+      const asa = e.target.closest(".lec-asa");
+      if (!asa || e.button > 0) return;
+      const tarjeta = asa.closest(".lec"), lista = $("lista");
+      e.preventDefault();
+      arrastrandoLista = true;
+      // Se escucha en la ventana: al cambiar de lugar la tarjeta, el dedo no se "suelta"
+      // offsetTop no cambia con transform: así la tarjeta sigue al dedo aunque cambie de lugar
+      const y0 = e.clientY, top0 = tarjeta.offsetTop;
+      tarjeta.classList.add("lec-elegida");
+      const mover = (ev) => {
+        const visual = top0 + (ev.clientY - y0);            // dónde la ve el dedo
+        const centro = visual + tarjeta.offsetHeight / 2;
+        const prev = tarjeta.previousElementSibling, sig = tarjeta.nextElementSibling;
+        if (prev && centro < prev.offsetTop + prev.offsetHeight / 2) lista.insertBefore(tarjeta, prev);
+        else if (sig && centro > sig.offsetTop + sig.offsetHeight / 2) lista.insertBefore(sig, tarjeta);
+        tarjeta.style.transform = `translateY(${visual - tarjeta.offsetTop}px)`;
+      };
+      const soltar = async () => {
+        removeEventListener("pointermove", mover);
+        removeEventListener("pointerup", soltar);
+        removeEventListener("pointercancel", soltar);
+        tarjeta.classList.remove("lec-elegida");
+        tarjeta.style.transform = "";
+        arrastrandoLista = false;
+        const ids = [...lista.children].map((el) => el.dataset.id).filter(Boolean);
+        try { await cat.ordenarLecciones(ids); } catch (err) { error(err); pintar(); }
+      };
+      addEventListener("pointermove", mover);
+      addEventListener("pointerup", soltar);
+      addEventListener("pointercancel", soltar);
+    });
     $("btnArchivadas").addEventListener("click", () => { verArchivadas = !verArchivadas; pintar(); });
 
     // ---------- Menú ----------
@@ -374,7 +414,7 @@
     });
 
     // ---------- Ideas: una fila por idea, con asa ⠿ para moverla ----------
-    let borradorDe = null, sortIdeas = null;
+    var borradorDe = null, sortIdeas = null;
     function filaIdea(texto = "") {
       const f = document.createElement("div");
       f.className = "idea";
@@ -520,7 +560,7 @@
       if (!$("chkUbic").disabled) $("chkUbic").checked = !!yo;
       $("mapaInvita").hidden = !!yo;
       try {
-        mapaUI ??= (await import("./js/mapa.js?v=202610310620")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
+        mapaUI ??= (await import("./js/mapa.js?v=202610310650")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
         await mapaUI.pintar(lista.map(([id, u]) => ({
           lat: u.lat, lng: u.lng, titulo: u.nombre || t("noName"),
           detalle: [u.ciudad, u.uso ? t(u.uso === "iglesia" ? "useChurch" : "useOther") : ""].filter(Boolean).join(" · "),
