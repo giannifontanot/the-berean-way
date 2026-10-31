@@ -221,6 +221,14 @@
               ".validate": "newData.isString() && newData.val().length <= 4000"
             }
           },
+          "borrador": {
+            ".validate": "newData.isBoolean()"
+          },
+          "ideas": {
+            "$i": {
+              ".validate": "newData.isString() && newData.val().length <= 500"
+            }
+          },
           "$otro": {
             ".validate": false
           }

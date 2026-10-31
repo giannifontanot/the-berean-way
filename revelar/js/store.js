@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610310650";
+import { CONFIG } from "../config.js?v=202610310715";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -265,17 +265,24 @@ async function catalogoFirebase() {
     // Enviar una copia (sin notas) a otro maestro, por su código.
     // Las notas son privadas: si las incluyes, viajan dentro del envío
     // (solo el maestro que lo recibe puede leer su buzón).
-    async enviarCopia(codigo, origen, titulo, conNotas) {
+    // ideas: si se envía un borrador (título + ideas), en vez de láminas y notas
+    async enviarCopia(codigo, origen, titulo, conNotas, ideas) {
       const destino = await val(`revelar_codigos/${limpiarCodigo(codigo)}`);
       if (!destino) { const e = new Error("codigo"); e.code = "codigo"; throw e; }
       const u = auth.currentUser;
-      const notas = conNotas ? await val(`revelar_privado/${origen}/notas`) : null;
+      const notas = conNotas && !ideas ? await val(`revelar_privado/${origen}/notas`) : null;
       await db.push(ref(`revelar_buzon/${destino}`), {
         deUid: u.uid, deNombre: String(u.displayName || u.email || "").slice(0, 80),
         origen, titulo: String(titulo || "").slice(0, 80), creado: Date.now(),
         ...(notas ? { notas } : {}),
+        ...(ideas ? { borrador: true, ...(ideas.length ? { ideas } : {}) } : {}),
       });
     },
+    // Recibir un borrador: queda en tu lista como borrador (título + ideas)
+    aceptarBorrador: (envio, datos, destino) => db.update(db.ref(d), {
+      [`revelar_lecciones/${uid()}/${destino}`]: { titulo: datos.titulo || "", creada: Date.now(), editada: Date.now(), borrador: true, ...(datos.ideas ? { ideas: datos.ideas } : {}) },
+      [`revelar_buzon/${uid()}/${envio}`]: null,
+    }),
     onBuzon(cb) {
       return db.onValue(ref(`revelar_buzon/${uid()}`), (s) => cb(s.val() || {}), () => cb({}));
     },
@@ -494,11 +501,15 @@ function catalogoDemo() {
     onActual(codigo, cb) { oyentesActual.add(cb); cb(actual()); return () => oyentesActual.delete(cb); },
     async ponerActual(sesion) { try { localStorage.setItem(CA, sesion); } catch {} oyentesActual.forEach((cb) => cb(sesion)); },
     async duplicar(origen, destino, ficha) { copiar(origen, destino, true); const v = leer(); v[destino] = ficha; escribir(v); },
-    async enviarCopia(codigo, origen, titulo, conNotas) {
+    async enviarCopia(codigo, origen, titulo, conNotas, ideas) {
       if (limpiarCodigo(codigo) !== "demo") { const e = new Error("codigo"); e.code = "codigo"; throw e; }
-      const notas = conNotas ? leerJ(`revelar-demo:${origen}:notas`) : null;
-      const b = buzon(); b["env" + Date.now().toString(36)] = { deUid: "demo", deNombre: "Demo", origen, titulo, creado: Date.now(), ...(notas && Object.keys(notas).length ? { notas } : {}) };
+      const notas = conNotas && !ideas ? leerJ(`revelar-demo:${origen}:notas`) : null;
+      const b = buzon(); b["env" + Date.now().toString(36)] = { deUid: "demo", deNombre: "Demo", origen, titulo, creado: Date.now(), ...(notas && Object.keys(notas).length ? { notas } : {}), ...(ideas ? { borrador: true, ideas } : {}) };
       escribirBuzon(b);
+    },
+    async aceptarBorrador(envio, datos, destino) {
+      const v = leer(); v[destino] = { titulo: datos.titulo, creada: Date.now(), editada: Date.now(), borrador: true, ideas: datos.ideas || [] }; escribir(v);
+      const b = buzon(); delete b[envio]; escribirBuzon(b);
     },
     onBuzon(cb) { oyentesBuzon.add(cb); cb(buzon()); return () => oyentesBuzon.delete(cb); },
     onContactos(cb) { const f = () => cb(leerJ("revelar-demo:contactos")); oyentesBuzon.add(f); f(); return () => oyentesBuzon.delete(f); },

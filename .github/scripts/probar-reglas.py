@@ -105,6 +105,8 @@ caso("B envía copia a A", SI, "PUT", "revelar_buzon/" + A + "/e1", B, {"deUid":
 caso("B envía copia con notas", SI, "PUT", "revelar_buzon/" + A + "/e3", B, {"deUid": B, "deNombre": "B", "origen": "s1", "titulo": "T", "creado": 1, "notas": {"esc_1": "nota de B"}})
 caso("A guarda las notas recibidas en su lección", SI, "PUT", "revelar_privado/s1/notas/esc_9", A, "nota de B")
 caso("Nota recibida demasiado larga", NO, "PUT", "revelar_buzon/" + A + "/e4", B, {"deUid": B, "origen": "s1", "titulo": "T", "notas": {"x": "a" * 4001}})
+caso("B envía un borrador con ideas", SI, "PUT", "revelar_buzon/" + A + "/e5", B, {"deUid": B, "deNombre": "B", "origen": "b9", "titulo": "Borrador", "creado": 1, "borrador": True, "ideas": ["Idea uno", "Idea dos"]})
+caso("Borrador con idea demasiado larga", NO, "PUT", "revelar_buzon/" + A + "/e6", B, {"deUid": B, "origen": "b9", "titulo": "T", "borrador": True, "ideas": ["a" * 501]})
 caso("B no envía a nombre de otro", NO, "PUT", "revelar_buzon/" + A + "/e2", B, {"deUid": G, "origen": "s1", "titulo": "T"})
 caso("B no lee el buzón de A", NO, "GET", "revelar_buzon/" + A, B)
 caso("A lee su buzón", SI, "GET", "revelar_buzon/" + A, A)
