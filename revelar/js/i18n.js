@@ -174,6 +174,7 @@ const TEXTOS = {
 
     // Documento para imprimir
     classSummary: "Resumen de la clase", madeWith: "Berean Reveal",
+    teacherApp: "Reveal — el app del maestro",
   },
 
   en: {
@@ -322,6 +323,7 @@ const TEXTOS = {
     mapNote: "Only teachers who chose to share their (approximate) city appear.", classCode: "Teacher code", codeShort: "Code", nameShort: "Name",
 
     classSummary: "Class summary", madeWith: "Berean Reveal",
+    teacherApp: "Reveal — the teacher app",
   },
 };
 
