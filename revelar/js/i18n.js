@@ -115,7 +115,7 @@ const TEXTOS = {
 
     // Diálogos
     docReady: "Documento listo", download: "Descargar",
-    inviteTitle: "Invitar a la clase", inviteMsg: "Entra a la clase «{t}»", inviteText: "Que escaneen este código o abran el enlace.",
+    inviteTitle: "Invitar a la clase", inviteMsg: "Te invito a entrar a la clase", inviteText: "Que escaneen este código o abran el enlace.",
     copyLink: "Copiar enlace", send: "📨 Enviar invitación",
     resetLiveQ: "¿Reiniciar la sesión?", resetRehearsalQ: "¿Reiniciar el ensayo?",
     resetLiveText: "Se ocultarán todas las fotos y escrituras en los teléfonos de los participantes. Ellos se quedan conectados, listos para empezar de nuevo.",
@@ -266,7 +266,7 @@ const TEXTOS = {
     notesSaved: "Notes saved",
 
     docReady: "Document ready", download: "Download",
-    inviteTitle: "Invite to the class", inviteMsg: "Join the class “{t}”", inviteText: "Have them scan this code or open the link.",
+    inviteTitle: "Invite to the class", inviteMsg: "You're invited to join the class", inviteText: "Have them scan this code or open the link.",
     copyLink: "Copy link", send: "📨 Send invitation",
     resetLiveQ: "Reset the session?", resetRehearsalQ: "Reset the rehearsal?",
     resetLiveText: "All photos and scriptures will be hidden on the participants' phones. They stay connected, ready to start again.",

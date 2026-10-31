@@ -8,7 +8,7 @@
   <title>Mis lecciones · Reveal — el app del maestro</title>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-  <link rel="stylesheet" href="revelar.css?v=202610310726">
+  <link rel="stylesheet" href="revelar.css?v=202610310735">
   <link rel="manifest" href="maestro.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="iconos/maestro-192.png">
   <link rel="apple-touch-icon" href="iconos/maestro-180.png">
@@ -16,7 +16,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Maestro">
-  <script type="module" src="js/pwa.js?v=202610310726"></script>
+  <script type="module" src="js/pwa.js?v=202610310735"></script>
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -179,12 +179,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202610310726";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610310726";
-    import "./js/presion.js?v=202610310726";
-    import { confirmarQuitar } from "./js/confirmar.js?v=202610310726";
-    import { colocarAviso } from "./js/junto.js?v=202610310726";
-    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610310726";
+    import { CONFIG } from "./config.js?v=202610310735";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610310735";
+    import "./js/presion.js?v=202610310735";
+    import { confirmarQuitar } from "./js/confirmar.js?v=202610310735";
+    import { colocarAviso } from "./js/junto.js?v=202610310735";
+    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610310735";
 
     const $ = (id) => document.getElementById(id);
 
@@ -391,9 +391,8 @@
     });
     // Mandar el link a los alumnos: la ventana del QR se abre aquí mismo.
     // Es la liga de siempre de los participantes (?p=<tu código>), igual que en el presentador.
-    let ligaInv = "", tituloInv = "";
+    let ligaInv = "";
     $("mInvitar").addEventListener("click", async () => {
-      tituloInv = lecciones[menuDe]?.titulo || t("untitled");
       $("dlgMenu").close();
       if (!perfil) { try { perfil = await cat.miPerfil(); } catch {} }
       const url = new URL("./", location.href); url.search = "";
@@ -409,7 +408,7 @@
       $("dlgInvitar").showModal();
     });
     $("btnEnviarInv").addEventListener("click", () => {
-      if (navigator.share) { navigator.share({ title: tituloInv, text: t("inviteMsg", { t: tituloInv }), url: ligaInv }).catch(() => {}); return; }
+      if (navigator.share) { navigator.share({ title: t("inviteTitle"), text: t("inviteMsg"), url: ligaInv }).catch(() => {}); return; }
       navigator.clipboard?.writeText(ligaInv).then(() => aviso(t("linkCopied")), () => prompt(t("linkCopied"), ligaInv));
     });
     $("mNoCompartir").addEventListener("click", async () => {
@@ -601,7 +600,7 @@
       if (!$("chkUbic").disabled) $("chkUbic").checked = !!yo;
       $("mapaInvita").hidden = !!yo;
       try {
-        mapaUI ??= (await import("./js/mapa.js?v=202610310726")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
+        mapaUI ??= (await import("./js/mapa.js?v=202610310735")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
         await mapaUI.pintar(lista.map(([id, u]) => ({
           lat: u.lat, lng: u.lng, titulo: u.nombre || t("noName"),
           detalle: [u.ciudad, u.uso ? t(u.uso === "iglesia" ? "useChurch" : "useOther") : ""].filter(Boolean).join(" · "),

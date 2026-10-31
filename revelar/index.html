@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#11152b">
   <title>Fotos de la clase</title>
-  <link rel="stylesheet" href="revelar.css?v=202610310726">
+  <link rel="stylesheet" href="revelar.css?v=202610310735">
   <link rel="manifest" href="alumno.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="iconos/alumno-192.png">
   <link rel="apple-touch-icon" href="iconos/alumno-180.png">
@@ -14,7 +14,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Clase">
-  <script type="module" src="js/pwa.js?v=202610310726"></script>
+  <script type="module" src="js/pwa.js?v=202610310735"></script>
 </head>
 <body class="sala">
   <!-- Sin barra superior: solo el contenido. Si se pierde la conexión, aparece un aviso discreto. -->
@@ -55,12 +55,12 @@
   </dialog>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202610310726";
-    import { crearStore, crearCatalogo, limpiarCodigo, sesionActual, ordenar, esTemporal, idReal, esFoco, FOCO } from "./js/store.js?v=202610310726";
-    import "./js/presion.js?v=202610310726";
-    import { confirmarQuitar } from "./js/confirmar.js?v=202610310726";
-    import { idioma, t, traducir } from "./js/i18n.js?v=202610310726";
-    import { textoAHtml, esEscritura, esSubida } from "./js/escritura.js?v=202610310726";
+    import { CONFIG } from "./config.js?v=202610310735";
+    import { crearStore, crearCatalogo, limpiarCodigo, sesionActual, ordenar, esTemporal, idReal, esFoco, FOCO } from "./js/store.js?v=202610310735";
+    import "./js/presion.js?v=202610310735";
+    import { confirmarQuitar } from "./js/confirmar.js?v=202610310735";
+    import { idioma, t, traducir } from "./js/i18n.js?v=202610310735";
+    import { textoAHtml, esEscritura, esSubida } from "./js/escritura.js?v=202610310735";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
