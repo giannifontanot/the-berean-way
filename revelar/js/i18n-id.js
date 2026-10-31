@@ -12,7 +12,7 @@ export default {
   chooseLogo: "Pilih logomu", shareApp: "Bagikan aplikasi",
   shareAppNote: "<b>Bagikan Reveal ke guru lain.</b> Kenal seseorang yang ingin memakai aplikasi ini? Bagikan!",
   shareAppTitle: "{n} mengundangmu ke Reveal",
-  shareAppMsg: "🌟 Halo! Saya {n}, dan saya ingin membagikan Reveal, aplikasi untuk guru.\n\nDengan Reveal kamu menyiapkan foto dan teks, lalu menampilkannya langsung di ponsel setiap murid, tepat di saat yang pas dalam pelajaranmu. Murid-murid saya suka sekali!\n\nGratis. Buat akunmu di sini dan mulai hari ini:",
+  shareAppMsg: "🌟 Halo! Saya {n}, dan saya ingin membagikan Reveal, aplikasi untuk guru.\n\nDengan Reveal kamu menyiapkan foto dan teks, lalu menampilkannya langsung di ponsel setiap murid, tepat di saat yang pas dalam pelajaranmu. Muridmu tidak perlu memasang apa pun: cukup memindai kode QR atau mengetuk tautan yang kamu kirim.\n\nGratis. Buat akunmu di sini dan mulai hari ini:",
   settings: "Pengaturan", signOut: "Keluar", signOutFail: "Tidak bisa keluar: {e}", seeTeachers: "Lihat semua guru saya",
   aboutApp: "Reveal adalah aplikasi untuk guru. Siapkan foto dan ayatmu, lalu tampilkan langsung di ponsel setiap murid, tepat di saat paling penting dalam pelajaran. Supaya pelajaranmu tidak hanya didengar, tetapi juga dilihat.",
   thanksApp: "Terima kasih sudah mengajar dengan Reveal. 🙏",

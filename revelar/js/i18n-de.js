@@ -12,7 +12,7 @@ export default {
   chooseLogo: "Wähle dein Logo", shareApp: "App teilen",
   shareAppNote: "<b>Teile Reveal mit anderen Lehrkräften.</b> Kennst du jemanden, der die App gern nutzen würde? Teile sie!",
   shareAppTitle: "{n} lädt dich zu Reveal ein",
-  shareAppMsg: "🌟 Hallo! Ich bin {n} und möchte dir Reveal zeigen, die App für Lehrkräfte.\n\nMit Reveal bereitest du deine Fotos und Texte vor und zeigst sie live auf dem Handy jedes Schülers – genau im richtigen Moment deiner Stunde. Meine Schüler lieben es!\n\nEs ist kostenlos. Erstelle hier dein Konto und leg heute noch los:",
+  shareAppMsg: "🌟 Hallo! Ich bin {n} und möchte dir Reveal zeigen, die App für Lehrkräfte.\n\nMit Reveal bereitest du deine Fotos und Texte vor und zeigst sie live auf dem Handy jedes Schülers – genau im richtigen Moment deiner Stunde. Deine Schüler müssen nichts installieren: Sie scannen einfach einen QR-Code oder tippen auf den Link, den du ihnen schickst.\n\nEs ist kostenlos. Erstelle hier dein Konto und leg heute noch los:",
   settings: "Einstellungen", signOut: "Abmelden", signOutFail: "Abmelden nicht möglich: {e}", seeTeachers: "Alle meine Lehrkräfte ansehen",
   aboutApp: "Reveal ist die App für Lehrkräfte. Bereite deine Fotos und Texte vor und zeige sie live auf dem Handy jedes Schülers – genau in dem Moment der Stunde, in dem sie am meisten zählen. Damit deine Stunden nicht nur gehört, sondern auch gesehen werden.",
   thanksApp: "Danke, dass du mit Reveal unterrichtest. 🙏",

@@ -12,7 +12,7 @@ export default {
   chooseLogo: "Escolha seu logotipo", shareApp: "Compartilhar o app",
   shareAppNote: "<b>Compartilhe o Reveal com outros professores.</b> Conhece alguém que gostaria de usar o app? Compartilhe!",
   shareAppTitle: "{n} convida você para o Reveal",
-  shareAppMsg: "🌟 Olá! Sou {n} e quero compartilhar com você o Reveal, o app do professor.\n\nCom o Reveal você prepara suas fotos e textos e os revela ao vivo no celular de cada aluno, no momento certo da sua aula. Meus alunos adoram!\n\nÉ grátis. Crie sua conta aqui e comece hoje mesmo:",
+  shareAppMsg: "🌟 Olá! Sou {n} e quero compartilhar com você o Reveal, o app do professor.\n\nCom o Reveal você prepara suas fotos e textos e os revela ao vivo no celular de cada aluno, no momento certo da sua aula. Seus alunos não precisam instalar nada: só escaneiam um código QR ou tocam no link que você enviar.\n\nÉ grátis. Crie sua conta aqui e comece hoje mesmo:",
   settings: "Configurações", signOut: "Sair", signOutFail: "Não foi possível sair: {e}", seeTeachers: "Ver todos os meus professores",
   aboutApp: "O Reveal é o app do professor. Prepare suas fotos e passagens e revele-as ao vivo no celular de cada aluno, no momento da aula em que mais importam. Para que suas aulas não sejam só ouvidas, mas também vistas.",
   thanksApp: "Obrigado por ensinar com o Reveal. 🙏",
