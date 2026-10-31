@@ -2080,3 +2080,6 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 #dlgAjustes .idioma-gracias { margin: 0 0 4px; font-family: var(--font-serif); font-size: 18px; color: var(--text); }
 #dlgAjustes .acciones { margin-top: 18px; }
 .btn.aj-cerrar { width: 100%; justify-content: center; min-height: 48px; font-size: 17px; }
+/* Engrane de Ajustes: presente pero discreto (gris, sin marco) */
+#btnAjustes { color: var(--muted); opacity: .6; background: transparent; border-color: transparent; box-shadow: none; }
+#btnAjustes:hover, #btnAjustes:focus-visible { opacity: 1; }
