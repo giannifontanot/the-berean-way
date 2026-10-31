@@ -2086,13 +2086,33 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 
 /* Logotipo arriba en medio de Mis lecciones */
 .pag-lecciones .barra { position: relative; }
-.logo-barra { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; line-height: 0; }
+.logo-barra { position: absolute; z-index: 2; left: 50%; top: 50%; transform: translate(-50%, -50%); line-height: 0; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.logo-barra:active { scale: .96; }
+.logo-barra:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
+.logo-barra img { max-width: 132px; object-fit: contain; }
 .logo-barra img { height: 54px; width: auto; display: block; }
 @media (max-width: 360px) { .logo-barra img { height: 46px; } }
 
 /* Tu código: se toca para compartirlo */
-.pag-lecciones .lec-codigo { overflow: visible; cursor: pointer; -webkit-tap-highlight-color: transparent; border-radius: 10px; }
+.pag-lecciones .lec-codigo { flex: none; overflow: visible; cursor: pointer; -webkit-tap-highlight-color: transparent; border-radius: 10px; }
 .pag-lecciones .lec-codigo:active { opacity: .75; }
 .pag-lecciones .lec-codigo:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .pag-lecciones .lec-codigo small { display: inline-flex; align-items: center; gap: 5px; }
 .ico-cod { width: 12px; height: 12px; opacity: .8; }
+
+/* Logotipos: compartir el app (arriba) + lista vertical */
+#dlgLogos { max-height: calc(100dvh - 32px); display: none; flex-direction: column; box-sizing: border-box; overflow: hidden; }
+#dlgLogos[open] { display: flex; }
+.lg-compartir { padding: 14px; margin: 0 0 16px; border-radius: 14px; background: color-mix(in srgb, var(--gold, #e8c46a) 12%, transparent); border: 1px solid color-mix(in srgb, var(--gold, #e8c46a) 40%, transparent); }
+#dlgLogos .lg-nota { margin: 0 0 12px; color: var(--text); line-height: 1.45; }
+.btn.lg-btn { width: 100%; justify-content: center; min-height: 48px; font-size: 16px; }
+#dlgLogos h2 { margin-bottom: 10px; }
+.lg-lista { flex: 1; min-height: 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 4px 2px; overscroll-behavior: contain; }
+.lg-item { position: relative; display: grid; place-items: center; padding: 12px; border-radius: 14px; cursor: pointer;
+  background: color-mix(in srgb, var(--text) 4%, transparent); border: 2px solid transparent; }
+.lg-item img { max-width: 100%; height: 84px; object-fit: contain; display: block; }
+.lg-item[aria-checked="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.lg-check { position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; border-radius: 50%; display: none; place-items: center;
+  background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 14px; }
+.lg-item[aria-checked="true"] .lg-check { display: grid; }
+#dlgLogos .acciones { margin-top: 14px; }
