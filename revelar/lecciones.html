@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#11152b">
   <title>Mis lecciones · Reveal — el app del maestro</title>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
-  <link rel="stylesheet" href="revelar.css?v=202610310646">
+  <link rel="stylesheet" href="revelar.css?v=202610310716">
   <link rel="manifest" href="maestro.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="iconos/maestro-192.png">
   <link rel="apple-touch-icon" href="iconos/maestro-180.png">
@@ -15,7 +15,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Maestro">
-  <script type="module" src="js/pwa.js?v=202610310646"></script>
+  <script type="module" src="js/pwa.js?v=202610310716"></script>
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -105,6 +105,7 @@
     <div class="menu-item">
       <button class="btn" id="mRenombrar" data-i18n="rename">✎ Cambiar nombre</button>
       <button class="btn" id="mDuplicar" data-i18n="duplicate">⧉ Duplicar</button>
+      <button class="btn" id="mInvitar" data-i18n="sendLinkStudents">📲 Mandar el link a los alumnos</button>
       <button class="btn" id="mCompartir" data-i18n="shareSummary">🔗 Compartir resumen</button>
       <button class="btn" id="mNoCompartir" data-i18n="stopSharing" hidden>🚫 Dejar de compartir</button>
       <button class="btn" id="mEnviar" data-i18n="sendCopy">📤 Enviar copia a otro maestro</button>
@@ -163,12 +164,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202610310646";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610310646";
-    import "./js/presion.js?v=202610310646";
-    import { confirmarQuitar } from "./js/confirmar.js?v=202610310646";
-    import { colocarAviso } from "./js/junto.js?v=202610310646";
-    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610310646";
+    import { CONFIG } from "./config.js?v=202610310716";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610310716";
+    import "./js/presion.js?v=202610310716";
+    import { confirmarQuitar } from "./js/confirmar.js?v=202610310716";
+    import { colocarAviso } from "./js/junto.js?v=202610310716";
+    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610310716";
 
     const $ = (id) => document.getElementById(id);
 
@@ -355,7 +356,7 @@
       $("mArchivar").hidden = !!l.archivada;
       $("mRestaurar").hidden = !l.archivada;
       $("mNoCompartir").hidden = true;
-      ["mCompartir", "mDuplicar"].forEach((b) => { $(b).hidden = !!l.borrador; });
+      ["mInvitar", "mCompartir", "mDuplicar"].forEach((b) => { $(b).hidden = !!l.borrador; });
       if (!l.borrador) cat.estaCompartida?.(id).then((si) => { if (menuDe === id) $("mNoCompartir").hidden = !si; }).catch(() => {});
       $("dlgMenu").showModal();
     }
@@ -372,6 +373,11 @@
       } catch (e) { if (e?.name === "AbortError") return; }
       try { await navigator.clipboard.writeText(url); aviso(t("linkCopiedShare")); }
       catch { prompt(t("linkCopiedShare"), url); }
+    });
+    // Mandar el link a los alumnos: abre la lección con Invitar a la clase (QR + Compartir) ya abierto.
+    $("mInvitar").addEventListener("click", () => {
+      $("dlgMenu").close();
+      location.href = "presentador.html?s=" + encodeURIComponent(menuDe) + "&invitar=1";
     });
     $("mNoCompartir").addEventListener("click", async () => {
       $("dlgMenu").close();
@@ -562,7 +568,7 @@
       if (!$("chkUbic").disabled) $("chkUbic").checked = !!yo;
       $("mapaInvita").hidden = !!yo;
       try {
-        mapaUI ??= (await import("./js/mapa.js?v=202610310646")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
+        mapaUI ??= (await import("./js/mapa.js?v=202610310716")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
         await mapaUI.pintar(lista.map(([id, u]) => ({
           lat: u.lat, lng: u.lng, titulo: u.nombre || t("noName"),
           detalle: [u.ciudad, u.uso ? t(u.uso === "iglesia" ? "useChurch" : "useOther") : ""].filter(Boolean).join(" · "),
