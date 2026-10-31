@@ -2025,3 +2025,12 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 .lec-lista .lec.lec-elegida { transition: none; }
 /* Borrador: Guardar es lo principal (amarillo); Crear clase queda en azul */
 .btn.guardar-amarillo { background: var(--gold); border-color: var(--gold); color: #2a1f0a; font-weight: 700; }
+
+/* Invitar a la clase: Compartir (amarillo) · Cerrar (azul), del mismo tamaño */
+.acciones-invitar { display: flex; gap: 10px; }
+.acciones-invitar .btn { flex: 1; justify-content: center; min-height: 48px; font-size: 17px; }
+.btn.btn-compartir-inv {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold); border-color: var(--gold); color: #2a1f0a; font-weight: 700;
+}
+.btn-compartir-inv .ico { width: 20px; height: 20px; }
