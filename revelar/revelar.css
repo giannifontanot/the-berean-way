@@ -2089,3 +2089,10 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 .logo-barra { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none; line-height: 0; }
 .logo-barra img { height: 54px; width: auto; display: block; }
 @media (max-width: 360px) { .logo-barra img { height: 46px; } }
+
+/* Tu código: se toca para compartirlo */
+.pag-lecciones .lec-codigo { overflow: visible; cursor: pointer; -webkit-tap-highlight-color: transparent; border-radius: 10px; }
+.pag-lecciones .lec-codigo:active { opacity: .75; }
+.pag-lecciones .lec-codigo:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.pag-lecciones .lec-codigo small { display: inline-flex; align-items: center; gap: 5px; }
+.ico-cod { width: 12px; height: 12px; opacity: .8; }
