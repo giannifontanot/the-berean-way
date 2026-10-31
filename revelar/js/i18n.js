@@ -116,7 +116,7 @@ const TEXTOS = {
     // Diálogos
     docReady: "Documento listo", download: "Descargar",
     inviteTitle: "Invita a los participantes", inviteText: "Que escaneen este código o abran el enlace.",
-    copyLink: "Copiar enlace", send: "Enviar…",
+    copyLink: "Copiar enlace", send: "Compartir…",
     resetLiveQ: "¿Reiniciar la sesión?", resetRehearsalQ: "¿Reiniciar el ensayo?",
     resetLiveText: "Se ocultarán todas las fotos y escrituras en los teléfonos de los participantes. Ellos se quedan conectados, listos para empezar de nuevo.",
     resetRehearsalText: "Tu ensayo vuelve al principio. Los participantes no ven ningún cambio.",
@@ -266,7 +266,7 @@ const TEXTOS = {
 
     docReady: "Document ready", download: "Download",
     inviteTitle: "Invite the participants", inviteText: "Have them scan this code or open the link.",
-    copyLink: "Copy link", send: "Send…",
+    copyLink: "Copy link", send: "Share…",
     resetLiveQ: "Reset the session?", resetRehearsalQ: "Reset the rehearsal?",
     resetLiveText: "All photos and scriptures will be hidden on the participants' phones. They stay connected, ready to start again.",
     resetRehearsalText: "Your rehearsal goes back to the start. Participants see no change.",
