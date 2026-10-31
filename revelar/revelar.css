@@ -2037,3 +2037,4 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 
 /* Marca del app del maestro en la pantalla de entrada */
 .marca-maestro { margin: 0 0 .75rem; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
+.marca-pie { margin: 2rem 0 1rem; text-align: center; }
