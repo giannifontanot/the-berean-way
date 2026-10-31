@@ -26,6 +26,25 @@
             "value": "no-cache"
           }
         ]
+      },
+      {
+        "source": "/@(maestro|teacher)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/maestro",
+        "destination": "/lecciones.html"
+      },
+      {
+        "source": "/teacher",
+        "destination": "/lecciones.html"
       }
     ]
   },

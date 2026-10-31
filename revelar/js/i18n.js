@@ -29,7 +29,7 @@ const TEXTOS = {
 
     // Mis lecciones
     myLessons: "Mis lecciones", newBtn: "Nueva", language: "Idioma",
-    shareCode: "Compartir tu código", aTeacher: "Un maestro", shareCodeTitle: "Código de maestro de {n}", shareCodeMsg: "📖 ¡Hola! Soy {n} y enseño con Reveal, el app del maestro. Mi código de maestro es {c}. Agrégalo y podremos enviarnos lecciones para seguir enseñando la Palabra juntos. ✨",
+    shareCode: "Compartir tu código", aTeacher: "Un maestro", shareCodeTitle: "Código de maestro de {n}", shareCodeMsg: "👋 ¡Hola! Soy {n} y uso Reveal, el app del maestro.\n\nMi código de maestro es:\n{c}\n\nAgrégalo y podremos enviarnos lecciones. ✨\nEntra aquí para crear tu cuenta:",
     settings: "Ajustes", signOut: "Salir", signOutFail: "No se pudo salir: {e}", seeTeachers: "Ver a todos mis maestros",
     aboutApp: "Reveal es el app del maestro. Prepara tus fotos y escrituras, y revélalas en vivo en el teléfono de cada alumno, justo en el momento de la lección en que más importan. Para que la Palabra no solo se escuche, sino que también se vea.",
     thanksApp: "Gracias por enseñar con Reveal.\u00a0🙏",
@@ -191,7 +191,7 @@ const TEXTOS = {
     locale: "en-US",
 
     myLessons: "My lessons", newBtn: "New", language: "Language",
-    shareCode: "Share your code", aTeacher: "A teacher", shareCodeTitle: "{n}'s teacher code", shareCodeMsg: "📖 Hi! I'm {n}, and I teach with Reveal, the teacher app. My teacher code is {c}. Add it so we can send each other lessons and keep teaching the Word together. ✨",
+    shareCode: "Share your code", aTeacher: "A teacher", shareCodeTitle: "{n}'s teacher code", shareCodeMsg: "👋 Hi! I\'m {n}, and I use Reveal, the teacher app.\n\nMy teacher code is:\n{c}\n\nAdd it so we can send each other lessons. ✨\nSign up here:",
     settings: "Settings", signOut: "Sign out", signOutFail: "Couldn't sign out: {e}", seeTeachers: "See all my teachers",
     aboutApp: "Reveal is the teacher's app. Prepare your photos and scriptures, then reveal them live on every student's phone, right at the moment in your lesson when they matter most. So the Word isn't only heard, but seen.",
     thanksApp: "Thank you for teaching with Reveal.\u00a0🙏",
