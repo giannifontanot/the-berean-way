@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202610310735";
+import { CONFIG } from "../config.js?v=202610310749";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -167,6 +167,7 @@ async function catalogoFirebase() {
     uid,
     onUsuario: (cb) => authMod.onAuthStateChanged(auth, cb),
     entrar: () => authMod.signInWithPopup(auth, new authMod.GoogleAuthProvider()),
+    salir: () => authMod.signOut(auth),
     // Perfil del maestro; la primera vez se le asigna un código único.
     // Seguro aunque se pida dos veces a la vez (o en dos pestañas): el código del
     // perfil se fija con una transacción, así nunca se reemplaza por otro.
@@ -448,6 +449,7 @@ function catalogoDemo() {
     uid: () => "demo",
     onUsuario(cb) { cb({ uid: "demo", displayName: "Demo" }); return () => {}; },
     async entrar() {},
+    async salir() {},
     async miPerfil() { let uso = null; try { uso = localStorage.getItem("revelar-demo:uso"); } catch {} return { codigo: "demo", nombre: "Demo", ...(uso ? { uso } : {}) }; },
     async actualizarPerfil() {},
     async guardarUbicacion(u) { try { localStorage.setItem("revelar-demo:ubicacion", JSON.stringify({ ...u, nombre: "Demo" })); } catch {} oyentesMapa.forEach((f) => f()); },

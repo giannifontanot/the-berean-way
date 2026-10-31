@@ -29,6 +29,9 @@ const TEXTOS = {
 
     // Mis lecciones
     myLessons: "Mis lecciones", newBtn: "Nueva", language: "Idioma",
+    settings: "Ajustes", signOut: "Salir", signOutFail: "No se pudo salir: {e}", seeTeachers: "Ver a todos mis maestros",
+    aboutApp: "Reveal es el app del maestro. Prepara tus fotos y escrituras, y revélalas en vivo en el teléfono de cada alumno, justo en el momento de la lección en que más importan. Para que la Palabra no solo se escuche, sino que también se vea.",
+    thanksApp: "Gracias por enseñar con Reveal.\u00a0🙏",
     signInLessons: "Entra para ver tus lecciones",
     signInLessonsText: "Solo tu cuenta puede ver y editar tus lecciones.",
     loading: "Cargando…", outlineLabel: "Ideas de la clase (opcional)", saveDraft: "Guardar", createClass: "Crear clase", draft: "Borrador", draftTitle: "Borrador", draftSaved: "Borrador guardado", draftAccepted: "Borrador agregado a tu lista", ideas1: "· 1 idea", ideasN: "· {n} ideas", outlinePh: "Escribe una idea…", outlineHelp: "Enter = nueva idea · arrastra ⠿ para moverla. Cada idea será una lámina en blanco con esa idea en sus notas.", pendingSlide: "Lámina por llenar", fillBlanks: "Llena las láminas en blanco en ✎ Editar", pendingTap: "Toca para elegir foto o escritura", pendingQ: "¿Qué va en esta lámina?", pendingPhoto: "🖼 Foto", pendingScripture: "📜 Escritura", pendingPresent: "Esta lámina está en blanco: llénala en ✎ Editar", outlineMade: "Listo: {n} láminas en blanco con tus ideas", outlineMade1: "Listo: 1 lámina en blanco con tu idea", sendLinkStudents: "📲 Mandar el link a los alumnos", shareSummary: "🔗 Compartir resumen", stopSharing: "🚫 Dejar de compartir", summaryGone: "Este resumen ya no está disponible. Pide el enlace nuevo a tu maestro.", summaryShareText: "Resumen de la clase «{t}»", linkCopiedShare: "Enlace copiado: pégalo donde quieras", sharingStopped: "Ya no se comparte: el enlace dejó de funcionar", shareFail: "No se pudo compartir: {e}", loadFail: "No se pudo cargar: {e}",
@@ -187,6 +190,9 @@ const TEXTOS = {
     locale: "en-US",
 
     myLessons: "My lessons", newBtn: "New", language: "Language",
+    settings: "Settings", signOut: "Sign out", signOutFail: "Couldn't sign out: {e}", seeTeachers: "See all my teachers",
+    aboutApp: "Reveal is the teacher's app. Prepare your photos and scriptures, then reveal them live on every student's phone, right at the moment in your lesson when they matter most. So the Word isn't only heard, but seen.",
+    thanksApp: "Thank you for teaching with Reveal.\u00a0🙏",
     signInLessons: "Sign in to see your lessons",
     signInLessonsText: "Only your account can see and edit your lessons.",
     loading: "Loading…", outlineLabel: "Class ideas (optional)", saveDraft: "Save", createClass: "Create class", draft: "Draft", draftTitle: "Draft", draftSaved: "Draft saved", draftAccepted: "Draft added to your list", ideas1: "· 1 idea", ideasN: "· {n} ideas", outlinePh: "Type an idea…", outlineHelp: "Enter = new idea · drag ⠿ to move it. Each idea becomes a blank slide with that idea in its notes.", pendingSlide: "Slide to fill", fillBlanks: "Fill the blank slides in ✎ Edit", pendingTap: "Tap to choose photo or scripture", pendingQ: "What goes on this slide?", pendingPhoto: "🖼 Photo", pendingScripture: "📜 Scripture", pendingPresent: "This slide is blank: fill it in ✎ Edit", outlineMade: "Done: {n} blank slides with your ideas", outlineMade1: "Done: 1 blank slide with your idea", sendLinkStudents: "📲 Send the link to students", shareSummary: "🔗 Share summary", stopSharing: "🚫 Stop sharing", summaryGone: "This summary is no longer available. Ask your teacher for a new link.", summaryShareText: "Class summary: “{t}”", linkCopiedShare: "Link copied: paste it anywhere", sharingStopped: "No longer shared: the link stopped working", shareFail: "Couldn't share: {e}", loadFail: "Couldn't load: {e}",

@@ -2038,3 +2038,45 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 /* Marca del app del maestro en la pantalla de entrada */
 .marca-maestro { margin: 0 0 .75rem; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .7; }
 .marca-pie { margin: 2rem 0 1rem; text-align: center; }
+
+/* Ajustes (engrane): cuenta · idioma · maestros (admin) · acerca del app */
+#dlgAjustes { max-height: calc(100dvh - 32px); overflow-y: auto; box-sizing: border-box; }
+#dlgAjustes h2 { margin-bottom: 16px; }
+.aj-cuenta {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; margin: 0 0 18px;
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  border: 1px solid var(--line); border-radius: 14px;
+}
+.aj-cuenta[hidden] { display: none; }
+.aj-avatar {
+  flex: none; width: 42px; height: 42px; border-radius: 50%; overflow: hidden;
+  display: grid; place-items: center; font-weight: 700; font-size: 18px;
+  background: var(--accent); color: var(--accent-ink);
+}
+.aj-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.aj-quien { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.aj-quien b, .aj-quien small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.aj-quien small { color: var(--muted); font-size: 13px; }
+.aj-quien small:empty { display: none; }
+.btn.aj-salir { flex: none; min-height: 36px; padding: 6px 14px; font-size: 14px; }
+#dlgAjustes .aj-etiqueta { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+#dlgAjustes .idioma-opciones { display: flex; width: 100%; margin: 0 0 18px; padding: 4px; box-sizing: border-box; }
+#dlgAjustes .idioma-opciones button { flex: 1; font-size: 15px; padding: 10px 12px; letter-spacing: 0; color: var(--text); min-height: 44px; }
+#dlgAjustes .idioma-opciones button[aria-pressed="false"] { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+#dlgAjustes .idioma-opciones button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+.btn.aj-maestros {
+  display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box;
+  margin: 0 0 18px; min-height: 48px; text-decoration: none; justify-content: flex-start;
+}
+.btn.aj-maestros[hidden] { display: none; }
+.aj-maestros .ico { width: 20px; height: 20px; flex: none; }
+.btn.aj-maestros, .btn.aj-maestros:visited { color: var(--text); }
+.aj-maestros span:first-of-type { flex: 1; min-width: 0; text-align: left; white-space: normal; }
+.aj-flecha { font-size: 22px; line-height: 1; color: var(--muted); }
+.aj-acerca { padding-top: 16px; border-top: 1px solid var(--line); }
+#dlgAjustes .aj-acerca .marca-maestro { margin: 0 0 8px; }
+#dlgAjustes .idioma-texto { margin: 0 0 10px; line-height: 1.5; color: var(--muted); }
+#dlgAjustes .idioma-gracias { margin: 0 0 4px; font-family: var(--font-serif); font-size: 18px; color: var(--text); }
+#dlgAjustes .acciones { margin-top: 18px; }
+.btn.aj-cerrar { width: 100%; justify-content: center; min-height: 48px; font-size: 17px; }

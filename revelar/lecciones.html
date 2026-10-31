@@ -8,7 +8,7 @@
   <title>Mis lecciones · Reveal — el app del maestro</title>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-  <link rel="stylesheet" href="revelar.css?v=202610310735">
+  <link rel="stylesheet" href="revelar.css?v=202610310749">
   <link rel="manifest" href="maestro.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="iconos/maestro-192.png">
   <link rel="apple-touch-icon" href="iconos/maestro-180.png">
@@ -16,7 +16,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Maestro">
-  <script type="module" src="js/pwa.js?v=202610310735"></script>
+  <script type="module" src="js/pwa.js?v=202610310749"></script>
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -28,14 +28,10 @@
       <button class="btn-barra" id="btnInstalar" type="button" hidden aria-label="Instalar el app" title="Instalar el app" data-i18n-title="installApp">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10.5l5 5 5-5"/><path d="M5 19.5h14"/></svg>
       </button>
-      <div class="idioma-switch" role="group" aria-label="Idioma" data-i18n-aria="language">
-        <button type="button" data-lang="es" aria-pressed="false">ES</button>
-        <button type="button" data-lang="en" aria-pressed="false">EN</button>
-      </div>
-      <!-- Solo el administrador: pantalla de maestros -->
-      <a class="btn-barra" id="lnkMaestros" href="maestros.html" hidden aria-label="Maestros" title="Maestros" data-i18n-title="teachersAdmin">
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M15.5 5.2a3 3 0 0 1 0 5.6M17.5 14.3c2 .6 3.5 2.5 3.5 5.2"/></svg>
-      </a>
+      <!-- Ajustes: idioma, cuenta, maestros (admin) y acerca del app -->
+      <button class="btn-barra" id="btnAjustes" type="button" aria-haspopup="dialog" aria-label="Ajustes" title="Ajustes" data-i18n-title="settings">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
     </div>
   </header>
 
@@ -130,6 +126,39 @@
     </div>
   </dialog>
 
+  <!-- Ajustes -->
+  <dialog id="dlgAjustes" aria-labelledby="ajTitulo">
+    <h2 id="ajTitulo" data-i18n="settings">Ajustes</h2>
+
+    <!-- Cuenta firmada -->
+    <div class="aj-cuenta" id="ajCuenta" hidden>
+      <span class="aj-avatar" id="ajAvatar" aria-hidden="true"></span>
+      <span class="aj-quien"><b id="ajNombre"></b><small id="ajCorreo"></small></span>
+      <button class="btn aj-salir" id="btnSalir" type="button" data-i18n="signOut">Salir</button>
+    </div>
+
+    <p class="aj-etiqueta" data-i18n="language">Idioma</p>
+    <div class="idioma-switch idioma-opciones" role="group" aria-label="Idioma" data-i18n-aria="language">
+      <button type="button" data-lang="es" aria-pressed="false">Español</button>
+      <button type="button" data-lang="en" aria-pressed="false">English</button>
+    </div>
+
+    <!-- Solo el administrador -->
+    <a class="btn aj-maestros" id="lnkMaestros" href="maestros.html" hidden>
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M15.5 5.2a3 3 0 0 1 0 5.6M17.5 14.3c2 .6 3.5 2.5 3.5 5.2"/></svg>
+      <span data-i18n="seeTeachers">Ver a todos mis maestros</span>
+      <span class="aj-flecha" aria-hidden="true">›</span>
+    </a>
+
+    <div class="aj-acerca">
+      <p class="marca-maestro" data-i18n="teacherApp">Reveal — el app del maestro</p>
+      <p class="idioma-texto" data-i18n="aboutApp"></p>
+      <p class="idioma-gracias" data-i18n="thanksApp"></p>
+    </div>
+
+    <div class="acciones"><button class="btn primario aj-cerrar" type="button" data-cerrar data-i18n="close">Cerrar</button></div>
+  </dialog>
+
   <!-- Nombre (nueva, renombrar, duplicar) -->
   <dialog id="dlgNombre">
     <h2 id="nombreTitulo">Nueva lección</h2>
@@ -179,12 +208,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202610310735";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610310735";
-    import "./js/presion.js?v=202610310735";
-    import { confirmarQuitar } from "./js/confirmar.js?v=202610310735";
-    import { colocarAviso } from "./js/junto.js?v=202610310735";
-    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610310735";
+    import { CONFIG } from "./config.js?v=202610310749";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202610310749";
+    import "./js/presion.js?v=202610310749";
+    import { confirmarQuitar } from "./js/confirmar.js?v=202610310749";
+    import { colocarAviso } from "./js/junto.js?v=202610310749";
+    import { idioma, ponerIdioma, t, traducir } from "./js/i18n.js?v=202610310749";
 
     const $ = (id) => document.getElementById(id);
 
@@ -193,11 +222,12 @@
     function aplicarIdioma() {
       traducir();
       document.title = t("myLessons") + " · " + t("teacherApp");
-      document.querySelectorAll(".idioma-switch button").forEach((b) =>
+      document.querySelectorAll(".idioma-opciones button").forEach((b) =>
         b.setAttribute("aria-pressed", String(b.dataset.lang === idioma())));
     }
     aplicarIdioma();
-    document.querySelectorAll(".idioma-switch button").forEach((b) => b.addEventListener("click", () => {
+    $("btnAjustes").addEventListener("click", () => $("dlgAjustes").showModal());
+    document.querySelectorAll(".idioma-opciones button").forEach((b) => b.addEventListener("click", () => {
       ponerIdioma(b.dataset.lang);
       aplicarIdioma();
       pintar();
@@ -230,6 +260,26 @@
       $("main").hidden = !u;
       $("btnNueva").hidden = !u;
       if (u && !empezo) { empezo = true; usuario = u; escuchar(); }
+      pintarCuenta(u);
+    });
+    // Ajustes › cuenta: quién está firmado y su botón Salir.
+    function pintarCuenta(u) {
+      $("ajCuenta").hidden = !u;
+      if (!u) return;
+      const nombre = u.displayName || u.email || "";
+      $("ajNombre").textContent = nombre;
+      $("ajCorreo").textContent = u.email && u.email !== nombre ? u.email : "";
+      const av = $("ajAvatar");
+      av.textContent = (nombre.trim()[0] || "?").toUpperCase();
+      if (u.photoURL) {
+        const img = new Image(); img.alt = ""; img.referrerPolicy = "no-referrer";
+        img.onload = () => { av.textContent = ""; av.appendChild(img); };
+        img.src = u.photoURL;
+      }
+    }
+    $("btnSalir").addEventListener("click", async () => {
+      try { await cat.salir?.(); $("dlgAjustes").close(); location.reload(); }
+      catch (e) { aviso(t("signOutFail", { e: e?.code || e?.message })); }
     });
     $("btnEntrar").addEventListener("click", async () => {
       try { await cat.entrar(); }
@@ -600,7 +650,7 @@
       if (!$("chkUbic").disabled) $("chkUbic").checked = !!yo;
       $("mapaInvita").hidden = !!yo;
       try {
-        mapaUI ??= (await import("./js/mapa.js?v=202610310735")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
+        mapaUI ??= (await import("./js/mapa.js?v=202610310749")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
         await mapaUI.pintar(lista.map(([id, u]) => ({
           lat: u.lat, lng: u.lng, titulo: u.nombre || t("noName"),
           detalle: [u.ciudad, u.uso ? t(u.uso === "iglesia" ? "useChurch" : "useOther") : ""].filter(Boolean).join(" · "),
