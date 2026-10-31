@@ -2116,3 +2116,12 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
   background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 14px; }
 .lg-item[aria-checked="true"] .lg-check { display: grid; }
 #dlgLogos .acciones { margin-top: 14px; }
+
+/* Ajustes › Agregar maestros */
+#dlgMisMaestros { max-height: calc(100dvh - 32px); overflow-y: auto; box-sizing: border-box; }
+.mm-lista:empty { display: none; }
+.contacto.mm-chip { cursor: default; }
+#dlgMisMaestros .mm-vacio { margin: 4px 0 14px; font-style: italic; }
+.mm-nuevo { padding-top: 14px; border-top: 1px solid var(--line); }
+.btn.mm-agregar { width: 100%; justify-content: center; min-height: 46px; margin-top: 4px; }
+#dlgMisMaestros .acciones { margin-top: 16px; }

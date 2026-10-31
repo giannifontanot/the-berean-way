@@ -30,9 +30,10 @@ const TEXTOS = {
     // Mis lecciones
     myLessons: "Mis lecciones", newBtn: "Nueva", language: "Idioma",
     shareCode: "Compartir tu código", aTeacher: "Un maestro", shareCodeTitle: "Código de maestro de {n}", shareCodeMsg: "👋 ¡Hola! Soy {n} y uso Reveal, el app del maestro.\n\nMi código de maestro es:\n{c}\n\nAgrégalo y podremos enviarnos lecciones. ✨",
+    addTeachers: "Agregar maestros", myTeachersText: "Tu lista de maestros. Así, cuando quieras enviar una copia de una lección, ya los tienes listos.", noTeachersYet: "Aún no tienes maestros en tu lista.", teacherAdded: "{n} agregado a tu lista",
     chooseLogo: "Elige tu logotipo", shareApp: "Compartir el app", shareAppNote: "<b>Comparte Reveal con otros maestros.</b> ¿Conoces a alguien a quien le gustaría usar el app? ¡Compártelo!", shareAppTitle: "{n} te invita a Reveal", shareAppMsg: "🌟 ¡Hola! Soy {n} y quiero compartirte Reveal, el app del maestro.\n\nCon Reveal preparas tus fotos y textos, y los revelas en vivo en el teléfono de cada alumno, justo en el momento de tu clase. ¡A mis alumnos les encanta!\n\nEs gratis. Crea tu cuenta aquí y empieza hoy mismo:",
     settings: "Ajustes", signOut: "Salir", signOutFail: "No se pudo salir: {e}", seeTeachers: "Ver a todos mis maestros",
-    aboutApp: "Reveal es el app del maestro. Prepara tus fotos y escrituras, y revélalas en vivo en el teléfono de cada alumno, justo en el momento de la lección en que más importan. Para que la Palabra no solo se escuche, sino que también se vea.",
+    aboutApp: "Reveal es el app del maestro. Prepara tus fotos y escrituras, y revélalas en vivo en el teléfono de cada alumno, justo en el momento de la lección en que más importan. Para que tus clases no solo se escuchen, sino que también se vean.",
     thanksApp: "Gracias por enseñar con Reveal.\u00a0🙏",
     signInLessons: "Entra para ver tus lecciones",
     signInLessonsText: "Solo tu cuenta puede ver y editar tus lecciones.",
@@ -193,9 +194,10 @@ const TEXTOS = {
 
     myLessons: "My lessons", newBtn: "New", language: "Language",
     shareCode: "Share your code", aTeacher: "A teacher", shareCodeTitle: "{n}'s teacher code", shareCodeMsg: "👋 Hi! I\'m {n}, and I use Reveal, the teacher app.\n\nMy teacher code is:\n{c}\n\nAdd it so we can send each other lessons. ✨",
+    addTeachers: "Add teachers", myTeachersText: "Your list of teachers. When you want to send a copy of a lesson, they're ready to go.", noTeachersYet: "No teachers on your list yet.", teacherAdded: "{n} added to your list",
     chooseLogo: "Choose your logo", shareApp: "Share the app", shareAppNote: "<b>Share Reveal with other teachers.</b> Know someone who would like to use the app? Share it!", shareAppTitle: "{n} invites you to Reveal", shareAppMsg: "🌟 Hi! I'm {n}, and I want to share Reveal with you, the teacher app.\n\nWith Reveal you prepare your photos and texts, then reveal them live on every student's phone, right at the moment in your lesson. My students love it!\n\nIt's free. Create your account here and start today:",
     settings: "Settings", signOut: "Sign out", signOutFail: "Couldn't sign out: {e}", seeTeachers: "See all my teachers",
-    aboutApp: "Reveal is the teacher's app. Prepare your photos and scriptures, then reveal them live on every student's phone, right at the moment in your lesson when they matter most. So the Word isn't only heard, but seen.",
+    aboutApp: "Reveal is the teacher's app. Prepare your photos and scriptures, then reveal them live on every student's phone, right at the moment in your lesson when they matter most. So your lessons aren't only heard, but seen.",
     thanksApp: "Thank you for teaching with Reveal.\u00a0🙏",
     signInLessons: "Sign in to see your lessons",
     signInLessonsText: "Only your account can see and edit your lessons.",
