@@ -6,7 +6,7 @@ export default {
   untitled: "Leçon sans titre", slide: "diapositive", slides: "diapositives", photo: "Photo", scripture: "Écriture", notes: "Notes", locale: "fr-FR",
   myLessons: "Mes leçons", newBtn: "Nouvelle", language: "Langue",
   shareCode: "Partager ton code", aTeacher: "Un enseignant", shareCodeTitle: "Code enseignant de {n}",
-  shareCodeMsg: "👋 Bonjour ! Je suis {n} et j’utilise Reveal, l’app de l’enseignant.\n\nMon code enseignant est :\n{c}\n\nAjoute-le et nous pourrons nous envoyer des leçons. ✨",
+  shareCodeMsg: "👋 Bonjour ! Je suis {n} et j’utilise Reveal, l’app de l’enseignant.\n\nMon code enseignant est :\n{c}\n\nAjoute-le et nous pourrons nous envoyer des leçons. ✨\n\nTu n’utilises pas encore Reveal ? Crée ton compte ici :",
   addTeachers: "Ajouter des enseignants", myTeachersText: "Ta liste d’enseignants. Quand tu voudras envoyer une copie d’une leçon, ils seront déjà prêts.",
   noTeachersYet: "Aucun enseignant dans ta liste pour l’instant.", teacherAdded: "{n} ajouté à ta liste",
   chooseLogo: "Choisis ton logo", shareApp: "Partager l’app",

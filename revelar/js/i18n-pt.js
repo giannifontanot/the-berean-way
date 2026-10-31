@@ -6,7 +6,7 @@ export default {
   untitled: "Aula sem título", slide: "slide", slides: "slides", photo: "Foto", scripture: "Escritura", notes: "Notas", locale: "pt-BR",
   myLessons: "Minhas aulas", newBtn: "Nova", language: "Idioma",
   shareCode: "Compartilhar seu código", aTeacher: "Um professor", shareCodeTitle: "Código de professor de {n}",
-  shareCodeMsg: "👋 Olá! Sou {n} e uso o Reveal, o app do professor.\n\nMeu código de professor é:\n{c}\n\nAdicione-o e poderemos enviar aulas um ao outro. ✨",
+  shareCodeMsg: "👋 Olá! Sou {n} e uso o Reveal, o app do professor.\n\nMeu código de professor é:\n{c}\n\nAdicione-o e poderemos enviar aulas um ao outro. ✨\n\nAinda não usa o Reveal? Crie sua conta aqui:",
   addTeachers: "Adicionar professores", myTeachersText: "Sua lista de professores. Assim, quando quiser enviar uma cópia de uma aula, eles já estarão prontos.",
   noTeachersYet: "Você ainda não tem professores na sua lista.", teacherAdded: "{n} adicionado à sua lista",
   chooseLogo: "Escolha seu logotipo", shareApp: "Compartilhar o app",

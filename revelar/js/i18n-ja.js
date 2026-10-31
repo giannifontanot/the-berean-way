@@ -6,7 +6,7 @@ export default {
   untitled: "無題のレッスン", slide: "スライド", slides: "スライド", photo: "写真", scripture: "聖句", notes: "メモ", locale: "ja-JP",
   myLessons: "マイレッスン", newBtn: "新規", language: "言語",
   shareCode: "コードを共有", aTeacher: "先生", shareCodeTitle: "{n} さんの先生コード",
-  shareCodeMsg: "👋 こんにちは！{n} です。先生のためのアプリ Reveal を使っています。\n\n私の先生コードは：\n{c}\n\n追加すると、お互いにレッスンを送り合えます。✨",
+  shareCodeMsg: "👋 こんにちは！{n} です。先生のためのアプリ Reveal を使っています。\n\n私の先生コードは：\n{c}\n\n追加すると、お互いにレッスンを送り合えます。✨\n\nまだ Reveal を使っていませんか？ここからアカウントを作れます：",
   addTeachers: "先生を追加", myTeachersText: "あなたの先生リストです。レッスンのコピーを送りたいとき、すぐに選べます。",
   noTeachersYet: "リストにはまだ先生がいません。", teacherAdded: "{n} さんをリストに追加しました",
   chooseLogo: "ロゴを選ぶ", shareApp: "アプリを共有",

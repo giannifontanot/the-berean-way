@@ -6,7 +6,7 @@ export default {
   untitled: "Pelajaran tanpa judul", slide: "slide", slides: "slide", photo: "Foto", scripture: "Ayat", notes: "Catatan", locale: "id-ID",
   myLessons: "Pelajaran saya", newBtn: "Baru", language: "Bahasa",
   shareCode: "Bagikan kodemu", aTeacher: "Seorang guru", shareCodeTitle: "Kode guru {n}",
-  shareCodeMsg: "👋 Halo! Saya {n}, dan saya memakai Reveal, aplikasi untuk guru.\n\nKode guru saya:\n{c}\n\nTambahkan, supaya kita bisa saling mengirim pelajaran. ✨",
+  shareCodeMsg: "👋 Halo! Saya {n}, dan saya memakai Reveal, aplikasi untuk guru.\n\nKode guru saya:\n{c}\n\nTambahkan, supaya kita bisa saling mengirim pelajaran. ✨\n\nBelum memakai Reveal? Buat akunmu di sini:",
   addTeachers: "Tambah guru", myTeachersText: "Daftar gurumu. Saat ingin mengirim salinan pelajaran, mereka sudah siap.",
   noTeachersYet: "Belum ada guru di daftarmu.", teacherAdded: "{n} ditambahkan ke daftarmu",
   chooseLogo: "Pilih logomu", shareApp: "Bagikan aplikasi",

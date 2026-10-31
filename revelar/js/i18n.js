@@ -13,12 +13,12 @@
 //   data-i18n-dph="clave"    → data-placeholder (editor de escrituras)
 // En JS: t("clave", { n: 3 }) → reemplaza {n}.
 
-import fr from "./i18n-fr.js?v=202610311026";
-import pt from "./i18n-pt.js?v=202610311026";
-import de from "./i18n-de.js?v=202610311026";
-import ja from "./i18n-ja.js?v=202610311026";
-import hi from "./i18n-hi.js?v=202610311026";
-import id from "./i18n-id.js?v=202610311026";
+import fr from "./i18n-fr.js?v=202610311027";
+import pt from "./i18n-pt.js?v=202610311027";
+import de from "./i18n-de.js?v=202610311027";
+import ja from "./i18n-ja.js?v=202610311027";
+import hi from "./i18n-hi.js?v=202610311027";
+import id from "./i18n-id.js?v=202610311027";
 
 const CLAVE = "revelar:idioma";
 export const IDIOMAS = ["es", "en", "fr", "pt", "de", "ja", "hi", "id"];
@@ -38,7 +38,7 @@ const TEXTOS = {
 
     // Mis lecciones
     myLessons: "Mis lecciones", newBtn: "Nueva", language: "Idioma",
-    shareCode: "Compartir tu código", aTeacher: "Un maestro", shareCodeTitle: "Código de maestro de {n}", shareCodeMsg: "👋 ¡Hola! Soy {n} y uso Reveal, el app del maestro.\n\nMi código de maestro es:\n{c}\n\nAgrégalo y podremos enviarnos lecciones. ✨",
+    shareCode: "Compartir tu código", aTeacher: "Un maestro", shareCodeTitle: "Código de maestro de {n}", shareCodeMsg: "👋 ¡Hola! Soy {n} y uso Reveal, el app del maestro.\n\nMi código de maestro es:\n{c}\n\nAgrégalo y podremos enviarnos lecciones. ✨\n\n¿Aún no usas Reveal? Crea tu cuenta aquí:",
     addTeachers: "Agregar maestros", myTeachersText: "Tu lista de maestros. Así, cuando quieras enviar una copia de una lección, ya los tienes listos.", noTeachersYet: "Aún no tienes maestros en tu lista.", teacherAdded: "{n} agregado a tu lista",
     chooseLogo: "Elige tu logotipo", shareApp: "Compartir el app", shareAppNote: "<b>Comparte Reveal con otros maestros.</b> ¿Conoces a alguien a quien le gustaría usar el app? ¡Compártelo!", shareAppTitle: "{n} te invita a Reveal", shareAppMsg: "🌟 ¡Hola! Soy {n} y quiero compartirte Reveal, el app del maestro.\n\nCon Reveal preparas tus fotos y textos, y los revelas en vivo en el teléfono de cada alumno, justo en el momento de tu clase. Tus alumnos no necesitan instalar nada: solo escanean un código QR o tocan la liga que les envíes.\n\nEs gratis. Crea tu cuenta aquí y empieza hoy mismo:",
     settings: "Ajustes", signOut: "Salir", signOutFail: "No se pudo salir: {e}", seeTeachers: "Ver a todos mis maestros",
@@ -202,7 +202,7 @@ const TEXTOS = {
     locale: "en-US",
 
     myLessons: "My lessons", newBtn: "New", language: "Language",
-    shareCode: "Share your code", aTeacher: "A teacher", shareCodeTitle: "{n}'s teacher code", shareCodeMsg: "👋 Hi! I\'m {n}, and I use Reveal, the teacher app.\n\nMy teacher code is:\n{c}\n\nAdd it so we can send each other lessons. ✨",
+    shareCode: "Share your code", aTeacher: "A teacher", shareCodeTitle: "{n}'s teacher code", shareCodeMsg: "👋 Hi! I\'m {n}, and I use Reveal, the teacher app.\n\nMy teacher code is:\n{c}\n\nAdd it so we can send each other lessons. ✨\n\nNot using Reveal yet? Create your account here:",
     addTeachers: "Add teachers", myTeachersText: "Your list of teachers. When you want to send a copy of a lesson, they're ready to go.", noTeachersYet: "No teachers on your list yet.", teacherAdded: "{n} added to your list",
     chooseLogo: "Choose your logo", shareApp: "Share the app", shareAppNote: "<b>Share Reveal with other teachers.</b> Know someone who would like to use the app? Share it!", shareAppTitle: "{n} invites you to Reveal", shareAppMsg: "🌟 Hi! I'm {n}, and I want to share Reveal with you, the teacher app.\n\nWith Reveal you prepare your photos and texts, then reveal them live on every student's phone, right at the moment in your lesson. Your students don't need to install anything: they just scan a QR code or tap the link you send them.\n\nIt's free. Create your account here and start today:",
     settings: "Settings", signOut: "Sign out", signOutFail: "Couldn't sign out: {e}", seeTeachers: "See all my teachers",

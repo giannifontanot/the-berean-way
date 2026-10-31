@@ -6,7 +6,7 @@ export default {
   untitled: "Lektion ohne Titel", slide: "Folie", slides: "Folien", photo: "Foto", scripture: "Bibelstelle", notes: "Notizen", locale: "de-DE",
   myLessons: "Meine Lektionen", newBtn: "Neu", language: "Sprache",
   shareCode: "Deinen Code teilen", aTeacher: "Eine Lehrkraft", shareCodeTitle: "Lehrercode von {n}",
-  shareCodeMsg: "👋 Hallo! Ich bin {n} und nutze Reveal, die App für Lehrkräfte.\n\nMein Lehrercode ist:\n{c}\n\nFüge ihn hinzu, dann können wir uns gegenseitig Lektionen schicken. ✨",
+  shareCodeMsg: "👋 Hallo! Ich bin {n} und nutze Reveal, die App für Lehrkräfte.\n\nMein Lehrercode ist:\n{c}\n\nFüge ihn hinzu, dann können wir uns gegenseitig Lektionen schicken. ✨\n\nDu nutzt Reveal noch nicht? Erstelle hier dein Konto:",
   addTeachers: "Lehrkräfte hinzufügen", myTeachersText: "Deine Liste von Lehrkräften. Wenn du eine Kopie einer Lektion schicken willst, sind sie schon bereit.",
   noTeachersYet: "Noch keine Lehrkräfte in deiner Liste.", teacherAdded: "{n} zu deiner Liste hinzugefügt",
   chooseLogo: "Wähle dein Logo", shareApp: "App teilen",
