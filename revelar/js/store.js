@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202611011108";
+import { CONFIG } from "../config.js?v=202611011116";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -132,6 +132,12 @@ export async function leerCompartida(sesion) {
 }
 
 /** Lecciones del maestro, su código y la lección en vivo (no depende de una sesión). */
+/** Clave de una ciudad para el historial de lugares (nombre si lo hay; si no, coordenadas). */
+export function claveLugar(u) {
+  const base = u.ciudad ? String(u.ciudad).toLowerCase() : `${Math.round(u.lat * 10) / 10}_${Math.round(u.lng * 10) / 10}`;
+  return base.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "x";
+}
+
 export async function crearCatalogo() {
   return configurado ? catalogoFirebase() : catalogoDemo();
 }
@@ -205,10 +211,36 @@ async function catalogoFirebase() {
     },
     // Ubicación aproximada que el maestro decide compartir con el administrador.
     // Mapa de maestros: cada uno decide compartir su ciudad (aprox.); lo ven los maestros.
-    guardarUbicacion: (u) => db.set(ref(`revelar_mapa/${uid()}`), {
-      ...u, nombre: String(auth.currentUser?.displayName || "").slice(0, 80),
-    }),
-    quitarUbicacion: () => db.remove(ref(`revelar_mapa/${uid()}`)),
+    // Se guarda la ciudad actual y, en «lugares», cada ciudad desde donde se ha conectado (historial).
+    async guardarUbicacion(u) {
+      const ahora = Date.now();
+      const clave = claveLugar(u);
+      await db.update(ref(`revelar_mapa/${uid()}`), {
+        ...u, nombre: String(auth.currentUser?.displayName || "").slice(0, 80), enLinea: true, visto: ahora,
+        [`lugares/${clave}`]: { lat: u.lat, lng: u.lng, ...(u.ciudad ? { ciudad: u.ciudad } : {}), visto: ahora },
+      });
+      this.marcarEnLinea();
+    },
+    async quitarUbicacion() {
+      const r = ref(`revelar_mapa/${uid()}`);
+      try { await db.onDisconnect(r).cancel(); } catch {}
+      await db.remove(r);
+    },
+    // «Conectado ahora» en el mapa: enLinea = true mientras el app está abierta; al cerrarla queda false.
+    marcarEnLinea() {
+      if (this._enLinea) return;
+      this._enLinea = true;
+      db.onValue(ref(".info/connected"), async (s) => {
+        if (!s.val() || !uid()) return;
+        const r = ref(`revelar_mapa/${uid()}`);
+        try {
+          if ((await val(`revelar_mapa/${uid()}/lat`)) == null) return;     // solo si comparte su ciudad
+          await db.onDisconnect(r).update({ enLinea: false, visto: db.serverTimestamp() });
+          await db.update(r, { enLinea: true, visto: Date.now() });
+        } catch {}
+      });
+    },
+    async miUbicacionGuardada() { return await val(`revelar_mapa/${uid()}`); },
     // Uso principal de la app (iglesia u otro): en el perfil y, si compartes, en el mapa.
     async guardarUso(uso) {
       await db.set(ref(`revelar_maestros/${uid()}/uso`), uso);
@@ -454,6 +486,8 @@ function catalogoDemo() {
     async actualizarPerfil() {},
     async guardarUbicacion(u) { try { localStorage.setItem("revelar-demo:ubicacion", JSON.stringify({ ...u, nombre: "Demo" })); } catch {} oyentesMapa.forEach((f) => f()); },
     async quitarUbicacion() { try { localStorage.removeItem("revelar-demo:ubicacion"); } catch {} oyentesMapa.forEach((f) => f()); },
+    marcarEnLinea() {},
+    async miUbicacionGuardada() { const y = leerJ("revelar-demo:ubicacion"); return y.lat != null ? y : null; },
     async guardarUso(uso) {
       try { localStorage.setItem("revelar-demo:uso", uso); } catch {}
       const yo = leerJ("revelar-demo:ubicacion");
@@ -464,8 +498,10 @@ function catalogoDemo() {
       const f = () => {
         const yo = leerJ("revelar-demo:ubicacion");
         cb({
-          m2: { lat: 25.7, lng: -100.3, ciudad: "Monterrey", nombre: "Ana López", uso: "otro" },
-          m3: { lat: 4.7, lng: -74.1, ciudad: "Bogotá", nombre: "Pastor Juan", uso: "iglesia" },
+          m2: { lat: 25.67, lng: -100.31, ciudad: "Monterrey, MX", nombre: "Ana López", uso: "otro", enLinea: true, visto: Date.now(),
+                lugares: { monterrey: { lat: 25.67, lng: -100.31, ciudad: "Monterrey, MX" }, moscu: { lat: 55.75, lng: 37.62, ciudad: "Moscú, RU", visto: Date.now() - 864e5 * 20 } } },
+          m3: { lat: 4.71, lng: -74.07, ciudad: "Bogotá, CO", nombre: "Pastor Juan", uso: "iglesia", enLinea: false, visto: Date.now() - 864e5 * 3 },
+          m4: { lat: 55.75, lng: 37.62, ciudad: "Moscú, RU", nombre: "Iván", uso: "iglesia", enLinea: true, visto: Date.now() },
           ...(yo.lat != null ? { demo: yo } : {}),
         });
       };

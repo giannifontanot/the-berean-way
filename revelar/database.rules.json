@@ -274,6 +274,32 @@
         },
         "$otro": {
           ".validate": false
+        },
+        "enLinea": {
+          ".validate": "newData.isBoolean()"
+        },
+        "visto": {
+          ".validate": "newData.isNumber()"
+        },
+        "lugares": {
+          "$l": {
+            ".validate": "newData.hasChildren(['lat', 'lng'])",
+            "lat": {
+              ".validate": "newData.isNumber() && newData.val() >= -90 && newData.val() <= 90"
+            },
+            "lng": {
+              ".validate": "newData.isNumber() && newData.val() >= -180 && newData.val() <= 180"
+            },
+            "ciudad": {
+              ".validate": "newData.isString() && newData.val().length <= 60"
+            },
+            "visto": {
+              ".validate": "newData.isNumber()"
+            },
+            "$otro": {
+              ".validate": false
+            }
+          }
         }
       }
     }

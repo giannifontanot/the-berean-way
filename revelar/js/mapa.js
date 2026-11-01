@@ -103,10 +103,11 @@ export function crearMapa(elemento, { textoDosDedos = "Usa dos dedos para mover 
         mapa.on("dblclick", () => pantallaCompleta(!completo));
       }
       capa.clearLayers();
-      // Los marcados «encima» (tu punto) se dibujan al final: quedan arriba de los demás.
-      for (const p of [...puntos].sort((a, b) => !!a.encima - !!b.encima)) {
+      // Por capas: primero los de capa 0 (apagados), luego 1 (brillantes) y al final 2 (tu punto): quedan arriba.
+      const capaDe = (p) => p.capa ?? (p.encima ? 2 : 0);
+      for (const p of [...puntos].sort((a, b) => capaDe(a) - capaDe(b))) {
         const color = p.color || "#e8c170";
-        L.circleMarker([p.lat, p.lng], { radius: p.radio || 8, color, weight: 2, fillColor: color, fillOpacity: 0.8, className: p.clase || "" })
+        L.circleMarker([p.lat, p.lng], { radius: p.radio || 8, color, weight: 2, opacity: p.opacidad ?? 1, fillColor: color, fillOpacity: (p.opacidad ?? 0.8) * 0.9, className: p.clase || "" })
           .bindPopup(`<b>${escapar(p.titulo)}</b>${p.detalle ? "<br>" + escapar(p.detalle) : ""}`)
           .addTo(capa);
       }

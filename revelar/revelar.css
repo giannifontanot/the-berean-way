@@ -2264,3 +2264,11 @@ body { letter-spacing: var(--app-ls, normal); }
 .mover-op small { flex: none; color: var(--muted); font-size: calc(13px * var(--esc, 1)); }
 .mover-op[aria-checked="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
 .mover-vacio { color: var(--muted); font-style: italic; }
+
+/* Mapa: leyenda y puntos (tú verde · conectado ahora rojo brillante · antes rojo apagado) */
+.mapa-leyenda { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 8px 2px 0; font-size: calc(13px * var(--esc, 1)); color: var(--muted); }
+.mapa-leyenda .ley { width: 11px; height: 11px; border-radius: 50%; display: inline-block; margin-left: 4px; }
+.mapa-leyenda .ley.yo { background: #3ddc84; }
+.mapa-leyenda .ley.vivo { background: #ff3b30; box-shadow: 0 0 6px #ff3b30; }
+.mapa-leyenda .ley.antes { background: #9a4a4e; opacity: .6; }
+.leaflet-interactive.punto-vivo { filter: drop-shadow(0 0 4px rgba(255, 59, 48, .85)); }
