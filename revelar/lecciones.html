@@ -8,7 +8,7 @@
   <title>Mis lecciones · Reveal — el app del maestro</title>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-  <link rel="stylesheet" href="revelar.css?v=202611010250">
+  <link rel="stylesheet" href="revelar.css?v=202611010317">
   <link rel="manifest" href="maestro.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="iconos/maestro-192.png">
   <link rel="apple-touch-icon" href="iconos/maestro-180.png">
@@ -16,7 +16,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Maestro">
-  <script type="module" src="js/pwa.js?v=202611010250"></script>
+  <script type="module" src="js/pwa.js?v=202611010317"></script>
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -181,6 +181,14 @@
     <div class="idioma-switch idioma-opciones" role="group" aria-label="Idioma" data-i18n-aria="language">
     </div>
 
+    <!-- Letra (AAA): mismo botón de renglón que los demás; junto al idioma porque ambos son «cómo se ve el app» -->
+    <button class="btn aj-maestros aj-letra" id="btnAjLetra" type="button">
+      <span class="aaa" aria-hidden="true"><span>A</span><span>A</span><span>A</span></span>
+      <span data-i18n="textSize">Tamaño de letra</span>
+      <output class="aj-valor" id="ajLetraVal">20 px</output>
+      <span class="aj-flecha" aria-hidden="true">›</span>
+    </button>
+
     <!-- Mi lista de maestros (para enviar copias): verla y agregar con calma -->
     <button class="btn aj-maestros" id="btnMisMaestros" type="button">
       <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.2"/><path d="M4 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M19 8v6M16 11h6"/></svg>
@@ -204,9 +212,28 @@
     <div class="acciones"><button class="btn primario aj-cerrar" type="button" data-cerrar data-i18n="close">Cerrar</button></div>
   </dialog>
 
+  <!-- Letra (AAA): tamaño y espacio entre letras del título y las ideas (y de las notas) -->
+  <dialog id="dlgLetra" class="dlg-letra">
+    <h2 data-i18n="notesFont">Letra de las notas</h2>
+    <label class="deslizador"><span data-i18n="size">Tamaño</span> <output id="letraTamVal">20</output>
+      <input type="range" id="letraTam" min="14" max="44" step="1" value="20">
+    </label>
+    <label class="deslizador"><span data-i18n="spacing">Espacio entre letras</span> <output id="letraEspVal">0</output>
+      <input type="range" id="letraEsp" min="0" max="0.2" step="0.01" value="0">
+    </label>
+    <div class="acciones">
+      <button class="btn" id="btnLetraReset" data-i18n="resetDefaults">Restablecer</button>
+      <button class="btn primario" data-cerrar data-i18n="done">Listo</button>
+    </div>
+  </dialog>
+
   <!-- Nombre (nueva, renombrar, duplicar) -->
   <dialog id="dlgNombre">
-    <h2 id="nombreTitulo">Nueva lección</h2>
+    <div class="notas-titulo-fila">
+      <h2 id="nombreTitulo">Nueva lección</h2>
+      <!-- AAA: la misma letra que las notas del presentador (se guarda en este teléfono) -->
+      <button class="btn letra" id="btnLetra" type="button" hidden aria-label="Tamaño de letra" data-i18n-aria="fontSizeAria"><span class="aaa"><span>A</span><span>A</span><span>A</span></span></button>
+    </div>
     <label class="campo"><span data-i18n="name">Nombre</span>
       <input id="nombre" maxlength="80" autocomplete="off" placeholder="p. ej. La tienda de Dios" data-i18n-ph="namePh">
     </label>
@@ -253,12 +280,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202611010250";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202611010250";
-    import "./js/presion.js?v=202611010250";
-    import { confirmarQuitar } from "./js/confirmar.js?v=202611010250";
-    import { colocarAviso } from "./js/junto.js?v=202611010250";
-    import { idioma, ponerIdioma, t, traducir, IDIOMAS, NOMBRES } from "./js/i18n.js?v=202611010250";
+    import { CONFIG } from "./config.js?v=202611010317";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202611010317";
+    import "./js/presion.js?v=202611010317";
+    import { confirmarQuitar } from "./js/confirmar.js?v=202611010317";
+    import { colocarAviso } from "./js/junto.js?v=202611010317";
+    import { idioma, ponerIdioma, t, traducir, IDIOMAS, NOMBRES } from "./js/i18n.js?v=202611010317";
 
     const $ = (id) => document.getElementById(id);
 
@@ -589,12 +616,28 @@
     $("btnNueva").addEventListener("click", () => { borradorDe = null; pedirNombre("nueva", t("newLesson"), t("createClass"), ""); });
 
     // Letra del título y de las ideas: la misma que eligió el maestro en AAA (letra de las notas, en el presentador).
-    function aplicarLetraNotas() {
-      let l = { tam: 20, esp: 0 };
-      try { Object.assign(l, JSON.parse(localStorage.getItem("revelar:letra")) || {}); } catch {}
-      document.documentElement.style.setProperty("--notas-fs", (+l.tam || 20) + "px");
-      document.documentElement.style.setProperty("--notas-ls", (+l.esp || 0) + "em");
+    const LETRA_DEF = { tam: 20, esp: 0 };
+    let letra = { ...LETRA_DEF };
+    function aplicarLetraNotas(guardar) {
+      if (!guardar) { letra = { ...LETRA_DEF }; try { Object.assign(letra, JSON.parse(localStorage.getItem("revelar:letra")) || {}); } catch {} }
+      letra.tam = +letra.tam || 20; letra.esp = +letra.esp || 0;
+      document.documentElement.style.setProperty("--notas-fs", letra.tam + "px");
+      document.documentElement.style.setProperty("--notas-ls", letra.esp + "em");
+      $("letraTam").value = letra.tam; $("letraEsp").value = letra.esp;
+      $("letraTamVal").textContent = letra.tam + " px";
+      $("ajLetraVal").textContent = letra.tam + " px";
+      $("letraEspVal").textContent = letra.esp === 0 ? t("normal") : "+" + Math.round(letra.esp * 100) + "%";
+      if (guardar) {
+        try { localStorage.setItem("revelar:letra", JSON.stringify(letra)); } catch {}
+        $("ideas").querySelectorAll(".idea-txt").forEach(crecer);
+      }
     }
+    $("letraTam").addEventListener("input", (e) => { letra.tam = +e.target.value; aplicarLetraNotas(true); });
+    $("letraEsp").addEventListener("input", (e) => { letra.esp = +e.target.value; aplicarLetraNotas(true); });
+    $("btnLetraReset").addEventListener("click", () => { letra = { ...LETRA_DEF }; aplicarLetraNotas(true); });
+    $("btnLetra").addEventListener("click", () => { aplicarLetraNotas(); $("dlgLetra").showModal(); });
+    $("btnAjLetra").addEventListener("click", () => { aplicarLetraNotas(); $("dlgLetra").showModal(); });
+    aplicarLetraNotas();                                   // para mostrar el tamaño actual en Ajustes
     function pedirNombre(tipo, titulo, boton, valor, ideas = []) {
       aplicarLetraNotas();
       accion = tipo;
@@ -605,6 +648,7 @@
       $("campoEsqueleto").hidden = !conIdeas;
       $("btnBorrador").hidden = !conIdeas;
       $("dlgNombre").classList.toggle("con-ideas", conIdeas);
+      $("btnLetra").hidden = !conIdeas;                 // AAA solo en nueva lección / borrador
       if (conIdeas) ponerIdeas(ideas);
       $("dlgNombre").showModal();
       $("ideas").querySelectorAll(".idea-txt").forEach(crecer);   // con la letra nueva, cada renglón a su altura
@@ -764,7 +808,7 @@
       if (!$("chkUbic").disabled) $("chkUbic").checked = !!yo;
       $("mapaInvita").hidden = !!yo;
       try {
-        mapaUI ??= (await import("./js/mapa.js?v=202611010250")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
+        mapaUI ??= (await import("./js/mapa.js?v=202611010317")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
         await mapaUI.pintar(lista.map(([id, u]) => ({
           lat: u.lat, lng: u.lng, titulo: u.nombre || t("noName"),
           detalle: [u.ciudad, u.uso ? t(u.uso === "iglesia" ? "useChurch" : "useOther") : ""].filter(Boolean).join(" · "),

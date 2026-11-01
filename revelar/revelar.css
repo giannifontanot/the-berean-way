@@ -2195,3 +2195,11 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 #dlgNombre #nombre { font-size: var(--notas-fs, 20px); letter-spacing: var(--notas-ls, 0); }
 #dlgNombre .ideas textarea.idea-txt { font-size: var(--notas-fs, 20px); letter-spacing: var(--notas-ls, 0); }
 #dlgNombre .idea .asa { height: calc(var(--notas-fs, 20px) * 1.4 + 18px); }
+
+/* Ajustes › Tamaño de letra: renglón como los demás, con AAA y el valor actual */
+.btn.aj-letra .aaa { flex: none; width: 20px; display: inline-flex; align-items: baseline; justify-content: center; line-height: 1; font-weight: 800; letter-spacing: -0.5px; }
+.btn.aj-letra .aaa span:nth-child(1) { font-size: 9px; }
+.btn.aj-letra .aaa span:nth-child(2) { font-size: 12px; }
+.btn.aj-letra .aaa span:nth-child(3) { font-size: 16px; }
+.btn.aj-letra .aj-valor { flex: none; color: var(--gold); font-weight: 700; font-size: 14px; }
+.btn.aj-letra .aaa + span { flex: 1; min-width: 0; text-align: left; }
