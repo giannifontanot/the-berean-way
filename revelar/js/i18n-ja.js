@@ -15,6 +15,7 @@ export default {
   shareAppTitle: "{n} さんから Reveal への招待",
   shareAppMsg: "🌟 こんにちは！{n} です。先生のためのアプリ Reveal を紹介したくて連絡しました。\n\nReveal では写真やテキストを準備しておき、授業のちょうどいいタイミングで生徒一人ひとりのスマホにライブで表示できます。生徒は何もインストールする必要がありません。QR コードを読み取るか、送ったリンクをタップするだけです。\n\n無料です。ここからアカウントを作って、今日から始めましょう：",
   textSize: "文字サイズ", fromInternet: "インターネットから", sharedSaved: "「インターネットから」に保存しました", sharedLinkSaved: "リンクを「インターネットから」に保存しました（空のスライド）", sharedJoined: "画像とリンクを同じスライドにまとめました", sharedNoUrl: "インターネットから共有 · {d}", sourceQ: "どこから来た画像？", sourceText: "ページのアドレスをコピーしてあれば、ここに貼り付けると写真のメモに保存されます（任意）。", paste: "貼り付け", sourceSaved: "アドレスをメモに保存しました", installWhy: "アプリをインストールすると、ほかのアプリと同じようにホーム画面に Reveal が置かれ、インターネットから画像を共有できます。", installStepsAndroid: "<li>Chrome で <b>マイレッスン</b> を開きます。</li><li>右上の <b>︙（3 つの点）</b> をタップします。</li><li><b>アプリをインストール</b>、続いて <b>インストール</b> をタップします。</li>", installStepsIphone: "<li>Safari で <b>マイレッスン</b> を開きます。</li><li><b>共有</b>（矢印 ⬆ の付いた四角）をタップします。</li><li><b>ホーム画面に追加</b>、続いて <b>追加</b> をタップします。</li>",
+    menuMoveCopy: "📤 ほかのレッスンへ移動・コピー", moveCopyTitle: "どのレッスンへ？", moveCopyText: "そのレッスンの最後に、メモと一緒に追加されます。表示するまで非表示です。", copyBtn: "コピー", moveBtn: "移動", moving: "移動中…", copying: "コピー中…", movedTo: "「{t}」へ移動しました", copiedTo: "「{t}」へコピーしました", noOtherLessons: "ほかのレッスンはまだありません。",
     settings: "設定", signOut: "ログアウト", signOutFail: "ログアウトできませんでした：{e}", seeTeachers: "すべての先生を見る",
   aboutApp: "Reveal は先生のためのアプリです。写真や聖句を準備し、授業のいちばん大切な瞬間に、生徒一人ひとりのスマホへライブで表示しましょう。授業が「聞く」だけでなく「見える」ものになります。",
   thanksApp: "Reveal で教えてくださり、ありがとうございます。 🙏",

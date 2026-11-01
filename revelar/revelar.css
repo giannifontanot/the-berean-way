@@ -2253,3 +2253,14 @@ body { letter-spacing: var(--app-ls, normal); }
 .fuente-fila input { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 10px; border: 1px solid #9499a9; background: #b9bdc9; color: #151824;
   font: inherit; font-size: max(16px, calc(16px * var(--esc, 1))); }
 .fuente-fila .btn { flex: none; }
+
+/* Mover o copiar a otra lección */
+.dlg-mover { width: min(440px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); display: none; flex-direction: column; box-sizing: border-box; }
+.dlg-mover[open] { display: flex; }
+.mover-lista { flex: 1; min-height: 80px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 4px 0 14px; padding: 2px; }
+.mover-op { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; text-align: left; padding: 12px 14px; border-radius: 12px;
+  border: 2px solid var(--line); background: var(--bg); color: var(--text); font: inherit; cursor: pointer; }
+.mover-op .mover-tit { font-weight: 700; font-size: calc(16px * var(--esc, 1)); min-width: 0; overflow-wrap: anywhere; }
+.mover-op small { flex: none; color: var(--muted); font-size: calc(13px * var(--esc, 1)); }
+.mover-op[aria-checked="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.mover-vacio { color: var(--muted); font-style: italic; }
