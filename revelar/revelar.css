@@ -2270,5 +2270,5 @@ body { letter-spacing: var(--app-ls, normal); }
 .mapa-leyenda .ley { width: 11px; height: 11px; border-radius: 50%; display: inline-block; margin-left: 4px; }
 .mapa-leyenda .ley.yo { background: #3ddc84; }
 .mapa-leyenda .ley.vivo { background: #ff3b30; box-shadow: 0 0 6px #ff3b30; }
-.mapa-leyenda .ley.antes { background: #9a4a4e; opacity: .6; }
+.mapa-leyenda .ley.antes { background: #e0787c; opacity: .75; }
 .leaflet-interactive.punto-vivo { filter: drop-shadow(0 0 4px rgba(255, 59, 48, .85)); }

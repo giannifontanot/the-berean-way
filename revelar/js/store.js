@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202611011116";
+import { CONFIG } from "../config.js?v=202611011126";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -212,12 +212,13 @@ async function catalogoFirebase() {
     // Ubicación aproximada que el maestro decide compartir con el administrador.
     // Mapa de maestros: cada uno decide compartir su ciudad (aprox.); lo ven los maestros.
     // Se guarda la ciudad actual y, en «lugares», cada ciudad desde donde se ha conectado (historial).
-    async guardarUbicacion(u) {
+    async guardarUbicacion(u, { reiniciarLugares = false } = {}) {
       const ahora = Date.now();
       const clave = claveLugar(u);
+      const lugar = { lat: u.lat, lng: u.lng, ...(u.ciudad ? { ciudad: u.ciudad } : {}), visto: ahora };
       await db.update(ref(`revelar_mapa/${uid()}`), {
         ...u, nombre: String(auth.currentUser?.displayName || "").slice(0, 80), enLinea: true, visto: ahora,
-        [`lugares/${clave}`]: { lat: u.lat, lng: u.lng, ...(u.ciudad ? { ciudad: u.ciudad } : {}), visto: ahora },
+        ...(reiniciarLugares ? { lugares: { [clave]: lugar } } : { [`lugares/${clave}`]: lugar }),
       });
       this.marcarEnLinea();
     },
