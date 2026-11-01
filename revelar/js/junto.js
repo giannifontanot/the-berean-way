@@ -14,7 +14,10 @@ export function colocarAviso(el) {
     return;
   }
   const vw = innerWidth;
-  const x = Math.min(Math.max(ultimo.x, 90), vw - 90);
+  // Mitad del ancho real del aviso (con letra grande es más ancho), para que no se salga de la pantalla
+  el.classList.add("junto");
+  const mitad = Math.min(vw / 2, (el.offsetWidth || 180) / 2 + 12);
+  const x = Math.min(Math.max(ultimo.x, mitad), vw - mitad);
   const arriba = ultimo.y > 130;                        // hay espacio encima del dedo
   el.classList.add("junto");
   el.style.left = x + "px";
