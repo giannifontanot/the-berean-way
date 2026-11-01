@@ -2216,3 +2216,15 @@ body { letter-spacing: var(--app-ls, normal); }
 .btn.aj-maestros span, .btn.aj-maestros output { white-space: normal; }
 .btn.aj-maestros { height: auto; min-height: 48px; padding-top: 8px; padding-bottom: 8px; }
 .toast { max-width: calc(100vw - 24px); box-sizing: border-box; white-space: normal; text-align: center; }
+
+/* Editar: «＋» al final de la tira, del mismo tamaño que una lámina */
+.tira-nueva {
+  flex: none; height: var(--tira-h); aspect-ratio: 3 / 4; scale: 0.86; border-radius: 14px;
+  border: 2px dashed color-mix(in srgb, var(--accent) 70%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent);
+  display: grid; place-content: center; justify-items: center; gap: 6px; cursor: pointer;
+  font: inherit; -webkit-tap-highlight-color: transparent; transition: background-color 0.2s, scale 0.2s;
+}
+.tira-nueva span { font-size: calc(54px * var(--esc, 1)); line-height: 1; font-weight: 300; }
+.tira-nueva small { font-size: calc(15px * var(--esc, 1)); font-weight: 700; }
+.tira-nueva:active, .tira-nueva.presionado { background: color-mix(in srgb, var(--accent) 22%, transparent); scale: 0.82; }
