@@ -2228,3 +2228,7 @@ body { letter-spacing: var(--app-ls, normal); }
 .tira-nueva span { font-size: calc(54px * var(--esc, 1)); line-height: 1; font-weight: 300; }
 .tira-nueva small { font-size: calc(15px * var(--esc, 1)); font-weight: 700; }
 .tira-nueva:active, .tira-nueva.presionado { background: color-mix(in srgb, var(--accent) 22%, transparent); scale: 0.82; }
+/* Visor (pantalla completa): la lámina llena la pantalla como una diapositiva */
+.visor .foto.escritura.es-lamina { width: 100%; min-height: 100dvh; box-sizing: border-box; display: flex; align-items: center; margin: 0; border: 0; }
+.visor .foto.escritura.es-lamina .verso { width: 100%; max-width: 760px; margin: 0 auto; }
+.visor .foto.escritura.es-lamina .lam { font-size: calc(26px * var(--esc, 1)); }
