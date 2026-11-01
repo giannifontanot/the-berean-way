@@ -11,8 +11,41 @@
   "background_color": "#11152b",
   "theme_color": "#11152b",
   "icons": [
-    { "src": "iconos/maestro-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "iconos/maestro-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "iconos/maestro-mask-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
-  ]
+    {
+      "src": "iconos/maestro-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "iconos/maestro-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "iconos/maestro-mask-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "share_target": {
+    "action": "./compartir",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "imagen",
+          "accept": [
+            "image/*"
+          ]
+        }
+      ]
+    }
+  }
 }

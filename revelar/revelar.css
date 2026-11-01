@@ -2233,3 +2233,23 @@ body { letter-spacing: var(--app-ls, normal); }
 .visor .foto.escritura.es-lamina { width: 100%; min-height: 100dvh; box-sizing: border-box; display: flex; align-items: center; margin: 0; border: 0; }
 .visor .foto.escritura.es-lamina .verso { width: 100%; max-width: 760px; margin: 0 auto; }
 .visor .foto.escritura.es-lamina .lam { font-size: calc(26px * var(--esc, 1)); }
+
+/* Ajustes › Instalar el app (amarillo) y su ventana de pasos */
+.btn.aj-instalar { width: 100%; justify-content: center; gap: 10px; min-height: 48px; margin: 0 0 18px; font-size: calc(16px * var(--esc, 1)); }
+.btn.aj-instalar[hidden] { display: none; }
+.btn.aj-instalar .ico { width: 22px; height: 22px; }
+.dlg-instalar { width: min(440px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); overflow-y: auto; box-sizing: border-box; }
+.inst-paso { padding: 12px 14px; margin: 0 0 12px; border-radius: 14px; background: color-mix(in srgb, var(--text) 5%, transparent); border: 1px solid var(--line); }
+.inst-paso[hidden] { display: none; }
+.inst-paso h3 { margin: 0 0 6px; font-size: calc(13px * var(--esc, 1)); letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+.inst-paso ol { margin: 0; padding-left: 1.3em; line-height: 1.55; font-size: calc(16px * var(--esc, 1)); color: var(--text); }
+.inst-paso li { margin: 2px 0; }
+.inst-paso b { color: var(--text); }
+
+/* Imagen compartida: ¿de dónde viene? */
+.dlg-fuente { width: min(440px, calc(100vw - 24px)); }
+.dlg-fuente .fuente-ok { color: var(--ok, #7ccf9a); font-weight: 700; margin-bottom: 8px; }
+.fuente-fila { display: flex; gap: 8px; margin: 4px 0 6px; }
+.fuente-fila input { flex: 1; min-width: 0; padding: 10px 12px; border-radius: 10px; border: 1px solid #9499a9; background: #b9bdc9; color: #151824;
+  font: inherit; font-size: max(16px, calc(16px * var(--esc, 1))); }
+.fuente-fila .btn { flex: none; }

@@ -13,12 +13,12 @@
 //   data-i18n-dph="clave"    → data-placeholder (editor de escrituras)
 // En JS: t("clave", { n: 3 }) → reemplaza {n}.
 
-import fr from "./i18n-fr.js?v=202611011044";
-import pt from "./i18n-pt.js?v=202611011044";
-import de from "./i18n-de.js?v=202611011044";
-import ja from "./i18n-ja.js?v=202611011044";
-import hi from "./i18n-hi.js?v=202611011044";
-import id from "./i18n-id.js?v=202611011044";
+import fr from "./i18n-fr.js?v=202611011102";
+import pt from "./i18n-pt.js?v=202611011102";
+import de from "./i18n-de.js?v=202611011102";
+import ja from "./i18n-ja.js?v=202611011102";
+import hi from "./i18n-hi.js?v=202611011102";
+import id from "./i18n-id.js?v=202611011102";
 
 const CLAVE = "revelar:idioma";
 export const IDIOMAS = ["es", "en", "fr", "pt", "de", "ja", "hi", "id"];
@@ -42,7 +42,8 @@ const TEXTOS = {
     shareCode: "Compartir tu código", aTeacher: "Un maestro", shareCodeTitle: "Código de maestro de {n}", shareCodeMsg: "👋 ¡Hola! Soy {n} y uso Reveal, el app del maestro.\n\nMi código de maestro es:\n{c}\n\nAgrégalo y podremos enviarnos lecciones. ✨\n\n¿Aún no usas Reveal? Crea tu cuenta aquí:",
     addTeachers: "Agregar maestros", myTeachersText: "Tu lista de maestros. Así, cuando quieras enviar una copia de una lección, ya los tienes listos.", noTeachersYet: "Aún no tienes maestros en tu lista.", teacherAdded: "{n} agregado a tu lista",
     chooseLogo: "Elige tu logotipo", shareApp: "Compartir el app", shareAppNote: "<b>Comparte Reveal con otros maestros.</b> ¿Conoces a alguien a quien le gustaría usar el app? ¡Compártelo!", shareAppTitle: "{n} te invita a Reveal", shareAppMsg: "🌟 ¡Hola! Soy {n} y quiero compartirte Reveal, el app del maestro.\n\nCon Reveal preparas tus fotos y textos, y los revelas en vivo en el teléfono de cada alumno, justo en el momento de tu clase. Tus alumnos no necesitan instalar nada: solo escanean un código QR o tocan la liga que les envíes.\n\nEs gratis. Crea tu cuenta aquí y empieza hoy mismo:",
-    textSize: "Tamaño de letra", settings: "Ajustes", signOut: "Salir", signOutFail: "No se pudo salir: {e}", seeTeachers: "Ver a todos mis maestros",
+    textSize: "Tamaño de letra", fromInternet: "Desde internet", sharedSaved: "Guardada en «Desde internet»", sharedLinkSaved: "Liga guardada en «Desde internet» (lámina en blanco)", sharedJoined: "Imagen y liga juntas en la misma lámina", sharedNoUrl: "Compartida desde internet · {d}", sourceQ: "¿De dónde viene?", sourceText: "Si copiaste la dirección de la página, pégala aquí y se guarda en las notas de la foto (opcional).", paste: "Pegar", sourceSaved: "Dirección guardada en la nota", installWhy: "Con el app instalado tienes Reveal en tu pantalla de inicio, como cualquier otra app, y puedes compartirle imágenes desde internet.", installStepsAndroid: "<li>Abre <b>Mis lecciones</b> en Chrome.</li><li>Toca los <b>tres puntitos ⋮</b> de arriba a la derecha.</li><li>Toca <b>Instalar app</b> y luego <b>Instalar</b>.</li>", installStepsIphone: "<li>Abre <b>Mis lecciones</b> en Safari.</li><li>Toca <b>Compartir</b> (el cuadrito con la flecha ⬆).</li><li>Toca <b>Agregar a inicio</b> y luego <b>Agregar</b>.</li>",
+    settings: "Ajustes", signOut: "Salir", signOutFail: "No se pudo salir: {e}", seeTeachers: "Ver a todos mis maestros",
     aboutApp: "Reveal es el app del maestro. Prepara tus fotos y escrituras, y revélalas en vivo en el teléfono de cada alumno, justo en el momento de la lección en que más importan. Para que tus clases no solo se escuchen, sino que también se vean.",
     thanksApp: "Gracias por enseñar con Reveal.\u00a0🙏",
     signInLessons: "Entra para ver tus lecciones",
@@ -207,7 +208,8 @@ const TEXTOS = {
     shareCode: "Share your code", aTeacher: "A teacher", shareCodeTitle: "{n}'s teacher code", shareCodeMsg: "👋 Hi! I\'m {n}, and I use Reveal, the teacher app.\n\nMy teacher code is:\n{c}\n\nAdd it so we can send each other lessons. ✨\n\nNot using Reveal yet? Create your account here:",
     addTeachers: "Add teachers", myTeachersText: "Your list of teachers. When you want to send a copy of a lesson, they're ready to go.", noTeachersYet: "No teachers on your list yet.", teacherAdded: "{n} added to your list",
     chooseLogo: "Choose your logo", shareApp: "Share the app", shareAppNote: "<b>Share Reveal with other teachers.</b> Know someone who would like to use the app? Share it!", shareAppTitle: "{n} invites you to Reveal", shareAppMsg: "🌟 Hi! I'm {n}, and I want to share Reveal with you, the teacher app.\n\nWith Reveal you prepare your photos and texts, then reveal them live on every student's phone, right at the moment in your lesson. Your students don't need to install anything: they just scan a QR code or tap the link you send them.\n\nIt's free. Create your account here and start today:",
-    textSize: "Text size", settings: "Settings", signOut: "Sign out", signOutFail: "Couldn't sign out: {e}", seeTeachers: "See all my teachers",
+    textSize: "Text size", fromInternet: "From the internet", sharedSaved: "Saved in “From the internet”", sharedLinkSaved: "Link saved in “From the internet” (blank slide)", sharedJoined: "Image and link joined on the same slide", sharedNoUrl: "Shared from the internet · {d}", sourceQ: "Where is it from?", sourceText: "If you copied the page address, paste it here and it's saved in the photo's notes (optional).", paste: "Paste", sourceSaved: "Address saved in the note", installWhy: "With the app installed, Reveal is on your home screen like any other app, and you can share images to it from the internet.", installStepsAndroid: "<li>Open <b>My lessons</b> in Chrome.</li><li>Tap the <b>three dots ⋮</b> at the top right.</li><li>Tap <b>Install app</b>, then <b>Install</b>.</li>", installStepsIphone: "<li>Open <b>My lessons</b> in Safari.</li><li>Tap <b>Share</b> (the square with the arrow ⬆).</li><li>Tap <b>Add to Home Screen</b>, then <b>Add</b>.</li>",
+    settings: "Settings", signOut: "Sign out", signOutFail: "Couldn't sign out: {e}", seeTeachers: "See all my teachers",
     aboutApp: "Reveal is the teacher's app. Prepare your photos and scriptures, then reveal them live on every student's phone, right at the moment in your lesson when they matter most. So your lessons aren't only heard, but seen.",
     thanksApp: "Thank you for teaching with Reveal.\u00a0🙏",
     signInLessons: "Sign in to see your lessons",
