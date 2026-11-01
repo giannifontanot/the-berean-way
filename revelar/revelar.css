@@ -2218,12 +2218,15 @@ body { letter-spacing: var(--app-ls, normal); }
 .toast { max-width: calc(100vw - 24px); box-sizing: border-box; white-space: normal; text-align: center; }
 
 /* Editar: «＋» redondo (como los botones de arriba) justo después de la última lámina */
+/* Igual que los botones redondos de la barra del presentador (48 px, mismo borde y fondo) */
 .tira-nueva {
-  flex: none; align-self: center; width: 52px; height: 52px; border-radius: 50%; padding: 0; margin-left: 2px;
+  flex: none; align-self: center; width: 48px; height: 48px; border-radius: 999px; padding: 0; margin-left: 16px;
   border: 1px solid var(--line); background: var(--bg-2); color: var(--text);
   display: grid; place-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35); transition: background-color 0.2s, scale 0.15s;
+  scroll-snap-align: none; transition: background-color 0.2s, scale 0.15s;
 }
+/* En Editar la tira se detiene siempre con una lámina al centro (menos mientras arrastras) */
+.panel.ordenando .tira:not(.arrastrando) { scroll-snap-type: x mandatory; }
 .tira-nueva .ico { width: 24px; height: 24px; }
 .tira-nueva:active, .tira-nueva.presionado { background: var(--accent); color: var(--accent-ink); scale: 0.92; }
 /* Visor (pantalla completa): la lámina llena la pantalla como una diapositiva */
