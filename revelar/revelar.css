@@ -2190,3 +2190,8 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 .lam-hoja font[size="6"], .lam-hoja [style*="font-size: xx-large"] { font-size: 2em !important; line-height: 1.15; }
 .lam-hoja font[size="7"], .lam-hoja [style*="font-size: xxx-large"], .lam-hoja [style*="webkit-xxx-large"] { font-size: 2.6em !important; line-height: 1.1; }
 .lam-hoja [style*="background-color"] { border-radius: 2px; }
+
+/* Nueva lección / borrador: el título y las ideas siguen la letra de las notas (AAA del presentador) */
+#dlgNombre #nombre { font-size: var(--notas-fs, 20px); letter-spacing: var(--notas-ls, 0); }
+#dlgNombre .ideas textarea.idea-txt { font-size: var(--notas-fs, 20px); letter-spacing: var(--notas-ls, 0); }
+#dlgNombre .idea .asa { height: calc(var(--notas-fs, 20px) * 1.4 + 18px); }
