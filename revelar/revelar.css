@@ -2217,17 +2217,15 @@ body { letter-spacing: var(--app-ls, normal); }
 .btn.aj-maestros { height: auto; min-height: 48px; padding-top: 8px; padding-bottom: 8px; }
 .toast { max-width: calc(100vw - 24px); box-sizing: border-box; white-space: normal; text-align: center; }
 
-/* Editar: «＋» al final de la tira, del mismo tamaño que una lámina */
+/* Editar: «＋» redondo (como los botones de arriba) justo después de la última lámina */
 .tira-nueva {
-  flex: none; height: var(--tira-h); aspect-ratio: 3 / 4; scale: 0.86; border-radius: 14px;
-  border: 2px dashed color-mix(in srgb, var(--accent) 70%, transparent);
-  background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent);
-  display: grid; place-content: center; justify-items: center; gap: 6px; cursor: pointer;
-  font: inherit; -webkit-tap-highlight-color: transparent; transition: background-color 0.2s, scale 0.2s;
+  flex: none; align-self: center; width: 52px; height: 52px; border-radius: 50%; padding: 0; margin-left: 2px;
+  border: 1px solid var(--line); background: var(--bg-2); color: var(--text);
+  display: grid; place-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35); transition: background-color 0.2s, scale 0.15s;
 }
-.tira-nueva span { font-size: calc(54px * var(--esc, 1)); line-height: 1; font-weight: 300; }
-.tira-nueva small { font-size: calc(15px * var(--esc, 1)); font-weight: 700; }
-.tira-nueva:active, .tira-nueva.presionado { background: color-mix(in srgb, var(--accent) 22%, transparent); scale: 0.82; }
+.tira-nueva .ico { width: 24px; height: 24px; }
+.tira-nueva:active, .tira-nueva.presionado { background: var(--accent); color: var(--accent-ink); scale: 0.92; }
 /* Visor (pantalla completa): la lámina llena la pantalla como una diapositiva */
 .visor .foto.escritura.es-lamina { width: 100%; min-height: 100dvh; box-sizing: border-box; display: flex; align-items: center; margin: 0; border: 0; }
 .visor .foto.escritura.es-lamina .verso { width: 100%; max-width: 760px; margin: 0 auto; }
