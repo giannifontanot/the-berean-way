@@ -2326,3 +2326,6 @@ body { letter-spacing: var(--app-ls, normal); }
 #logoImg.logo-nuevo { animation: logoNuevo .5s ease .15s both; }
 @keyframes logoNuevo { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { #dlgLogos[open], #dlgLogos.cerrando, #logoImg.logo-nuevo { animation-duration: .01s; } }
+/* Tu código (5 caracteres): un poco más chico y más junto, para que nunca toque el logo (ni con letra grande) */
+.pag-lecciones .barra .lec-codigo b { font-size: calc(25px * var(--esc-barra, 1)); letter-spacing: 0.08em; }
+@media (max-width: 380px) { .pag-lecciones .barra .lec-codigo b { font-size: calc(22px * var(--esc-barra, 1)); letter-spacing: 0.06em; } }
