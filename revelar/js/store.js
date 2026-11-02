@@ -26,7 +26,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202611020611";
+import { CONFIG } from "../config.js?v=202611020614";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -287,6 +287,11 @@ async function catalogoFirebase() {
       if (codigo) await db.set(ref(`revelar_vivo/${codigo}`), sesion);
       if (uid() === PRESENTADOR_ORIGINAL) await db.set(ref("revelar_actual"), sesion);
     },
+    // Terminó la clase (en vivo → ensayo): los alumnos regresan a las estrellas.
+    async quitarActual(sesion, codigo) {
+      if (codigo && (await val(`revelar_vivo/${codigo}`)) === sesion) await db.remove(ref(`revelar_vivo/${codigo}`));
+      if (uid() === PRESENTADOR_ORIGINAL && (await val("revelar_actual")) === sesion) await db.remove(ref("revelar_actual"));
+    },
     // Copia orden, escrituras, fotos subidas y notas a una lección nueva (sin lo revelado).
     async duplicar(origen, destino, ficha) {
       await db.set(ref(`revelar_duenos/${destino}`), uid());
@@ -539,6 +544,7 @@ function catalogoDemo() {
     async leerActual() { return actual(); },
     onActual(codigo, cb) { oyentesActual.add(cb); cb(actual()); return () => oyentesActual.delete(cb); },
     async ponerActual(sesion) { try { localStorage.setItem(CA, sesion); } catch {} oyentesActual.forEach((cb) => cb(sesion)); },
+    async quitarActual() { try { localStorage.removeItem(CA); } catch {} oyentesActual.forEach((cb) => cb(null)); },
     async duplicar(origen, destino, ficha) { copiar(origen, destino, true); const v = leer(); v[destino] = ficha; escribir(v); },
     async enviarCopia(codigo, origen, titulo, conNotas, ideas) {
       if (limpiarCodigo(codigo) !== "demo") { const e = new Error("codigo"); e.code = "codigo"; throw e; }

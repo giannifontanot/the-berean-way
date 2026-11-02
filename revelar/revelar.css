@@ -2414,3 +2414,4 @@ body.con-clase .codigo-flota { opacity: 0; transform: translate(-50%, -24px); po
 @media (prefers-reduced-motion: reduce) { .codigo-flota, .cf-capsula::before, .codigo-flota.cambiado .cf-ir { animation: none !important; } }
 
 .inst-ya { margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; background: rgba(232,193,112,.12); border: 1px solid rgba(232,193,112,.35); font-size: calc(14px * var(--esc, 1)); line-height: 1.4; }
+.btn-maestros[hidden] { display: none !important; }
