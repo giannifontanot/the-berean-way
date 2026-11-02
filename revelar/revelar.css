@@ -2297,3 +2297,18 @@ body { letter-spacing: var(--app-ls, normal); }
 /* Compartir el app dentro de Ajustes (al final, en «Acerca de») */
 #dlgAjustes .aj-compartir { margin: 14px 0 0; }
 #dlgAjustes .aj-compartir .lg-nota { margin: 0 0 12px; color: var(--text); line-height: 1.45; }
+
+/* Ajustes: botones amarillos, dos por renglón (ícono arriba, nombre abajo) */
+.aj-botones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 18px; }
+.btn.aj-cuadro { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 84px; height: auto;
+  padding: 12px 8px; border-radius: 16px; text-align: center; text-decoration: none; line-height: 1.2; font-size: calc(14px * var(--esc, 1)); white-space: normal; }
+.btn.aj-cuadro[hidden] { display: none; }
+.btn.aj-cuadro .ico { width: 26px; height: 26px; }
+.btn.aj-cuadro span { white-space: normal; overflow-wrap: anywhere; }
+.btn.aj-cuadro.aj-letra .aaa { width: auto; display: inline-flex; align-items: baseline; gap: 1px; line-height: 1; font-weight: 800; }
+.btn.aj-cuadro.aj-letra .aaa span:nth-child(1) { font-size: 12px; }
+.btn.aj-cuadro.aj-letra .aaa span:nth-child(2) { font-size: 17px; }
+.btn.aj-cuadro.aj-letra .aaa span:nth-child(3) { font-size: 23px; }
+.btn.aj-cuadro.aj-letra .aaa + span { flex: none; text-align: center; }
+.btn.aj-cuadro .aj-valor { color: inherit; opacity: .7; font-size: calc(12px * var(--esc, 1)); font-weight: 700; margin-top: -2px; }
+#dlgAjustes .aj-acerca { padding-top: 14px; }
