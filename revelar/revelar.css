@@ -2329,3 +2329,18 @@ body { letter-spacing: var(--app-ls, normal); }
 /* Tu código (5 caracteres): un poco más chico y más junto, para que nunca toque el logo (ni con letra grande) */
 .pag-lecciones .barra .lec-codigo b { font-size: calc(25px * var(--esc-barra, 1)); letter-spacing: 0.08em; }
 @media (max-width: 380px) { .pag-lecciones .barra .lec-codigo b { font-size: calc(22px * var(--esc-barra, 1)); letter-spacing: 0.06em; } }
+/* Ajustes: botones amarillos compactos (ícono a la izquierda, nombre a la derecha) */
+.btn.aj-cuadro { flex-direction: row; justify-content: flex-start; gap: 8px; min-height: 48px; padding: 8px 10px; border-radius: 12px; text-align: left; font-size: calc(13.5px * var(--esc, 1)); }
+.btn.aj-cuadro .ico { width: 20px; height: 20px; flex: none; }
+.btn.aj-cuadro > span:not(.aaa) { flex: 1; min-width: 0; }
+.btn.aj-cuadro.aj-letra .aaa { flex: none; }
+.btn.aj-cuadro.aj-letra .aaa span:nth-child(1) { font-size: 9px; }
+.btn.aj-cuadro.aj-letra .aaa span:nth-child(2) { font-size: 12px; }
+.btn.aj-cuadro.aj-letra .aaa span:nth-child(3) { font-size: 16px; }
+.btn.aj-cuadro.aj-letra .aaa + span { text-align: left; }
+.btn.aj-cuadro .aj-valor { display: none; }
+.btn.aj-cuadro.ancho { justify-content: center; min-height: 48px; }
+.btn.aj-cuadro.ancho > span:not(.aaa) { flex: none; }
+.aj-botones { gap: 8px; }
+.btn.aj-cuadro.aj-letra .aaa + span { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; }
+@media (max-width: 380px) { .btn.aj-cuadro { font-size: calc(12.5px * var(--esc, 1)); padding: 7px 8px; gap: 6px; } .btn.aj-cuadro .ico { width: 18px; height: 18px; } }
