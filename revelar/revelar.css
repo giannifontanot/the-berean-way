@@ -2352,3 +2352,11 @@ body { letter-spacing: var(--app-ls, normal); }
 .btn.aj-cuadro.aj-destacado .ico { width: 22px; height: 22px; }
 @keyframes brilloDorado { 50% { box-shadow: 0 0 0 2px #d4a017, 0 0 26px rgba(245, 200, 76, 0.85); } }
 @media (prefers-reduced-motion: reduce) { .btn.aj-cuadro.aj-destacado { animation: none; } }
+
+/* Tamaño de letra: solo AAA, centrado y un poco más grande */
+.btn.aj-cuadro.solo-icono { justify-content: center; }
+.btn.aj-cuadro.aj-letra.solo-icono .aaa span:nth-child(1) { font-size: 13px; }
+.btn.aj-cuadro.aj-letra.solo-icono .aaa span:nth-child(2) { font-size: 18px; }
+.btn.aj-cuadro.aj-letra.solo-icono .aaa span:nth-child(3) { font-size: 24px; }
+#btnMisMaestros { justify-content: center; }
+#btnMisMaestros > span { flex: none; }
