@@ -1,9 +1,9 @@
 {
   "id": "./lecciones.html",
-  "name": "Reveal — el app del maestro",
-  "short_name": "Reveal Maestro",
-  "description": "Presenta fotos y escrituras en vivo en los teléfonos de tu clase.",
-  "lang": "es",
+  "name": "Reveal — The Teacher App",
+  "short_name": "Reveal Teacher",
+  "description": "Present photos, scriptures and slides live on your students' phones.",
+  "lang": "en",
   "start_url": "./lecciones.html?app=1",
   "scope": "./",
   "display": "standalone",
