@@ -2293,3 +2293,7 @@ body { letter-spacing: var(--app-ls, normal); }
 .visor.es-foto { touch-action: none; }
 .visor .visor-cont > * { will-change: transform; }
 .visor.con-zoom { cursor: grab; }
+
+/* Compartir el app dentro de Ajustes (al final, en «Acerca de») */
+#dlgAjustes .aj-compartir { margin: 14px 0 0; }
+#dlgAjustes .aj-compartir .lg-nota { margin: 0 0 12px; color: var(--text); line-height: 1.45; }
