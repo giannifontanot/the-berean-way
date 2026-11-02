@@ -19,6 +19,7 @@ export default {
     onlineNow: "Conectado agora", lastSeen: "Última vez: {d}", legendYou: "Você", legendOnline: "Conectado agora", legendBefore: "Já se conectou",
     sharedNoImage: "Chegou só o link, sem a imagem: salvei um slide em branco com o link",
     posOf: "{n} de {total}",
+    goBtn: "Ir",
     settings: "Configurações", signOut: "Sair", signOutFail: "Não foi possível sair: {e}", seeTeachers: "Ver todos os meus professores",
   aboutApp: "O Reveal é o app do professor. Prepare suas fotos e passagens e revele-as ao vivo no celular de cada aluno, no momento da aula em que mais importam. Para que suas aulas não sejam só ouvidas, mas também vistas.",
   thanksApp: "Obrigado por ensinar com o Reveal. 🙏",
