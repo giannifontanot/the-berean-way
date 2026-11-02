@@ -21,6 +21,7 @@ export default {
     posOf: "{n} de {total}",
     goBtn: "Ir",
     installHave: "Já tem o app? Não precisa instalar de novo: procure o ícone do Reveal na sua tela inicial.",
+    installedTitle: "Você já tem o Reveal", installedMsg: "✓ O Reveal já está no seu celular. Abra pelo ícone na sua tela inicial.", installOpenChrome: "Para instalar, abra esta página no Chrome.",
     settings: "Configurações", signOut: "Sair", signOutFail: "Não foi possível sair: {e}", seeTeachers: "Ver todos os meus professores",
   aboutApp: "O Reveal é o app do professor. Prepare suas fotos e passagens e revele-as ao vivo no celular de cada aluno, no momento da aula em que mais importam. Para que suas aulas não sejam só ouvidas, mas também vistas.",
   thanksApp: "Obrigado por ensinar com o Reveal. 🙏",
