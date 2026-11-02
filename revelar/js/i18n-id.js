@@ -18,6 +18,7 @@ export default {
     menuMoveCopy: "📤 Pindahkan atau salin ke pelajaran lain", moveCopyTitle: "Ke pelajaran mana?", moveCopyText: "Ditambahkan di akhir pelajaran itu, bersama catatannya, tersembunyi sampai kamu menampilkannya.", copyBtn: "Salin", moveBtn: "Pindahkan", moving: "Memindahkan…", copying: "Menyalin…", movedTo: "Dipindahkan ke “{t}”", copiedTo: "Disalin ke “{t}”", noOtherLessons: "Kamu belum punya pelajaran lain.",
     onlineNow: "Sedang online", lastSeen: "Terakhir: {d}", legendYou: "Kamu", legendOnline: "Sedang online", legendBefore: "Pernah terhubung",
     sharedNoImage: "Hanya tautan yang masuk, tanpa gambar: slide kosong dengan tautan disimpan",
+    posOf: "{n} dari {total}",
     settings: "Pengaturan", signOut: "Keluar", signOutFail: "Tidak bisa keluar: {e}", seeTeachers: "Lihat semua guru saya",
   aboutApp: "Reveal adalah aplikasi untuk guru. Siapkan foto dan ayatmu, lalu tampilkan langsung di ponsel setiap murid, tepat di saat paling penting dalam pelajaran. Supaya pelajaranmu tidak hanya didengar, tetapi juga dilihat.",
   thanksApp: "Terima kasih sudah mengajar dengan Reveal. 🙏",

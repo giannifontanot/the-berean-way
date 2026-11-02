@@ -10,8 +10,8 @@
     // Sin lección elegida (?s=), primero la lista de lecciones.
     if (!new URLSearchParams(location.search).has("s")) location.replace("lecciones.html");
   </script>
-  <link rel="stylesheet" href="revelar.css?v=202611012242">
-  <script src="js/letra-app.js?v=202611012242"></script>
+  <link rel="stylesheet" href="revelar.css?v=202611012300">
+  <script src="js/letra-app.js?v=202611012300"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <link rel="manifest" href="maestro.webmanifest">
@@ -21,7 +21,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Maestro">
-  <script type="module" src="js/pwa.js?v=202611012242"></script>
+  <script type="module" src="js/pwa.js?v=202611012300"></script>
 </head>
 <body>
   <header class="barra">
@@ -319,12 +319,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611012242";
-    import "./js/presion.js?v=202611012242";
-    import { colocarAviso } from "./js/junto.js?v=202611012242";
-    import { crearPapel } from "./js/papel.js?v=202611012242";
-    import { idioma, t, traducir } from "./js/i18n.js?v=202611012242";
-    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto } from "./js/escritura.js?v=202611012242";
+    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611012300";
+    import "./js/presion.js?v=202611012300";
+    import { colocarAviso } from "./js/junto.js?v=202611012300";
+    import { crearPapel } from "./js/papel.js?v=202611012300";
+    import { idioma, t, traducir } from "./js/i18n.js?v=202611012300";
+    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto } from "./js/escritura.js?v=202611012300";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -610,6 +610,7 @@
     function focos() { return Object.keys(reveladas).filter(esFoco); }
 
     function pintarRevelado() {
+      setTimeout(refrescarVisor, 0);   // pantalla completa: sigue a la lámina actual
       const orden = ordenar(reveladas).filter((k) => !esTemporal(k) && tarjetas.has(k));
       const temp = new Set(temporales().map(idReal));
       tarjetas.forEach((b, id) => {
@@ -1152,7 +1153,7 @@
         div.querySelector("small").textContent = t("pendingTap");
         return div.outerHTML;
       }
-      if (item.tipo === "foto") return `<img alt="" src="${item.src.replace(/"/g, "&quot;")}">`;
+      if (item.tipo === "foto") return `<img alt="" draggable="false" src="${item.src.replace(/"/g, "&quot;")}">`;
       return `<div class="verso-mini${item.lamina ? " lam-mini" : ""}"><cite></cite>${cuerpoHtml(item)}</div>`;
     }
     function numeroVisible(id) {
@@ -1333,19 +1334,62 @@
 
     // Visor: la lámina al 100 % en el teléfono del presentador. Se cierra al tocar
     // o con el botón Atrás de Android.
+    // Fuera de Editar, en el visor se desliza: ⬅ = Siguiente, ➡ = Atrás (exactamente esos botones;
+    // en vivo, los alumnos ven lo mismo). Un toque lo cierra, como siempre.
+    var visorId = null, visorPasa = false, visorDir = 0;   // var: pintarRevelado puede llamar antes de llegar aquí
+    function contenidoVisor(item) {
+      if (item.tipo === "foto") return `<img alt="" draggable="false" src="${item.src.replace(/"/g, "&quot;")}">`;
+      return `<figure class="foto escritura${item.lamina ? " es-lamina" : ""}"><div class="verso">${cuerpoHtml(item)}<cite></cite></div></figure>`;
+    }
+    function pintarVisor(item) {
+      const v = $("visor");
+      visorId = item.id;
+      v.innerHTML = `<div class="visor-cont${visorDir ? (visorDir > 0 ? " entra-der" : " entra-izq") : ""}">${contenidoVisor(item)}</div>`;
+      const c = v.querySelector("cite");
+      if (c) c.textContent = item.lamina ? "" : (item.cita || "");
+      if (visorPasa) {
+        const vis = lista.filter((it) => !saltadas.has(it.id));
+        const n = vis.findIndex((it) => it.id === item.id) + 1;
+        const et = document.createElement("div");
+        et.className = "visor-etiqueta" + (enVivo ? " vivo" : "");
+        et.textContent = (enVivo ? "🔴 " + t("live") : t("rehearsal")) + (n ? ` · ${t("posOf", { n, total: vis.length })}` : "");
+        v.append(et);
+      }
+      visorDir = 0;
+    }
     function abrirVisor(id) {
       const item = items.get(id);
       if (!item || item.pendiente) return;
       const v = $("visor");
-      if (item.tipo === "foto") {
-        v.innerHTML = `<img alt="" src="${item.src.replace(/"/g, "&quot;")}">`;
-      } else {
-        v.innerHTML = `<figure class="foto escritura${item.lamina ? " es-lamina" : ""}"><div class="verso">${cuerpoHtml(item)}<cite></cite></div></figure>`;
-        v.querySelector("cite").textContent = item.lamina ? "" : (item.cita || "");
-      }
+      visorPasa = !ordenando;
+      pintarVisor(item);
       v.hidden = false;
       requestAnimationFrame(() => v.classList.add("abierto"));
       history.pushState({ visor: true }, "");
+    }
+    // Cuando cambia lo revelado (por deslizar o por los botones) el visor muestra la lámina actual.
+    function refrescarVisor() {
+      if ($("visor").hidden || !visorPasa) return;
+      const id = actualId();
+      const item = id && items.get(id);
+      if (!item) { cerrarVisor(false); return; }
+      if (item.id !== visorId || visorDir) pintarVisor(item);
+    }
+    var gesto = null, tragarClick = false;
+    $("visor").addEventListener("pointerdown", (e) => { gesto = { x: e.clientX, y: e.clientY }; });
+    $("visor").addEventListener("pointerup", (e) => {
+      if (!gesto || !visorPasa) { gesto = null; return; }
+      const dx = e.clientX - gesto.x, dy = e.clientY - gesto.y;
+      gesto = null;
+      if (Math.abs(dx) < 55 || Math.abs(dx) < Math.abs(dy) * 1.4) return;   // no fue un deslizar
+      tragarClick = true; setTimeout(() => { tragarClick = false; }, 400);
+      pasarVisor(dx < 0 ? 1 : -1);
+    });
+    function pasarVisor(dir) {
+      const b = $(dir > 0 ? "btnSiguiente" : "btnDeshacer");
+      if (b.disabled) { $("visor").classList.remove("tope"); void $("visor").offsetWidth; $("visor").classList.add("tope"); return; }
+      visorDir = dir;
+      b.click();
     }
     function cerrarVisor(desdeHistoria) {
       const v = $("visor");
@@ -1354,9 +1398,12 @@
       setTimeout(() => { v.hidden = true; v.innerHTML = ""; }, 200);
       if (!desdeHistoria && history.state?.visor) history.back();
     }
-    $("visor").addEventListener("click", () => cerrarVisor(false));
+    $("visor").addEventListener("click", () => { if (tragarClick) { tragarClick = false; return; } cerrarVisor(false); });
     addEventListener("popstate", () => cerrarVisor(true));
-    addEventListener("keydown", (e) => { if (e.key === "Escape") cerrarVisor(false); });
+    addEventListener("keydown", (e) => {
+      if (e.key === "Escape") cerrarVisor(false);
+      if (!$("visor").hidden && visorPasa && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { e.preventDefault(); pasarVisor(e.key === "ArrowRight" ? 1 : -1); }
+    });
     function abrirMenuItem(id) {
       const item = items.get(id);
       if (!item) return;
@@ -1810,7 +1857,7 @@
       if (b.disabled) return;
       b.disabled = true; aviso(t("buildingDoc"));
       try {
-        const { crearResumen } = await import("./js/resumen.js?v=202611012242");
+        const { crearResumen } = await import("./js/resumen.js?v=202611012300");
         const html = await crearResumen({
           lista, saltadas, notas,
           titulo: leccion?.titulo || "",

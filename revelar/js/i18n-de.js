@@ -18,6 +18,7 @@ export default {
     menuMoveCopy: "📤 In eine andere Lektion verschieben oder kopieren", moveCopyTitle: "In welche Lektion?", moveCopyText: "Sie wird am Ende dieser Lektion eingefügt, mit ihren Notizen, ausgeblendet, bis du sie zeigst.", copyBtn: "Kopieren", moveBtn: "Verschieben", moving: "Wird verschoben…", copying: "Wird kopiert…", movedTo: "Verschoben nach „{t}“", copiedTo: "Kopiert nach „{t}“", noOtherLessons: "Du hast noch keine anderen Lektionen.",
     onlineNow: "Gerade online", lastSeen: "Zuletzt: {d}", legendYou: "Du", legendOnline: "Gerade online", legendBefore: "War schon online",
     sharedNoImage: "Nur der Link kam an, ohne Bild: leere Folie mit dem Link gespeichert",
+    posOf: "{n} von {total}",
     settings: "Einstellungen", signOut: "Abmelden", signOutFail: "Abmelden nicht möglich: {e}", seeTeachers: "Alle meine Lehrkräfte ansehen",
   aboutApp: "Reveal ist die App für Lehrkräfte. Bereite deine Fotos und Texte vor und zeige sie live auf dem Handy jedes Schülers – genau in dem Moment der Stunde, in dem sie am meisten zählen. Damit deine Stunden nicht nur gehört, sondern auch gesehen werden.",
   thanksApp: "Danke, dass du mit Reveal unterrichtest. 🙏",

@@ -18,6 +18,7 @@ export default {
     menuMoveCopy: "📤 Déplacer ou copier vers une autre leçon", moveCopyTitle: "Vers quelle leçon ?", moveCopyText: "Elle est ajoutée à la fin de cette leçon, avec ses notes, masquée jusqu’à ce que tu la révèles.", copyBtn: "Copier", moveBtn: "Déplacer", moving: "Déplacement…", copying: "Copie…", movedTo: "Déplacée vers « {t} »", copiedTo: "Copiée vers « {t} »", noOtherLessons: "Tu n’as pas encore d’autres leçons.",
     onlineNow: "Connecté maintenant", lastSeen: "Dernière fois : {d}", legendYou: "Toi", legendOnline: "Connecté maintenant", legendBefore: "S’est déjà connecté",
     sharedNoImage: "Seul le lien est arrivé, sans l’image : diapositive vide enregistrée avec le lien",
+    posOf: "{n} sur {total}",
     settings: "Réglages", signOut: "Se déconnecter", signOutFail: "Déconnexion impossible : {e}", seeTeachers: "Voir tous mes enseignants",
   aboutApp: "Reveal est l’app de l’enseignant. Prépare tes photos et tes passages, puis révèle-les en direct sur le téléphone de chaque élève, au moment de la leçon où ils comptent le plus. Pour que tes cours ne soient pas seulement entendus, mais aussi vus.",
   thanksApp: "Merci d’enseigner avec Reveal. 🙏",

@@ -18,6 +18,7 @@ export default {
     menuMoveCopy: "📤 Mover ou copiar para outra aula", moveCopyTitle: "Para qual aula?", moveCopyText: "Ela é adicionada no fim dessa aula, com suas notas, oculta até você revelá-la.", copyBtn: "Copiar", moveBtn: "Mover", moving: "Movendo…", copying: "Copiando…", movedTo: "Movida para “{t}”", copiedTo: "Copiada para “{t}”", noOtherLessons: "Você ainda não tem outras aulas.",
     onlineNow: "Conectado agora", lastSeen: "Última vez: {d}", legendYou: "Você", legendOnline: "Conectado agora", legendBefore: "Já se conectou",
     sharedNoImage: "Chegou só o link, sem a imagem: salvei um slide em branco com o link",
+    posOf: "{n} de {total}",
     settings: "Configurações", signOut: "Sair", signOutFail: "Não foi possível sair: {e}", seeTeachers: "Ver todos os meus professores",
   aboutApp: "O Reveal é o app do professor. Prepare suas fotos e passagens e revele-as ao vivo no celular de cada aluno, no momento da aula em que mais importam. Para que suas aulas não sejam só ouvidas, mas também vistas.",
   thanksApp: "Obrigado por ensinar com o Reveal. 🙏",

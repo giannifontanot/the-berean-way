@@ -13,12 +13,12 @@
 //   data-i18n-dph="clave"    → data-placeholder (editor de escrituras)
 // En JS: t("clave", { n: 3 }) → reemplaza {n}.
 
-import fr from "./i18n-fr.js?v=202611012242";
-import pt from "./i18n-pt.js?v=202611012242";
-import de from "./i18n-de.js?v=202611012242";
-import ja from "./i18n-ja.js?v=202611012242";
-import hi from "./i18n-hi.js?v=202611012242";
-import id from "./i18n-id.js?v=202611012242";
+import fr from "./i18n-fr.js?v=202611012300";
+import pt from "./i18n-pt.js?v=202611012300";
+import de from "./i18n-de.js?v=202611012300";
+import ja from "./i18n-ja.js?v=202611012300";
+import hi from "./i18n-hi.js?v=202611012300";
+import id from "./i18n-id.js?v=202611012300";
 
 const CLAVE = "revelar:idioma";
 export const IDIOMAS = ["es", "en", "fr", "pt", "de", "ja", "hi", "id"];
@@ -46,6 +46,7 @@ const TEXTOS = {
     menuMoveCopy: "📤 Mover o copiar a otra lección", moveCopyTitle: "¿A qué lección?", moveCopyText: "Se agrega al final de esa lección, con sus notas, oculta hasta que la reveles.", copyBtn: "Copiar", moveBtn: "Mover", moving: "Moviendo…", copying: "Copiando…", movedTo: "Movida a «{t}»", copiedTo: "Copiada a «{t}»", noOtherLessons: "No tienes otras lecciones todavía.",
     onlineNow: "Conectado ahora", lastSeen: "Última vez: {d}", legendYou: "Tú", legendOnline: "Conectado ahora", legendBefore: "Se ha conectado",
     sharedNoImage: "Llegó solo la liga, sin la imagen: guardé una lámina en blanco con la liga",
+    posOf: "{n} de {total}",
     settings: "Ajustes", signOut: "Salir", signOutFail: "No se pudo salir: {e}", seeTeachers: "Ver a todos mis maestros",
     aboutApp: "Reveal es el app del maestro. Prepara tus fotos y escrituras, y revélalas en vivo en el teléfono de cada alumno, justo en el momento de la lección en que más importan. Para que tus clases no solo se escuchen, sino que también se vean.",
     thanksApp: "Gracias por enseñar con Reveal.\u00a0🙏",
@@ -215,6 +216,7 @@ const TEXTOS = {
     menuMoveCopy: "📤 Move or copy to another lesson", moveCopyTitle: "Which lesson?", moveCopyText: "It's added at the end of that lesson, with its notes, hidden until you reveal it.", copyBtn: "Copy", moveBtn: "Move", moving: "Moving…", copying: "Copying…", movedTo: "Moved to “{t}”", copiedTo: "Copied to “{t}”", noOtherLessons: "You don't have other lessons yet.",
     onlineNow: "Online now", lastSeen: "Last seen: {d}", legendYou: "You", legendOnline: "Online now", legendBefore: "Has connected",
     sharedNoImage: "Only the link arrived, without the image: saved a blank slide with the link",
+    posOf: "{n} of {total}",
     settings: "Settings", signOut: "Sign out", signOutFail: "Couldn't sign out: {e}", seeTeachers: "See all my teachers",
     aboutApp: "Reveal is the teacher's app. Prepare your photos and scriptures, then reveal them live on every student's phone, right at the moment in your lesson when they matter most. So your lessons aren't only heard, but seen.",
     thanksApp: "Thank you for teaching with Reveal.\u00a0🙏",
