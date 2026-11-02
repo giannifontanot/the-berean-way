@@ -2313,3 +2313,16 @@ body { letter-spacing: var(--app-ls, normal); }
 .btn.aj-cuadro .aj-valor { color: inherit; opacity: .7; font-size: calc(12px * var(--esc, 1)); font-weight: 700; margin-top: -2px; }
 #dlgAjustes .aj-acerca { padding-top: 14px; }
 .btn.aj-cuadro.ancho { grid-column: 1 / -1; flex-direction: row; min-height: 56px; gap: 10px; }
+
+/* Ventana de logos: abre y cierra suave; el logo nuevo aparece con un fundido */
+#dlgLogos[open] { animation: lgEntra .26s cubic-bezier(.2,.8,.3,1); }
+#dlgLogos[open]::backdrop { animation: lgFondoEntra .26s ease; }
+#dlgLogos.cerrando { animation: lgSale .34s cubic-bezier(.4,0,.6,1) forwards; }
+#dlgLogos.cerrando::backdrop { animation: lgFondoSale .34s ease forwards; }
+@keyframes lgEntra { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes lgSale { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(18px) scale(.96); } }
+@keyframes lgFondoEntra { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lgFondoSale { from { opacity: 1; } to { opacity: 0; } }
+#logoImg.logo-nuevo { animation: logoNuevo .5s ease .15s both; }
+@keyframes logoNuevo { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { #dlgLogos[open], #dlgLogos.cerrando, #logoImg.logo-nuevo { animation-duration: .01s; } }
