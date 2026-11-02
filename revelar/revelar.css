@@ -2344,3 +2344,11 @@ body { letter-spacing: var(--app-ls, normal); }
 .aj-botones { gap: 8px; }
 .btn.aj-cuadro.aj-letra .aaa + span { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; }
 @media (max-width: 380px) { .btn.aj-cuadro { font-size: calc(12.5px * var(--esc, 1)); padding: 7px 8px; gap: 6px; } .btn.aj-cuadro .ico { width: 18px; height: 18px; } }
+
+/* Compartir el app: primero, a todo lo ancho, con borde dorado y un brillo suave */
+.btn.aj-cuadro.aj-destacado { grid-column: 1 / -1; justify-content: center; min-height: 52px; font-size: calc(15.5px * var(--esc, 1)); font-weight: 800;
+  border: 2px solid #fff3c4; box-shadow: 0 0 0 2px #b8860b, 0 0 18px rgba(245, 200, 76, 0.55); margin: 2px 2px 6px; animation: brilloDorado 3.2s ease-in-out infinite; }
+.btn.aj-cuadro.aj-destacado > span:not(.aaa) { flex: none; }
+.btn.aj-cuadro.aj-destacado .ico { width: 22px; height: 22px; }
+@keyframes brilloDorado { 50% { box-shadow: 0 0 0 2px #d4a017, 0 0 26px rgba(245, 200, 76, 0.85); } }
+@media (prefers-reduced-motion: reduce) { .btn.aj-cuadro.aj-destacado { animation: none; } }
