@@ -2312,3 +2312,4 @@ body { letter-spacing: var(--app-ls, normal); }
 .btn.aj-cuadro.aj-letra .aaa + span { flex: none; text-align: center; }
 .btn.aj-cuadro .aj-valor { color: inherit; opacity: .7; font-size: calc(12px * var(--esc, 1)); font-weight: 700; margin-top: -2px; }
 #dlgAjustes .aj-acerca { padding-top: 14px; }
+.btn.aj-cuadro.ancho { grid-column: 1 / -1; flex-direction: row; min-height: 56px; gap: 10px; }
