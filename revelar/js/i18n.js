@@ -13,12 +13,12 @@
 //   data-i18n-dph="clave"    → data-placeholder (editor de escrituras)
 // En JS: t("clave", { n: 3 }) → reemplaza {n}.
 
-import fr from "./i18n-fr.js?v=202611020700";
-import pt from "./i18n-pt.js?v=202611020700";
-import de from "./i18n-de.js?v=202611020700";
-import ja from "./i18n-ja.js?v=202611020700";
-import hi from "./i18n-hi.js?v=202611020700";
-import id from "./i18n-id.js?v=202611020700";
+import fr from "./i18n-fr.js?v=202611020735";
+import pt from "./i18n-pt.js?v=202611020735";
+import de from "./i18n-de.js?v=202611020735";
+import ja from "./i18n-ja.js?v=202611020735";
+import hi from "./i18n-hi.js?v=202611020735";
+import id from "./i18n-id.js?v=202611020735";
 
 const CLAVE = "revelar:idioma";
 export const IDIOMAS = ["es", "en", "fr", "pt", "de", "ja", "hi", "id"];
@@ -391,6 +391,14 @@ export function ponerIdioma(v) {
   if (!IDIOMAS.includes(v)) return;
   actual = v;
   try { localStorage.setItem(CLAVE, v); } catch {}
+  document.documentElement.lang = v;
+}
+
+/** Usa un idioma solo en esta página, sin guardarlo (el alumno: el idioma de su maestro;
+ *  así no cambia el idioma del app del maestro si los dos están en el mismo teléfono). */
+export function usarIdioma(v) {
+  if (!IDIOMAS.includes(v)) return;
+  actual = v;
   document.documentElement.lang = v;
 }
 

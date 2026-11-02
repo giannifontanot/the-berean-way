@@ -203,6 +203,13 @@
         ".validate": "newData.isString() && newData.val().length <= 80"
       }
     },
+    "revelar_idiomas": {
+      "$codigo": {
+        ".read": true,
+        ".write": "auth != null && root.child('revelar_codigos/' + $codigo).val() === auth.uid",
+        ".validate": "newData.isString() && newData.val().matches(/^(es|en|fr|pt|de|ja|hi|id)$/)"
+      }
+    },
     "revelar_actual": {
       ".read": true,
       ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'",

@@ -28,11 +28,17 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202611020700";
+import { CONFIG } from "../config.js?v=202611020735";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
 export const configurado = !String(CONFIG.firebase?.apiKey || "").startsWith("PEGA");
+
+/** El idioma que el maestro eligió en este teléfono (el mismo que guarda i18n.js). */
+function idiomaDeEsteTelefono() {
+  try { const v = localStorage.getItem("revelar:idioma"); if (/^[a-z]{2}$/.test(v || "")) return v; } catch {}
+  return String(document.documentElement.lang || "es").slice(0, 2);
+}
 
 export function limpiarSesion(s) {
   return String(s || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40);
@@ -183,7 +189,10 @@ async function catalogoFirebase() {
       const u = auth.currentUser;
       perfilPedido[u.uid] ??= (async () => {
         const p = await val(`revelar_maestros/${u.uid}`);
-        const publicar = (codigo) => db.set(ref(`revelar_nombres/${codigo}`), String(u.displayName || p?.nombre || "").slice(0, 80)).catch(() => {});
+        const publicar = (codigo) => {
+          db.set(ref(`revelar_nombres/${codigo}`), String(u.displayName || p?.nombre || "").slice(0, 80)).catch(() => {});
+          db.set(ref(`revelar_idiomas/${codigo}`), idiomaDeEsteTelefono()).catch(() => {});
+        };
         if (p?.codigo) { publicar(p.codigo); return p; }
         for (let intento = 0; intento < 8; intento++) {
           const codigo = nuevoCodigo();
@@ -286,6 +295,9 @@ async function catalogoFirebase() {
     async leerActual(codigo) { return (await val(codigo ? `revelar_vivo/${codigo}` : "revelar_actual")) || null; },
     // Para el alumno: el nombre del maestro de ese código (null si no existe).
     async nombreDeCodigo(codigo) { const c = limpiarCodigo(codigo); return c.length >= 4 ? (await val(`revelar_nombres/${c}`)) || null : null; },
+    // El idioma del maestro (para que la pantalla del alumno salga en ese idioma).
+    async idiomaDeCodigo(codigo) { const c = limpiarCodigo(codigo); return c.length >= 4 ? (await val(`revelar_idiomas/${c}`)) || null : null; },
+    async publicarIdioma(l) { const p = await this.miPerfil(); if (p?.codigo) await db.set(ref(`revelar_idiomas/${p.codigo}`), l); },
     onActual(codigo, cb) {
       return db.onValue(ref(codigo ? `revelar_vivo/${codigo}` : "revelar_actual"), (s) => cb(s.val() || null), () => cb(null));
     },
@@ -549,6 +561,8 @@ function catalogoDemo() {
     async ordenarLecciones(ids) { const v = leer(); ids.forEach((id, i) => { if (v[id]) v[id].pos = i; }); escribir(v); },
     async leerActual() { return actual(); },
     async nombreDeCodigo(codigo) { return limpiarCodigo(codigo) === "demo" ? "Demo" : null; },
+    async idiomaDeCodigo(codigo) { return limpiarCodigo(codigo) === "demo" ? idiomaDeEsteTelefono() : null; },
+    async publicarIdioma() {},
     onActual(codigo, cb) { oyentesActual.add(cb); cb(actual()); return () => oyentesActual.delete(cb); },
     async ponerActual(sesion) { try { localStorage.setItem(CA, sesion); } catch {} oyentesActual.forEach((cb) => cb(sesion)); },
     async quitarActual() { try { localStorage.removeItem(CA); } catch {} oyentesActual.forEach((cb) => cb(null)); },
