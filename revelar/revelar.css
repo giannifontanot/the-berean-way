@@ -2288,3 +2288,8 @@ body { letter-spacing: var(--app-ls, normal); }
 .visor { touch-action: pan-y; }
 .visor, .visor * { -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
 .dlg-mover .acciones .btn:disabled { opacity: .45; }
+
+/* Visor: zoom con dos dedos */
+.visor.es-foto { touch-action: none; }
+.visor .visor-cont > * { will-change: transform; }
+.visor.con-zoom { cursor: grab; }

@@ -10,8 +10,8 @@
     // Sin lección elegida (?s=), primero la lista de lecciones.
     if (!new URLSearchParams(location.search).has("s")) location.replace("lecciones.html");
   </script>
-  <link rel="stylesheet" href="revelar.css?v=202611012309">
-  <script src="js/letra-app.js?v=202611012309"></script>
+  <link rel="stylesheet" href="revelar.css?v=202611012316">
+  <script src="js/letra-app.js?v=202611012316"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <link rel="manifest" href="maestro.webmanifest">
@@ -21,7 +21,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Maestro">
-  <script type="module" src="js/pwa.js?v=202611012309"></script>
+  <script type="module" src="js/pwa.js?v=202611012316"></script>
 </head>
 <body>
   <header class="barra">
@@ -320,12 +320,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611012309";
-    import "./js/presion.js?v=202611012309";
-    import { colocarAviso } from "./js/junto.js?v=202611012309";
-    import { crearPapel } from "./js/papel.js?v=202611012309";
-    import { idioma, t, traducir } from "./js/i18n.js?v=202611012309";
-    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto } from "./js/escritura.js?v=202611012309";
+    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611012316";
+    import "./js/presion.js?v=202611012316";
+    import { colocarAviso } from "./js/junto.js?v=202611012316";
+    import { crearPapel } from "./js/papel.js?v=202611012316";
+    import { idioma, t, traducir } from "./js/i18n.js?v=202611012316";
+    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto } from "./js/escritura.js?v=202611012316";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -1346,6 +1346,8 @@
       const v = $("visor");
       visorId = item.id;
       v.innerHTML = `<div class="visor-cont${visorDir ? (visorDir > 0 ? " entra-der" : " entra-izq") : ""}">${contenidoVisor(item)}</div>`;
+      v.classList.toggle("es-foto", item.tipo === "foto");
+      zoomReset();
       const c = v.querySelector("cite");
       if (c) c.textContent = item.lamina ? "" : (item.cita || "");
       if (visorPasa) {
@@ -1380,15 +1382,76 @@
       pintarVisor(item);
     }
     var gesto = null, tragarClick = false;
-    $("visor").addEventListener("pointerdown", (e) => { gesto = { x: e.clientX, y: e.clientY }; });
+    // Zoom con dos dedos (y mover con un dedo cuando está ampliada). Mientras hay zoom no se desliza de lámina.
+    var zoom = { s: 1, x: 0, y: 0 }, dedos = new Map(), pinza = null, arrastre = null, huboZoom = false;
+    function zoomAplicar() {
+      const c = $("visor").querySelector(".visor-cont > *");
+      if (c) { c.style.transform = zoom.s === 1 ? "" : `translate(${zoom.x}px, ${zoom.y}px) scale(${zoom.s})`; c.style.transformOrigin = "center center"; }
+      $("visor").classList.toggle("con-zoom", zoom.s > 1);
+    }
+    function zoomReset() { zoom = { s: 1, x: 0, y: 0 }; pinza = arrastre = null; dedos.clear(); zoomAplicar(); }
+    function limitar() {
+      const v = $("visor").getBoundingClientRect();
+      const mx = (v.width * (zoom.s - 1)) / 2, my = (v.height * (zoom.s - 1)) / 2;
+      zoom.x = Math.max(-mx, Math.min(mx, zoom.x)); zoom.y = Math.max(-my, Math.min(my, zoom.y));
+    }
+    $("visor").addEventListener("pointerdown", (e) => {
+      dedos.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (dedos.size === 1) { gesto = { x: e.clientX, y: e.clientY }; huboZoom = false; if (zoom.s > 1) arrastre = { x: e.clientX - zoom.x, y: e.clientY - zoom.y }; }
+      if (dedos.size === 2) {
+        const [a, b] = [...dedos.values()];
+        const v = $("visor").getBoundingClientRect();
+        pinza = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, s: zoom.s, x: zoom.x, y: zoom.y,
+                  cx: (a.x + b.x) / 2 - (v.left + v.width / 2), cy: (a.y + b.y) / 2 - (v.top + v.height / 2) };
+        arrastre = null; huboZoom = true; gesto = null;
+      }
+    });
+    $("visor").addEventListener("pointermove", (e) => {
+      if (!dedos.has(e.pointerId)) return;
+      dedos.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pinza && dedos.size >= 2) {
+        const [a, b] = [...dedos.values()];
+        const s = Math.max(1, Math.min(5, pinza.s * Math.hypot(a.x - b.x, a.y - b.y) / pinza.d));
+        const v = $("visor").getBoundingClientRect();
+        const cx = (a.x + b.x) / 2 - (v.left + v.width / 2), cy = (a.y + b.y) / 2 - (v.top + v.height / 2);
+        // El punto entre los dedos se queda bajo los dedos mientras se amplía
+        zoom.s = s;
+        zoom.x = cx - (pinza.cx - pinza.x) * (s / pinza.s);
+        zoom.y = cy - (pinza.cy - pinza.y) * (s / pinza.s);
+        limitar(); zoomAplicar();
+      } else if (arrastre && zoom.s > 1) {
+        zoom.x = e.clientX - arrastre.x; zoom.y = e.clientY - arrastre.y;
+        if (Math.hypot(e.clientX - gesto?.x, e.clientY - gesto?.y) > 6) huboZoom = true;
+        limitar(); zoomAplicar();
+      }
+    });
+    const soltar = (e) => {
+      dedos.delete(e.pointerId);
+      if (dedos.size < 2) pinza = null;
+      if (zoom.s < 1.05 && !dedos.size) zoomReset();
+      if (dedos.size === 1 && zoom.s > 1) { const [p] = [...dedos.values()]; arrastre = { x: p.x - zoom.x, y: p.y - zoom.y }; }
+    };
+    $("visor").addEventListener("pointercancel", (e) => { soltar(e); gesto = null; });
     $("visor").addEventListener("pointerup", (e) => {
-      if (!gesto || !visorPasa) { gesto = null; return; }
+      soltar(e);
+      if (huboZoom) {                                   // fue zoom o mover: ni cerrar ni pasar de lámina
+        tragarClick = true; setTimeout(() => { tragarClick = false; }, 400);
+        gesto = null; return;
+      }
+      if (!gesto || !visorPasa || zoom.s > 1) { gesto = null; return; }
       const dx = e.clientX - gesto.x, dy = e.clientY - gesto.y;
       gesto = null;
       if (Math.abs(dx) < 55 || Math.abs(dx) < Math.abs(dy) * 1.4) return;   // no fue un deslizar
       tragarClick = true; setTimeout(() => { tragarClick = false; }, 400);
       pasarVisor(dx < 0 ? 1 : -1);
     });
+    // En la computadora: rueda del mouse / trackpad para acercar y alejar
+    $("visor").addEventListener("wheel", (e) => {
+      e.preventDefault();
+      zoom.s = Math.max(1, Math.min(5, zoom.s * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
+      if (zoom.s === 1) zoom.x = zoom.y = 0;
+      limitar(); zoomAplicar();
+    }, { passive: false });
     function pasarVisor(dir) {
       const b = $(dir > 0 ? "btnSiguiente" : "btnDeshacer");
       if (b.disabled) { $("visor").classList.remove("tope"); void $("visor").offsetWidth; $("visor").classList.add("tope"); return; }
@@ -1399,6 +1462,7 @@
       const v = $("visor");
       if (v.hidden) return;
       v.classList.remove("abierto");
+      zoomReset();
       setTimeout(() => { v.hidden = true; v.innerHTML = ""; }, 200);
       if (!desdeHistoria && history.state?.visor) history.back();
     }
@@ -1868,7 +1932,7 @@
       if (b.disabled) return;
       b.disabled = true; aviso(t("buildingDoc"));
       try {
-        const { crearResumen } = await import("./js/resumen.js?v=202611012309");
+        const { crearResumen } = await import("./js/resumen.js?v=202611012316");
         const html = await crearResumen({
           lista, saltadas, notas,
           titulo: leccion?.titulo || "",
