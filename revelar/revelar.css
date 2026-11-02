@@ -2287,3 +2287,4 @@ body { letter-spacing: var(--app-ls, normal); }
 .visor-etiqueta.vivo { background: rgba(198, 40, 40, .85); }
 .visor { touch-action: pan-y; }
 .visor, .visor * { -webkit-user-select: none; user-select: none; -webkit-user-drag: none; }
+.dlg-mover .acciones .btn:disabled { opacity: .45; }
