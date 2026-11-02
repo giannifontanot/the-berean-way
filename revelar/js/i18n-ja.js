@@ -17,6 +17,7 @@ export default {
   textSize: "文字サイズ", fromInternet: "インターネットから", sharedSaved: "「インターネットから」に保存しました", sharedLinkSaved: "リンクを「インターネットから」に保存しました（空のスライド）", sharedJoined: "画像とリンクを同じスライドにまとめました", sharedNoUrl: "インターネットから共有 · {d}", sourceQ: "どこから来た画像？", sourceText: "ページのアドレスをコピーしてあれば、ここに貼り付けると写真のメモに保存されます（任意）。", paste: "貼り付け", sourceSaved: "アドレスをメモに保存しました", installWhy: "アプリをインストールすると、ほかのアプリと同じようにホーム画面に Reveal が置かれ、インターネットから画像を共有できます。", installStepsAndroid: "<li>Chrome で <b>マイレッスン</b> を開きます。</li><li>右上の <b>︙（3 つの点）</b> をタップします。</li><li><b>アプリをインストール</b>、続いて <b>インストール</b> をタップします。</li>", installStepsIphone: "<li>Safari で <b>マイレッスン</b> を開きます。</li><li><b>共有</b>（矢印 ⬆ の付いた四角）をタップします。</li><li><b>ホーム画面に追加</b>、続いて <b>追加</b> をタップします。</li>",
     menuMoveCopy: "📤 ほかのレッスンへ移動・コピー", moveCopyTitle: "どのレッスンへ？", moveCopyText: "そのレッスンの最後に、メモと一緒に追加されます。表示するまで非表示です。", copyBtn: "コピー", moveBtn: "移動", moving: "移動中…", copying: "コピー中…", movedTo: "「{t}」へ移動しました", copiedTo: "「{t}」へコピーしました", noOtherLessons: "ほかのレッスンはまだありません。",
     onlineNow: "現在オンライン", lastSeen: "最終接続：{d}", legendYou: "あなた", legendOnline: "現在オンライン", legendBefore: "接続したことがある",
+    sharedNoImage: "画像は届かずリンクだけ届きました。リンク付きの空のスライドを保存しました",
     settings: "設定", signOut: "ログアウト", signOutFail: "ログアウトできませんでした：{e}", seeTeachers: "すべての先生を見る",
   aboutApp: "Reveal は先生のためのアプリです。写真や聖句を準備し、授業のいちばん大切な瞬間に、生徒一人ひとりのスマホへライブで表示しましょう。授業が「聞く」だけでなく「見える」ものになります。",
   thanksApp: "Reveal で教えてくださり、ありがとうございます。 🙏",

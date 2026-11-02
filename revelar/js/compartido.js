@@ -5,8 +5,8 @@
 //   solo liga     → una lámina en blanco con la liga en sus notas (después le pones la foto)
 //   solo imagen   → la foto, y se pregunta «¿De dónde viene?» para pegar la liga
 // Si la imagen y la liga llegan por separado con menos de 3 minutos de diferencia, se juntan en la misma lámina.
-import { crearStore, nuevoIdLeccion } from "./store.js?v=202611011126";
-import { t } from "./i18n.js?v=202611011126";
+import { crearStore, nuevoIdLeccion } from "./store.js?v=202611012242";
+import { t } from "./i18n.js?v=202611012242";
 
 const CACHE = "revelar-compartido";
 const ULTIMO = "revelar:ultimoCompartido";
@@ -45,6 +45,32 @@ function ligaDe(info) {
   const m = `${info.url || ""} ${info.text || ""}`.match(/https?:\/\/[^\s<>"]+/i);
   return m ? m[0].replace(/[),.;!?]+$/, "") : "";
 }
+// Chrome a veces no manda el archivo sino una liga de Google Imágenes (google.com/imgres?imgurl=…&imgrefurl=…)
+// o la liga directa a la imagen. De ahí se sacan la imagen real y la página de donde viene.
+function desenredar(liga) {
+  try {
+    const u = new URL(liga);
+    const p = u.searchParams;
+    if (/(^|\.)google\./.test(u.hostname) && (p.get("imgurl") || p.get("imgrefurl"))) {
+      return { imagen: p.get("imgurl") || "", pagina: p.get("imgrefurl") || "" };
+    }
+    if (/\.(jpe?g|png|gif|webp|avif|bmp)(\?|#|$)/i.test(u.pathname) || /(^|\.)gstatic\.com$/.test(u.hostname) || /(^|\.)googleusercontent\.com$/.test(u.hostname)) {
+      return { imagen: liga, pagina: "" };
+    }
+  } catch {}
+  return { imagen: "", pagina: liga };
+}
+// Intenta bajar la imagen desde su liga (solo funciona si ese sitio lo permite: CORS).
+async function bajarImagen(url) {
+  if (!url) return null;
+  try {
+    const r = await fetch(url, { mode: "cors", credentials: "omit", referrerPolicy: "no-referrer" });
+    if (!r.ok) return null;
+    const b = await r.blob();
+    return b.type.startsWith("image/") && b.size ? b : null;
+  } catch { return null; }
+}
+
 function notaDe(info, liga) {
   const titulo = String(info.title || "").trim();
   return [titulo && titulo !== liga ? titulo : "", liga].filter(Boolean).join("\n");
@@ -105,8 +131,21 @@ export async function procesarCompartidos({ cat, lecciones, aviso, preguntarFuen
   const reciente = (tipo) => ultimo && ultimo.sesion === id && ultimo.tipo === tipo && Date.now() - ultimo.t < JUNTAR_MS;
 
   for (const info of lista) {
-    const liga = ligaDe(info);
-    const nota = notaDe(info, liga);
+    let liga = ligaDe(info);
+    // Llegó una liga sin archivo: ¿es una imagen (o una liga de Google Imágenes)? Entonces se intenta bajar.
+    let sinBajar = "";
+    if (!info.archivos.length && liga) {
+      const { imagen, pagina } = desenredar(liga);
+      if (imagen) {
+        const b = await bajarImagen(imagen);
+        if (b) { info.archivos = [b]; liga = pagina || ""; }
+        else sinBajar = imagen;
+      }
+      if (pagina) liga = pagina;
+      else if (imagen) liga = sinBajar ? "" : liga;       // la liga era de la imagen: no repetirla en la nota
+    }
+    const ligaEnNota = liga || sinBajar;                  // para el «else if» de abajo: hay algo que guardar
+    const nota = notaDe(info, liga) + (sinBajar ? `${liga ? "\n" : ""}🖼 ${sinBajar}` : "");
     if (info.archivos.length) {
       // ¿Llegó antes una liga sola (lámina en blanco)? → la foto toma su lugar y se queda con la nota.
       const junta = !liga && reciente("url") ? ultimo : null;
@@ -139,7 +178,7 @@ export async function procesarCompartidos({ cat, lecciones, aviso, preguntarFuen
         }
       }
       if (!junta || info.archivos.length > 1) aviso(t("sharedSaved"));
-    } else if (liga) {
+    } else if (ligaEnNota) {
       if (reciente("foto") && ultimo.sinLiga) {
         // Llegó antes la imagen sola → se le agrega la liga a su nota.
         await store.guardarNota(ultimo.id, nota);
@@ -152,7 +191,7 @@ export async function procesarCompartidos({ cat, lecciones, aviso, preguntarFuen
         await store.guardarNota(nuevo, nota);
         orden.push(nuevo); agregadas++;
         ultimo = { t: Date.now(), sesion: id, tipo: "url", id: nuevo, creado, nota };
-        aviso(t("sharedLinkSaved"));
+        aviso(t(sinBajar ? "sharedNoImage" : "sharedLinkSaved"));
       }
     }
   }
