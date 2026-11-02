@@ -8,8 +8,8 @@
   <title>Mis lecciones · Reveal — el app del maestro</title>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-  <link rel="stylesheet" href="revelar.css?v=202611020605">
-  <script src="js/letra-app.js?v=202611020605"></script>
+  <link rel="stylesheet" href="revelar.css?v=202611020611">
+  <script src="js/letra-app.js?v=202611020611"></script>
   <link rel="manifest" href="maestro.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="iconos/maestro-192.png">
   <link rel="apple-touch-icon" href="iconos/maestro-180.png">
@@ -17,7 +17,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Teacher">
-  <script type="module" src="js/pwa.js?v=202611020605"></script>
+  <script type="module" src="js/pwa.js?v=202611020611"></script>
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -197,6 +197,7 @@
   <dialog id="dlgInstalar" class="dlg-instalar" aria-labelledby="instTitulo">
     <h2 id="instTitulo" data-i18n="installApp">Instalar el app</h2>
     <p data-i18n="installWhy">Con el app instalado tienes Reveal en tu pantalla de inicio, como cualquier otra app, y puedes compartirle imágenes desde internet.</p>
+    <p class="inst-ya" data-i18n="installHave">¿Ya la tienes? No hace falta instalarla otra vez: búscala en tu pantalla de inicio, es el ícono de Reveal.</p>
     <div class="inst-paso" id="instAndroid">
       <h3>Android · Chrome</h3>
       <ol data-i18n-html="installStepsAndroid"></ol>
@@ -328,12 +329,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202611020605";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202611020605";
-    import "./js/presion.js?v=202611020605";
-    import { confirmarQuitar } from "./js/confirmar.js?v=202611020605";
-    import { colocarAviso } from "./js/junto.js?v=202611020605";
-    import { idioma, ponerIdioma, t, traducir, IDIOMAS, NOMBRES } from "./js/i18n.js?v=202611020605";
+    import { CONFIG } from "./config.js?v=202611020611";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202611020611";
+    import "./js/presion.js?v=202611020611";
+    import { confirmarQuitar } from "./js/confirmar.js?v=202611020611";
+    import { colocarAviso } from "./js/junto.js?v=202611020611";
+    import { idioma, ponerIdioma, t, traducir, IDIOMAS, NOMBRES } from "./js/i18n.js?v=202611020611";
 
     const $ = (id) => document.getElementById(id);
 
@@ -774,7 +775,7 @@
       p.delete("compartido");
       history.replaceState(null, "", location.pathname + (p.toString() ? "?" + p : "") + location.hash);
       try {
-        const { procesarCompartidos } = await import("./js/compartido.js?v=202611020605");
+        const { procesarCompartidos } = await import("./js/compartido.js?v=202611020611");
         await procesarCompartidos({ cat, lecciones, aviso, preguntarFuente: (guardar) => {
           guardarFuente = guardar;
           $("fuenteLiga").value = "";
@@ -798,7 +799,11 @@
     document.addEventListener("fuente-recibida", () => { if ($("dlgFuente").open) $("dlgFuente").close(); guardarFuente = null; });
 
     // ---------- Instalar el app ----------
-    function pintarInstalar() { $("btnAjInstalar").hidden = !!window.appInstalada?.(); acomodarBotones(); }
+    // Si el teléfono ya tiene el app (aunque estés en Chrome), el botón no aparece: así nadie cree que debe instalarla otra vez.
+    async function pintarInstalar() {
+      $("btnAjInstalar").hidden = !!window.appInstalada?.(); acomodarBotones();
+      if (await window.yaTieneApp?.()) { $("btnAjInstalar").hidden = true; acomodarBotones(); }
+    }
     // Botones de Ajustes: «Compartir el app» arriba a todo lo ancho; los demás de dos en dos
     // (si quedan nones, el último ocupa todo el ancho para que no quede uno solo).
     function acomodarBotones() {
@@ -807,6 +812,7 @@
     }
     pintarInstalar();
     document.addEventListener("app-instalada", pintarInstalar);
+    document.addEventListener("app-desinstalada", pintarInstalar);
     $("btnAjInstalar").addEventListener("click", async () => {
       if (await window.pedirInstalar?.()) return;                  // Chrome mostró su propia ventana
       const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
@@ -985,7 +991,7 @@
       if (!$("chkUbic").disabled) $("chkUbic").checked = !!yo;
       $("mapaInvita").hidden = !!yo;
       try {
-        mapaUI ??= (await import("./js/mapa.js?v=202611020605")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
+        mapaUI ??= (await import("./js/mapa.js?v=202611020611")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
         // Un punto por ciudad. Tú en verde (arriba de todo); conectado ahora = rojo brillante;
         // ciudades desde donde alguien se conectó antes = rojo apagado (debajo de los brillantes).
         const yoId = cat.uid?.();

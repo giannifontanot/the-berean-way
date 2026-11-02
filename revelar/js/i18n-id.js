@@ -20,6 +20,7 @@ export default {
     sharedNoImage: "Hanya tautan yang masuk, tanpa gambar: slide kosong dengan tautan disimpan",
     posOf: "{n} dari {total}",
     goBtn: "Buka",
+    installHave: "Sudah punya? Tidak perlu memasang lagi — cari ikon Reveal di layar utama Anda.",
     settings: "Pengaturan", signOut: "Keluar", signOutFail: "Tidak bisa keluar: {e}", seeTeachers: "Lihat semua guru saya",
   aboutApp: "Reveal adalah aplikasi untuk guru. Siapkan foto dan ayatmu, lalu tampilkan langsung di ponsel setiap murid, tepat di saat paling penting dalam pelajaran. Supaya pelajaranmu tidak hanya didengar, tetapi juga dilihat.",
   thanksApp: "Terima kasih sudah mengajar dengan Reveal. 🙏",

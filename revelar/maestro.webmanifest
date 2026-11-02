@@ -6,6 +6,7 @@
   "lang": "en",
   "start_url": "./lecciones.html?app=1",
   "scope": "./",
+  "related_applications": [{ "platform": "webapp", "url": "https://berean-revelar.web.app/maestro.webmanifest" }],
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#11152b",
