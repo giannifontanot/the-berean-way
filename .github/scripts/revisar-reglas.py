@@ -18,7 +18,9 @@ ARCHIVO = sys.argv[1] if len(sys.argv) > 1 else "revelar/database.rules.json"
 
 ESCRITURA_PUBLICA = {"rules/revelar/$sesion/presencia/$conexion"}
 LECTURA_PUBLICA = {"rules/revelar/$sesion", "rules/revelar_vivo/$codigo", "rules/revelar_actual",
-                   "rules/revelar_compartidas/$sesion"}
+                   "rules/revelar_compartidas/$sesion",
+                   # Nombre e idioma del maestro: el alumno los ve al escribir el código (solo eso, por código)
+                   "rules/revelar_nombres/$codigo", "rules/revelar_idiomas/$codigo"}
 # Notas: solo se leen sin cuenta si el dueño compartió esa lección (enlace del resumen)
 LECTURA_SI_COMPARTIDA = {"rules/revelar_privado/$sesion/notas": "root.child('revelar_compartidas/' + $sesion).exists()"}
 DUENO = "root.child('revelar_duenos/' + $sesion).val() === auth.uid"
