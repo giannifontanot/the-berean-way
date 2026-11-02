@@ -21,12 +21,14 @@
 //   revelar_codigos/<codigo> = "<uid>"  Código corto de cada maestro (único).
 //   revelar_vivo/<codigo> = "<sesion>"  La lección en vivo de ese maestro. Sus
 //     participantes abren ?p=<codigo> y la siguen.
+//   revelar_nombres/<codigo> = "<nombre>"  Nombre público del maestro (para que el alumno
+//     lo vea al escribir el código). Solo lo escribe el dueño del código.
 //   revelar_actual = "<sesion>"  Igual, para el enlace original sin ?p= (presentador original).
 //   revelar_buzon/<uid>/<envio> = { deUid, deNombre, origen, titulo, creado }
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202611020625";
+import { CONFIG } from "../config.js?v=202611020631";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -181,7 +183,8 @@ async function catalogoFirebase() {
       const u = auth.currentUser;
       perfilPedido[u.uid] ??= (async () => {
         const p = await val(`revelar_maestros/${u.uid}`);
-        if (p?.codigo) return p;
+        const publicar = (codigo) => db.set(ref(`revelar_nombres/${codigo}`), String(u.displayName || p?.nombre || "").slice(0, 80)).catch(() => {});
+        if (p?.codigo) { publicar(p.codigo); return p; }
         for (let intento = 0; intento < 8; intento++) {
           const codigo = nuevoCodigo();
           try { await db.set(ref(`revelar_codigos/${codigo}`), u.uid); }
@@ -191,6 +194,7 @@ async function catalogoFirebase() {
           const extra = { nombre: String(u.displayName || u.email || "").slice(0, 80) };
           if (!p?.creado) extra.creado = Date.now();
           await db.update(ref(`revelar_maestros/${u.uid}`), extra);
+          publicar(final);
           return { ...(p || {}), ...extra, codigo: final };
         }
         throw new Error("No se pudo crear tu código");
@@ -280,6 +284,8 @@ async function catalogoFirebase() {
     },
     // Lección en vivo: del maestro (?p=código) o la original (sin código).
     async leerActual(codigo) { return (await val(codigo ? `revelar_vivo/${codigo}` : "revelar_actual")) || null; },
+    // Para el alumno: el nombre del maestro de ese código (null si no existe).
+    async nombreDeCodigo(codigo) { const c = limpiarCodigo(codigo); return c.length >= 4 ? (await val(`revelar_nombres/${c}`)) || null : null; },
     onActual(codigo, cb) {
       return db.onValue(ref(codigo ? `revelar_vivo/${codigo}` : "revelar_actual"), (s) => cb(s.val() || null), () => cb(null));
     },
@@ -542,6 +548,7 @@ function catalogoDemo() {
     async crearLeccion(id, ficha) { const v = leer(); v[id] = ficha; escribir(v); },
     async ordenarLecciones(ids) { const v = leer(); ids.forEach((id, i) => { if (v[id]) v[id].pos = i; }); escribir(v); },
     async leerActual() { return actual(); },
+    async nombreDeCodigo(codigo) { return limpiarCodigo(codigo) === "demo" ? "Demo" : null; },
     onActual(codigo, cb) { oyentesActual.add(cb); cb(actual()); return () => oyentesActual.delete(cb); },
     async ponerActual(sesion) { try { localStorage.setItem(CA, sesion); } catch {} oyentesActual.forEach((cb) => cb(sesion)); },
     async quitarActual() { try { localStorage.removeItem(CA); } catch {} oyentesActual.forEach((cb) => cb(null)); },
