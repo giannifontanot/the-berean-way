@@ -13,12 +13,12 @@
 //   data-i18n-dph="clave"    → data-placeholder (editor de escrituras)
 // En JS: t("clave", { n: 3 }) → reemplaza {n}.
 
-import fr from "./i18n-fr.js?v=202611040506";
-import pt from "./i18n-pt.js?v=202611040506";
-import de from "./i18n-de.js?v=202611040506";
-import ja from "./i18n-ja.js?v=202611040506";
-import hi from "./i18n-hi.js?v=202611040506";
-import id from "./i18n-id.js?v=202611040506";
+import fr from "./i18n-fr.js?v=202611040538";
+import pt from "./i18n-pt.js?v=202611040538";
+import de from "./i18n-de.js?v=202611040538";
+import ja from "./i18n-ja.js?v=202611040538";
+import hi from "./i18n-hi.js?v=202611040538";
+import id from "./i18n-id.js?v=202611040538";
 
 const CLAVE = "revelar:idioma";
 export const IDIOMAS = ["es", "en", "fr", "pt", "de", "ja", "hi", "id"];
@@ -51,6 +51,7 @@ const TEXTOS = {
     installHave: "¿Ya la tienes? No hace falta instalarla otra vez: búscala en tu pantalla de inicio, es el ícono de Reveal.",
     installedTitle: "Ya tienes Reveal", installedMsg: "✓ Reveal ya está en tu teléfono. Ábrela desde su ícono en tu pantalla de inicio.", installOpenChrome: "Para instalarla, abre esta página en Chrome.",
     whichClass: "¿A qué clase vas a entrar?", enterBtn: "Entrar", searching: "Buscando…", holdToRemove: "Mantén presionado un maestro para quitarlo.",
+    slideBg: "Color de fondo", customColor: "Otro color",
     settings: "Ajustes", signOut: "Salir", signOutFail: "No se pudo salir: {e}", seeTeachers: "Ver a todos mis maestros",
     aboutApp: "Reveal es el app del maestro. Prepara tus fotos y escrituras, y revélalas en vivo en el teléfono de cada alumno, justo en el momento de la lección en que más importan. Para que tus clases no solo se escuchen, sino que también se vean.",
     thanksApp: "Gracias por enseñar con Reveal.\u00a0🙏",
@@ -225,6 +226,7 @@ const TEXTOS = {
     installHave: "Already have it? No need to install it again — look for the Reveal icon on your home screen.",
     installedTitle: "You already have Reveal", installedMsg: "✓ Reveal is already on your phone. Open it from its icon on your home screen.", installOpenChrome: "To install it, open this page in Chrome.",
     whichClass: "Which class are you joining?", enterBtn: "Join", searching: "Searching…", holdToRemove: "Press and hold a teacher to remove them.",
+    slideBg: "Background color", customColor: "Other color",
     settings: "Settings", signOut: "Sign out", signOutFail: "Couldn't sign out: {e}", seeTeachers: "See all my teachers",
     aboutApp: "Reveal is the teacher's app. Prepare your photos and scriptures, then reveal them live on every student's phone, right at the moment in your lesson when they matter most. So your lessons aren't only heard, but seen.",
     thanksApp: "Thank you for teaching with Reveal.\u00a0🙏",

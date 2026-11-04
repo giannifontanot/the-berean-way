@@ -23,6 +23,7 @@ export default {
     installHave: "Vous l’avez déjà ? Inutile de la réinstaller : cherchez l’icône Reveal sur votre écran d’accueil.",
     installedTitle: "Vous avez déjà Reveal", installedMsg: "✓ Reveal est déjà sur votre téléphone. Ouvrez-la depuis son icône sur l’écran d’accueil.", installOpenChrome: "Pour l’installer, ouvrez cette page dans Chrome.",
     whichClass: "Quel cours rejoins-tu ?", enterBtn: "Entrer", searching: "Recherche…", holdToRemove: "Appuie longuement sur un enseignant pour le retirer.",
+    slideBg: "Couleur de fond", customColor: "Autre couleur",
     settings: "Réglages", signOut: "Se déconnecter", signOutFail: "Déconnexion impossible : {e}", seeTeachers: "Voir tous mes enseignants",
   aboutApp: "Reveal est l’app de l’enseignant. Prépare tes photos et tes passages, puis révèle-les en direct sur le téléphone de chaque élève, au moment de la leçon où ils comptent le plus. Pour que tes cours ne soient pas seulement entendus, mais aussi vus.",
   thanksApp: "Merci d’enseigner avec Reveal. 🙏",

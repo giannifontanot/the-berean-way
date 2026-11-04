@@ -149,6 +149,42 @@ export function laminaTexto(html) {
   return tpl.content.textContent.replace(/ /g, " ").replace(/\n{2,}/g, "\n").trim();
 }
 
+// ---------- Fondo de las láminas ----------
+// fondo = nombre de un color de la paleta (o "#rrggbb" para «otro color»). Sin fondo = papel.
+export const FONDOS = {
+  papel: "#fdfcf9", blanco: "#ffffff", crema: "#f6ecd9", cielo: "#dbeafe", menta: "#d1fae5", rosa: "#fde2e4",
+  oro: "#e8c170", azul: "#1e3a8a", verde: "#14532d", vino: "#7f1d1d", noche: "#11152b", negro: "#000000",
+  amanecer: "linear-gradient(135deg, #f6d365, #fda085)", lavanda: "linear-gradient(135deg, #e0c3fc, #8ec5fc)",
+  oceano: "linear-gradient(135deg, #1e3c72, #2a5298)", bosque: "linear-gradient(135deg, #134e5e, #71b280)",
+  aurora: "linear-gradient(160deg, #0f2027, #203a43, #2c5364)", fuego: "linear-gradient(135deg, #8e2de2, #c2185b)",
+};
+const OSCUROS = new Set(["azul", "verde", "vino", "noche", "negro", "oceano", "bosque", "aurora", "fuego"]);
+/** { css, oscuro } del fondo de una lámina, o null si es papel (el de siempre). */
+export function fondoDe(e) {
+  const f = e?.lamina ? String(e.fondo || "") : "";
+  if (!f || f === "papel") return null;
+  if (/^#[0-9a-f]{6}$/i.test(f)) {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(f.slice(i, i + 2), 16) / 255)
+      .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    return { css: f, oscuro: 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.3 };
+  }
+  return FONDOS[f] ? { css: FONDOS[f], oscuro: OSCUROS.has(f) } : null;
+}
+/** Pinta el fondo en el contenedor de la lámina (tarjeta, miniatura, visor, editor). */
+export function ponerFondo(el, e) {
+  if (!el) return;
+  const f = fondoDe(e);
+  el.classList.toggle("lam-fondo", !!f);
+  el.classList.toggle("lam-oscuro", !!f?.oscuro);
+  if (f) el.style.setProperty("--lam-bg", f.css); else el.style.removeProperty("--lam-bg");
+}
+/** Lo mismo, como texto para meter en un HTML: { clase, estilo }. */
+export function fondoAttr(e) {
+  const f = fondoDe(e);
+  if (!f) return { clase: "", estilo: "" };
+  return { clase: " lam-fondo" + (f.oscuro ? " lam-oscuro" : ""), estilo: ` style="--lam-bg: ${f.css.replace(/"/g, "")}"` };
+}
+
 /** Cuerpo de una escritura o lámina para incrustar en HTML (cite aparte). */
 export function cuerpoHtml(e) {
   return e?.lamina ? `<div class="lam">${laminaAHtml(e.texto)}</div>` : `<p>${textoAHtml(e?.texto, e?.todoRojo)}</p>`;
