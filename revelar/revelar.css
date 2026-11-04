@@ -2536,3 +2536,10 @@ body.con-clase .mis-clases { opacity: 0; transform: translate(-50%, -24px); poin
 .lam-sw-otro.elegido { background: var(--sw); }
 .lam-sw-otro span { font-size: calc(22px * var(--esc, 1)); text-shadow: 0 1px 4px rgba(0,0,0,.5); pointer-events: none; }
 .lam-sw-otro input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; }
+
+.lam-fondos-cab { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.lam-fondos-cab .lam-fondos-tit { margin: 0; }
+.lam-sw.lam-sw-papel { aspect-ratio: auto; min-height: 32px; padding: 0 14px; border-radius: 999px; font-size: calc(13px * var(--esc, 1)); }
+.lam-fondos-fam { display: grid; grid-template-columns: 58px repeat(3, 1fr); align-items: center; gap: 8px; margin-bottom: 8px; }
+.lam-fam-nom { font-size: calc(13px * var(--esc, 1)); font-weight: 600; color: var(--text); opacity: .8; }
+.lam-fondos-fam .lam-sw { aspect-ratio: auto; height: 40px; }

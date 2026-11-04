@@ -152,15 +152,15 @@ export function laminaTexto(html) {
 // ---------- Fondo de las láminas ----------
 // fondo = nombre de un color de la paleta (o "#rrggbb" para «otro color»). Sin fondo = papel.
 // Solo fondos que da gusto leer: claros (papel, sepia, grises suaves) y oscuros (marino, pino…).
-// Familias que da gusto leer: sepia, azul, verde y lila. Degradados muy suaves (todos con contraste AAA, 7:1 o más).
-export const FONDOS_CLAROS = {
-  papel: "#fdfcf9",
-  sepia: "linear-gradient(160deg, #fcf5e6, #f2e3c6)",
-  lino: "linear-gradient(160deg, #f7ebd2, #e9d5ad)",
-  niebla: "linear-gradient(160deg, #f4f9ff, #d9e8fa)",
-  salvia: "linear-gradient(160deg, #f2fbf4, #d6eedd)",
-  lila: "linear-gradient(160deg, #f8f4ff, #e4dbf7)",
-};
+// Fondos claros por familia, cada una en tres tonos: ligero, medio y brillante (siempre una hoja clara).
+// Degradados muy suaves; todos con contraste AAA (7:1 o más) con la letra oscura.
+export const FAMILIAS = [
+  { clave: "famSepia", tonos: { marfil: "linear-gradient(160deg, #fdf9f0, #f5ecd8)", sepia: "linear-gradient(160deg, #fcf5e6, #f2e3c6)", canela: "linear-gradient(160deg, #fdf0dc, #f5d6a8)" } },
+  { clave: "famBlue", tonos: { hielo: "linear-gradient(160deg, #f7fbff, #e8f1fc)", niebla: "linear-gradient(160deg, #eff6fe, #d4e5f8)", celeste: "linear-gradient(160deg, #eaf6ff, #c2e1fb)" } },
+  { clave: "famGreen", tonos: { rocio: "linear-gradient(160deg, #f6fcf7, #e7f4ea)", salvia: "linear-gradient(160deg, #eef9f1, #d1ecda)", jade: "linear-gradient(160deg, #e9fbf3, #bfeed8)" } },
+  { clave: "famLilac", tonos: { nube: "linear-gradient(160deg, #fbf8ff, #eee8fb)", lila: "linear-gradient(160deg, #f5f0ff, #dfd5f7)", violeta: "linear-gradient(160deg, #f2ebff, #d4c4fb)" } },
+];
+export const FONDOS_CLAROS = Object.assign({ papel: "#fdfcf9" }, ...FAMILIAS.map((f) => f.tonos));
 export const FONDOS_OSCUROS = {
   cafe: "linear-gradient(160deg, #54402e, #2f241a)",
   oceano: "linear-gradient(135deg, #1e3c72, #2a5298)",
@@ -171,7 +171,7 @@ export const FONDOS_OSCUROS = {
 };
 export const FONDOS = { ...FONDOS_CLAROS, ...FONDOS_OSCUROS };
 // Colores que ya no se ofrecen: las láminas que los usan se siguen viendo bien
-const VIEJOS = { perla: "#eef0f2", vino: "#4a2329", blanco: "#ffffff", crema: "#f6ecd9", cielo: "#dbeafe", menta: "#d1fae5", rosa: "#fde2e4", oro: "#e8c170",
+const VIEJOS = { lino: "linear-gradient(160deg, #f7ebd2, #e9d5ad)", perla: "#eef0f2", vino: "#4a2329", blanco: "#ffffff", crema: "#f6ecd9", cielo: "#dbeafe", menta: "#d1fae5", rosa: "#fde2e4", oro: "#e8c170",
   azul: "#1e3a8a", verde: "#14532d", negro: "#000000", amanecer: "linear-gradient(135deg, #f6d365, #fda085)",
   lavanda: "linear-gradient(135deg, #e0c3fc, #8ec5fc)", bosque: "linear-gradient(135deg, #134e5e, #71b280)",
   aurora: "linear-gradient(160deg, #0f2027, #203a43, #2c5364)", fuego: "linear-gradient(135deg, #8e2de2, #c2185b)" };

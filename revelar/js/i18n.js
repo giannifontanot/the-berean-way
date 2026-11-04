@@ -13,12 +13,12 @@
 //   data-i18n-dph="clave"    → data-placeholder (editor de escrituras)
 // En JS: t("clave", { n: 3 }) → reemplaza {n}.
 
-import fr from "./i18n-fr.js?v=202611040645";
-import pt from "./i18n-pt.js?v=202611040645";
-import de from "./i18n-de.js?v=202611040645";
-import ja from "./i18n-ja.js?v=202611040645";
-import hi from "./i18n-hi.js?v=202611040645";
-import id from "./i18n-id.js?v=202611040645";
+import fr from "./i18n-fr.js?v=202611040659";
+import pt from "./i18n-pt.js?v=202611040659";
+import de from "./i18n-de.js?v=202611040659";
+import ja from "./i18n-ja.js?v=202611040659";
+import hi from "./i18n-hi.js?v=202611040659";
+import id from "./i18n-id.js?v=202611040659";
 
 const CLAVE = "revelar:idioma";
 export const IDIOMAS = ["es", "en", "fr", "pt", "de", "ja", "hi", "id"];
@@ -53,6 +53,7 @@ const TEXTOS = {
     whichClass: "¿A qué clase vas a entrar?", enterBtn: "Entrar", searching: "Buscando…", holdToRemove: "Mantén presionado un maestro para quitarlo.",
     slideBg: "Color de fondo", customColor: "Otro color",
     bgLight: "Claros", bgDark: "Oscuros",
+    famSepia: "Sepia", famBlue: "Azul", famGreen: "Verde", famLilac: "Lila", paperBg: "Papel",
     settings: "Ajustes", signOut: "Salir", signOutFail: "No se pudo salir: {e}", seeTeachers: "Ver a todos mis maestros",
     aboutApp: "Reveal es el app del maestro. Prepara tus fotos y escrituras, y revélalas en vivo en el teléfono de cada alumno, justo en el momento de la lección en que más importan. Para que tus clases no solo se escuchen, sino que también se vean.",
     thanksApp: "Gracias por enseñar con Reveal.\u00a0🙏",
@@ -229,6 +230,7 @@ const TEXTOS = {
     whichClass: "Which class are you joining?", enterBtn: "Join", searching: "Searching…", holdToRemove: "Press and hold a teacher to remove them.",
     slideBg: "Background color", customColor: "Other color",
     bgLight: "Light", bgDark: "Dark",
+    famSepia: "Sepia", famBlue: "Blue", famGreen: "Green", famLilac: "Lilac", paperBg: "Paper",
     settings: "Settings", signOut: "Sign out", signOutFail: "Couldn't sign out: {e}", seeTeachers: "See all my teachers",
     aboutApp: "Reveal is the teacher's app. Prepare your photos and scriptures, then reveal them live on every student's phone, right at the moment in your lesson when they matter most. So your lessons aren't only heard, but seen.",
     thanksApp: "Thank you for teaching with Reveal.\u00a0🙏",
