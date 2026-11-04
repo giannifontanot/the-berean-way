@@ -24,6 +24,7 @@ export default {
     installedTitle: "Du hast Reveal schon", installedMsg: "✓ Reveal ist schon auf deinem Handy. Öffne es über das Symbol auf deinem Startbildschirm.", installOpenChrome: "Zum Installieren öffne diese Seite in Chrome.",
     whichClass: "Welchem Unterricht trittst du bei?", enterBtn: "Beitreten", searching: "Suche…", holdToRemove: "Halte eine Lehrkraft gedrückt, um sie zu entfernen.",
     slideBg: "Hintergrundfarbe", customColor: "Andere Farbe",
+    bgLight: "Hell", bgDark: "Dunkel",
     settings: "Einstellungen", signOut: "Abmelden", signOutFail: "Abmelden nicht möglich: {e}", seeTeachers: "Alle meine Lehrkräfte ansehen",
   aboutApp: "Reveal ist die App für Lehrkräfte. Bereite deine Fotos und Texte vor und zeige sie live auf dem Handy jedes Schülers – genau in dem Moment der Stunde, in dem sie am meisten zählen. Damit deine Stunden nicht nur gehört, sondern auch gesehen werden.",
   thanksApp: "Danke, dass du mit Reveal unterrichtest. 🙏",

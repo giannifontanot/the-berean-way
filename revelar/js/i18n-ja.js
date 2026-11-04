@@ -24,6 +24,7 @@ export default {
     installedTitle: "Reveal はインストール済みです", installedMsg: "✓ Reveal はすでにスマホに入っています。ホーム画面のアイコンから開いてください。", installOpenChrome: "インストールするには、このページを Chrome で開いてください。",
     whichClass: "どのクラスに参加しますか？", enterBtn: "参加", searching: "検索中…", holdToRemove: "先生を長押しすると削除できます。",
     slideBg: "背景の色", customColor: "ほかの色",
+    bgLight: "明るい色", bgDark: "暗い色",
     settings: "設定", signOut: "ログアウト", signOutFail: "ログアウトできませんでした：{e}", seeTeachers: "すべての先生を見る",
   aboutApp: "Reveal は先生のためのアプリです。写真や聖句を準備し、授業のいちばん大切な瞬間に、生徒一人ひとりのスマホへライブで表示しましょう。授業が「聞く」だけでなく「見える」ものになります。",
   thanksApp: "Reveal で教えてくださり、ありがとうございます。 🙏",

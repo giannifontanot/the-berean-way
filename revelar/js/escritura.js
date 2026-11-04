@@ -151,14 +151,17 @@ export function laminaTexto(html) {
 
 // ---------- Fondo de las láminas ----------
 // fondo = nombre de un color de la paleta (o "#rrggbb" para «otro color»). Sin fondo = papel.
-export const FONDOS = {
-  papel: "#fdfcf9", blanco: "#ffffff", crema: "#f6ecd9", cielo: "#dbeafe", menta: "#d1fae5", rosa: "#fde2e4",
-  oro: "#e8c170", azul: "#1e3a8a", verde: "#14532d", vino: "#7f1d1d", noche: "#11152b", negro: "#000000",
-  amanecer: "linear-gradient(135deg, #f6d365, #fda085)", lavanda: "linear-gradient(135deg, #e0c3fc, #8ec5fc)",
-  oceano: "linear-gradient(135deg, #1e3c72, #2a5298)", bosque: "linear-gradient(135deg, #134e5e, #71b280)",
-  aurora: "linear-gradient(160deg, #0f2027, #203a43, #2c5364)", fuego: "linear-gradient(135deg, #8e2de2, #c2185b)",
-};
-const OSCUROS = new Set(["azul", "verde", "vino", "noche", "negro", "oceano", "bosque", "aurora", "fuego"]);
+// Solo fondos que da gusto leer: claros (papel, sepia, grises suaves) y oscuros (marino, pino…).
+export const FONDOS_CLAROS = { papel: "#fdfcf9", sepia: "#f4ecd8", lino: "#ebe0c8", perla: "#eef0f2", niebla: "#e4eaf1", salvia: "#e5ece3" };
+export const FONDOS_OSCUROS = { oceano: "linear-gradient(135deg, #1e3c72, #2a5298)", noche: "#151b2e", pino: "#1f3a30",
+  carbon: "#2a2c30", cafe: "#3a2e25", vino: "#4a2329" };
+export const FONDOS = { ...FONDOS_CLAROS, ...FONDOS_OSCUROS };
+// Colores de la primera paleta: ya no se ofrecen, pero las láminas que los usan se siguen viendo bien
+const VIEJOS = { blanco: "#ffffff", crema: "#f6ecd9", cielo: "#dbeafe", menta: "#d1fae5", rosa: "#fde2e4", oro: "#e8c170",
+  azul: "#1e3a8a", verde: "#14532d", negro: "#000000", amanecer: "linear-gradient(135deg, #f6d365, #fda085)",
+  lavanda: "linear-gradient(135deg, #e0c3fc, #8ec5fc)", bosque: "linear-gradient(135deg, #134e5e, #71b280)",
+  aurora: "linear-gradient(160deg, #0f2027, #203a43, #2c5364)", fuego: "linear-gradient(135deg, #8e2de2, #c2185b)" };
+const OSCUROS = new Set([...Object.keys(FONDOS_OSCUROS), "azul", "verde", "negro", "bosque", "aurora", "fuego"]);
 /** { css, oscuro } del fondo de una lámina, o null si es papel (el de siempre). */
 export function fondoDe(e) {
   const f = e?.lamina ? String(e.fondo || "") : "";
@@ -168,7 +171,8 @@ export function fondoDe(e) {
       .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
     return { css: f, oscuro: 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.3 };
   }
-  return FONDOS[f] ? { css: FONDOS[f], oscuro: OSCUROS.has(f) } : null;
+  const css = FONDOS[f] || VIEJOS[f];
+  return css ? { css, oscuro: OSCUROS.has(f) } : null;
 }
 /** Pinta el fondo en el contenedor de la lámina (tarjeta, miniatura, visor, editor). */
 export function ponerFondo(el, e) {
