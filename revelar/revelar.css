@@ -2507,3 +2507,4 @@ body.con-clase .mis-clases { opacity: 0; transform: translate(-50%, -24px); poin
 @keyframes mcVa { to { transform: scale(1.03); background: rgba(232,193,112,.3); } }
 @media (prefers-reduced-motion: reduce) { .mis-clases, .mc-lista li, .mc-vivo::before, .mc-estado-fila, .mc-nuevo.ok .mc-entrar { animation: none !important; } }
 .mis-clases[hidden] { display: none !important; }
+.tira-item.vistazo { border-color: var(--gold); border-style: solid; box-shadow: 0 0 0 2px color-mix(in srgb, var(--gold) 35%, transparent); }
