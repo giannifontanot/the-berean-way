@@ -10,8 +10,8 @@
     // Sin lección elegida (?s=), primero la lista de lecciones.
     if (!new URLSearchParams(location.search).has("s")) location.replace("lecciones.html");
   </script>
-  <link rel="stylesheet" href="revelar.css?v=202611041130">
-  <script src="js/letra-app.js?v=202611041130"></script>
+  <link rel="stylesheet" href="revelar.css?v=202611041208">
+  <script src="js/letra-app.js?v=202611041208"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <link rel="manifest" href="maestro.webmanifest">
@@ -21,7 +21,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Teacher">
-  <script type="module" src="js/pwa.js?v=202611041130"></script>
+  <script type="module" src="js/pwa.js?v=202611041208"></script>
 </head>
 <body>
   <header class="barra">
@@ -297,7 +297,11 @@
       <h2 id="notasTitulo">Notas</h2>
       <button class="btn letra" id="btnLetra" type="button" aria-label="Tamaño de letra de las notas" data-i18n-aria="fontSizeAria"><span class="aaa"><span>A</span><span>A</span><span>A</span></span></button>
     </div>
-    <div class="notas-prev" id="notasPrev"></div>
+    <!-- La lámina de estas notas, con ✎ para cambiarla sin salir (al guardar, regresas aquí) -->
+    <div class="notas-prev-fila">
+      <div class="notas-prev" id="notasPrev"></div>
+      <button class="btn notas-prev-editar" id="btnEditarDesdeNotas" type="button">✎ <span data-i18n="edit">Editar</span></button>
+    </div>
     <div class="campo"><span data-i18n="notesForMe">Notas para mí</span> <small data-i18n="notSeen">(no las ven los participantes)</small></div>
     <div class="marcas">
       <span data-i18n="selectWordsNotes">Selecciona palabras y toca:</span>
@@ -329,12 +333,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611041130";
-    import "./js/presion.js?v=202611041130";
-    import { colocarAviso } from "./js/junto.js?v=202611041130";
-    import { crearPapel } from "./js/papel.js?v=202611041130";
-    import { idioma, t, traducir } from "./js/i18n.js?v=202611041130";
-    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto, ponerFondo, fondoAttr, FAMILIAS, FONDOS_CLAROS, FONDOS_OSCUROS } from "./js/escritura.js?v=202611041130";
+    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611041208";
+    import "./js/presion.js?v=202611041208";
+    import { colocarAviso } from "./js/junto.js?v=202611041208";
+    import { crearPapel } from "./js/papel.js?v=202611041208";
+    import { idioma, t, traducir } from "./js/i18n.js?v=202611041208";
+    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto, ponerFondo, fondoAttr, FAMILIAS, FONDOS_CLAROS, FONDOS_OSCUROS } from "./js/escritura.js?v=202611041208";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -1261,7 +1265,7 @@
       $("dlgNotas").showModal();
       $("notasTexto").focus();
     }
-    $("btnGuardarNotas").addEventListener("click", async () => {
+    async function guardarNotasAbiertas(avisar) {
       const id = notasDe, texto = papelNotas.texto().trim().slice(0, 4000);
       $("dlgNotas").close();
       if (!id || texto === (notas[id] || "")) return;
@@ -1270,10 +1274,30 @@
         notas = { ...notas, [id]: texto }; if (!texto) delete notas[id];
         pintarNotasTarjetas(); construirTira();
         escucharNotas();
-        aviso(t("notesSaved"));
+        if (avisar) aviso(t("notesSaved"));
       }
       catch (e) { manejarError(e); }
+    }
+    $("btnGuardarNotas").addEventListener("click", () => guardarNotasAbiertas(true));
+    // ✎ en las notas: se guardan las notas, se abre el editor de esa lámina y al terminar regresas a las notas
+    var volverANotas = null, pasandoAEditor = false;
+    function regresarANotas(id) {
+      const v = volverANotas; volverANotas = null;
+      if (!v) return;
+      setTimeout(() => { if (items.has(id || v)) abrirNotas(id || v); }, 350);
+    }
+    $("btnEditarDesdeNotas").addEventListener("click", async () => {
+      const id = notasDe, item = items.get(id);
+      if (!item) return;
+      await guardarNotasAbiertas(false);
+      volverANotas = id;
+      if (item.pendiente) elegirTipo(id);
+      else if (item.tipo === "foto") cambiarFoto(id);
+      else abrirEditor(item);
     });
+    ["dlgEscritura", "dlgLamina"].forEach((d) => $(d).addEventListener("close", () => regresarANotas()));
+    $("dlgPendiente").addEventListener("close", () => { if (pasandoAEditor) { pasandoAEditor = false; return; } regresarANotas(); });
+    ["inputCambiar", "inputPendiente"].forEach((i) => $(i).addEventListener("cancel", () => regresarANotas()));
     function pintarNotasTarjetas() {
       tarjetas.forEach((b, id) => b.classList.toggle("con-notas", !!notas[id]));
     }
@@ -1681,13 +1705,14 @@
       const archivo = $("inputCambiar").files[0];
       $("inputCambiar").value = "";
       const id = cambiando; cambiando = null;
-      if (!archivo || !id) return;
+      if (!archivo || !id) { regresarANotas(); return; }
       aviso(t("changingPhoto"), true);
       try {
         const src = await comprimir(archivo);
         await store.reemplazarFoto(id, src, subidas[id]?.creado);
         aviso(t("photoChanged"));
       } catch (e) { manejarError(e); }
+      regresarANotas(id);
     });
 
     // ---------- Láminas en blanco (ideas de la lección) ----------
@@ -1702,21 +1727,23 @@
       $("dlgPendiente").showModal();
     }
     $("btnPendEscritura").addEventListener("click", () => {
+      pasandoAEditor = true;
       $("dlgPendiente").close();
       const it = items.get(pendienteDe);
       if (it) abrirEditor(it);
     });
     $("btnPendLamina").addEventListener("click", () => {
+      pasandoAEditor = true;
       $("dlgPendiente").close();
       const it = items.get(pendienteDe);
       if (it) abrirLamina(it);
     });
-    $("btnPendFoto").addEventListener("click", () => { $("dlgPendiente").close(); $("inputPendiente").click(); });
+    $("btnPendFoto").addEventListener("click", () => { pasandoAEditor = true; $("dlgPendiente").close(); $("inputPendiente").click(); });
     $("inputPendiente").addEventListener("change", async () => {
       const archivo = $("inputPendiente").files[0];
       $("inputPendiente").value = "";
       const viejo = pendienteDe;
-      if (!archivo || !viejo || !items.has(viejo)) return;
+      if (!archivo || !viejo || !items.has(viejo)) { regresarANotas(); return; }
       aviso(t("uploading"), true);
       try {
         const src = await comprimir(archivo);
@@ -1734,7 +1761,8 @@
         await store.borrarEscritura(viejo);
         if (ordenando) { pintarSaltadasTira(); elegirEnEdicion(nuevo); }
         aviso(t("photoAdded"));
-      } catch (e) { manejarError(e); }
+        regresarANotas(nuevo);                  // la foto tomó el lugar de la lámina en blanco (con sus notas)
+      } catch (e) { manejarError(e); regresarANotas(); }
     });
     // Al abrir una lección recién creada con ideas: una lámina en blanco por línea.
     async function crearEsqueleto() {
@@ -2044,7 +2072,7 @@
       if (b.disabled) return;
       b.disabled = true; aviso(t("buildingDoc"));
       try {
-        const { crearResumen } = await import("./js/resumen.js?v=202611041130");
+        const { crearResumen } = await import("./js/resumen.js?v=202611041208");
         const html = await crearResumen({
           lista, saltadas, notas,
           titulo: leccion?.titulo || "",
