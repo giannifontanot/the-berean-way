@@ -152,16 +152,30 @@ export function laminaTexto(html) {
 // ---------- Fondo de las láminas ----------
 // fondo = nombre de un color de la paleta (o "#rrggbb" para «otro color»). Sin fondo = papel.
 // Solo fondos que da gusto leer: claros (papel, sepia, grises suaves) y oscuros (marino, pino…).
-export const FONDOS_CLAROS = { papel: "#fdfcf9", sepia: "#f4ecd8", lino: "#ebe0c8", perla: "#eef0f2", niebla: "#e4eaf1", salvia: "#e5ece3" };
-export const FONDOS_OSCUROS = { oceano: "linear-gradient(135deg, #1e3c72, #2a5298)", noche: "#151b2e", pino: "#1f3a30",
-  carbon: "#2a2c30", cafe: "#3a2e25", vino: "#4a2329" };
+// Familias que da gusto leer: sepia, azul, verde y lila. Degradados muy suaves (todos con contraste AAA, 7:1 o más).
+export const FONDOS_CLAROS = {
+  papel: "#fdfcf9",
+  sepia: "linear-gradient(160deg, #fcf5e6, #f2e3c6)",
+  lino: "linear-gradient(160deg, #f7ebd2, #e9d5ad)",
+  niebla: "linear-gradient(160deg, #f4f9ff, #d9e8fa)",
+  salvia: "linear-gradient(160deg, #f2fbf4, #d6eedd)",
+  lila: "linear-gradient(160deg, #f8f4ff, #e4dbf7)",
+};
+export const FONDOS_OSCUROS = {
+  cafe: "linear-gradient(160deg, #54402e, #2f241a)",
+  oceano: "linear-gradient(135deg, #1e3c72, #2a5298)",
+  noche: "linear-gradient(160deg, #1c2747, #0f1529)",
+  pino: "linear-gradient(160deg, #2a5444, #16302a)",
+  uva: "linear-gradient(160deg, #443163, #251b3b)",
+  carbon: "linear-gradient(160deg, #34373d, #1f2125)",
+};
 export const FONDOS = { ...FONDOS_CLAROS, ...FONDOS_OSCUROS };
-// Colores de la primera paleta: ya no se ofrecen, pero las láminas que los usan se siguen viendo bien
-const VIEJOS = { blanco: "#ffffff", crema: "#f6ecd9", cielo: "#dbeafe", menta: "#d1fae5", rosa: "#fde2e4", oro: "#e8c170",
+// Colores que ya no se ofrecen: las láminas que los usan se siguen viendo bien
+const VIEJOS = { perla: "#eef0f2", vino: "#4a2329", blanco: "#ffffff", crema: "#f6ecd9", cielo: "#dbeafe", menta: "#d1fae5", rosa: "#fde2e4", oro: "#e8c170",
   azul: "#1e3a8a", verde: "#14532d", negro: "#000000", amanecer: "linear-gradient(135deg, #f6d365, #fda085)",
   lavanda: "linear-gradient(135deg, #e0c3fc, #8ec5fc)", bosque: "linear-gradient(135deg, #134e5e, #71b280)",
   aurora: "linear-gradient(160deg, #0f2027, #203a43, #2c5364)", fuego: "linear-gradient(135deg, #8e2de2, #c2185b)" };
-const OSCUROS = new Set([...Object.keys(FONDOS_OSCUROS), "azul", "verde", "negro", "bosque", "aurora", "fuego"]);
+const OSCUROS = new Set([...Object.keys(FONDOS_OSCUROS), "vino", "azul", "verde", "negro", "bosque", "aurora", "fuego"]);
 /** { css, oscuro } del fondo de una lámina, o null si es papel (el de siempre). */
 export function fondoDe(e) {
   const f = e?.lamina ? String(e.fondo || "") : "";
