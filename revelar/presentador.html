@@ -10,8 +10,8 @@
     // Sin lección elegida (?s=), primero la lista de lecciones.
     if (!new URLSearchParams(location.search).has("s")) location.replace("lecciones.html");
   </script>
-  <link rel="stylesheet" href="revelar.css?v=202611041126">
-  <script src="js/letra-app.js?v=202611041126"></script>
+  <link rel="stylesheet" href="revelar.css?v=202611041130">
+  <script src="js/letra-app.js?v=202611041130"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <link rel="manifest" href="maestro.webmanifest">
@@ -21,7 +21,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Teacher">
-  <script type="module" src="js/pwa.js?v=202611041126"></script>
+  <script type="module" src="js/pwa.js?v=202611041130"></script>
 </head>
 <body>
   <header class="barra">
@@ -100,6 +100,12 @@
         <span class="sig-label" data-i18n="nextBtn">Siguiente ▶</span>
         <span class="sig-cual" id="sigCual"></span>
       </button>
+    </div>
+    <!-- En Editar: moverse entre tus láminas (no revela nada) -->
+    <div class="dock dock-edicion">
+      <button class="btn deshacer" id="btnEdAtras" type="button"><span class="sig-label" data-i18n="backBtn">◀ Atrás</span></button>
+      <button class="btn primario siguiente" id="btnEdAdelante" type="button"><span class="sig-label" data-i18n="forwardBtn">Adelante ▶</span>
+        <span class="sig-cual" id="edCual"></span></button>
     </div>
   </main>
 
@@ -323,12 +329,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611041126";
-    import "./js/presion.js?v=202611041126";
-    import { colocarAviso } from "./js/junto.js?v=202611041126";
-    import { crearPapel } from "./js/papel.js?v=202611041126";
-    import { idioma, t, traducir } from "./js/i18n.js?v=202611041126";
-    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto, ponerFondo, fondoAttr, FAMILIAS, FONDOS_CLAROS, FONDOS_OSCUROS } from "./js/escritura.js?v=202611041126";
+    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611041130";
+    import "./js/presion.js?v=202611041130";
+    import { colocarAviso } from "./js/junto.js?v=202611041130";
+    import { crearPapel } from "./js/papel.js?v=202611041130";
+    import { idioma, t, traducir } from "./js/i18n.js?v=202611041130";
+    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto, ponerFondo, fondoAttr, FAMILIAS, FONDOS_CLAROS, FONDOS_OSCUROS } from "./js/escritura.js?v=202611041130";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -1073,8 +1079,25 @@
     let anclaNueva = null;
     // En modo Editar: lámina elegida (sus notas se ven abajo)
     var notasEdicion = null;
+    // Botones Atrás / Adelante en Editar: pasan a la lámina anterior o siguiente de la tira
+    function pintarDockEdicion() {
+      const ids = [...$("tira").querySelectorAll(".tira-item")].map((el) => el.dataset.id);
+      const i = Math.max(0, ids.indexOf(notasEdicion));      // sin elegida: se ven las notas de la primera
+      $("btnEdAtras").disabled = i <= 0;
+      $("btnEdAdelante").disabled = i >= ids.length - 1;
+      $("edCual").textContent = ids.length ? t("posOf", { n: i + 1, total: ids.length }) : "";
+    }
+    function moverEdicion(dir) {
+      const ids = [...$("tira").querySelectorAll(".tira-item")].map((el) => el.dataset.id);
+      const i = Math.max(0, ids.indexOf(notasEdicion));
+      const id = ids[i + dir];
+      if (id) elegirEnEdicion(id);
+    }
+    $("btnEdAtras").addEventListener("click", () => moverEdicion(-1));
+    $("btnEdAdelante").addEventListener("click", () => moverEdicion(1));
     function elegirEnEdicion(id) {
       notasEdicion = id;
+      setTimeout(pintarDockEdicion, 0);
       tiraEls.forEach((el, k) => el.classList.toggle("elegida", k === id));
       pintarPresentar();
       // La lámina elegida se va al centro, junto a sus notas
@@ -1293,6 +1316,7 @@
       });
       ponerMas();
       pintarSaltadasTira();
+      if (ordenando) pintarDockEdicion();
       pintarPresentar();
     }
 
@@ -1890,6 +1914,7 @@
       if (!ordenando) {
         if (!window.Sortable) { aviso(t("dragFail")); return; }
         ordenando = true;
+        setTimeout(pintarDockEdicion, 0);
         $("panel").classList.add("ordenando"); document.body.classList.add("ordenando-activo");
         $("btnOrdenar").querySelector(".lbl").textContent = t("done");
         $("btnOrdenar").classList.add("activo");
@@ -2019,7 +2044,7 @@
       if (b.disabled) return;
       b.disabled = true; aviso(t("buildingDoc"));
       try {
-        const { crearResumen } = await import("./js/resumen.js?v=202611041126");
+        const { crearResumen } = await import("./js/resumen.js?v=202611041130");
         const html = await crearResumen({
           lista, saltadas, notas,
           titulo: leccion?.titulo || "",

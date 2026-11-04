@@ -26,6 +26,7 @@ export default {
     slideBg: "Hintergrundfarbe", customColor: "Andere Farbe",
     bgLight: "Hell", bgDark: "Dunkel",
     famSepia: "Sepia", famBlue: "Blau", famGreen: "Grün", famLilac: "Flieder", paperBg: "Papier",
+    forwardBtn: "Weiter ▶",
     settings: "Einstellungen", signOut: "Abmelden", signOutFail: "Abmelden nicht möglich: {e}", seeTeachers: "Alle meine Lehrkräfte ansehen",
   aboutApp: "Reveal ist die App für Lehrkräfte. Bereite deine Fotos und Texte vor und zeige sie live auf dem Handy jedes Schülers – genau in dem Moment der Stunde, in dem sie am meisten zählen. Damit deine Stunden nicht nur gehört, sondern auch gesehen werden.",
   thanksApp: "Danke, dass du mit Reveal unterrichtest. 🙏",

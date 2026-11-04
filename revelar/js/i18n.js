@@ -13,12 +13,12 @@
 //   data-i18n-dph="clave"    → data-placeholder (editor de escrituras)
 // En JS: t("clave", { n: 3 }) → reemplaza {n}.
 
-import fr from "./i18n-fr.js?v=202611041126";
-import pt from "./i18n-pt.js?v=202611041126";
-import de from "./i18n-de.js?v=202611041126";
-import ja from "./i18n-ja.js?v=202611041126";
-import hi from "./i18n-hi.js?v=202611041126";
-import id from "./i18n-id.js?v=202611041126";
+import fr from "./i18n-fr.js?v=202611041130";
+import pt from "./i18n-pt.js?v=202611041130";
+import de from "./i18n-de.js?v=202611041130";
+import ja from "./i18n-ja.js?v=202611041130";
+import hi from "./i18n-hi.js?v=202611041130";
+import id from "./i18n-id.js?v=202611041130";
 
 const CLAVE = "revelar:idioma";
 export const IDIOMAS = ["es", "en", "fr", "pt", "de", "ja", "hi", "id"];
@@ -54,6 +54,7 @@ const TEXTOS = {
     slideBg: "Color de fondo", customColor: "Otro color",
     bgLight: "Claros", bgDark: "Oscuros",
     famSepia: "Sepia", famBlue: "Azul", famGreen: "Verde", famLilac: "Lila", paperBg: "Papel",
+    forwardBtn: "Adelante ▶",
     settings: "Ajustes", signOut: "Salir", signOutFail: "No se pudo salir: {e}", seeTeachers: "Ver a todos mis maestros",
     aboutApp: "Reveal es el app del maestro. Prepara tus fotos y escrituras, y revélalas en vivo en el teléfono de cada alumno, justo en el momento de la lección en que más importan. Para que tus clases no solo se escuchen, sino que también se vean.",
     thanksApp: "Gracias por enseñar con Reveal.\u00a0🙏",
@@ -231,6 +232,7 @@ const TEXTOS = {
     slideBg: "Background color", customColor: "Other color",
     bgLight: "Light", bgDark: "Dark",
     famSepia: "Sepia", famBlue: "Blue", famGreen: "Green", famLilac: "Lilac", paperBg: "Paper",
+    forwardBtn: "Forward ▶",
     settings: "Settings", signOut: "Sign out", signOutFail: "Couldn't sign out: {e}", seeTeachers: "See all my teachers",
     aboutApp: "Reveal is the teacher's app. Prepare your photos and scriptures, then reveal them live on every student's phone, right at the moment in your lesson when they matter most. So your lessons aren't only heard, but seen.",
     thanksApp: "Thank you for teaching with Reveal.\u00a0🙏",

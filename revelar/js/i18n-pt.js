@@ -26,6 +26,7 @@ export default {
     slideBg: "Cor de fundo", customColor: "Outra cor",
     bgLight: "Claros", bgDark: "Escuros",
     famSepia: "Sépia", famBlue: "Azul", famGreen: "Verde", famLilac: "Lilás", paperBg: "Papel",
+    forwardBtn: "Avançar ▶",
     settings: "Configurações", signOut: "Sair", signOutFail: "Não foi possível sair: {e}", seeTeachers: "Ver todos os meus professores",
   aboutApp: "O Reveal é o app do professor. Prepare suas fotos e passagens e revele-as ao vivo no celular de cada aluno, no momento da aula em que mais importam. Para que suas aulas não sejam só ouvidas, mas também vistas.",
   thanksApp: "Obrigado por ensinar com o Reveal. 🙏",

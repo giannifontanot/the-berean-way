@@ -26,6 +26,7 @@ export default {
     slideBg: "Warna latar", customColor: "Warna lain",
     bgLight: "Terang", bgDark: "Gelap",
     famSepia: "Sepia", famBlue: "Biru", famGreen: "Hijau", famLilac: "Lila", paperBg: "Kertas",
+    forwardBtn: "Maju ▶",
     settings: "Pengaturan", signOut: "Keluar", signOutFail: "Tidak bisa keluar: {e}", seeTeachers: "Lihat semua guru saya",
   aboutApp: "Reveal adalah aplikasi untuk guru. Siapkan foto dan ayatmu, lalu tampilkan langsung di ponsel setiap murid, tepat di saat paling penting dalam pelajaran. Supaya pelajaranmu tidak hanya didengar, tetapi juga dilihat.",
   thanksApp: "Terima kasih sudah mengajar dengan Reveal. 🙏",

@@ -26,6 +26,7 @@ export default {
     slideBg: "पृष्ठभूमि का रंग", customColor: "दूसरा रंग",
     bgLight: "हल्के", bgDark: "गहरे",
     famSepia: "सीपिया", famBlue: "नीला", famGreen: "हरा", famLilac: "बकाइनी", paperBg: "कागज़",
+    forwardBtn: "आगे ▶",
     settings: "सेटिंग्स", signOut: "साइन आउट", signOutFail: "साइन आउट नहीं हो सका: {e}", seeTeachers: "मेरे सभी शिक्षक देखें",
   aboutApp: "Reveal शिक्षकों का ऐप है। अपनी फ़ोटो और वचन तैयार करें, और कक्षा के सबसे अहम पल पर उन्हें हर छात्र के फ़ोन पर लाइव दिखाएँ। ताकि आपकी कक्षाएँ सिर्फ़ सुनी ही नहीं, देखी भी जाएँ।",
   thanksApp: "Reveal के साथ पढ़ाने के लिए धन्यवाद। 🙏",
