@@ -2545,7 +2545,9 @@ body.con-clase .mis-clases { opacity: 0; transform: translate(-50%, -24px); poin
 .lam-fam-nom { font-size: calc(13px * var(--esc, 1)); font-weight: 600; color: var(--text); opacity: .8; }
 .lam-fondos-fam .lam-sw { aspect-ratio: auto; height: 40px; }
 
-.notas-prev-fila { display: flex; align-items: flex-end; gap: 12px; margin: 0 0 12px; }
+/* ✎ encima de la lámina (abajo a la derecha), igual que los botones de la tira en Editar */
+.notas-prev-fila { position: relative; width: fit-content; margin: 4px auto 14px; }
 .notas-prev-fila .notas-prev { margin: 0; }
 .notas-prev-fila .notas-prev:empty + .notas-prev-editar { display: none; }
-.notas-prev-editar { padding: 8px 16px; font-size: calc(15px * var(--esc, 1)); }
+.notas-prev-editar { position: absolute; right: 8px; bottom: 8px; z-index: 2; width: 40px; height: 40px; display: grid; place-items: center;
+  border-radius: 50%; border: 0; background: rgba(10, 12, 26, 0.78); color: #fff; font-size: calc(17px * var(--esc, 1)); cursor: pointer; }

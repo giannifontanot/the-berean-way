@@ -10,8 +10,8 @@
     // Sin lección elegida (?s=), primero la lista de lecciones.
     if (!new URLSearchParams(location.search).has("s")) location.replace("lecciones.html");
   </script>
-  <link rel="stylesheet" href="revelar.css?v=202611041208">
-  <script src="js/letra-app.js?v=202611041208"></script>
+  <link rel="stylesheet" href="revelar.css?v=202611041215">
+  <script src="js/letra-app.js?v=202611041215"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <link rel="manifest" href="maestro.webmanifest">
@@ -21,7 +21,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Teacher">
-  <script type="module" src="js/pwa.js?v=202611041208"></script>
+  <script type="module" src="js/pwa.js?v=202611041215"></script>
 </head>
 <body>
   <header class="barra">
@@ -300,7 +300,7 @@
     <!-- La lámina de estas notas, con ✎ para cambiarla sin salir (al guardar, regresas aquí) -->
     <div class="notas-prev-fila">
       <div class="notas-prev" id="notasPrev"></div>
-      <button class="btn notas-prev-editar" id="btnEditarDesdeNotas" type="button">✎ <span data-i18n="edit">Editar</span></button>
+      <button class="notas-prev-editar" id="btnEditarDesdeNotas" type="button" aria-label="Editar" data-i18n-aria="edit">✎</button>
     </div>
     <div class="campo"><span data-i18n="notesForMe">Notas para mí</span> <small data-i18n="notSeen">(no las ven los participantes)</small></div>
     <div class="marcas">
@@ -333,12 +333,12 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611041208";
-    import "./js/presion.js?v=202611041208";
-    import { colocarAviso } from "./js/junto.js?v=202611041208";
-    import { crearPapel } from "./js/papel.js?v=202611041208";
-    import { idioma, t, traducir } from "./js/i18n.js?v=202611041208";
-    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto, ponerFondo, fondoAttr, FAMILIAS, FONDOS_CLAROS, FONDOS_OSCUROS } from "./js/escritura.js?v=202611041208";
+    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611041215";
+    import "./js/presion.js?v=202611041215";
+    import { colocarAviso } from "./js/junto.js?v=202611041215";
+    import { crearPapel } from "./js/papel.js?v=202611041215";
+    import { idioma, t, traducir } from "./js/i18n.js?v=202611041215";
+    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto, ponerFondo, fondoAttr, FAMILIAS, FONDOS_CLAROS, FONDOS_OSCUROS } from "./js/escritura.js?v=202611041215";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -2072,7 +2072,7 @@
       if (b.disabled) return;
       b.disabled = true; aviso(t("buildingDoc"));
       try {
-        const { crearResumen } = await import("./js/resumen.js?v=202611041208");
+        const { crearResumen } = await import("./js/resumen.js?v=202611041215");
         const html = await crearResumen({
           lista, saltadas, notas,
           titulo: leccion?.titulo || "",
