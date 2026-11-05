@@ -2568,3 +2568,6 @@ body.modo-presentar.ordenando-activo::after { opacity: 1; border-color: var(--go
 .aj-autor { margin: 4px 0 16px; text-align: center; font-size: calc(14px * var(--esc, 1)); line-height: 1.5; color: var(--muted, #9aa3b5); }
 .aj-autor b { color: var(--text); font-weight: 700; }
 .aj-autor a { color: var(--gold); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--gold) 45%, transparent); }
+.aj-whatsapp { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; padding: 6px 14px; border-radius: 999px;
+  border: 1px solid rgba(37, 211, 102, .55) !important; color: #4ee08a !important; font-weight: 700; }
+.aj-whatsapp svg { width: 18px; height: 18px; }

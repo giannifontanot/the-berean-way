@@ -5,8 +5,8 @@
 //   solo liga     → una lámina en blanco con la liga en sus notas (después le pones la foto)
 //   solo imagen   → la foto, y se pregunta «¿De dónde viene?» para pegar la liga
 // Si la imagen y la liga llegan por separado con menos de 3 minutos de diferencia, se juntan en la misma lámina.
-import { crearStore, nuevoIdLeccion } from "./store.js?v=202611051507";
-import { t } from "./i18n.js?v=202611051507";
+import { crearStore, nuevoIdLeccion } from "./store.js?v=202611051537";
+import { t } from "./i18n.js?v=202611051537";
 
 const CACHE = "revelar-compartido";
 const ULTIMO = "revelar:ultimoCompartido";

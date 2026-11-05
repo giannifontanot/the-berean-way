@@ -8,8 +8,8 @@
   <title>Mis lecciones · Reveal — el app del maestro</title>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-  <link rel="stylesheet" href="revelar.css?v=202611051507">
-  <script src="js/letra-app.js?v=202611051507"></script>
+  <link rel="stylesheet" href="revelar.css?v=202611051537">
+  <script src="js/letra-app.js?v=202611051537"></script>
   <link rel="manifest" href="maestro.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="iconos/maestro-192.png">
   <link rel="apple-touch-icon" href="iconos/maestro-180.png">
@@ -17,7 +17,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Teacher">
-  <script type="module" src="js/pwa.js?v=202611051507"></script>
+  <script type="module" src="js/pwa.js?v=202611051537"></script>
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -220,7 +220,10 @@
     <!-- Quién hizo el app (con su correo) -->
     <p class="aj-autor">
       <span data-i18n="developedBy">Desarrollado por</span> <b>Gianni Fontanot</b><br>
-      <a href="mailto:giannifontanot@gmail.com?subject=Reveal">giannifontanot@gmail.com</a>
+      <a class="aj-whatsapp" id="lnkWhatsapp" href="https://wa.me/12148094544" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.4 5 5.1-1.3A9.9 9.9 0 1 0 12.04 2zm0 18.1a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3 .8.8-2.95-.2-.3a8.2 8.2 0 1 1 6.9 3.78zm4.5-6.15c-.25-.12-1.46-.72-1.69-.8-.23-.08-.39-.12-.56.12-.16.25-.64.8-.79.97-.14.16-.29.18-.54.06a6.7 6.7 0 0 1-3.33-2.9c-.25-.43.25-.4.72-1.34.08-.16.04-.3-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.42h-.48a.92.92 0 0 0-.66.31 2.8 2.8 0 0 0-.87 2.07 4.85 4.85 0 0 0 1.02 2.58 11.1 11.1 0 0 0 4.25 3.75c1.58.68 2.2.74 3 .62.48-.07 1.46-.6 1.67-1.18.2-.58.2-1.08.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+        <span>WhatsApp</span>
+      </a>
     </p>
 
     <p class="aj-etiqueta" data-i18n="language">Idioma</p>
@@ -332,13 +335,13 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202611051507";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202611051507";
-    import "./js/presion.js?v=202611051507";
-    import "./js/sinfoco.js?v=202611051507";   // ventanas: sin foco automático y aparecen desde el botón que tocaste
-    import { confirmarQuitar } from "./js/confirmar.js?v=202611051507";
-    import { colocarAviso } from "./js/junto.js?v=202611051507";
-    import { idioma, ponerIdioma, t, traducir, IDIOMAS, NOMBRES } from "./js/i18n.js?v=202611051507";
+    import { CONFIG } from "./config.js?v=202611051537";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202611051537";
+    import "./js/presion.js?v=202611051537";
+    import "./js/sinfoco.js?v=202611051537";   // ventanas: sin foco automático y aparecen desde el botón que tocaste
+    import { confirmarQuitar } from "./js/confirmar.js?v=202611051537";
+    import { colocarAviso } from "./js/junto.js?v=202611051537";
+    import { idioma, ponerIdioma, t, traducir, IDIOMAS, NOMBRES } from "./js/i18n.js?v=202611051537";
 
     const $ = (id) => document.getElementById(id);
 
@@ -354,7 +357,13 @@
         b.setAttribute("aria-pressed", String(b.dataset.lang === idioma())));
     }
     aplicarIdioma();
-    $("btnAjustes").addEventListener("click", () => $("dlgAjustes").showModal());
+    $("btnAjustes").addEventListener("click", () => {
+      $("dlgAjustes").showModal();
+    });
+    // WhatsApp con Gianni: el mensaje ya escrito, en el idioma que tenga el maestro al tocarlo
+    $("lnkWhatsapp").addEventListener("click", () => {
+      $("lnkWhatsapp").href = "https://wa.me/12148094544?text=" + encodeURIComponent(t("waHello"));
+    });
     document.querySelectorAll(".idioma-opciones button").forEach((b) => b.addEventListener("click", () => {
       ponerIdioma(b.dataset.lang);
       try { cat.publicarIdioma?.(b.dataset.lang).catch(() => {}); } catch {}   // la pantalla de tus alumnos sale en este idioma
@@ -799,7 +808,7 @@
       p.delete("compartido");
       history.replaceState(null, "", location.pathname + (p.toString() ? "?" + p : "") + location.hash);
       try {
-        const { procesarCompartidos } = await import("./js/compartido.js?v=202611051507");
+        const { procesarCompartidos } = await import("./js/compartido.js?v=202611051537");
         await procesarCompartidos({ cat, lecciones, aviso, preguntarFuente: (guardar) => {
           guardarFuente = guardar;
           $("fuenteLiga").value = "";
@@ -1021,7 +1030,7 @@
       if (!$("chkUbic").disabled) $("chkUbic").checked = !!yo;
       $("mapaInvita").hidden = !!yo;
       try {
-        mapaUI ??= (await import("./js/mapa.js?v=202611051507")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
+        mapaUI ??= (await import("./js/mapa.js?v=202611051537")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
         // Un punto por ciudad. Tú en verde (arriba de todo); conectado ahora = rojo brillante;
         // ciudades desde donde alguien se conectó antes = rojo apagado (debajo de los brillantes).
         const yoId = cat.uid?.();
