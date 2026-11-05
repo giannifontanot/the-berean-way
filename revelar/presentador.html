@@ -10,8 +10,8 @@
     // Sin lección elegida (?s=), primero la lista de lecciones.
     if (!new URLSearchParams(location.search).has("s")) location.replace("lecciones.html");
   </script>
-  <link rel="stylesheet" href="revelar.css?v=202611041824">
-  <script src="js/letra-app.js?v=202611041824"></script>
+  <link rel="stylesheet" href="revelar.css?v=202611050440">
+  <script src="js/letra-app.js?v=202611050440"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <link rel="manifest" href="maestro.webmanifest">
@@ -21,7 +21,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Teacher">
-  <script type="module" src="js/pwa.js?v=202611041824"></script>
+  <script type="module" src="js/pwa.js?v=202611050440"></script>
 </head>
 <body>
   <header class="barra">
@@ -333,13 +333,13 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611041824";
-    import "./js/presion.js?v=202611041824";
-    import "./js/sinfoco.js?v=202611041824";   // ventanas: sin foco automático y aparecen desde el botón que tocaste
-    import { colocarAviso } from "./js/junto.js?v=202611041824";
-    import { crearPapel } from "./js/papel.js?v=202611041824";
-    import { idioma, t, traducir } from "./js/i18n.js?v=202611041824";
-    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto, ponerFondo, fondoAttr, FAMILIAS, FONDOS_CLAROS, FONDOS_OSCUROS } from "./js/escritura.js?v=202611041824";
+    import { crearStore, crearCatalogo, PRESENTADOR_ORIGINAL, sesionActual, ordenar, esPermisoDenegado, TEMP, esTemporal, idReal, FOCO, esFoco } from "./js/store.js?v=202611050440";
+    import "./js/presion.js?v=202611050440";
+    import "./js/sinfoco.js?v=202611050440";   // ventanas: sin foco automático y aparecen desde el botón que tocaste
+    import { colocarAviso } from "./js/junto.js?v=202611050440";
+    import { crearPapel } from "./js/papel.js?v=202611050440";
+    import { idioma, t, traducir } from "./js/i18n.js?v=202611050440";
+    import { textoAHtml, notasAHtml, cuerpoHtml, laminaAHtml, laminaTexto, ponerFondo, fondoAttr, FAMILIAS, FONDOS_CLAROS, FONDOS_OSCUROS } from "./js/escritura.js?v=202611050440";
     // fotos.js se pide siempre fresco: así un cambio de fotos se ve al recargar,
     // sin esperar los 10 minutos de caché de GitHub Pages.
     const { FOTOS } = await import("./fotos.js?v=" + Date.now());
@@ -1100,6 +1100,11 @@
     }
     $("btnEdAtras").addEventListener("click", () => moverEdicion(-1));
     $("btnEdAdelante").addEventListener("click", () => moverEdicion(1));
+    // En Edición, la barra de arriba del teléfono (Android) toma el mismo dorado del borde
+    function colorBarras(editando) {
+      const m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.content = editando ? "#e8c170" : "#11152b";
+    }
     function elegirEnEdicion(id) {
       notasEdicion = id;
       setTimeout(pintarDockEdicion, 0);
@@ -1963,6 +1968,7 @@
         ordenando = true;
         setTimeout(pintarDockEdicion, 0);
         $("panel").classList.add("ordenando"); document.body.classList.add("ordenando-activo");
+        colorBarras(true);       // la barra de Android (hora, batería) también se pone dorada
         $("btnOrdenar").querySelector(".lbl").textContent = t("done");
         $("btnOrdenar").classList.add("activo");
         $("btnCompartir").hidden = $("btnReiniciar").hidden = $("btnLecciones").hidden = $("btnImprimir").hidden = true;
@@ -2006,6 +2012,7 @@
       sortable?.destroy(); sortable = null;
       ordenando = false;
       $("panel").classList.remove("ordenando"); document.body.classList.remove("ordenando-activo");
+      colorBarras(false);
       $("btnOrdenar").querySelector(".lbl").textContent = t("edit");
       $("btnOrdenar").classList.remove("activo");
       $("btnCompartir").hidden = $("btnReiniciar").hidden = $("btnLecciones").hidden = $("btnImprimir").hidden = false;
@@ -2091,7 +2098,7 @@
       if (b.disabled) return;
       b.disabled = true; aviso(t("buildingDoc"));
       try {
-        const { crearResumen } = await import("./js/resumen.js?v=202611041824");
+        const { crearResumen } = await import("./js/resumen.js?v=202611050440");
         const html = await crearResumen({
           lista, saltadas, notas,
           titulo: leccion?.titulo || "",
