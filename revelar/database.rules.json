@@ -181,6 +181,9 @@
         },
         "logo": {
           ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9-]{1,20}$/)"
+        },
+        "bienvenida": {
+          ".validate": "newData.isBoolean()"
         }
       },
       ".read": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'"
@@ -212,6 +215,10 @@
         ".write": "auth != null && root.child('revelar_codigos/' + $codigo).val() === auth.uid",
         ".validate": "newData.isString() && newData.val().matches(/^(es|en|fr|pt|de|ja|hi|id)$/)"
       }
+    },
+    "revelar_bienvenida": {
+      ".read": "auth != null",
+      ".write": "auth != null && auth.uid === 'xWkkWXXR0jcHMnOGEwYjrxzxGtX2'"
     },
     "revelar_actual": {
       ".read": true,

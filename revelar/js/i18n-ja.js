@@ -27,6 +27,7 @@ export default {
     bgLight: "明るい色", bgDark: "暗い色",
     famSepia: "セピア", famBlue: "青", famGreen: "緑", famLilac: "ライラック", paperBg: "紙",
     forwardBtn: "次へ ▶",
+    welcomeLesson: "⭐ ようこそレッスン", welcomeIsThis: "⭐ これがようこそレッスンです", welcomeSet: "新しい先生は「{t}」を受け取ります",
     settings: "設定", signOut: "ログアウト", signOutFail: "ログアウトできませんでした：{e}", seeTeachers: "すべての先生を見る",
   aboutApp: "Reveal は先生のためのアプリです。写真や聖句を準備し、授業のいちばん大切な瞬間に、生徒一人ひとりのスマホへライブで表示しましょう。授業が「聞く」だけでなく「見える」ものになります。",
   thanksApp: "Reveal で教えてくださり、ありがとうございます。 🙏",

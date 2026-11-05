@@ -28,7 +28,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202611050456";
+import { CONFIG } from "../config.js?v=202611050558";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -367,6 +367,31 @@ async function catalogoFirebase() {
     compartir: (sesion, titulo) => db.set(ref(`revelar_compartidas/${sesion}`), { titulo: String(titulo || "").slice(0, 80), desde: Date.now() }),
     dejarDeCompartir: (sesion) => db.remove(ref(`revelar_compartidas/${sesion}`)),
     async estaCompartida(sesion) { return !!(await val(`revelar_compartidas/${sesion}`)); },
+    // ---------- Lección de bienvenida ----------
+    // El administrador elige una de sus lecciones; cada maestro nuevo recibe una copia (con notas) la primera vez.
+    //   revelar_bienvenida = { origen, titulo, notas, puesta }
+    leerBienvenida: () => val("revelar_bienvenida"),
+    async marcarBienvenida(sesion, titulo, ficha = {}) {
+      const notas = await val(`revelar_privado/${sesion}/notas`);
+      await db.set(ref("revelar_bienvenida"), { origen: sesion, titulo: String(titulo || "").slice(0, 80), puesta: Date.now(),
+        ...(notas ? { notas } : {}), ...(ficha.laminas ? { laminas: ficha.laminas } : {}), ...(ficha.portada ? { portada: ficha.portada } : {}) });
+    },
+    async recibirBienvenida(progreso) {
+      const yo = uid();
+      if (!yo || (await val(`revelar_maestros/${yo}/bienvenida`))) return false;
+      const b = await val("revelar_bienvenida");
+      if (!b?.origen) return false;
+      const destino = limpiarSesion("bv" + yo.toLowerCase()).slice(0, 40);
+      if ((await val(`revelar_duenos/${destino}`)) !== yo) await db.set(ref(`revelar_duenos/${destino}`), yo);
+      const ahora = Date.now();
+      await copiarContenido(b.origen, destino, {
+        [`revelar_lecciones/${yo}/${destino}`]: { titulo: b.titulo || "", creada: ahora, editada: ahora,
+          ...(b.laminas ? { laminas: b.laminas } : {}), ...(b.portada ? { portada: b.portada } : {}) },
+        [`revelar_privado/${destino}/notas`]: b.notas || null,
+        [`revelar_maestros/${yo}/bienvenida`]: true,
+      }, progreso);
+      return true;
+    },
   };
 }
 
@@ -592,6 +617,9 @@ function catalogoDemo() {
     async compartir(sesion, titulo) { const v = leerJ("revelar-demo:compartidas"); v[sesion] = { titulo, desde: Date.now() }; try { localStorage.setItem("revelar-demo:compartidas", JSON.stringify(v)); } catch {} },
     async dejarDeCompartir(sesion) { const v = leerJ("revelar-demo:compartidas"); delete v[sesion]; try { localStorage.setItem("revelar-demo:compartidas", JSON.stringify(v)); } catch {} },
     async estaCompartida(sesion) { return !!leerJ("revelar-demo:compartidas")[sesion]; },
+    async leerBienvenida() { return null; },
+    async marcarBienvenida() {},
+    async recibirBienvenida() { return false; },
   };
 }
 
