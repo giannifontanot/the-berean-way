@@ -30,6 +30,7 @@ export default {
     welcomeLesson: "⭐ Pelajaran sambutan", welcomeIsThis: "⭐ Ini pelajaran sambutan", welcomeSet: "Guru baru akan menerima “{t}”",
     developedBy: "Dikembangkan oleh",
     waHello: "Halo Gianni, saya menulis dari Reveal.",
+    welcomeRemove: "✕ Hapus dari sambutan", welcomeRemoved: "Guru baru tidak akan menerima “{t}” lagi",
     settings: "Pengaturan", signOut: "Keluar", signOutFail: "Tidak bisa keluar: {e}", seeTeachers: "Lihat semua guru saya",
   aboutApp: "Reveal adalah aplikasi untuk guru. Siapkan foto dan ayatmu, lalu tampilkan langsung di ponsel setiap murid, tepat di saat paling penting dalam pelajaran. Supaya pelajaranmu tidak hanya didengar, tetapi juga dilihat.",
   thanksApp: "Terima kasih sudah mengajar dengan Reveal. 🙏",

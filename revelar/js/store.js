@@ -28,7 +28,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202611061010";
+import { CONFIG } from "../config.js?v=202611061056";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -367,29 +367,48 @@ async function catalogoFirebase() {
     compartir: (sesion, titulo) => db.set(ref(`revelar_compartidas/${sesion}`), { titulo: String(titulo || "").slice(0, 80), desde: Date.now() }),
     dejarDeCompartir: (sesion) => db.remove(ref(`revelar_compartidas/${sesion}`)),
     async estaCompartida(sesion) { return !!(await val(`revelar_compartidas/${sesion}`)); },
-    // ---------- Lección de bienvenida ----------
-    // El administrador elige una de sus lecciones; cada maestro nuevo recibe una copia (con notas) la primera vez.
-    //   revelar_bienvenida = { origen, titulo, notas, puesta }
-    leerBienvenida: () => val("revelar_bienvenida"),
+    // ---------- Lecciones de bienvenida ----------
+    // El administrador elige algunas de sus lecciones; cada maestro nuevo recibe una copia de cada una (con notas).
+    //   revelar_bienvenida/<sesion> = { titulo, notas, laminas, portada, puesta }
+    // (Antes era una sola: { origen, titulo, … }; se sigue entendiendo.)
+    async leerBienvenidas() {
+      const b = (await val("revelar_bienvenida")) || {};
+      if (b.origen) return { [b.origen]: b };
+      return b;
+    },
     async marcarBienvenida(sesion, titulo, ficha = {}) {
       const notas = await val(`revelar_privado/${sesion}/notas`);
-      await db.set(ref("revelar_bienvenida"), { origen: sesion, titulo: String(titulo || "").slice(0, 80), puesta: Date.now(),
-        ...(notas ? { notas } : {}), ...(ficha.laminas ? { laminas: ficha.laminas } : {}), ...(ficha.portada ? { portada: ficha.portada } : {}) });
+      const viejo = await val("revelar_bienvenida/origen");
+      const datos = { titulo: String(titulo || "").slice(0, 80), puesta: Date.now(),
+        ...(notas ? { notas } : {}), ...(ficha.laminas ? { laminas: ficha.laminas } : {}), ...(ficha.portada ? { portada: ficha.portada } : {}) };
+      if (viejo) {                                   // pasar del formato de una sola lección al de varias
+        const v = await val("revelar_bienvenida");
+        const { origen, ...resto } = v;
+        await db.set(ref("revelar_bienvenida"), { [origen]: resto, [sesion]: datos });
+      } else await db.set(ref(`revelar_bienvenida/${sesion}`), datos);
+    },
+    async quitarBienvenida(sesion) {
+      if ((await val("revelar_bienvenida/origen")) === sesion) await db.remove(ref("revelar_bienvenida"));
+      else await db.remove(ref(`revelar_bienvenida/${sesion}`));
     },
     async recibirBienvenida(progreso) {
       const yo = uid();
       if (!yo || (await val(`revelar_maestros/${yo}/bienvenida`))) return false;
-      const b = await val("revelar_bienvenida");
-      if (!b?.origen) return false;
-      const destino = limpiarSesion("bv" + yo.toLowerCase()).slice(0, 40);
-      if ((await val(`revelar_duenos/${destino}`)) !== yo) await db.set(ref(`revelar_duenos/${destino}`), yo);
-      const ahora = Date.now();
-      await copiarContenido(b.origen, destino, {
-        [`revelar_lecciones/${yo}/${destino}`]: { titulo: b.titulo || "", creada: ahora, editada: ahora,
-          ...(b.laminas ? { laminas: b.laminas } : {}), ...(b.portada ? { portada: b.portada } : {}) },
-        [`revelar_privado/${destino}/notas`]: b.notas || null,
-        [`revelar_maestros/${yo}/bienvenida`]: true,
-      }, progreso);
+      const todas = Object.entries(await this.leerBienvenidas()).sort((a, b) => (a[1].puesta || 0) - (b[1].puesta || 0));
+      if (!todas.length) return false;
+      let ahora = Date.now();
+      for (const [n, [origen, b]] of todas.entries()) {
+        // id fijo por lección y maestro: si se corta a la mitad, al reintentar sigue sin duplicar
+        const destino = limpiarSesion("bv" + n + yo.toLowerCase()).slice(0, 40);
+        if ((await val(`revelar_duenos/${destino}`)) !== yo) await db.set(ref(`revelar_duenos/${destino}`), yo);
+        await copiarContenido(origen, destino, {
+          [`revelar_lecciones/${yo}/${destino}`]: { titulo: b.titulo || "", creada: ahora, editada: ahora,
+            ...(b.laminas ? { laminas: b.laminas } : {}), ...(b.portada ? { portada: b.portada } : {}) },
+          [`revelar_privado/${destino}/notas`]: b.notas || null,
+        }, progreso);
+        ahora += 1;
+      }
+      await db.set(ref(`revelar_maestros/${yo}/bienvenida`), true);
       return true;
     },
   };
@@ -617,8 +636,9 @@ function catalogoDemo() {
     async compartir(sesion, titulo) { const v = leerJ("revelar-demo:compartidas"); v[sesion] = { titulo, desde: Date.now() }; try { localStorage.setItem("revelar-demo:compartidas", JSON.stringify(v)); } catch {} },
     async dejarDeCompartir(sesion) { const v = leerJ("revelar-demo:compartidas"); delete v[sesion]; try { localStorage.setItem("revelar-demo:compartidas", JSON.stringify(v)); } catch {} },
     async estaCompartida(sesion) { return !!leerJ("revelar-demo:compartidas")[sesion]; },
-    async leerBienvenida() { return null; },
+    async leerBienvenidas() { return {}; },
     async marcarBienvenida() {},
+    async quitarBienvenida() {},
     async recibirBienvenida() { return false; },
   };
 }
