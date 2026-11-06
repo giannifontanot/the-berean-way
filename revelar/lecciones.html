@@ -8,8 +8,8 @@
   <title>Mis lecciones · Reveal — el app del maestro</title>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.7/Sortable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-  <link rel="stylesheet" href="revelar.css?v=202611051537">
-  <script src="js/letra-app.js?v=202611051537"></script>
+  <link rel="stylesheet" href="revelar.css?v=202611060624">
+  <script src="js/letra-app.js?v=202611060624"></script>
   <link rel="manifest" href="maestro.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="iconos/maestro-192.png">
   <link rel="apple-touch-icon" href="iconos/maestro-180.png">
@@ -17,7 +17,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Reveal Teacher">
-  <script type="module" src="js/pwa.js?v=202611051537"></script>
+  <script type="module" src="js/pwa.js?v=202611060624"></script>
 </head>
 <body class="pag-lecciones">
   <header class="barra">
@@ -335,13 +335,13 @@
   <div class="toast" id="toast" role="status"></div>
 
   <script type="module">
-    import { CONFIG } from "./config.js?v=202611051537";
-    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202611051537";
-    import "./js/presion.js?v=202611051537";
-    import "./js/sinfoco.js?v=202611051537";   // ventanas: sin foco automático y aparecen desde el botón que tocaste
-    import { confirmarQuitar } from "./js/confirmar.js?v=202611051537";
-    import { colocarAviso } from "./js/junto.js?v=202611051537";
-    import { idioma, ponerIdioma, t, traducir, IDIOMAS, NOMBRES } from "./js/i18n.js?v=202611051537";
+    import { CONFIG } from "./config.js?v=202611060624";
+    import { crearCatalogo, limpiarSesion, nuevoIdLeccion, esPermisoDenegado, PRESENTADOR_ORIGINAL } from "./js/store.js?v=202611060624";
+    import "./js/presion.js?v=202611060624";
+    import "./js/sinfoco.js?v=202611060624";   // ventanas: sin foco automático y aparecen desde el botón que tocaste
+    import { confirmarQuitar } from "./js/confirmar.js?v=202611060624";
+    import { colocarAviso } from "./js/junto.js?v=202611060624";
+    import { idioma, ponerIdioma, t, traducir, IDIOMAS, NOMBRES } from "./js/i18n.js?v=202611060624";
 
     const $ = (id) => document.getElementById(id);
 
@@ -808,7 +808,7 @@
       p.delete("compartido");
       history.replaceState(null, "", location.pathname + (p.toString() ? "?" + p : "") + location.hash);
       try {
-        const { procesarCompartidos } = await import("./js/compartido.js?v=202611051537");
+        const { procesarCompartidos } = await import("./js/compartido.js?v=202611060624");
         await procesarCompartidos({ cat, lecciones, aviso, preguntarFuente: (guardar) => {
           guardarFuente = guardar;
           $("fuenteLiga").value = "";
@@ -1030,7 +1030,7 @@
       if (!$("chkUbic").disabled) $("chkUbic").checked = !!yo;
       $("mapaInvita").hidden = !!yo;
       try {
-        mapaUI ??= (await import("./js/mapa.js?v=202611051537")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
+        mapaUI ??= (await import("./js/mapa.js?v=202611060624")).crearMapa($("mapaMaestros"), { textoDosDedos: t("twoFingers") });
         // Un punto por ciudad. Tú en verde (arriba de todo); conectado ahora = rojo brillante;
         // ciudades desde donde alguien se conectó antes = rojo apagado (debajo de los brillantes).
         const yoId = cat.uid?.();
