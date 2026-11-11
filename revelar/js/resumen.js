@@ -1,8 +1,8 @@
 // resumen.js — Arma un archivo HTML con el resumen de la clase:
 // cada lámina en orden (foto o escritura) seguida de tus notas.
 // Las fotos se incrustan en el archivo, así que se abre sin internet.
-import { t, idioma } from "./i18n.js?v=202611102254";
-import { textoAHtml, notasAHtml, cuerpoHtml, laminaTexto, fondoAttr } from "./escritura.js?v=202611102254";
+import { t, idioma } from "./i18n.js?v=202611102321";
+import { textoAHtml, notasAHtml, cuerpoHtml, laminaTexto, fondoAttr } from "./escritura.js?v=202611102321";
 
 /**
  * Arma la lista en el orden del presentador a partir de lo guardado en la lección.
@@ -73,6 +73,10 @@ h1 { font-family: "Lora", Georgia, serif; font-weight: 600; font-size: clamp(28p
 .papel mark { background: rgba(247,214,92,.6); color: inherit; padding: 0 1px; }
 .papel .vnum { color: #b9a37f; font-size: 1em; vertical-align: baseline; margin-right: .3em; }
 .papel.es-lamina { background: #fdfcf9; background-image: none; border-color: #e3e0d8; color: #1b2233; }
+/* Color de fondo que el maestro eligió para la lámina (también al imprimir) */
+.papel.es-lamina.lam-fondo { background: var(--lam-bg); border-color: transparent; }
+.lam-oscuro .lam { color: #f7f5ef; } .lam-oscuro .lam .rojo { color: #ff8a80; } .lam-oscuro .lam mark { color: #1b2233; }
+.papel, .papel.es-lamina, .notas, .foto img { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .lam { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 20px; line-height: 1.45; }
 .lam div { min-height: 1em; } .lam .c { text-align: center; }
 .lam ul, .lam ol { margin: .2em 0; padding-left: 1.4em; }
