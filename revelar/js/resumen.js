@@ -1,8 +1,8 @@
 // resumen.js — Arma un archivo HTML con el resumen de la clase:
 // cada lámina en orden (foto o escritura) seguida de tus notas.
 // Las fotos se incrustan en el archivo, así que se abre sin internet.
-import { t, idioma } from "./i18n.js?v=202611102321";
-import { textoAHtml, notasAHtml, cuerpoHtml, laminaTexto, fondoAttr } from "./escritura.js?v=202611102321";
+import { t, idioma } from "./i18n.js?v=202611102356";
+import { textoAHtml, notasAHtml, cuerpoHtml, laminaTexto, fondoAttr } from "./escritura.js?v=202611102356";
 
 /**
  * Arma la lista en el orden del presentador a partir de lo guardado en la lección.
@@ -67,7 +67,7 @@ h1 { font-family: "Lora", Georgia, serif; font-weight: 600; font-size: clamp(28p
   background-color: #f1e4c8;
   background-image: radial-gradient(ellipse at center, rgba(255,248,230,.55) 0%, rgba(255,248,230,0) 60%, rgba(150,105,50,.22) 100%);
   color: #2a1f14; }
-.papel p { font-family: "Lora", Georgia, serif; font-size: 20px; line-height: 1.6; margin: 0 0 12px; }
+.papel p { font-family: "Lora", Georgia, serif; font-size: 24px; line-height: 1.6; margin: 0 0 12px; }
 .papel cite { font-style: normal; font-weight: 700; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #7a6343; }
 .papel .rojo { color: var(--rojo); }
 .papel mark { background: rgba(247,214,92,.6); color: inherit; padding: 0 1px; }
@@ -77,7 +77,7 @@ h1 { font-family: "Lora", Georgia, serif; font-weight: 600; font-size: clamp(28p
 .papel.es-lamina.lam-fondo { background: var(--lam-bg); border-color: transparent; }
 .lam-oscuro .lam { color: #f7f5ef; } .lam-oscuro .lam .rojo { color: #ff8a80; } .lam-oscuro .lam mark { color: #1b2233; }
 .papel, .papel.es-lamina, .notas, .foto img { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.lam { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 20px; line-height: 1.45; }
+.lam { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 24px; line-height: 1.45; }
 .lam div { min-height: 1em; } .lam .c { text-align: center; }
 .lam ul, .lam ol { margin: .2em 0; padding-left: 1.4em; }
 .lam .t1 { font-size: .62em; } .lam .t2 { font-size: .8em; } .lam .t4 { font-size: 1.2em; } .lam .t5 { font-size: 1.5em; }

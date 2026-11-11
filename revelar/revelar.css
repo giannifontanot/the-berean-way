@@ -407,7 +407,7 @@ mark {
 .verso p {
   margin: 0;
   font-family: var(--font-serif);
-  font-size: calc(23px * var(--esc, 1));
+  font-size: calc(26px * var(--esc, 1));     /* mismo tamaño que la letra de las láminas */
   line-height: 1.55;
   color: var(--text);
 }
@@ -1253,7 +1253,7 @@ body.modo-presentar > .franja { flex: none; }
   white-space: pre-wrap;
   word-break: break-word;
   font-family: var(--font-sans);
-  font-size: calc(21px * var(--esc, 1));
+  font-size: calc(26px * var(--esc, 1));
   line-height: 1.55;
   color: var(--tinta);
   caret-color: var(--rojo);
@@ -2143,7 +2143,7 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 /* Tarjeta en el teléfono de los participantes y visor del presentador */
 .foto.escritura.es-lamina, .sala .foto.escritura.es-lamina { background: #fdfcf9; background-image: none; border-color: #e3e0d8; }
 .foto.escritura.es-lamina .verso { padding: 28px 24px; }
-.foto.escritura.es-lamina .lam { font-size: calc(24px * var(--esc, 1)); }   /* +2: letra base de las láminas */
+.foto.escritura.es-lamina .lam { font-size: calc(26px * var(--esc, 1)); }   /* letra base de las láminas (= escrituras) */
 .foto.escritura.es-lamina cite:empty { display: none; }
 /* Miniaturas (cuadrícula, tira y menú) */
 .verso-mini.lam-mini { background: #fdfcf9; justify-content: flex-start; }
@@ -2174,13 +2174,13 @@ body:not(.ordenando-activo) .tira-item .presionado { scale: 1; filter: none; tra
 .lam-btn.lam-res.activo { background: #ffe66d; }
 .lam-sep { width: 1px; height: 24px; background: var(--line); margin: 0 2px; }
 .lam-hoja-wrap { border-radius: 12px; background: #fdfcf9; border: 1px solid #e3e0d8; box-shadow: 0 4px 18px rgba(0,0,0,.25); }
-.lam-hoja { min-height: 220px; padding: 22px 20px; font-size: calc(24px * var(--esc, 1)); outline: none; caret-color: #1b2233; }
+.lam-hoja { min-height: 220px; padding: 22px 20px; font-size: calc(26px * var(--esc, 1)); outline: none; caret-color: #1b2233; }
 .lam-hoja:empty::before { content: attr(data-placeholder); color: #9a9488; pointer-events: none; }
 .dlg-lamina .ayuda { margin: 10px 0 0; font-size: calc(14px * var(--esc, 1)); }
 @media (max-width: 400px) {
   .lam-btn { min-width: 36px; height: 38px; padding: 0 6px; font-size: calc(16px * var(--esc, 1)); }
   .lam-sep { display: none; }
-  .lam-hoja { font-size: calc(21px * var(--esc, 1)); padding: 18px 16px; min-height: 200px; }
+  .lam-hoja { font-size: calc(23px * var(--esc, 1)); padding: 18px 16px; min-height: 200px; }
 }
 /* En el editor, los tamaños que pone el navegador se ven igual que en la lámina final */
 .lam-hoja font[size="1"], .lam-hoja [style*="font-size: x-small"] { font-size: .62em !important; }
@@ -2233,7 +2233,7 @@ body { letter-spacing: var(--app-ls, normal); }
 /* Visor (pantalla completa): la lámina llena la pantalla como una diapositiva */
 .visor .foto.escritura.es-lamina { width: 100%; min-height: 100dvh; box-sizing: border-box; display: flex; align-items: center; margin: 0; border: 0; }
 .visor .foto.escritura.es-lamina .verso { width: 100%; max-width: 760px; margin: 0 auto; }
-.visor .foto.escritura.es-lamina .lam { font-size: calc(28px * var(--esc, 1)); }
+.visor .foto.escritura.es-lamina .lam, .visor .foto.escritura .verso p { font-size: calc(30px * var(--esc, 1)); }
 
 /* Ajustes › Instalar el app (amarillo) y su ventana de pasos */
 .btn.aj-instalar { width: 100%; justify-content: center; gap: 10px; min-height: 48px; margin: 0 0 18px; font-size: calc(16px * var(--esc, 1)); }
