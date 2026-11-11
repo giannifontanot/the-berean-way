@@ -2591,3 +2591,9 @@ body.modo-presentar.ordenando-activo::after { opacity: 1; border-color: var(--go
 /* Alumno: cortina = solo estrellas (sin lista de maestros, sin botones) */
 body.cortina .lista > .foto { display: none !important; }
 body.cortina .mis-clases, body.cortina .btn-volver, body.cortina .codigo-flota { display: none !important; }
+
+/* Al quitar el check: lo que se ve se desvanece suave antes de quedar en estrellas */
+body.cortina-va .lista > .foto { opacity: 0; transform: scale(.985); transition: opacity .5s ease, transform .5s ease; }
+body.cortina .vacio { animation: cortinaEntra .6s ease both; }
+@keyframes cortinaEntra { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { body.cortina-va .lista > .foto { transition: none; } body.cortina .vacio { animation: none; } }
