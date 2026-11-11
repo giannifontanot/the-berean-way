@@ -2585,7 +2585,6 @@ body.modo-presentar.ordenando-activo::after { opacity: 1; border-color: var(--go
 .tira-item.oculta-alumno .tira-marco { opacity: .45; filter: grayscale(.6); }
 .tira-item.oculta-alumno .tira-marco::after { content: "🙈"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%);
   font-size: calc(26px * var(--esc, 1)); filter: none; }
-.tira-item .tira-marco { position: relative; }
 /* En Editar abajo están ✎ 📤 🗑 y arriba a la derecha el de «saltar»: aquí va arriba a la izquierda */
 .panel.ordenando .tira-item .chk-ver { left: 4px; top: 4px; bottom: auto; transform: none; }
 
