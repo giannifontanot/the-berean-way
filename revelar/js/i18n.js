@@ -13,12 +13,12 @@
 //   data-i18n-dph="clave"    → data-placeholder (editor de escrituras)
 // En JS: t("clave", { n: 3 }) → reemplaza {n}.
 
-import fr from "./i18n-fr.js?v=202611102232";
-import pt from "./i18n-pt.js?v=202611102232";
-import de from "./i18n-de.js?v=202611102232";
-import ja from "./i18n-ja.js?v=202611102232";
-import hi from "./i18n-hi.js?v=202611102232";
-import id from "./i18n-id.js?v=202611102232";
+import fr from "./i18n-fr.js?v=202611102242";
+import pt from "./i18n-pt.js?v=202611102242";
+import de from "./i18n-de.js?v=202611102242";
+import ja from "./i18n-ja.js?v=202611102242";
+import hi from "./i18n-hi.js?v=202611102242";
+import id from "./i18n-id.js?v=202611102242";
 
 const CLAVE = "revelar:idioma";
 export const IDIOMAS = ["es", "en", "fr", "pt", "de", "ja", "hi", "id"];
