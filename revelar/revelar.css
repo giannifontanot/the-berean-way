@@ -2571,3 +2571,24 @@ body.modo-presentar.ordenando-activo::after { opacity: 1; border-color: var(--go
 .aj-whatsapp { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; padding: 6px 14px; border-radius: 999px;
   border: 1px solid rgba(37, 211, 102, .55) !important; color: #4ee08a !important; font-weight: 700; }
 .aj-whatsapp svg { width: 18px; height: 18px; }
+
+/* ---------- Check «visible para los alumnos» (pie de cada lámina en la tira) ---------- */
+.tira-item .chk-ver { position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%); z-index: 3; width: 40px; height: 34px;
+  display: grid; place-items: center; cursor: pointer; }
+.chk-ver input { position: absolute; opacity: 0; width: 0; height: 0; }
+.chk-ver span { width: 24px; height: 24px; border-radius: 7px; border: 2px solid rgba(255,255,255,.9); background: rgba(17,21,43,.6);
+  box-shadow: 0 1px 6px rgba(0,0,0,.5); display: grid; place-items: center; transition: background .2s, border-color .2s; }
+.chk-ver input:checked + span { background: var(--ok); border-color: var(--ok); }
+.chk-ver input:checked + span::after { content: "✓"; color: #0d2a18; font-weight: 800; font-size: calc(16px * var(--esc, 1)); line-height: 1; }
+.chk-ver input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Sin check: la lámina se ve apagada en tu tira, con un ojo tachado */
+.tira-item.oculta-alumno .tira-marco { opacity: .45; filter: grayscale(.6); }
+.tira-item.oculta-alumno .tira-marco::after { content: "🙈"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%);
+  font-size: calc(26px * var(--esc, 1)); filter: none; }
+.tira-item .tira-marco { position: relative; }
+/* En Editar abajo están ✎ 📤 🗑 y arriba a la derecha el de «saltar»: aquí va arriba a la izquierda */
+.panel.ordenando .tira-item .chk-ver { left: 4px; top: 4px; bottom: auto; transform: none; }
+
+/* Alumno: cortina = solo estrellas (sin lista de maestros, sin botones) */
+body.cortina .lista > .foto { display: none !important; }
+body.cortina .mis-clases, body.cortina .btn-volver, body.cortina .codigo-flota { display: none !important; }

@@ -28,7 +28,7 @@
 //     Copias de lecciones que otro maestro te envió.
 //   revelar_bloqueados/<uid> = true   Maestro pausado por el administrador: no puede
 //     escribir nada. Solo el administrador (presentador original) ve y cambia esto.
-import { CONFIG } from "../config.js?v=202611061056";
+import { CONFIG } from "../config.js?v=202611102216";
 
 const FB = "https://www.gstatic.com/firebasejs/12.17.0/";
 
@@ -387,6 +387,11 @@ async function catalogoFirebase() {
         await db.set(ref("revelar_bienvenida"), { [origen]: resto, [sesion]: datos });
       } else await db.set(ref(`revelar_bienvenida/${sesion}`), datos);
     },
+    // Al guardar una nota de una lección de bienvenida, los maestros nuevos ya reciben la nota nueva
+    async actualizarNotasBienvenida(sesion) {
+      if (uid() !== PRESENTADOR_ORIGINAL || !(await val(`revelar_bienvenida/${sesion}`))) return;
+      await db.set(ref(`revelar_bienvenida/${sesion}/notas`), (await val(`revelar_privado/${sesion}/notas`)) || null);
+    },
     async quitarBienvenida(sesion) {
       if ((await val("revelar_bienvenida/origen")) === sesion) await db.remove(ref("revelar_bienvenida"));
       else await db.remove(ref(`revelar_bienvenida/${sesion}`));
@@ -423,6 +428,7 @@ async function storeFirebase(sesion) {
   const refOrden = db.ref(d, `${base}/orden`);
   const refEscrituras = db.ref(d, `${base}/escrituras`);
   const refSubidas = db.ref(d, `${base}/subidas`);
+  const refOcultas = db.ref(d, `${base}/ocultas`);     // láminas que el alumno aún no debe ver (check quitado)
   const basePrivada = `revelar_privado/${sesion}`;
   const refNotas = db.ref(d, `${basePrivada}/notas`);
 
@@ -466,6 +472,9 @@ async function storeFirebase(sesion) {
       return db.onValue(refOrden, (s) => cb(Array.isArray(s.val()) ? s.val() : null), () => cb(null));
     },
     guardarOrden: (ids) => db.set(refOrden, ids),
+    // Check «visible para los alumnos»: sin check, al llegar a esa lámina los alumnos solo ven las estrellas
+    onOcultas(cb) { return db.onValue(refOcultas, (s) => cb(s.val() || {}), () => cb({})); },
+    ponerOculta: (id, oculta) => oculta ? db.set(db.ref(d, `${base}/ocultas/${id}`), true) : db.remove(db.ref(d, `${base}/ocultas/${id}`)),
     onEscrituras(cb) {
       return db.onValue(refEscrituras, (s) => cb(s.val() || {}), () => cb({}));
     },
@@ -639,6 +648,7 @@ function catalogoDemo() {
     async leerBienvenidas() { return {}; },
     async marcarBienvenida() {},
     async quitarBienvenida() {},
+    async actualizarNotasBienvenida() {},
     async recibirBienvenida() { return false; },
   };
 }
@@ -673,7 +683,11 @@ function storeDemo(sesion) {
     catch { throw new Error("En modo demo no caben más fotos en este navegador."); }
     oyentesSub.forEach((cb) => cb(v));
   };
+  const claveOc = clave + ":ocultas";
+  const oyentesOc = new Set();
+  const leerOc = () => { try { return JSON.parse(localStorage.getItem(claveOc)) || {}; } catch { return {}; } };
   window.addEventListener("storage", (e) => {
+    if (e.key === claveOc) oyentesOc.forEach((cb) => cb(leerOc()));
     if (e.key === clave) oyentes.forEach((cb) => cb(leer()));
     if (e.key === claveEsc) oyentesEsc.forEach((cb) => cb(leerEsc()));
     if (e.key === claveSub) oyentesSub.forEach((cb) => cb(leerSub()));
@@ -700,6 +714,12 @@ function storeDemo(sesion) {
       return () => {};
     },
     async guardarOrden(ids) { try { localStorage.setItem(clave + ":orden", JSON.stringify(ids)); } catch {} },
+    onOcultas(cb) { oyentesOc.add(cb); cb(leerOc()); return () => oyentesOc.delete(cb); },
+    async ponerOculta(id, oculta) {
+      const v = leerOc(); if (oculta) v[id] = true; else delete v[id];
+      try { localStorage.setItem(claveOc, JSON.stringify(v)); } catch {}
+      oyentesOc.forEach((cb) => cb(v));
+    },
     onEscrituras(cb) { oyentesEsc.add(cb); cb(leerEsc()); return () => oyentesEsc.delete(cb); },
     onEscritura(id, cb) {
       const f = (v) => cb(v[id] || null);

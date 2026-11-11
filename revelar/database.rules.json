@@ -9,6 +9,12 @@
             ".validate": "newData.isNumber()"
           }
         },
+        "ocultas": {
+          ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()",
+          "$id": {
+            ".validate": "newData.isBoolean()"
+          }
+        },
         "orden": {
           ".write": "auth != null && root.child('revelar_duenos/' + $sesion).val() === auth.uid && !root.child('revelar_bloqueados/' + auth.uid).exists()",
           "$i": {
