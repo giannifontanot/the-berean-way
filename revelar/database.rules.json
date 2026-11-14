@@ -45,6 +45,9 @@
             },
             "fondo": {
               ".validate": "newData.isString() && newData.val().matches(/^(#[0-9a-f]{6}|[a-z]{1,12})$/)"
+            },
+            "textura": {
+              ".validate": "newData.isString() && newData.val().matches(/^(arrugado|viejo)$/)"
             }
           }
         },

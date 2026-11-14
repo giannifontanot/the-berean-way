@@ -179,16 +179,22 @@ const VIEJOS = { lino: "linear-gradient(160deg, #f7ebd2, #e9d5ad)", perla: "#eef
   aurora: "linear-gradient(160deg, #0f2027, #203a43, #2c5364)", fuego: "linear-gradient(135deg, #8e2de2, #c2185b)" };
 const OSCUROS = new Set([...Object.keys(FONDOS_OSCUROS), "vino", "azul", "verde", "negro", "bosque", "aurora", "fuego"]);
 /** { css, oscuro } del fondo de una lámina, o null si es papel (el de siempre). */
+export const TEXTURAS = ["arrugado", "viejo"];
+/** Las mismas reglas de textura que hay en revelar.css, para el resumen que se imprime. */
+export const TEXTURAS_CSS = "/* Texturas de papel (encima del color de fondo de la l\u00e1mina) */\n.lam-tex-arrugado { --lam-tex: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='480'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.007 0.011' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeDiffuseLighting surfaceScale='9' lighting-color='white' diffuseConstant='1'%3E%3CfeDistantLight azimuth='225' elevation='40'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='0.85' intercept='0.32'/%3E%3CfeFuncG type='linear' slope='0.85' intercept='0.32'/%3E%3CfeFuncB type='linear' slope='0.85' intercept='0.32'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='480' height='480' filter='url(%23a)'/%3E%3C/svg%3E\"); --lam-tex-tam: 480px 480px; }\n.lam-tex-viejo { --lam-tex: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520'%3E%3Cfilter id='v' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.005' numOctaves='4' seed='11' stitchTiles='stitch' result='m'/%3E%3CfeColorMatrix in='m' values='0 0 0 0 0.62  0 0 0 0 0.45  0 0 0 0 0.22  -1.9 0 0 0 1.05' result='manchas'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='3' stitchTiles='stitch' result='g'/%3E%3CfeColorMatrix in='g' values='0 0 0 0 0.45  0 0 0 0 0.33  0 0 0 0 0.2  0 0 0 0.22 0' result='grano'/%3E%3CfeMerge%3E%3CfeMergeNode in='manchas'/%3E%3CfeMergeNode in='grano'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='520' height='520' fill='white'/%3E%3Crect width='520' height='520' filter='url(%23v)'/%3E%3C/svg%3E\"), radial-gradient(ellipse at center, rgba(255,250,235,0) 52%, rgba(120,78,30,.32) 100%); --lam-tex-tam: 520px 520px, 100% 100%; }\n.lam-fondo.lam-tex-arrugado, .lam-fondo.lam-tex-viejo,\n.foto.escritura.es-lamina.lam-fondo.lam-tex-arrugado, .foto.escritura.es-lamina.lam-fondo.lam-tex-viejo,\n.sala .foto.escritura.es-lamina.lam-fondo.lam-tex-arrugado, .sala .foto.escritura.es-lamina.lam-fondo.lam-tex-viejo,\n.verso-mini.lam-mini.lam-fondo.lam-tex-arrugado, .verso-mini.lam-mini.lam-fondo.lam-tex-viejo,\n.lam-hoja-wrap.lam-fondo.lam-tex-arrugado, .lam-hoja-wrap.lam-fondo.lam-tex-viejo,\n.papel.es-lamina.lam-fondo.lam-tex-arrugado, .papel.es-lamina.lam-fondo.lam-tex-viejo {\n  background: var(--lam-tex), var(--lam-bg) !important; background-size: var(--lam-tex-tam), 100% 100% !important;\n  background-blend-mode: multiply !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;\n}\n";
 export function fondoDe(e) {
   const f = e?.lamina ? String(e.fondo || "") : "";
-  if (!f || f === "papel") return null;
+  const tex = e?.lamina && TEXTURAS.includes(e.textura) ? e.textura : null;   // papel arrugado / papel viejo
+  // Un color sólido se escribe como degradado de un solo color, para poder ponerle textura encima
+  const capa = (c) => (/^#/.test(c) ? `linear-gradient(${c}, ${c})` : c);
+  if (!f || f === "papel") return tex ? { css: capa(FONDOS.papel), oscuro: false, tex } : null;
   if (/^#[0-9a-f]{6}$/i.test(f)) {
     const [r, g, b] = [1, 3, 5].map((i) => parseInt(f.slice(i, i + 2), 16) / 255)
       .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
-    return { css: f, oscuro: 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.3 };
+    return { css: capa(f), oscuro: 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.3, tex };
   }
   const css = FONDOS[f] || VIEJOS[f];
-  return css ? { css, oscuro: OSCUROS.has(f) } : null;
+  return css ? { css: capa(css), oscuro: OSCUROS.has(f), tex } : (tex ? { css: capa(FONDOS.papel), oscuro: false, tex } : null);
 }
 /** Pinta el fondo en el contenedor de la lámina (tarjeta, miniatura, visor, editor). */
 export function ponerFondo(el, e) {
@@ -196,13 +202,14 @@ export function ponerFondo(el, e) {
   const f = fondoDe(e);
   el.classList.toggle("lam-fondo", !!f);
   el.classList.toggle("lam-oscuro", !!f?.oscuro);
+  TEXTURAS.forEach((x) => el.classList.toggle("lam-tex-" + x, f?.tex === x));
   if (f) el.style.setProperty("--lam-bg", f.css); else el.style.removeProperty("--lam-bg");
 }
 /** Lo mismo, como texto para meter en un HTML: { clase, estilo }. */
 export function fondoAttr(e) {
   const f = fondoDe(e);
   if (!f) return { clase: "", estilo: "" };
-  return { clase: " lam-fondo" + (f.oscuro ? " lam-oscuro" : ""), estilo: ` style="--lam-bg: ${f.css.replace(/"/g, "")}"` };
+  return { clase: " lam-fondo" + (f.oscuro ? " lam-oscuro" : "") + (f.tex ? " lam-tex-" + f.tex : ""), estilo: ` style="--lam-bg: ${f.css.replace(/"/g, "")}"` };
 }
 
 /** Cuerpo de una escritura o lámina para incrustar en HTML (cite aparte). */

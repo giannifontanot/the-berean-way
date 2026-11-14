@@ -1,8 +1,8 @@
 // resumen.js — Arma un archivo HTML con el resumen de la clase:
 // cada lámina en orden (foto o escritura) seguida de tus notas.
 // Las fotos se incrustan en el archivo, así que se abre sin internet.
-import { t, idioma } from "./i18n.js?v=202611140523";
-import { textoAHtml, notasAHtml, cuerpoHtml, laminaTexto, fondoAttr } from "./escritura.js?v=202611140523";
+import { t, idioma } from "./i18n.js?v=202611140526";
+import { textoAHtml, notasAHtml, cuerpoHtml, laminaTexto, fondoAttr, TEXTURAS_CSS } from "./escritura.js?v=202611140526";
 
 /**
  * Arma la lista en el orden del presentador a partir de lo guardado en la lección.
@@ -90,6 +90,7 @@ h1 { font-family: "Lora", Georgia, serif; font-weight: 600; font-size: clamp(28p
 .notas .rojo { color: var(--rojo); }
 .notas mark { background: #fff07a; color: inherit; }
 footer { color: var(--suave); font-size: 13px; text-align: center; margin-top: 48px; }
+${TEXTURAS_CSS}
 @media print { body { background: #fff; } main { padding-top: 0; } .notas { background: #f3f3f3; } }
 `;
 

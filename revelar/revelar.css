@@ -2602,3 +2602,22 @@ body.cortina .vacio { animation: cortinaEntra .6s ease both; }
 .dlg-fondos { width: min(440px, calc(100vw - 24px)); }
 .dlg-fondos h2 { margin: 0 0 12px; }
 .dlg-fondos .lam-fondos { margin: 0 0 14px; animation: none; }
+
+/* Texturas de papel (encima del color de fondo de la lámina) */
+.lam-tex-arrugado { --lam-tex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='480'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.007 0.011' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeDiffuseLighting surfaceScale='9' lighting-color='white' diffuseConstant='1'%3E%3CfeDistantLight azimuth='225' elevation='40'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='0.85' intercept='0.32'/%3E%3CfeFuncG type='linear' slope='0.85' intercept='0.32'/%3E%3CfeFuncB type='linear' slope='0.85' intercept='0.32'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='480' height='480' filter='url(%23a)'/%3E%3C/svg%3E"); --lam-tex-tam: 480px 480px; }
+.lam-tex-viejo { --lam-tex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520'%3E%3Cfilter id='v' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.005' numOctaves='4' seed='11' stitchTiles='stitch' result='m'/%3E%3CfeColorMatrix in='m' values='0 0 0 0 0.62  0 0 0 0 0.45  0 0 0 0 0.22  -1.9 0 0 0 1.05' result='manchas'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='3' stitchTiles='stitch' result='g'/%3E%3CfeColorMatrix in='g' values='0 0 0 0 0.45  0 0 0 0 0.33  0 0 0 0 0.2  0 0 0 0.22 0' result='grano'/%3E%3CfeMerge%3E%3CfeMergeNode in='manchas'/%3E%3CfeMergeNode in='grano'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='520' height='520' fill='white'/%3E%3Crect width='520' height='520' filter='url(%23v)'/%3E%3C/svg%3E"), radial-gradient(ellipse at center, rgba(255,250,235,0) 52%, rgba(120,78,30,.32) 100%); --lam-tex-tam: 520px 520px, 100% 100%; }
+.lam-fondo.lam-tex-arrugado, .lam-fondo.lam-tex-viejo,
+.foto.escritura.es-lamina.lam-fondo.lam-tex-arrugado, .foto.escritura.es-lamina.lam-fondo.lam-tex-viejo,
+.sala .foto.escritura.es-lamina.lam-fondo.lam-tex-arrugado, .sala .foto.escritura.es-lamina.lam-fondo.lam-tex-viejo,
+.verso-mini.lam-mini.lam-fondo.lam-tex-arrugado, .verso-mini.lam-mini.lam-fondo.lam-tex-viejo,
+.lam-hoja-wrap.lam-fondo.lam-tex-arrugado, .lam-hoja-wrap.lam-fondo.lam-tex-viejo,
+.papel.es-lamina.lam-fondo.lam-tex-arrugado, .papel.es-lamina.lam-fondo.lam-tex-viejo {
+  background: var(--lam-tex), var(--lam-bg) !important; background-size: var(--lam-tex-tam), 100% 100% !important;
+  background-blend-mode: multiply !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.lam-texturas { display: grid; grid-template-columns: 58px repeat(2, 1fr); align-items: center; gap: 8px; margin: 0 0 12px; }
+.lam-tex-btn { height: 40px; border-radius: 12px; border: 1px solid rgba(0,0,0,.18); color: #1b2233; font: inherit; font-weight: 700;
+  font-size: calc(14px * var(--esc, 1)); cursor: pointer; transition: transform .15s, box-shadow .2s; }
+.lam-tex-btn:active { transform: scale(.95); }
+.lam-tex-btn[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--gold); }
+.lam-tex-btn[aria-pressed="true"]::before { content: "✓ "; }
