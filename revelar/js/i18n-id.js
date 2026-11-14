@@ -35,6 +35,7 @@ export default {
     famRose: "Merah muda", famTeal: "Toska",
     texture: "Tekstur", texCrumpled: "Kusut", texOld: "Kuno",
     newVersion: "Ada versi baru Reveal!", tapToUpdate: "Ketuk untuk memperbarui",
+    whatsNew: "Yang baru",
     settings: "Pengaturan", signOut: "Keluar", signOutFail: "Tidak bisa keluar: {e}", seeTeachers: "Lihat semua guru saya",
   aboutApp: "Reveal adalah aplikasi untuk guru. Siapkan foto dan ayatmu, lalu tampilkan langsung di ponsel setiap murid, tepat di saat paling penting dalam pelajaran. Supaya pelajaranmu tidak hanya didengar, tetapi juga dilihat.",
   thanksApp: "Terima kasih sudah mengajar dengan Reveal. 🙏",

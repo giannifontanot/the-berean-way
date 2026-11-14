@@ -2630,7 +2630,7 @@ body.cortina .vacio { animation: cortinaEntra .6s ease both; }
 dialog.version-nueva { width: min(440px, calc(100vw - 32px)); max-width: none; padding: 0; border: 0; background: transparent; color: var(--text); overflow: visible; }
 dialog.version-nueva::backdrop { background: rgba(4, 9, 30, .82); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
 .vn-tarjeta { display: grid; gap: 22px; padding: 28px 22px; border-radius: 26px; background: #1b2757; color: #fff4e9; text-align: center; box-shadow: 0 25px 90px #000a; }
-.vn-tarjeta p { margin: 0; font-family: Georgia, serif; font-size: calc(24px * var(--esc, 1)); line-height: 1.25; }
+.vn-tarjeta > p { margin: 0; color: #fff4e9; font-family: Georgia, serif; font-size: calc(24px * var(--esc, 1)); line-height: 1.25; }
 .vn-boton { min-height: 96px; padding: 0 20px; border: 0; border-radius: 24px; cursor: pointer;
   background: linear-gradient(150deg, #ffe7a3, var(--gold, #e8c170)); color: #2a1f0a;
   font: inherit; font-size: calc(24px * var(--esc, 1)); font-weight: 900; animation: vnBrilla 1.6s ease-in-out infinite; }
@@ -2639,3 +2639,9 @@ dialog.version-nueva::backdrop { background: rgba(4, 9, 30, .82); -webkit-backdr
   50% { scale: 1.04; box-shadow: 0 0 0 5px rgba(255, 223, 119, 1), 0 0 46px 18px rgba(255, 223, 119, .65); }
 }
 @media (prefers-reduced-motion: reduce) { .vn-boton { animation: none; box-shadow: 0 0 0 4px rgba(255, 223, 119, .9), 0 0 30px 10px rgba(255, 223, 119, .5); } }
+.vn-cambios { text-align: left; margin-top: -4px; padding: 12px 16px; border-radius: 16px; background: rgba(255,255,255,.07); }
+.vn-cambios[hidden] { display: none; }
+.vn-cambios-tit { margin: 0 0 6px !important; font-family: inherit !important; font-size: calc(13px * var(--esc, 1)) !important; font-weight: 800;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--gold, #e8c170); }
+.vn-cambios ul { margin: 0; padding-left: 1.2em; font-size: calc(16px * var(--esc, 1)); line-height: 1.45; }
+.vn-cambios li { margin: 2px 0; }

@@ -1,6 +1,6 @@
 // pwa.js — Registra el service worker y muestra el botón «Instalar»
 // (si la página tiene #btnInstalar) cuando el navegador lo permite.
-import { t } from "./i18n.js?v=202611140555";
+import { t, idioma } from "./i18n.js?v=202611140557";
 
 if ("serviceWorker" in navigator) {
   addEventListener("load", () => navigator.serviceWorker.register("sw.js").then((reg) => {
@@ -19,6 +19,31 @@ if ("serviceWorker" in navigator) {
  * Espera mientras haya otra ventana abierta (un editor puede tener texto sin guardar).
  */
 let avisoListo = false;
+// Qué cambió: las entradas de novedades.js más nuevas que la última que este teléfono vio (máximo 5 renglones)
+const VISTA = "revelar:novedades-vistas";
+const ultimaVista = { ultima: 0 };
+async function ponerNovedades(d) {
+  try {
+    const { NOVEDADES } = await import("./novedades.js?t=" + Date.now());   // siempre la lista de la versión nueva
+    const lista = NOVEDADES || [];
+    if (!lista.length) return;
+    ultimaVista.ultima = lista[0].v;
+    let vista = 0; try { vista = Number(localStorage.getItem(VISTA)) || 0; } catch {}
+    const nuevas = vista ? lista.filter((n) => n.v > vista) : lista.slice(0, 1);
+    const l = idioma() === "es" ? "es" : "en";
+    const renglones = nuevas.flatMap((n) => n[l] || n.en || []).slice(0, 5);
+    if (!renglones.length) return;
+    const caja = d.querySelector(".vn-cambios");
+    caja.querySelector(".vn-cambios-tit").textContent = t("whatsNew");
+    caja.querySelector("ul").innerHTML = "";
+    renglones.forEach((r) => { const li = document.createElement("li"); li.textContent = r; caja.querySelector("ul").append(li); });
+    caja.hidden = false;
+  } catch {}
+}
+// La primera vez que este teléfono abre esta versión, se anota (para que el próximo aviso muestre solo lo nuevo)
+import("./novedades.js").then(({ NOVEDADES }) => {
+  try { if (!localStorage.getItem(VISTA) && NOVEDADES?.[0]) localStorage.setItem(VISTA, String(NOVEDADES[0].v)); } catch {}
+}).catch(() => {});
 function avisarVersionNueva() {
   if (avisoListo) return;
   avisoListo = true;
@@ -27,11 +52,16 @@ function avisarVersionNueva() {
     const d = document.createElement("dialog");
     d.className = "version-nueva";
     d.setAttribute("aria-labelledby", "versionNuevaTxt");
-    d.innerHTML = `<div class="vn-tarjeta"><p id="versionNuevaTxt"></p><button type="button" class="vn-boton"></button></div>`;
+    d.innerHTML = `<div class="vn-tarjeta"><p id="versionNuevaTxt"></p><button type="button" class="vn-boton"></button>
+      <div class="vn-cambios" hidden><p class="vn-cambios-tit"></p><ul></ul></div></div>`;
+    ponerNovedades(d);
     d.querySelector("p").textContent = t("newVersion");
     d.querySelector("button").textContent = t("tapToUpdate");
     // Al tocar: la ventana regresa suave al lugar de donde salió (arriba) y luego se recarga con la versión nueva
-    d.querySelector("button").addEventListener("click", () => { d.close(); setTimeout(() => location.reload(), 420); });
+    d.querySelector("button").addEventListener("click", () => {
+      try { if (ultimaVista.ultima) localStorage.setItem(VISTA, String(ultimaVista.ultima)); } catch {}
+      d.close(); setTimeout(() => location.reload(), 420);
+    });
     d.addEventListener("cancel", (e) => e.preventDefault());       // no se cierra con Atrás / Esc: hay que actualizar
     d._origenFijo = { x: innerWidth / 2, y: 28 };   // sale desde arriba, el borde del app, y regresa ahí
     document.body.append(d);

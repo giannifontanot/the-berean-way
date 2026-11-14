@@ -35,6 +35,7 @@ export default {
     famRose: "Rosé", famTeal: "Türkis",
     texture: "Textur", texCrumpled: "Zerknittert", texOld: "Alt",
     newVersion: "Eine neue Version von Reveal ist da!", tapToUpdate: "Tippen zum Aktualisieren",
+    whatsNew: "Neu",
     settings: "Einstellungen", signOut: "Abmelden", signOutFail: "Abmelden nicht möglich: {e}", seeTeachers: "Alle meine Lehrkräfte ansehen",
   aboutApp: "Reveal ist die App für Lehrkräfte. Bereite deine Fotos und Texte vor und zeige sie live auf dem Handy jedes Schülers – genau in dem Moment der Stunde, in dem sie am meisten zählen. Damit deine Stunden nicht nur gehört, sondern auch gesehen werden.",
   thanksApp: "Danke, dass du mit Reveal unterrichtest. 🙏",
