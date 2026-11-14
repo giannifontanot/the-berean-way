@@ -32,6 +32,7 @@ export default {
     waHello: "नमस्ते Gianni, मैं Reveal से लिख रहा/रही हूँ।",
     welcomeRemove: "✕ स्वागत से हटाएँ", welcomeRemoved: "नए शिक्षकों को अब “{t}” नहीं मिलेगा",
     visibleToStudents: "छात्रों को दिखे", hiddenFromStudents: "छिपी: छात्र तारे देखते हैं", shownToStudents: "छात्रों को दिखे",
+    famRose: "गुलाबी", famTeal: "फ़िरोज़ी",
     settings: "सेटिंग्स", signOut: "साइन आउट", signOutFail: "साइन आउट नहीं हो सका: {e}", seeTeachers: "मेरे सभी शिक्षक देखें",
   aboutApp: "Reveal शिक्षकों का ऐप है। अपनी फ़ोटो और वचन तैयार करें, और कक्षा के सबसे अहम पल पर उन्हें हर छात्र के फ़ोन पर लाइव दिखाएँ। ताकि आपकी कक्षाएँ सिर्फ़ सुनी ही नहीं, देखी भी जाएँ।",
   thanksApp: "Reveal के साथ पढ़ाने के लिए धन्यवाद। 🙏",

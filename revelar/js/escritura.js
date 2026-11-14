@@ -156,9 +156,11 @@ export function laminaTexto(html) {
 // Degradados muy suaves; todos con contraste AAA (7:1 o más) con la letra oscura.
 export const FAMILIAS = [
   { clave: "famSepia", tonos: { marfil: "linear-gradient(160deg, #fff4dc, #fbe2b4)", sepia: "linear-gradient(160deg, #fde4bc, #f5c98e)", canela: "linear-gradient(160deg, #fbd5a6, #efb470)" } },
-  { clave: "famBlue", tonos: { hielo: "linear-gradient(160deg, #eaf5ff, #cde6ff)", niebla: "linear-gradient(160deg, #cfe8ff, #a6d3ff)", celeste: "linear-gradient(160deg, #b0dbff, #7cc0ff)" } },
-  { clave: "famGreen", tonos: { rocio: "linear-gradient(160deg, #e6faef, #c6f0d8)", salvia: "linear-gradient(160deg, #c8f2da, #9de4bd)", jade: "linear-gradient(160deg, #a9ebc8, #72d9a4)" } },
+  { clave: "famRose", tonos: { petalo: "linear-gradient(160deg, #fff0f0, #ffd9d9)", rosa: "linear-gradient(160deg, #ffdcdc, #ffbcbc)", coral: "linear-gradient(160deg, #ffc9bd, #ffa48f)" } },
   { clave: "famLilac", tonos: { nube: "linear-gradient(160deg, #f1ebff, #dccfff)", lila: "linear-gradient(160deg, #dfd2ff, #c4aeff)", violeta: "linear-gradient(160deg, #d3c1ff, #bea4ff)" } },
+  { clave: "famBlue", tonos: { hielo: "linear-gradient(160deg, #eaf5ff, #cde6ff)", niebla: "linear-gradient(160deg, #cfe8ff, #a6d3ff)", celeste: "linear-gradient(160deg, #b0dbff, #7cc0ff)" } },
+  { clave: "famTeal", tonos: { brisa: "linear-gradient(160deg, #e6fbf9, #c4f1ec)", agua: "linear-gradient(160deg, #c6f2ec, #97e3da)", turquesa: "linear-gradient(160deg, #a3ebe2, #6dd8cc)" } },
+  { clave: "famGreen", tonos: { rocio: "linear-gradient(160deg, #e6faef, #c6f0d8)", salvia: "linear-gradient(160deg, #c8f2da, #9de4bd)", jade: "linear-gradient(160deg, #a9ebc8, #72d9a4)" } },
 ];
 export const FONDOS_CLAROS = Object.assign({ papel: "#fdfcf9" }, ...FAMILIAS.map((f) => f.tonos));
 export const FONDOS_OSCUROS = {

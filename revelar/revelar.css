@@ -2597,3 +2597,8 @@ body.cortina-va .lista > .foto { opacity: 0; transform: scale(.985); transition:
 body.cortina .vacio { animation: cortinaEntra .6s ease both; }
 @keyframes cortinaEntra { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { body.cortina-va .lista > .foto { transition: none; } body.cortina .vacio { animation: none; } }
+
+/* Ventana del color de fondo */
+.dlg-fondos { width: min(440px, calc(100vw - 24px)); }
+.dlg-fondos h2 { margin: 0 0 12px; }
+.dlg-fondos .lam-fondos { margin: 0 0 14px; animation: none; }

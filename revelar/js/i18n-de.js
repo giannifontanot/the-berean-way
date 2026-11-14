@@ -32,6 +32,7 @@ export default {
     waHello: "Hallo Gianni, ich schreibe dir aus Reveal.",
     welcomeRemove: "✕ Aus Willkommen entfernen", welcomeRemoved: "Neue Lehrkräfte erhalten „{t}“ nicht mehr",
     visibleToStudents: "Für Schüler sichtbar", hiddenFromStudents: "Verborgen: Schüler sehen Sterne", shownToStudents: "Für Schüler sichtbar",
+    famRose: "Rosé", famTeal: "Türkis",
     settings: "Einstellungen", signOut: "Abmelden", signOutFail: "Abmelden nicht möglich: {e}", seeTeachers: "Alle meine Lehrkräfte ansehen",
   aboutApp: "Reveal ist die App für Lehrkräfte. Bereite deine Fotos und Texte vor und zeige sie live auf dem Handy jedes Schülers – genau in dem Moment der Stunde, in dem sie am meisten zählen. Damit deine Stunden nicht nur gehört, sondern auch gesehen werden.",
   thanksApp: "Danke, dass du mit Reveal unterrichtest. 🙏",
