@@ -1,7 +1,42 @@
 // pwa.js — Registra el service worker y muestra el botón «Instalar»
 // (si la página tiene #btnInstalar) cuando el navegador lo permite.
+import { t } from "./i18n.js?v=202611140544";
+
 if ("serviceWorker" in navigator) {
-  addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+  addEventListener("load", () => navigator.serviceWorker.register("sw.js").then((reg) => {
+    // Un app que se queda abierto también se entera de versiones nuevas
+    setInterval(() => reg.update().catch(() => {}), 30 * 60_000);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) reg.update().catch(() => {}); });
+  }).catch(() => {}));
+  // Llegó una versión nueva (el service worker nuevo tomó el control): pedir que se actualice con un botón grande.
+  // La primera instalación no cuenta (antes no había ninguno).
+  const habia = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (habia) avisarVersionNueva(); });
+}
+
+/**
+ * Ventana sobre todo lo demás con un solo botón grande que brilla (como en Go Epic), para que se presione.
+ * Espera mientras haya otra ventana abierta (un editor puede tener texto sin guardar).
+ */
+let avisoListo = false;
+function avisarVersionNueva() {
+  if (avisoListo) return;
+  avisoListo = true;
+  const otraAbierta = () => !!document.querySelector("dialog[open]:not(.version-nueva)");
+  const mostrar = () => {
+    const d = document.createElement("dialog");
+    d.className = "version-nueva";
+    d.setAttribute("aria-labelledby", "versionNuevaTxt");
+    d.innerHTML = `<div class="vn-tarjeta"><p id="versionNuevaTxt"></p><button type="button" class="vn-boton"></button></div>`;
+    d.querySelector("p").textContent = t("newVersion");
+    d.querySelector("button").textContent = t("tapToUpdate");
+    d.querySelector("button").addEventListener("click", () => location.reload());
+    d.addEventListener("cancel", (e) => e.preventDefault());       // no se cierra con Atrás / Esc: hay que actualizar
+    document.body.append(d);
+    if (typeof d.showModal === "function") d.showModal(); else d.setAttribute("open", "");
+  };
+  if (!otraAbierta()) { mostrar(); return; }
+  const espera = setInterval(() => { if (!otraAbierta()) { clearInterval(espera); mostrar(); } }, 1000);
 }
 const MARCA = "revelar:instalada";
 let pedido = null;

@@ -34,6 +34,7 @@ export default {
     visibleToStudents: "Visível para os alunos", hiddenFromStudents: "Oculta: os alunos veem estrelas", shownToStudents: "Visível para os alunos",
     famRose: "Rosa", famTeal: "Turquesa",
     texture: "Textura", texCrumpled: "Amassado", texOld: "Antigo",
+    newVersion: "Há uma versão nova do Reveal!", tapToUpdate: "Toque para atualizar",
     settings: "Configurações", signOut: "Sair", signOutFail: "Não foi possível sair: {e}", seeTeachers: "Ver todos os meus professores",
   aboutApp: "O Reveal é o app do professor. Prepare suas fotos e passagens e revele-as ao vivo no celular de cada aluno, no momento da aula em que mais importam. Para que suas aulas não sejam só ouvidas, mas também vistas.",
   thanksApp: "Obrigado por ensinar com o Reveal. 🙏",

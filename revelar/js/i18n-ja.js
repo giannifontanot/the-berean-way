@@ -34,6 +34,7 @@ export default {
     visibleToStudents: "生徒に表示", hiddenFromStudents: "非表示：生徒には星が見えます", shownToStudents: "生徒に表示",
     famRose: "ローズ", famTeal: "ターコイズ",
     texture: "質感", texCrumpled: "しわ", texOld: "古紙",
+    newVersion: "Reveal の新しいバージョンがあります！", tapToUpdate: "タップして更新",
     settings: "設定", signOut: "ログアウト", signOutFail: "ログアウトできませんでした：{e}", seeTeachers: "すべての先生を見る",
   aboutApp: "Reveal は先生のためのアプリです。写真や聖句を準備し、授業のいちばん大切な瞬間に、生徒一人ひとりのスマホへライブで表示しましょう。授業が「聞く」だけでなく「見える」ものになります。",
   thanksApp: "Reveal で教えてくださり、ありがとうございます。 🙏",

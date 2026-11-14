@@ -2621,3 +2621,17 @@ body.cortina .vacio { animation: cortinaEntra .6s ease both; }
 .lam-tex-btn:active { transform: scale(.95); }
 .lam-tex-btn[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--gold); }
 .lam-tex-btn[aria-pressed="true"]::before { content: "✓ "; }
+
+/* ---------- Versión nueva: ventana con un botón grande que brilla (como en Go Epic) ---------- */
+dialog.version-nueva { width: min(440px, calc(100vw - 32px)); max-width: none; padding: 0; border: 0; background: transparent; color: var(--text); overflow: visible; }
+dialog.version-nueva::backdrop { background: rgba(4, 9, 30, .82); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.vn-tarjeta { display: grid; gap: 22px; padding: 28px 22px; border-radius: 26px; background: #1b2757; color: #fff4e9; text-align: center; box-shadow: 0 25px 90px #000a; }
+.vn-tarjeta p { margin: 0; font-family: Georgia, serif; font-size: calc(24px * var(--esc, 1)); line-height: 1.25; }
+.vn-boton { min-height: 96px; padding: 0 20px; border: 0; border-radius: 24px; cursor: pointer;
+  background: linear-gradient(150deg, #ffe7a3, var(--gold, #e8c170)); color: #2a1f0a;
+  font: inherit; font-size: calc(24px * var(--esc, 1)); font-weight: 900; animation: vnBrilla 1.6s ease-in-out infinite; }
+@keyframes vnBrilla {
+  0%, 100% { scale: 1; box-shadow: 0 0 0 3px rgba(255, 223, 119, .7), 0 0 22px 6px rgba(255, 223, 119, .35); }
+  50% { scale: 1.04; box-shadow: 0 0 0 5px rgba(255, 223, 119, 1), 0 0 46px 18px rgba(255, 223, 119, .65); }
+}
+@media (prefers-reduced-motion: reduce) { .vn-boton { animation: none; box-shadow: 0 0 0 4px rgba(255, 223, 119, .9), 0 0 30px 10px rgba(255, 223, 119, .5); } }
