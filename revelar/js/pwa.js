@@ -1,6 +1,6 @@
 // pwa.js — Registra el service worker y muestra el botón «Instalar»
 // (si la página tiene #btnInstalar) cuando el navegador lo permite.
-import { t } from "./i18n.js?v=202611140544";
+import { t } from "./i18n.js?v=202611140553";
 
 if ("serviceWorker" in navigator) {
   addEventListener("load", () => navigator.serviceWorker.register("sw.js").then((reg) => {
@@ -30,8 +30,10 @@ function avisarVersionNueva() {
     d.innerHTML = `<div class="vn-tarjeta"><p id="versionNuevaTxt"></p><button type="button" class="vn-boton"></button></div>`;
     d.querySelector("p").textContent = t("newVersion");
     d.querySelector("button").textContent = t("tapToUpdate");
-    d.querySelector("button").addEventListener("click", () => location.reload());
+    // Al tocar: la ventana regresa suave al lugar de donde salió (arriba) y luego se recarga con la versión nueva
+    d.querySelector("button").addEventListener("click", () => { d.close(); setTimeout(() => location.reload(), 420); });
     d.addEventListener("cancel", (e) => e.preventDefault());       // no se cierra con Atrás / Esc: hay que actualizar
+    d._origenFijo = { x: innerWidth / 2, y: 28 };   // sale desde arriba, el borde del app, y regresa ahí
     document.body.append(d);
     if (typeof d.showModal === "function") d.showModal(); else d.setAttribute("open", "");
   };

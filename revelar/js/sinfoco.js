@@ -17,7 +17,8 @@ function aparecer(dlg) {
   if (sinMovimiento() || !dlg.animate) return;
   const r = dlg.getBoundingClientRect();
   if (!r.width) return;
-  const o = toque && Date.now() - toque.t < 1500 ? { x: toque.x, y: toque.y } : null;
+  // Una ventana que no abrió nadie con un toque puede traer su propio origen (p. ej. el aviso de versión nueva)
+  const o = dlg._origenFijo || (toque && Date.now() - toque.t < 1500 ? { x: toque.x, y: toque.y } : null);
   dlg._origen = o;
   dlg.animate(o
     ? [{ transform: desplazamiento(r, o), opacity: 0, borderRadius: "50%" }, { opacity: 1, offset: 0.35 }, { transform: "none", opacity: 1 }]
