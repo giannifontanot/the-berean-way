@@ -1,6 +1,6 @@
 // pwa.js — Registra el service worker y muestra el botón «Instalar»
 // (si la página tiene #btnInstalar) cuando el navegador lo permite.
-import { t, idioma } from "./i18n.js?v=202611140557";
+import { t, idioma } from "./i18n.js?v=202611140558";
 
 if ("serviceWorker" in navigator) {
   addEventListener("load", () => navigator.serviceWorker.register("sw.js").then((reg) => {

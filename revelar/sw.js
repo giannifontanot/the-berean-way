@@ -3,7 +3,7 @@
 // si no hay conexión, usa la última copia guardada. Solo archivos de este sitio:
 // Firebase (lecciones en vivo) nunca pasa por aquí.
 // Cada publicación: subir este número Y agregar arriba en js/novedades.js lo que cambió (lo muestra el aviso de versión nueva)
-const CACHE = "berean-reveal-v91";
+const CACHE = "berean-reveal-v92";
 const BASICOS = ["./", "index.html", "lecciones.html", "presentador.html", "revelar.css"];
 
 self.addEventListener("install", (e) => {

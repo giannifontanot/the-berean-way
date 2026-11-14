@@ -7,7 +7,7 @@
 let toque = null;   // último lugar que tocaste
 addEventListener("pointerdown", (e) => { toque = { x: e.clientX, y: e.clientY, t: Date.now() }; }, true);
 const sinMovimiento = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
-const ABRIR = 480, CERRAR = 380;
+const ABRIR = 480, CERRAR = 440;
 
 function desplazamiento(r, o) {
   return `translate(${Math.round(o.x - (r.left + r.width / 2))}px, ${Math.round(o.y - (r.top + r.height / 2))}px) scale(0.06)`;
@@ -42,15 +42,22 @@ function desaparecer(dlg) {
     margin: "0", maxHeight: "none", maxWidth: "none", zIndex: "2147483646", pointerEvents: "none", overflow: "hidden", boxSizing: "border-box" });
   const sombra = document.createElement("div");
   Object.assign(sombra.style, { position: "fixed", inset: "0", background: "rgba(5, 7, 18, 0.7)", zIndex: "2147483645", pointerEvents: "none" });
-  document.body.append(sombra, copia);
+  // La copia va en la «capa de arriba» (popover): si la ventana se abrió encima de otra (p. ej. los colores sobre el
+  // editor de la lámina), una copia normal quedaría DETRÁS de la ventana de abajo y la vuelta no se vería.
+  const capa = document.createElement("div");
+  Object.assign(capa.style, { position: "fixed", inset: "0", width: "100vw", height: "100dvh", margin: "0", padding: "0",
+    border: "0", background: "transparent", overflow: "visible", pointerEvents: "none" });
+  capa.append(sombra, copia);
+  document.body.append(capa);
+  if (typeof capa.showPopover === "function") { capa.setAttribute("popover", "manual"); try { capa.showPopover(); } catch {} }
   copia.scrollTop = dlg.scrollTop;
   const o = dlg._origen;
   const a = copia.animate(o
     ? [{ transform: "none", opacity: 1 }, { opacity: 1, offset: 0.6 }, { transform: desplazamiento(r, o), opacity: 0, borderRadius: "50%" }]
     : [{ transform: "none", opacity: 1 }, { transform: "translateY(40px) scale(0.85)", opacity: 0 }],
-    { duration: CERRAR, easing: "cubic-bezier(.55, 0, .75, .2)", fill: "forwards" });
+    { duration: CERRAR, easing: "cubic-bezier(.45, 0, .55, 1)", fill: "forwards" });
   sombra.animate([{ opacity: 1 }, { opacity: 0 }], { duration: CERRAR, easing: "ease-in", fill: "forwards" });
-  const quitar = () => { copia.remove(); sombra.remove(); };
+  const quitar = () => { try { capa.hidePopover?.(); } catch {} capa.remove(); };
   a.onfinish = quitar; a.oncancel = quitar;
   setTimeout(quitar, CERRAR + 200);
 }
