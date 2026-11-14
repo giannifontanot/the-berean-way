@@ -2231,7 +2231,11 @@ body { letter-spacing: var(--app-ls, normal); }
 .tira-nueva .ico { width: 24px; height: 24px; }
 .tira-nueva:active, .tira-nueva.presionado { background: var(--accent); color: var(--accent-ink); scale: 0.92; }
 /* Visor (pantalla completa): la lámina llena la pantalla como una diapositiva */
-.visor .foto.escritura.es-lamina { width: 100%; min-height: 100dvh; box-sizing: border-box; display: flex; align-items: center; margin: 0; border: 0; }
+/* Centro óptico: el texto queda un poco arriba del centro exacto (40% del espacio libre arriba, 60% abajo),
+   donde el ojo lo siente «en medio». Si el texto llena la pantalla, no cambia nada. */
+.visor .foto.escritura.es-lamina { width: 100%; min-height: 100dvh; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-start; margin: 0; border: 0; }
+.visor .foto.escritura.es-lamina::before { content: ""; flex: 2 1 0; }
+.visor .foto.escritura.es-lamina::after { content: ""; flex: 3 1 0; }
 .visor .foto.escritura.es-lamina .verso { width: 100%; max-width: 760px; margin: 0 auto; }
 .visor .foto.escritura.es-lamina .lam, .visor .foto.escritura .verso p { font-size: calc(30px * var(--esc, 1)); }
 
